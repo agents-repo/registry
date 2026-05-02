@@ -36,9 +36,11 @@ Each entry in `versions` MUST be an object with:
 
 ## Validation Rules
 
-- `latest` MUST match one `versions[].version` value.
+- `latest` MUST equal the maximum semantic version present in `versions[]`.
 - `versions[].version` values MUST be unique.
 - `versions[].artifact` MUST match `^[0-9]+\.[0-9]+\.[0-9]+\.zip$`.
+- `versions[].artifact` MUST equal `<version>.zip` where `<version>` is the
+  value of `versions[].version` in the same entry.
 - The file named by `versions[].artifact` MUST exist in `versions/`.
 - ZIP artifacts are deployment artifacts per `package-format.md`
   (all agent and flow `.agent.md` files placed under `agents/` in the ZIP).

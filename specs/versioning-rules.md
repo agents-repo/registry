@@ -16,8 +16,11 @@ are to be interpreted as described in RFC 2119.
 
 ## Manifest and Metadata Consistency
 
-- `manifest.json.latest` MUST reference an existing entry in `manifest.json.versions`.
+- `manifest.json.latest` MUST equal the maximum semantic version in
+  `manifest.json.versions[]`.
 - `manifest.json.versions[].version` MUST be unique.
+- `manifest.json.versions[].artifact` MUST equal `<version>.zip` where
+  `<version>` matches the entry's own `version` field.
 - `manifest.json.versions[].sha256` MUST match artifact bytes exactly.
 
 ## Compatibility Policy
