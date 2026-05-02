@@ -63,7 +63,7 @@ body:
       description: Provide initial version and artifact details.
       placeholder: |
         - version: 1.0.0
-        - artifact: versions/1.0.0.zip
+        - artifact: 1.0.0.zip
         - sha256: <64-char-lowercase-hex>
     validations:
       required: true
