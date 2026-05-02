@@ -11,6 +11,6 @@
   },
   "devDependencies": {
     "husky": "^9",
-    "markdownlint-cli2": "0.17.2"
+    "markdownlint-cli2": "^0.22.1"
   }
 }
