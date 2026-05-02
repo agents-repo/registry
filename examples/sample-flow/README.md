@@ -12,3 +12,4 @@ When implemented, this example should follow:
 - `specs/flow-format.md`
 - `specs/metadata-schema.md`
 - `specs/manifest-schema.md`
+- `specs/versioning-rules.md`
