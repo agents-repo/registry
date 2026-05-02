@@ -27,6 +27,8 @@ body:
           required: false
         - label: Contains flows (`flows/` directory)
           required: false
+    validations:
+      required: true
 
   - type: input
     id: package-name
