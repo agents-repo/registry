@@ -79,9 +79,15 @@ body:
       options:
         - label: I followed specs/package-format.md.
           required: true
+        - label: I followed specs/agent-format.md for any files under agents/.
+          required: true
+        - label: I followed specs/flow-format.md for any files under flows/.
+          required: true
         - label: I followed specs/metadata-schema.md.
           required: true
         - label: I followed specs/manifest-schema.md.
+          required: true
+        - label: I followed specs/versioning-rules.md for the initial release.
           required: true
         - label: ZIP content includes only required files.
           required: true
