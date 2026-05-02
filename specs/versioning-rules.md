@@ -11,7 +11,7 @@ are to be interpreted as described in RFC 2119.
 ## Package Versioning
 
 - Package versions MUST use semantic versioning: `MAJOR.MINOR.PATCH`.
-- Pre-release and build metadata MAY be used when needed.
+- Pre-release and build metadata MUST NOT be used.
 - Each released version MUST have exactly one ZIP artifact at `versions/<version>.zip`.
 
 ## Manifest and Metadata Consistency
