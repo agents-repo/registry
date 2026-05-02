@@ -12,7 +12,7 @@ are to be interpreted as described in RFC 2119.
 
 ### File Location
 
-- Package metadata MUST be stored as `<package-id>/metadata.json`.
+- Package metadata MUST be stored as `packages/<package-id>/metadata.json`.
 - File MUST be valid UTF-8 encoded JSON.
 
 ### Required Fields
