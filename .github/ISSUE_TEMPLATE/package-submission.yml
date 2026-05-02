@@ -1,0 +1,77 @@
+name: Package submission
+description: Submit a new agent or flow package to the registry.
+title: "package: "
+labels:
+  - package
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to submit a new package under packages/.
+
+  - type: dropdown
+    id: package-type
+    attributes:
+      label: Package type
+      options:
+        - agent
+        - flow
+    validations:
+      required: true
+
+  - type: input
+    id: package-name
+    attributes:
+      label: Package name
+      description: Must be lowercase kebab-case.
+      placeholder: my-package-name
+    validations:
+      required: true
+
+  - type: textarea
+    id: package-path
+    attributes:
+      label: Proposed path
+      description: Path under packages/.
+      placeholder: packages/my-package-name/
+    validations:
+      required: true
+
+  - type: textarea
+    id: contents
+    attributes:
+      label: Package files
+      description: List expected files in the package.
+      placeholder: |
+        - agent.md or flow.md
+        - metadata.json
+        - manifest.json
+        - versions/<version>.zip
+    validations:
+      required: true
+
+  - type: textarea
+    id: release
+    attributes:
+      label: Release metadata
+      description: Provide initial version and artifact details.
+      placeholder: |
+        - version: 1.0.0
+        - artifact: versions/1.0.0.zip
+        - sha256: <64-char-lowercase-hex>
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: submission-checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I followed specs/package-format.md.
+          required: true
+        - label: I followed specs/metadata-schema.md.
+          required: true
+        - label: I followed specs/manifest-schema.md.
+          required: true
+        - label: ZIP content includes only required files.
+          required: true

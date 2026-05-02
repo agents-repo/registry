@@ -1,0 +1,64 @@
+name: Spec change request
+description: Request a change to one or more files in specs/.
+title: "spec: "
+labels:
+  - specs
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to propose deterministic changes to registry specs.
+
+  - type: dropdown
+    id: spec-file
+    attributes:
+      label: Primary spec file
+      options:
+        - specs/package-format.md
+        - specs/metadata-schema.md
+        - specs/manifest-schema.md
+        - specs/agent-format.md
+        - specs/flow-format.md
+        - specs/versioning-rules.md
+    validations:
+      required: true
+
+  - type: textarea
+    id: current
+    attributes:
+      label: Current behavior or rule
+      description: What does the spec currently say?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed change
+      description: What exact rule text should be added or updated?
+    validations:
+      required: true
+
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility impact
+      description: Does this introduce a breaking change?
+      placeholder: |
+        - Breaking: yes/no
+        - Impacted packages:
+        - Migration notes:
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: quality-checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I used deterministic language (MUST, SHOULD, MAY).
+          required: true
+        - label: I included at least one concrete example.
+          required: true
+        - label: I considered versioning implications.
+          required: true

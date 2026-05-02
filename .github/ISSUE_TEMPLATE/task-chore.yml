@@ -1,0 +1,33 @@
+name: Task or chore
+description: Track maintenance and operational work.
+title: "chore: "
+labels:
+  - chore
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: What needs to be completed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Task list
+      description: Break work into actionable items.
+      placeholder: |
+        - [ ] Task 1
+        - [ ] Task 2
+        - [ ] Task 3
+    validations:
+      required: true
+
+  - type: textarea
+    id: done-criteria
+    attributes:
+      label: Done criteria
+      description: How will completion be verified?
+    validations:
+      required: true
