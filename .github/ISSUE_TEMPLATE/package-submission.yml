@@ -10,18 +10,19 @@ body:
         Use this form to submit a new package under packages/.
         A package may contain agents, flows, or both.
 
-  - type: checkboxes
+  - type: dropdown
     id: package-type
     attributes:
       label: Package contents
       description: >-
-        Select all that apply. A package may contain agents, flows, or both
-        per specs/package-format.md.
+        Select one. A package must contain agents, flows, or both per
+        specs/package-format.md.
       options:
-        - label: Contains agents (`agents/` directory)
-          required: false
-        - label: Contains flows (`flows/` directory)
-          required: false
+        - Contains agents (`agents/` directory)
+        - Contains flows (`flows/` directory)
+        - Contains both `agents/` and `flows/` directories
+    validations:
+      required: true
 
   - type: input
     id: package-name
