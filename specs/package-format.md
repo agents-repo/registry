@@ -73,8 +73,8 @@ For every flow `<flow-id>`:
 - Each `<version>.zip` in `versions/` is a deployment artifact
   intended to be extracted into a project's `.github/` folder.
 - A ZIP MUST contain a single `agents/` directory.
-- The `agents/` directory MUST include the `.md` file for every
-  agent and every flow present in the package at that version.
+- The `agents/` directory MUST include the `.agent.md` file for
+  every agent and every flow present in the package at that version.
 - Agent files are placed as `agents/<agent-id>.agent.md`.
 - Flow files are also placed as `agents/<flow-id>.agent.md`
   because Copilot reads flows as agent instructions.
