@@ -5,9 +5,12 @@
   "description": "Tooling and validation scripts for the Copilot Agents Registry.",
   "scripts": {
     "build": "node scripts/build.js",
-    "validate": "node scripts/validate.js"
+    "validate": "node scripts/validate.js",
+    "lint:md": "markdownlint-cli2 \"**/*.md\"",
+    "prepare": "husky"
   },
   "devDependencies": {
-    "markdownlint": "^0.40.0"
+    "husky": "^9",
+    "markdownlint-cli2": "^0"
   }
 }
