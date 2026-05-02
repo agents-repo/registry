@@ -60,8 +60,8 @@ Body sections required in order:
 
 - Each `versions/<version>.zip` is a deployment artifact for
   extraction into a project's `.github/` folder.
-- A ZIP MUST include `flows/<flow-id>.md` for every flow in
-  the package at that version.
+- Flow `.md` files are placed as `agents/<flow-id>.md` in the ZIP
+  because Copilot reads flows as agent instructions.
 - `flows/<flow-id>.metadata.json` files MUST NOT be included.
 - ZIP content file names MUST match exact case.
 

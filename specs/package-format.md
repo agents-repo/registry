@@ -22,6 +22,9 @@ All package directories MUST exist under `packages/`.
 - Agent IDs and flow IDs MUST follow the same naming rules.
 - Agent IDs MUST be unique within `agents/`.
 - Flow IDs MUST be unique within `flows/`.
+- Agent IDs and flow IDs MUST be unique across both `agents/`
+  and `flows/` within the same package to avoid collisions in
+  the deployment artifact.
 
 ## Required Package Structure
 
@@ -69,9 +72,12 @@ For every flow `<flow-id>`:
 
 - Each `<version>.zip` in `versions/` is a deployment artifact
   intended to be extracted into a project's `.github/` folder.
-- A ZIP MUST contain only the `.md` files from `agents/` and `flows/`
-  present at that version, preserving the `agents/` and `flows/`
-  directory structure.
+- A ZIP MUST contain a single `agents/` directory.
+- The `agents/` directory MUST include the `.md` file for every
+  agent and every flow present in the package at that version.
+- Agent `.md` files are placed as `agents/<agent-id>.md`.
+- Flow `.md` files are also placed as `agents/<flow-id>.md`
+  because Copilot reads flows as agent instructions.
 - `.metadata.json` sidecars MUST NOT be included in ZIP artifacts.
 - `metadata.json` at the package root MUST NOT be included in
   ZIP artifacts.
