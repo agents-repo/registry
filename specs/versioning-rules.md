@@ -22,6 +22,8 @@ are to be interpreted as described in RFC 2119.
 - `manifest.json.versions[].artifact` MUST equal `<version>.zip` where
   `<version>` matches the entry's own `version` field.
 - `manifest.json.versions[].sha256` MUST match artifact bytes exactly.
+- Every `agents/*.agent.md` file inside `versions/<version>.zip`
+  MUST have frontmatter `version` equal to `<version>`.
 
 ## Compatibility Policy
 

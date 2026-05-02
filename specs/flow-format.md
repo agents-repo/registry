@@ -89,6 +89,8 @@ Body sections required in order:
 
 - Each `versions/<version>.zip` is a deployment artifact for
   extraction into a project's `.github/` folder.
+- Within `versions/<version>.zip`, each bundled
+  `agents/*.agent.md` frontmatter `version` MUST equal `<version>`.
 - Flow `<flow-id>.agent.md` files are placed as
   `agents/<flow-id>.agent.md` in the ZIP because Copilot reads
   flows as agent instructions.

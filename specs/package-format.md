@@ -78,6 +78,8 @@ For every flow `<flow-id>`:
 - Agent files are placed as `agents/<agent-id>.agent.md`.
 - Flow files are also placed as `agents/<flow-id>.agent.md`
   because Copilot reads flows as agent instructions.
+- Within `versions/<version>.zip`, every bundled
+  `agents/*.agent.md` frontmatter `version` MUST equal `<version>`.
 - `.metadata.json` sidecars MUST NOT be included in ZIP artifacts.
 - `metadata.json` at the package root MUST NOT be included in
   ZIP artifacts.

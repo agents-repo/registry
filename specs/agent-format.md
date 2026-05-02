@@ -87,6 +87,8 @@ Body sections required in order:
 
 - Each `versions/<version>.zip` is a deployment artifact for
   extraction into a project's `.github/` folder.
+- Within `versions/<version>.zip`, each bundled
+  `agents/*.agent.md` frontmatter `version` MUST equal `<version>`.
 - Agent `<agent-id>.agent.md` files are placed as
   `agents/<agent-id>.agent.md` in the ZIP.
 - Flow `<flow-id>.agent.md` files are also placed under `agents/`
