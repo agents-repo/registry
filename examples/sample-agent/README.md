@@ -12,3 +12,4 @@ When implemented, this example should follow:
 - `specs/agent-format.md`
 - `specs/metadata-schema.md`
 - `specs/manifest-schema.md`
+- `specs/versioning-rules.md`
