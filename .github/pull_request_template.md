@@ -8,6 +8,7 @@ Describe the change and why it is needed.
 
 - [ ] Initial structure
 - [ ] Spec update
+- [ ] Bug fix
 - [ ] Package submission
 - [ ] Documentation
 - [ ] Tooling or workflow

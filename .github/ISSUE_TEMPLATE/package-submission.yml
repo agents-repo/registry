@@ -11,19 +11,18 @@ body:
         A package may contain agents, flows, or both.
         Submitted package content must be licensed under MIT.
 
-  - type: dropdown
+  - type: checkboxes
     id: package-type
     attributes:
       label: Package contents
       description: >-
-        Select one. A package must contain agents, flows, or both per
+        Select all that apply. A package must contain at least one per
         specs/package-format.md.
       options:
-        - Contains agents (`agents/` directory)
-        - Contains flows (`flows/` directory)
-        - Contains both `agents/` and `flows/` directories
-    validations:
-      required: true
+        - label: Contains agents (`agents/` directory)
+          required: false
+        - label: Contains flows (`flows/` directory)
+          required: false
 
   - type: input
     id: package-name
@@ -71,6 +70,7 @@ body:
         - version: 1.0.0
         - artifact: 1.0.0.zip
         - sha256: <64-char-lowercase-hex>
+        - createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
     validations:
       required: true
 
