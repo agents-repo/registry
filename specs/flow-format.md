@@ -72,6 +72,14 @@ Body sections required in order:
 - `<flow-id>.agent.md` frontmatter `name` MUST equal
   `<flow-id>.metadata.json` `name`.
 - `<flow-id>.agent.md` frontmatter `license` MUST equal `MIT`.
+- When `description` is present in both frontmatter and
+  `<flow-id>.metadata.json`, the values MUST be identical.
+- When `agents` is present in both frontmatter and
+  `<flow-id>.metadata.json`, the values MUST be identical.
+- When `inputs` is present in both frontmatter and
+  `<flow-id>.metadata.json`, the values MUST be identical.
+- When `outputs` is present in both frontmatter and
+  `<flow-id>.metadata.json`, the values MUST be identical.
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/` within the same package.
 - `<flow-id>.metadata.json` fields are defined in

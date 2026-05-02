@@ -72,6 +72,14 @@ Body sections required in order:
 - `<agent-id>.agent.md` frontmatter `name` MUST equal
   `<agent-id>.metadata.json` `name`.
 - `<agent-id>.agent.md` frontmatter `license` MUST equal `MIT`.
+- When `description` is present in both frontmatter and
+  `<agent-id>.metadata.json`, the values MUST be identical.
+- When `tools` is present in both frontmatter and
+  `<agent-id>.metadata.json`, the values MUST be identical.
+- When `inputs` is present in both frontmatter and
+  `<agent-id>.metadata.json`, the values MUST be identical.
+- When `outputs` is present in both frontmatter and
+  `<agent-id>.metadata.json`, the values MUST be identical.
 - `<agent-id>.metadata.json` fields are defined in
   `metadata-schema.md`.
 

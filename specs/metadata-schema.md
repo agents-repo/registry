@@ -94,8 +94,16 @@ are to be interpreted as described in RFC 2119.
 - `name` MUST also match the `name` field in
   `<agent-id>.agent.md` frontmatter.
 - `license` MUST equal `MIT`.
+- When `description` is present in both this file and
+  `<agent-id>.agent.md` frontmatter, the values MUST be identical.
+- When `tools` is present in both this file and
+  `<agent-id>.agent.md` frontmatter, the values MUST be identical.
 - `inputs[]` and `outputs[]` items MUST conform to the `Contract`
   object schema defined in `agent-format.md`.
+- When `inputs` is present in both this file and
+  `<agent-id>.agent.md` frontmatter, the values MUST be identical.
+- When `outputs` is present in both this file and
+  `<agent-id>.agent.md` frontmatter, the values MUST be identical.
 - Unknown fields SHOULD use the `x-` prefix.
 
 ### Canonical Example
@@ -141,8 +149,16 @@ are to be interpreted as described in RFC 2119.
 - `name` MUST also match the `name` field in
   `<flow-id>.agent.md` frontmatter.
 - `license` MUST equal `MIT`.
+- When `description` is present in both this file and
+  `<flow-id>.agent.md` frontmatter, the values MUST be identical.
+- When `agents` is present in both this file and
+  `<flow-id>.agent.md` frontmatter, the values MUST be identical.
 - `inputs[]` and `outputs[]` items MUST conform to the `Contract`
   object schema defined in `flow-format.md`.
+- When `inputs` is present in both this file and
+  `<flow-id>.agent.md` frontmatter, the values MUST be identical.
+- When `outputs` is present in both this file and
+  `<flow-id>.agent.md` frontmatter, the values MUST be identical.
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
 - Unknown fields SHOULD use the `x-` prefix.
