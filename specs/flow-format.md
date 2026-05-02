@@ -58,7 +58,11 @@ Body sections required in order:
 
 ## ZIP Bundle Rules
 
-- Each `versions/<version>.zip` MUST be a full package snapshot.
+- Each `versions/<version>.zip` is a deployment artifact for
+  extraction into a project's `.github/` folder.
+- A ZIP MUST include `flows/<flow-id>.md` for every flow in
+  the package at that version.
+- `flows/<flow-id>.metadata.json` files MUST NOT be included.
 - ZIP content file names MUST match exact case.
 
 ## Canonical Example

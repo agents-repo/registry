@@ -40,8 +40,8 @@ Each entry in `versions` MUST be an object with:
 - `versions[].version` values MUST be unique.
 - `versions[].artifact` MUST match `^[0-9]+\.[0-9]+\.[0-9]+\.zip$`.
 - The file named by `versions[].artifact` MUST exist in `versions/`.
-- ZIP artifacts MUST be full package snapshots
-  per `package-format.md`.
+- ZIP artifacts are deployment artifacts per `package-format.md`
+  (`.md` files only, preserving `agents/` and `flows/` structure).
 - `versions` SHOULD be sorted in ascending semantic version order.
 
 ## Canonical JSON Example

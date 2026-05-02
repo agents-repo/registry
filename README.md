@@ -68,7 +68,8 @@ Package rules:
 - `versions/manifest.json` tracks all releases.
 - Use semantic versioning with no `v` prefix.
 - Use SHA-256 checksums.
-- ZIP bundles are full package snapshots.
+- ZIP bundles contain only `agents/*.md` and `flows/*.md`
+  and are intended for extraction into `.github/`.
 
 ## Specifications
 

@@ -67,12 +67,18 @@ For every flow `<flow-id>`:
 
 ## Artifact Rules
 
-- Each `<version>.zip` in `versions/` MUST be a full snapshot
-  of the package at that version.
-- A ZIP MUST contain `metadata.json` and all files under `agents/`
-  and `flows/` present at that version.
+- Each `<version>.zip` in `versions/` is a deployment artifact
+  intended to be extracted into a project's `.github/` folder.
+- A ZIP MUST contain only the `.md` files from `agents/` and `flows/`
+  present at that version, preserving the `agents/` and `flows/`
+  directory structure.
+- `.metadata.json` sidecars MUST NOT be included in ZIP artifacts.
+- `metadata.json` at the package root MUST NOT be included in
+  ZIP artifacts.
 - ZIP file names MUST follow `<semver>.zip` with no `v` prefix.
 - `versions/manifest.json` MUST list all released ZIP artifacts.
+- Additional artifact variants (e.g. full source archives) are
+  reserved for future spec versions.
 
 ## Determinism Rules
 

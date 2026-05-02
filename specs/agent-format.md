@@ -56,7 +56,11 @@ Body sections required in order:
 
 ## ZIP Bundle Rules
 
-- Each `versions/<version>.zip` MUST be a full package snapshot.
+- Each `versions/<version>.zip` is a deployment artifact for
+  extraction into a project's `.github/` folder.
+- A ZIP MUST include `agents/<agent-id>.md` for every agent in
+  the package at that version.
+- `agents/<agent-id>.metadata.json` files MUST NOT be included.
 - ZIP content file names MUST match exact case.
 
 ## Canonical Example
