@@ -4,6 +4,13 @@ title: "fix: "
 labels:
   - bug
 body:
+  - type: markdown
+    attributes:
+      value: |
+        **Branch name:** `fix/<issue-number>-<short-slug>`
+        **Example:** `fix/42-correct-manifest-artifact-rule`
+        Create this issue first to get the issue number, then open the branch.
+
   - type: textarea
     id: summary
     attributes:

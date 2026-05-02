@@ -15,12 +15,18 @@ Most contributions are documentation, schema, and package-structure changes.
 
 ## Branch Naming
 
-Use short, descriptive branch names:
+Branch names MUST follow the pattern `<prefix>/<issue-number>-<slug>`,
+where `<slug>` is a short lowercase kebab-case description.
 
-- feat/short-topic
-- fix/short-topic
-- chore/short-topic
-- spec/short-topic
+| Issue type | Prefix | Example |
+| --- | --- | --- |
+| Bug or inconsistency | `fix/` | `fix/42-correct-manifest-artifact-rule` |
+| Spec change request | `spec/` | `spec/7-add-contract-schema` |
+| Feature proposal | `feat/` | `feat/15-search-index` |
+| Task or chore | `chore/` | `chore/31-update-dependencies` |
+| Package submission | `package/` | `package/56-my-package-name` |
+
+Create the issue first to obtain the issue number, then open the branch.
 
 ## Pull Request Expectations
 

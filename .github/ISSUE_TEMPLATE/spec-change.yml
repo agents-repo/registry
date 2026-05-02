@@ -9,6 +9,10 @@ body:
       value: |
         Use this form to propose deterministic changes to registry specs.
 
+        **Branch name:** `spec/<issue-number>-<short-slug>`
+        **Example:** `spec/7-add-contract-schema`
+        Create this issue first to get the issue number, then open the branch.
+
   - type: dropdown
     id: spec-file
     attributes:

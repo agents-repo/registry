@@ -4,6 +4,13 @@ title: "chore: "
 labels:
   - chore
 body:
+  - type: markdown
+    attributes:
+      value: |
+        **Branch name:** `chore/<issue-number>-<short-slug>`
+        **Example:** `chore/31-update-dependencies`
+        Create this issue first to get the issue number, then open the branch.
+
   - type: textarea
     id: objective
     attributes:

@@ -10,6 +10,10 @@ body:
         Use this form for new capabilities in the registry workflow,
         governance, or contributor experience.
 
+        **Branch name:** `feat/<issue-number>-<short-slug>`
+        **Example:** `feat/15-search-index`
+        Create this issue first to get the issue number, then open the branch.
+
   - type: textarea
     id: summary
     attributes:

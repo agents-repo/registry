@@ -11,6 +11,10 @@ body:
         A package may contain agents, flows, or both.
         Submitted package content must be licensed under MIT.
 
+        **Branch name:** `package/<issue-number>-<package-name>`
+        **Example:** `package/56-my-package-name`
+        Create this issue first to get the issue number, then open the branch.
+
   - type: checkboxes
     id: package-type
     attributes:
