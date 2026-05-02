@@ -1,6 +1,7 @@
 # Flow Format Specification (v0.1)
 
-This document defines the deterministic format for flow packages.
+This document defines the deterministic format for flows
+within a package.
 
 ## Normative Language
 
@@ -9,22 +10,23 @@ are to be interpreted as described in RFC 2119.
 
 ## Required Files
 
-Each flow package MUST include:
+Each flow `<flow-id>` MUST include:
 
-- `flow.md`
-- `metadata.json`
-- `manifest.json`
-- `versions/<version>.zip`
+- `flows/<flow-id>.md`
+- `flows/<flow-id>.metadata.json`
 
-## flow.md Structure
+The stem `<flow-id>` MUST be identical for both files.
 
-`flow.md` MUST start with YAML frontmatter followed by markdown body content.
+## Flow File Structure
+
+`<flow-id>.md` MUST start with YAML frontmatter followed by
+markdown body content.
 
 Frontmatter required fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `name` | string | MUST match package name |
+| `name` | string | MUST match `<flow-id>` stem |
 | `description` | string | 1 to 300 characters |
 | `version` | string | Semantic version |
 | `license` | string | SPDX identifier |
@@ -33,7 +35,7 @@ Frontmatter optional fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `agents` | array of string | Referenced agent package names |
+| `agents` | array of string | Agent IDs referenced by this flow |
 | `inputs` | array of object | Flow input contracts |
 | `outputs` | array of object | Flow output contracts |
 
@@ -46,29 +48,31 @@ Body sections required in order:
 
 ## Relationship Rules
 
-- `metadata.json.type` MUST be `flow`.
-- `flow.md` frontmatter `name` MUST equal `metadata.json.name`.
-- `flow.md` frontmatter `version` SHOULD equal `manifest.json.latest`
-    for latest source content.
-- Each referenced agent in `agents` SHOULD correspond to
-    an existing package name under `packages/`.
+- `<flow-id>.md` frontmatter `name` MUST match the file stem.
+- `<flow-id>.md` frontmatter `name` MUST equal
+  `<flow-id>.metadata.json` `name`.
+- Each `agents[]` entry SHOULD reference an `<agent-id>`
+  present in `agents/` within the same package.
+- `<flow-id>.metadata.json` fields are defined in
+  `metadata-schema.md`.
 
 ## ZIP Bundle Rules
 
-- Each `versions/<version>.zip` MUST contain only `flow.md` and `metadata.json`.
+- Each `versions/<version>.zip` MUST be a full package snapshot.
+- ZIP content file names MUST match exact case.
 
-## Canonical flow.md Example
+## Canonical Example
 
 ```markdown
 ---
-name: triage-flow
-description: Triage incoming issues and route them to the best responder agent.
+name: triage
+description: Routes incoming issues to the appropriate agent.
 version: 1.0.0
 license: MIT
 agents:
 
-    - issue-classifier
-    - response-drafter
+    - planner
+    - executor
 ---
 
 # Overview
@@ -79,7 +83,7 @@ Route issue content through classification and response drafting.
 
 1. Classify issue category.
 2. Select routing strategy.
-3. Draft recommended response.
+3. Delegate to the appropriate agent.
 
 ## Error Handling
 
@@ -88,5 +92,5 @@ If classification fails, route to manual review.
 ## Interaction Contract
 
 Input: issue title and body.
-Output: structured route decision and draft response.
+Output: structured route decision and delegated task assignments.
 ```

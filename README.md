@@ -45,22 +45,30 @@ registry/
 
 ## Package Baseline
 
-Agent package format:
+Package format:
 
 ```text
-<agent-name>/
-    agent.md
+<package-id>/
     metadata.json
-    manifest.json
+    agents/
+        <agent-id>.md
+        <agent-id>.metadata.json
+    flows/
+        <flow-id>.md
+        <flow-id>.metadata.json
     versions/
         <version>.zip
+        manifest.json
 ```
 
-Manifest rules:
+Package rules:
 
-- Use semantic versioning.
+- A package must have at least one agent or flow.
+- `agents/` or `flows/` may be absent if unused.
+- `versions/manifest.json` tracks all releases.
+- Use semantic versioning with no `v` prefix.
 - Use SHA-256 checksums.
-- ZIP bundles contain only `agent.md` and `metadata.json`.
+- ZIP bundles are full package snapshots.
 
 ## Specifications
 

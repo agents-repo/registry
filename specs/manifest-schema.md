@@ -10,7 +10,8 @@ are to be interpreted as described in RFC 2119.
 
 ## File Location
 
-- Manifest MUST be stored at package root as `manifest.json`.
+- Manifest MUST be stored at `versions/manifest.json` inside
+  the package directory.
 - Manifest MUST be valid UTF-8 encoded JSON.
 
 ## Top-Level Schema
@@ -19,7 +20,6 @@ are to be interpreted as described in RFC 2119.
 | --- | --- | --- | --- |
 | `schemaVersion` | string | yes | MUST be `1.0.0` for v0.1 |
 | `name` | string | yes | MUST match `metadata.json.name` |
-| `type` | string | yes | MUST match `metadata.json.type` |
 | `latest` | string | yes | MUST be valid semantic version |
 | `versions` | array | yes | MUST contain one or more entries |
 
@@ -30,7 +30,7 @@ Each entry in `versions` MUST be an object with:
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
 | `version` | string | yes | Semantic version (`MAJOR.MINOR.PATCH`) |
-| `artifact` | string | yes | Relative path to ZIP in `versions/` |
+| `artifact` | string | yes | ZIP filename relative to `versions/` |
 | `sha256` | string | yes | Lowercase hex, exactly 64 characters |
 | `createdAt` | string | yes | RFC 3339 timestamp |
 
@@ -38,10 +38,10 @@ Each entry in `versions` MUST be an object with:
 
 - `latest` MUST match one `versions[].version` value.
 - `versions[].version` values MUST be unique.
-- `versions[].artifact` MUST match `^versions/[0-9]+\.[0-9]+\.[0-9]+\.zip$`.
-- `versions[].artifact` file MUST exist in package directory.
-- Agent ZIP artifacts MUST contain only `agent.md` and `metadata.json`.
-- Flow ZIP artifacts MUST contain only `flow.md` and `metadata.json`.
+- `versions[].artifact` MUST match `^[0-9]+\.[0-9]+\.[0-9]+\.zip$`.
+- The file named by `versions[].artifact` MUST exist in `versions/`.
+- ZIP artifacts MUST be full package snapshots
+  per `package-format.md`.
 - `versions` SHOULD be sorted in ascending semantic version order.
 
 ## Canonical JSON Example
@@ -49,15 +49,20 @@ Each entry in `versions` MUST be an object with:
 ```json
 {
     "schemaVersion": "1.0.0",
-    "name": "my-agent",
-    "type": "agent",
-    "latest": "1.0.0",
+    "name": "my-package",
+    "latest": "1.1.0",
     "versions": [
         {
             "version": "1.0.0",
-            "artifact": "versions/1.0.0.zip",
+            "artifact": "1.0.0.zip",
             "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             "createdAt": "2026-05-02T00:00:00Z"
+        },
+        {
+            "version": "1.1.0",
+            "artifact": "1.1.0.zip",
+            "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "createdAt": "2026-05-02T01:00:00Z"
         }
     ]
 }

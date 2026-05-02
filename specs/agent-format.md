@@ -1,6 +1,7 @@
 # Agent Format Specification (v0.1)
 
-This document defines the deterministic format for agent packages.
+This document defines the deterministic format for agents
+within a package.
 
 ## Normative Language
 
@@ -9,22 +10,23 @@ are to be interpreted as described in RFC 2119.
 
 ## Required Files
 
-Each agent package MUST include:
+Each agent `<agent-id>` MUST include:
 
-- `agent.md`
-- `metadata.json`
-- `manifest.json`
-- `versions/<version>.zip`
+- `agents/<agent-id>.md`
+- `agents/<agent-id>.metadata.json`
 
-## agent.md Structure
+The stem `<agent-id>` MUST be identical for both files.
 
-`agent.md` MUST start with YAML frontmatter followed by markdown body content.
+## Agent File Structure
+
+`<agent-id>.md` MUST start with YAML frontmatter followed by
+markdown body content.
 
 Frontmatter required fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `name` | string | MUST match package name |
+| `name` | string | MUST match `<agent-id>` stem |
 | `description` | string | 1 to 300 characters |
 | `version` | string | Semantic version |
 | `license` | string | SPDX identifier |
@@ -46,23 +48,23 @@ Body sections required in order:
 
 ## Relationship Rules
 
-- `agent.md` frontmatter `name` MUST equal `metadata.json.name`.
-- `agent.md` frontmatter `version` SHOULD equal `manifest.json.latest`
-    for the latest source content.
-- `metadata.json.type` MUST be `agent`.
+- `<agent-id>.md` frontmatter `name` MUST match the file stem.
+- `<agent-id>.md` frontmatter `name` MUST equal
+  `<agent-id>.metadata.json` `name`.
+- `<agent-id>.metadata.json` fields are defined in
+  `metadata-schema.md`.
 
 ## ZIP Bundle Rules
 
-- Each `versions/<version>.zip` MUST contain only `agent.md` and `metadata.json`.
-
+- Each `versions/<version>.zip` MUST be a full package snapshot.
 - ZIP content file names MUST match exact case.
 
-## Canonical agent.md Example
+## Canonical Example
 
 ```markdown
 ---
-name: my-agent
-description: Summarizes pull request feedback into actionable tasks.
+name: planner
+description: Plans the steps to complete a PR review task.
 version: 1.0.0
 license: MIT
 tools:
@@ -73,13 +75,13 @@ tools:
 
 # Overview
 
-Summarize PR comments into prioritized, actionable work items.
+Plan and sequence PR review steps for downstream agents.
 
 ## Responsibilities
 
-- Parse review comments.
-- Group comments by file and severity.
-- Produce a concise action checklist.
+- Analyse PR diff and comment threads.
+- Produce an ordered action plan.
+- Delegate tasks to executor agents.
 
 ## Constraints
 
@@ -89,5 +91,5 @@ Summarize PR comments into prioritized, actionable work items.
 ## Interaction Contract
 
 Input: pull request URL or local review context.
-Output: markdown checklist with references and priorities.
+Output: ordered action plan with delegated task assignments.
 ```

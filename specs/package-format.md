@@ -10,10 +10,7 @@ are to be interpreted as described in RFC 2119.
 
 ## Scope
 
-This specification applies to two package types:
-
-- Agent packages
-- Flow packages
+A package is a named container that holds one or more agents and flows.
 
 All package directories MUST exist under `packages/`.
 
@@ -22,79 +19,96 @@ All package directories MUST exist under `packages/`.
 - Package directory name MUST be lowercase kebab-case.
 - Package directory name MUST match `^[a-z0-9]+(?:-[a-z0-9]+)*$`.
 - Package names MUST be unique within `packages/`.
+- Agent IDs and flow IDs MUST follow the same naming rules.
+- Agent IDs MUST be unique within `agents/`.
+- Flow IDs MUST be unique within `flows/`.
 
-## Required Agent Package Structure
-
-```text
-packages/
-    <agent-name>/
-        agent.md
-        metadata.json
-        manifest.json
-        versions/
-            <version>.zip
-```
-
-Agent package constraints:
-
-- `agent.md` MUST exist.
-- `metadata.json` MUST exist.
-- `manifest.json` MUST exist.
-- `versions/` MUST exist.
-- Each file in `versions/` MUST be named `<semver>.zip`.
-
-## Required Flow Package Structure
+## Required Package Structure
 
 ```text
 packages/
-    <flow-name>/
-        flow.md
+    <package-id>/
         metadata.json
-        manifest.json
+        agents/
+            <agent-id>.md
+            <agent-id>.metadata.json
+        flows/
+            <flow-id>.md
+            <flow-id>.metadata.json
         versions/
             <version>.zip
+            manifest.json
 ```
 
-Flow package constraints:
+Package constraints:
 
-- `flow.md` MUST exist.
-- `metadata.json` MUST exist.
-- `manifest.json` MUST exist.
-- `versions/` MUST exist.
-- Each file in `versions/` MUST be named `<semver>.zip`.
+- `metadata.json` MUST exist at the package root.
+- `versions/` MUST exist and contain at least one ZIP artifact.
+- `versions/manifest.json` MUST exist.
+- A package MUST contain at least one entry in `agents/` or `flows/`.
+- `agents/` MAY be absent if the package contains no agents.
+- `flows/` MAY be absent if the package contains no flows.
+
+## Agent Entry Rules
+
+For every agent `<agent-id>`:
+
+- `agents/<agent-id>.md` MUST exist.
+- `agents/<agent-id>.metadata.json` MUST exist.
+- The stem `<agent-id>` MUST be identical for both files.
+
+## Flow Entry Rules
+
+For every flow `<flow-id>`:
+
+- `flows/<flow-id>.md` MUST exist.
+- `flows/<flow-id>.metadata.json` MUST exist.
+- The stem `<flow-id>` MUST be identical for both files.
 
 ## Artifact Rules
 
-- A ZIP artifact referenced by `manifest.json` MUST exist in `versions/`.
-- ZIP artifacts MUST contain only source content for the package type.
-- For agent packages, each ZIP MUST contain only `agent.md` and `metadata.json`.
-
-- For flow packages, each ZIP MUST contain only `flow.md` and `metadata.json`.
+- Each `<version>.zip` in `versions/` MUST be a full snapshot
+  of the package at that version.
+- A ZIP MUST contain `metadata.json` and all files under `agents/`
+  and `flows/` present at that version.
+- ZIP file names MUST follow `<semver>.zip` with no `v` prefix.
+- `versions/manifest.json` MUST list all released ZIP artifacts.
 
 ## Determinism Rules
 
 - Paths in documentation and manifests MUST use forward slashes.
-- File names are case-sensitive and MUST match this specification exactly.
+- File names are case-sensitive and MUST match this specification
+  exactly.
 - Unknown top-level files SHOULD be avoided in package roots.
 
-## Minimal Agent Example
+## Minimal Example
 
 ```text
-packages/my-agent/
-    agent.md
+packages/my-package/
     metadata.json
-    manifest.json
+    agents/
+        my-agent.md
+        my-agent.metadata.json
     versions/
         1.0.0.zip
+        manifest.json
 ```
 
-## Minimal Flow Example
+## Full Example
 
 ```text
-packages/my-flow/
-    flow.md
+packages/my-package/
     metadata.json
-    manifest.json
+    agents/
+        planner.md
+        planner.metadata.json
+        executor.md
+        executor.metadata.json
+    flows/
+        triage.md
+        triage.metadata.json
     versions/
         1.0.0.zip
+        1.1.0.zip
+        manifest.json
 ```

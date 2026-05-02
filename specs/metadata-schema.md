@@ -1,24 +1,25 @@
 # Metadata Schema Specification (v0.1)
 
-This document defines the deterministic metadata contract
-for agent and flow packages.
+This document defines the deterministic metadata contracts
+for packages, agents, and flows.
 
 ## Normative Language
 
 The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY
 are to be interpreted as described in RFC 2119.
 
-## File Location
+## Package Metadata
 
-- Metadata MUST be stored at package root as `metadata.json`.
-- Metadata MUST be valid UTF-8 encoded JSON.
+### File Location
 
-## Required Fields
+- Package metadata MUST be stored as `<package-id>/metadata.json`.
+- File MUST be valid UTF-8 encoded JSON.
+
+### Required Fields
 
 | Field | Type | Constraints |
 | --- | --- | --- |
 | `name` | string | MUST match package directory name |
-| `type` | string | MUST be `agent` or `flow` |
 | `description` | string | 1 to 300 characters |
 | `owner` | string | GitHub owner or organization slug |
 | `license` | string | SPDX identifier, SHOULD be `MIT` |
@@ -28,30 +29,28 @@ are to be interpreted as described in RFC 2119.
 | `createdAt` | string | RFC 3339 timestamp |
 | `updatedAt` | string | RFC 3339 timestamp |
 
-## Optional Fields
+### Optional Fields
 
 | Field | Type | Constraints |
 | --- | --- | --- |
 | `maintainers` | array of string | GitHub usernames or team slugs |
-| `compatibility` | object | Tooling and runtime compatibility metadata |
+| `compatibility` | object | Tooling and runtime compatibility |
 | `documentation` | string | HTTPS URL |
 | `keywords` | array of string | Additional searchable terms |
 
-## Validation Rules
+### Validation Rules
 
-- Unknown fields MAY be present but SHOULD be prefixed under `x-` for extensions.
-- `name` and package folder name MUST match exactly.
-- `type` MUST match package content (`agent.md` for `agent`, `flow.md` for `flow`).
+- `name` MUST match the package directory name exactly.
 - `updatedAt` MUST be greater than or equal to `createdAt`.
 - Arrays MUST NOT contain duplicate values.
+- Unknown fields SHOULD use the `x-` prefix for extensions.
 
-## Canonical JSON Example
+### Canonical Example
 
 ```json
 {
-    "name": "my-agent",
-    "type": "agent",
-    "description": "Summarizes pull request feedback into actionable tasks.",
+    "name": "my-package",
+    "description": "Multi-agent package for PR review automation.",
     "owner": "agents-repo",
     "license": "MIT",
     "homepage": "https://github.com/agents-repo/registry",
@@ -59,5 +58,95 @@ are to be interpreted as described in RFC 2119.
     "tags": ["productivity", "review", "automation"],
     "createdAt": "2026-05-02T00:00:00Z",
     "updatedAt": "2026-05-02T00:00:00Z"
+}
+```
+
+## Agent Metadata
+
+### File Location
+
+- Agent metadata MUST be stored as
+  `agents/<agent-id>.metadata.json`.
+- The `<agent-id>` stem MUST match the corresponding
+  `<agent-id>.md`.
+- File MUST be valid UTF-8 encoded JSON.
+
+### Required Fields
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `name` | string | MUST match `<agent-id>` stem |
+| `description` | string | 1 to 300 characters |
+| `license` | string | SPDX identifier |
+
+### Optional Fields
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `tools` | array of string | Declared tool capabilities |
+| `inputs` | array of object | Input contracts |
+| `outputs` | array of object | Output contracts |
+
+### Validation Rules
+
+- `name` MUST match the agent file stem exactly.
+- `name` MUST also match the `name` field in
+  `<agent-id>.md` frontmatter.
+- Unknown fields SHOULD use the `x-` prefix.
+
+### Canonical Example
+
+```json
+{
+    "name": "planner",
+    "description": "Plans the steps to complete a PR review task.",
+    "license": "MIT",
+    "tools": ["github", "filesystem"]
+}
+```
+
+## Flow Metadata
+
+### File Location
+
+- Flow metadata MUST be stored as
+  `flows/<flow-id>.metadata.json`.
+- The `<flow-id>` stem MUST match the corresponding
+  `<flow-id>.md`.
+- File MUST be valid UTF-8 encoded JSON.
+
+### Required Fields
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `name` | string | MUST match `<flow-id>` stem |
+| `description` | string | 1 to 300 characters |
+| `license` | string | SPDX identifier |
+
+### Optional Fields
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `agents` | array of string | Agent IDs referenced in this flow |
+| `inputs` | array of object | Flow input contracts |
+| `outputs` | array of object | Flow output contracts |
+
+### Validation Rules
+
+- `name` MUST match the flow file stem exactly.
+- `name` MUST also match the `name` field in
+  `<flow-id>.md` frontmatter.
+- Each `agents[]` entry SHOULD reference an `<agent-id>`
+  present in `agents/`.
+- Unknown fields SHOULD use the `x-` prefix.
+
+### Canonical Example
+
+```json
+{
+    "name": "triage",
+    "description": "Routes incoming issues to the appropriate agent.",
+    "license": "MIT",
+    "agents": ["planner", "executor"]
 }
 ```
