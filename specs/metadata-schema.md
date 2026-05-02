@@ -22,7 +22,7 @@ are to be interpreted as described in RFC 2119.
 | `name` | string | MUST match package directory name |
 | `description` | string | 1 to 300 characters |
 | `owner` | string | GitHub owner or organization slug |
-| `license` | string | SPDX identifier, SHOULD be `MIT` |
+| `license` | string | MUST be `MIT` |
 | `homepage` | string | HTTPS URL |
 | `repository` | string | HTTPS URL to repository |
 | `tags` | array of string | 1 to 20 lowercase tags |
@@ -41,6 +41,7 @@ are to be interpreted as described in RFC 2119.
 ### Validation Rules
 
 - `name` MUST match the package directory name exactly.
+- `license` MUST equal `MIT`.
 - `updatedAt` MUST be greater than or equal to `createdAt`.
 - Arrays MUST NOT contain duplicate values.
 - Unknown fields SHOULD use the `x-` prefix for extensions.
@@ -77,7 +78,7 @@ are to be interpreted as described in RFC 2119.
 | --- | --- | --- |
 | `name` | string | MUST equal `<agent-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
-| `license` | string | SPDX identifier |
+| `license` | string | MUST be `MIT` |
 
 ### Optional Fields
 
@@ -92,6 +93,7 @@ are to be interpreted as described in RFC 2119.
 - `name` MUST match the agent file stem exactly.
 - `name` MUST also match the `name` field in
   `<agent-id>.agent.md` frontmatter.
+- `license` MUST equal `MIT`.
 - Unknown fields SHOULD use the `x-` prefix.
 
 ### Canonical Example
@@ -121,7 +123,7 @@ are to be interpreted as described in RFC 2119.
 | --- | --- | --- |
 | `name` | string | MUST equal `<flow-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
-| `license` | string | SPDX identifier |
+| `license` | string | MUST be `MIT` |
 
 ### Optional Fields
 
@@ -136,6 +138,7 @@ are to be interpreted as described in RFC 2119.
 - `name` MUST match the flow file stem exactly.
 - `name` MUST also match the `name` field in
   `<flow-id>.agent.md` frontmatter.
+- `license` MUST equal `MIT`.
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
 - Unknown fields SHOULD use the `x-` prefix.

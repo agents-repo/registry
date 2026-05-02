@@ -46,6 +46,12 @@ A package submission should include:
 - valid metadata and manifest entries
 - semantic version and artifact path
 - SHA-256 checksum for artifacts
+- package, agent, and flow content licensed under MIT
+- only content the contributor authored or can submit under MIT
+
+Submitted package content is accepted only under the MIT license.
+Do not submit third-party content unless you have the right to
+redistribute it under MIT-compatible terms.
 
 ## Validation
 

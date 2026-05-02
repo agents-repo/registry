@@ -29,7 +29,7 @@ Frontmatter required fields:
 | `name` | string | MUST equal `<agent-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `version` | string | Semantic version |
-| `license` | string | SPDX identifier |
+| `license` | string | MUST be `MIT` |
 
 Frontmatter optional fields:
 
@@ -51,6 +51,7 @@ Body sections required in order:
 - `<agent-id>.agent.md` frontmatter `name` MUST equal `<agent-id>`.
 - `<agent-id>.agent.md` frontmatter `name` MUST equal
   `<agent-id>.metadata.json` `name`.
+- `<agent-id>.agent.md` frontmatter `license` MUST equal `MIT`.
 - `<agent-id>.metadata.json` fields are defined in
   `metadata-schema.md`.
 

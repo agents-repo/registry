@@ -29,7 +29,7 @@ Frontmatter required fields:
 | `name` | string | MUST equal `<flow-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `version` | string | Semantic version |
-| `license` | string | SPDX identifier |
+| `license` | string | MUST be `MIT` |
 
 Frontmatter optional fields:
 
@@ -51,6 +51,7 @@ Body sections required in order:
 - `<flow-id>.agent.md` frontmatter `name` MUST equal `<flow-id>`.
 - `<flow-id>.agent.md` frontmatter `name` MUST equal
   `<flow-id>.metadata.json` `name`.
+- `<flow-id>.agent.md` frontmatter `license` MUST equal `MIT`.
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/` within the same package.
 - `<flow-id>.metadata.json` fields are defined in

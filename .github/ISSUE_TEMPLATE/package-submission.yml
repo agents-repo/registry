@@ -9,6 +9,7 @@ body:
       value: |
         Use this form to submit a new package under packages/.
         A package may contain agents, flows, or both.
+        Submitted package content must be licensed under MIT.
 
   - type: dropdown
     id: package-type
@@ -73,6 +74,16 @@ body:
     validations:
       required: true
 
+  - type: input
+    id: license
+    attributes:
+      label: Package license
+      description: Submitted package content is accepted only under MIT.
+      placeholder: MIT
+      value: MIT
+    validations:
+      required: true
+
   - type: checkboxes
     id: submission-checks
     attributes:
@@ -89,6 +100,12 @@ body:
         - label: I followed specs/manifest-schema.md.
           required: true
         - label: I followed specs/versioning-rules.md for the initial release.
+          required: true
+        - label: The submitted package content is licensed under MIT.
+          required: true
+        - label: I authored this content or have the right to submit it under MIT.
+          required: true
+        - label: I did not include third-party content without MIT-compatible redistribution rights.
           required: true
         - label: ZIP content includes only required files.
           required: true
