@@ -34,6 +34,56 @@ body:
       required: true
 
   - type: textarea
+    id: package-description
+    attributes:
+      label: Package description
+      description: >-
+        Required field in metadata.json. 1 to 300 characters.
+      placeholder: Short description of what this package does.
+    validations:
+      required: true
+
+  - type: input
+    id: package-owner
+    attributes:
+      label: Owner
+      description: >-
+        GitHub username or organization slug. Required field in
+        metadata.json.
+      placeholder: my-org
+    validations:
+      required: true
+
+  - type: input
+    id: package-homepage
+    attributes:
+      label: Homepage URL
+      description: HTTPS URL. Required field in metadata.json.
+      placeholder: https://github.com/my-org/my-repo
+    validations:
+      required: true
+
+  - type: input
+    id: package-repository
+    attributes:
+      label: Repository URL
+      description: HTTPS URL to source repository. Required field in metadata.json.
+      placeholder: https://github.com/my-org/my-repo
+    validations:
+      required: true
+
+  - type: input
+    id: package-tags
+    attributes:
+      label: Tags
+      description: >-
+        1 to 20 lowercase tags, comma-separated. Required field in
+        metadata.json.
+      placeholder: productivity, review, automation
+    validations:
+      required: true
+
+  - type: textarea
     id: package-path
     attributes:
       label: Proposed path
@@ -108,4 +158,10 @@ body:
         - label: I did not include third-party content without MIT-compatible redistribution rights.
           required: true
         - label: ZIP content includes only required files.
+          required: true
+        - label: >-
+            metadata.json includes valid createdAt and updatedAt
+            RFC 3339 timestamps.
+          required: true
+        - label: manifest.json version entries include a valid createdAt timestamp.
           required: true
