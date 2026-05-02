@@ -8,6 +8,18 @@ format for package releases.
 The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY
 are to be interpreted as described in RFC 2119.
 
+## Schema Version Lifecycle
+
+`schemaVersion` identifies the manifest **format** version, not the package
+release version and not the spec document version (`v0.1`).
+
+| `schemaVersion` | Defined by spec document | Notes |
+| --- | --- | --- |
+| `1.0.0` | This document (v0.1) | Initial manifest format |
+
+Tooling MUST reject manifests whose `schemaVersion` is not in the table above
+unless it explicitly supports a newer schema version.
+
 ## File Location
 
 - Manifest MUST be stored at `versions/manifest.json` inside
@@ -18,7 +30,7 @@ are to be interpreted as described in RFC 2119.
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
-| `schemaVersion` | string | yes | MUST be `1.0.0` for v0.1 |
+| `schemaVersion` | string | yes | MUST be `1.0.0`; see [Schema Version Lifecycle](#schema-version-lifecycle) |
 | `name` | string | yes | MUST match `metadata.json.name` |
 | `latest` | string | yes | MUST be valid semantic version |
 | `versions` | array | yes | MUST contain one or more entries |
