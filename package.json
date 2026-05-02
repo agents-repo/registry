@@ -9,6 +9,9 @@
     "lint:md": "markdownlint-cli2 \"**/*.md\"",
     "prepare": "husky"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "devDependencies": {
     "husky": "^9",
     "markdownlint-cli2": "^0.22.1"
