@@ -6,7 +6,7 @@
   "scripts": {
     "build": "node scripts/build.js",
     "validate": "node scripts/validate.js",
-    "lint:md": "markdownlint-cli2 \"**/*.md\"",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"**/.*/**/*.md\"",
     "prepare": "husky"
   },
   "engines": {
