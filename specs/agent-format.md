@@ -12,21 +12,21 @@ are to be interpreted as described in RFC 2119.
 
 Each agent `<agent-id>` MUST include:
 
-- `agents/<agent-id>.md`
+- `agents/<agent-id>.agent.md`
 - `agents/<agent-id>.metadata.json`
 
-The stem `<agent-id>` MUST be identical for both files.
+The `<agent-id>` stem MUST be identical for both files.
 
 ## Agent File Structure
 
-`<agent-id>.md` MUST start with YAML frontmatter followed by
+`<agent-id>.agent.md` MUST start with YAML frontmatter followed by
 markdown body content.
 
 Frontmatter required fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `name` | string | MUST match `<agent-id>` stem |
+| `name` | string | MUST equal `<agent-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `version` | string | Semantic version |
 | `license` | string | SPDX identifier |
@@ -48,8 +48,8 @@ Body sections required in order:
 
 ## Relationship Rules
 
-- `<agent-id>.md` frontmatter `name` MUST match the file stem.
-- `<agent-id>.md` frontmatter `name` MUST equal
+- `<agent-id>.agent.md` frontmatter `name` MUST equal `<agent-id>`.
+- `<agent-id>.agent.md` frontmatter `name` MUST equal
   `<agent-id>.metadata.json` `name`.
 - `<agent-id>.metadata.json` fields are defined in
   `metadata-schema.md`.
@@ -58,9 +58,11 @@ Body sections required in order:
 
 - Each `versions/<version>.zip` is a deployment artifact for
   extraction into a project's `.github/` folder.
-- Agent `.md` files are placed as `agents/<agent-id>.md` in the ZIP.
-- Flow `.md` files are also placed under `agents/` in the ZIP;
-  Copilot reads both agents and flows as agent instructions.
+- Agent `<agent-id>.agent.md` files are placed as
+  `agents/<agent-id>.agent.md` in the ZIP.
+- Flow `<flow-id>.agent.md` files are also placed under `agents/`
+  in the ZIP; Copilot reads both agents and flows as agent
+  instructions.
 - `agents/<agent-id>.metadata.json` files MUST NOT be included.
 - ZIP content file names MUST match exact case.
 

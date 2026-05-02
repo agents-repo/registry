@@ -68,14 +68,14 @@ are to be interpreted as described in RFC 2119.
 - Agent metadata MUST be stored as
   `agents/<agent-id>.metadata.json`.
 - The `<agent-id>` stem MUST match the corresponding
-  `<agent-id>.md`.
+  `<agent-id>.agent.md`.
 - File MUST be valid UTF-8 encoded JSON.
 
 ### Required Fields
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `name` | string | MUST match `<agent-id>` stem |
+| `name` | string | MUST equal `<agent-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `license` | string | SPDX identifier |
 
@@ -91,7 +91,7 @@ are to be interpreted as described in RFC 2119.
 
 - `name` MUST match the agent file stem exactly.
 - `name` MUST also match the `name` field in
-  `<agent-id>.md` frontmatter.
+  `<agent-id>.agent.md` frontmatter.
 - Unknown fields SHOULD use the `x-` prefix.
 
 ### Canonical Example
@@ -112,14 +112,14 @@ are to be interpreted as described in RFC 2119.
 - Flow metadata MUST be stored as
   `flows/<flow-id>.metadata.json`.
 - The `<flow-id>` stem MUST match the corresponding
-  `<flow-id>.md`.
+  `<flow-id>.agent.md`.
 - File MUST be valid UTF-8 encoded JSON.
 
 ### Required Fields
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `name` | string | MUST match `<flow-id>` stem |
+| `name` | string | MUST equal `<flow-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `license` | string | SPDX identifier |
 
@@ -135,7 +135,7 @@ are to be interpreted as described in RFC 2119.
 
 - `name` MUST match the flow file stem exactly.
 - `name` MUST also match the `name` field in
-  `<flow-id>.md` frontmatter.
+  `<flow-id>.agent.md` frontmatter.
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
 - Unknown fields SHOULD use the `x-` prefix.

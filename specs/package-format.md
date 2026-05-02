@@ -33,10 +33,10 @@ packages/
     <package-id>/
         metadata.json
         agents/
-            <agent-id>.md
+            <agent-id>.agent.md
             <agent-id>.metadata.json
         flows/
-            <flow-id>.md
+            <flow-id>.agent.md
             <flow-id>.metadata.json
         versions/
             <version>.zip
@@ -56,17 +56,17 @@ Package constraints:
 
 For every agent `<agent-id>`:
 
-- `agents/<agent-id>.md` MUST exist.
+- `agents/<agent-id>.agent.md` MUST exist.
 - `agents/<agent-id>.metadata.json` MUST exist.
-- The stem `<agent-id>` MUST be identical for both files.
+- The `<agent-id>` stem MUST be identical for both files.
 
 ## Flow Entry Rules
 
 For every flow `<flow-id>`:
 
-- `flows/<flow-id>.md` MUST exist.
+- `flows/<flow-id>.agent.md` MUST exist.
 - `flows/<flow-id>.metadata.json` MUST exist.
-- The stem `<flow-id>` MUST be identical for both files.
+- The `<flow-id>` stem MUST be identical for both files.
 
 ## Artifact Rules
 
@@ -75,8 +75,8 @@ For every flow `<flow-id>`:
 - A ZIP MUST contain a single `agents/` directory.
 - The `agents/` directory MUST include the `.md` file for every
   agent and every flow present in the package at that version.
-- Agent `.md` files are placed as `agents/<agent-id>.md`.
-- Flow `.md` files are also placed as `agents/<flow-id>.md`
+- Agent files are placed as `agents/<agent-id>.agent.md`.
+- Flow files are also placed as `agents/<flow-id>.agent.md`
   because Copilot reads flows as agent instructions.
 - `.metadata.json` sidecars MUST NOT be included in ZIP artifacts.
 - `metadata.json` at the package root MUST NOT be included in
@@ -99,7 +99,7 @@ For every flow `<flow-id>`:
 packages/my-package/
     metadata.json
     agents/
-        my-agent.md
+        my-agent.agent.md
         my-agent.metadata.json
     versions/
         1.0.0.zip
@@ -112,12 +112,12 @@ packages/my-package/
 packages/my-package/
     metadata.json
     agents/
-        planner.md
+        planner.agent.md
         planner.metadata.json
-        executor.md
+        executor.agent.md
         executor.metadata.json
     flows/
-        triage.md
+        triage.agent.md
         triage.metadata.json
     versions/
         1.0.0.zip

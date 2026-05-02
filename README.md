@@ -51,10 +51,10 @@ Package format:
 <package-id>/
     metadata.json
     agents/
-        <agent-id>.md
+        <agent-id>.agent.md
         <agent-id>.metadata.json
     flows/
-        <flow-id>.md
+        <flow-id>.agent.md
         <flow-id>.metadata.json
     versions/
         <version>.zip
@@ -68,8 +68,8 @@ Package rules:
 - `versions/manifest.json` tracks all releases.
 - Use semantic versioning with no `v` prefix.
 - Use SHA-256 checksums.
-- ZIP bundles merge all `agents/*.md` and `flows/*.md` into a
-  single `agents/` folder for extraction into `.github/`.
+- ZIP bundles merge all `agents/*.agent.md` and `flows/*.agent.md`
+  into a single `agents/` folder for extraction into `.github/`.
 
 ## Specifications
 
