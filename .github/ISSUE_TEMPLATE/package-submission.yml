@@ -128,13 +128,13 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: dropdown
     id: license
     attributes:
       label: Package license
       description: Submitted package content is accepted only under MIT.
-      placeholder: MIT
-      value: MIT
+      options:
+        - MIT
     validations:
       required: true
 
