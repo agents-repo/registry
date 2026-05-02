@@ -36,8 +36,28 @@ Frontmatter optional fields:
 | Field | Type | Constraints |
 | --- | --- | --- |
 | `tools` | array of string | Declared tool capabilities |
-| `inputs` | array of object | Input contracts |
-| `outputs` | array of object | Output contracts |
+| `inputs` | array of `Contract` | Input contracts |
+| `outputs` | array of `Contract` | Output contracts |
+
+### Contract Object Schema
+
+Each item in `inputs[]` and `outputs[]` MUST be an object with
+exactly these fields:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `name` | string | 1 to 64 characters; `^[a-z][a-z0-9_-]*$` |
+| `type` | string | `string`, `number`, `boolean`, `object`, or `array` |
+| `description` | string | 1 to 300 characters |
+
+Additional `Contract` rules:
+
+- `Contract` objects MUST NOT contain fields other than `name`, `type`,
+  and `description`.
+- Within `inputs[]`, each `name` MUST be unique.
+- Within `outputs[]`, each `name` MUST be unique.
+- Ordering of `inputs[]` and `outputs[]` is significant and MUST be
+  preserved as authored.
 
 Body sections required in order:
 

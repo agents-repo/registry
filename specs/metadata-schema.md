@@ -85,8 +85,8 @@ are to be interpreted as described in RFC 2119.
 | Field | Type | Constraints |
 | --- | --- | --- |
 | `tools` | array of string | Declared tool capabilities |
-| `inputs` | array of object | Input contracts |
-| `outputs` | array of object | Output contracts |
+| `inputs` | array of `Contract` | Input contracts; see `agent-format.md` |
+| `outputs` | array of `Contract` | Output contracts; see `agent-format.md` |
 
 ### Validation Rules
 
@@ -94,6 +94,8 @@ are to be interpreted as described in RFC 2119.
 - `name` MUST also match the `name` field in
   `<agent-id>.agent.md` frontmatter.
 - `license` MUST equal `MIT`.
+- `inputs[]` and `outputs[]` items MUST conform to the `Contract`
+  object schema defined in `agent-format.md`.
 - Unknown fields SHOULD use the `x-` prefix.
 
 ### Canonical Example
@@ -130,8 +132,8 @@ are to be interpreted as described in RFC 2119.
 | Field | Type | Constraints |
 | --- | --- | --- |
 | `agents` | array of string | Agent IDs referenced in this flow |
-| `inputs` | array of object | Flow input contracts |
-| `outputs` | array of object | Flow output contracts |
+| `inputs` | array of `Contract` | Flow input contracts; see `flow-format.md` |
+| `outputs` | array of `Contract` | Flow outputs; see `flow-format.md` |
 
 ### Validation Rules
 
@@ -139,6 +141,8 @@ are to be interpreted as described in RFC 2119.
 - `name` MUST also match the `name` field in
   `<flow-id>.agent.md` frontmatter.
 - `license` MUST equal `MIT`.
+- `inputs[]` and `outputs[]` items MUST conform to the `Contract`
+  object schema defined in `flow-format.md`.
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
 - Unknown fields SHOULD use the `x-` prefix.
