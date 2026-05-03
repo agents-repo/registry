@@ -57,7 +57,8 @@ directly modifies package submission requirements.
 
 ## Lint
 
-Run `npm run lint:md` before committing. Pre-commit hook enforces this automatically.
+Run `npm run lint:md` before committing. If local git hooks are installed, the
+pre-commit hook may also run this check.
 
 ## Contribution
 
