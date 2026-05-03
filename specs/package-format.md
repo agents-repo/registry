@@ -124,8 +124,11 @@ its version snapshot folder at `versions/<version>/`.
 
 - `<version>-src.zip` is the source archive for that version.
 - A source archive MUST contain the full package source at release
-  time: `metadata.json`, `agents/` (with all `.agent.md` and
-  `.metadata.json` files), and `flows/` (if present).
+  time, consisting of all files and directories present in the
+  package root at release time except `versions/`.
+- This includes `metadata.json`, `agents/` (with all `.agent.md`
+  and `.metadata.json` files), `flows/` (if present), and any
+  other top-level package files present at release time.
 - The `versions/` folder MUST NOT be included in the source archive.
 - `.metadata.json` sidecars MUST be included in the source archive.
 - `metadata.json` MUST be included in the source archive.
