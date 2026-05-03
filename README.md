@@ -112,5 +112,3 @@ This project is part of a two-repository setup:
 ## License
 
 This repository is licensed under MIT.
-Example content may optionally use CC0 in the future,
-but CC0 is not required.
