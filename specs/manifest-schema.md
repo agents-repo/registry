@@ -42,8 +42,10 @@ Each entry in `versions` MUST be an object with:
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
 | `version` | string | yes | Semantic version (`MAJOR.MINOR.PATCH`) |
-| `artifact` | string | yes | ZIP filename relative to `versions/` |
+| `artifact` | string | yes | Deployment ZIP path in `versions/<version>/` |
 | `sha256` | string | yes | Lowercase hex, exactly 64 characters |
+| `srcArtifact` | string | yes | Source archive path in `versions/<version>/` |
+| `srcSha256` | string | yes | Lowercase hex, exactly 64 characters |
 | `createdAt` | string | yes | RFC 3339 timestamp |
 
 ## Validation Rules
@@ -53,7 +55,15 @@ Each entry in `versions` MUST be an object with:
 - `versions[].artifact` MUST match `^[0-9]+\.[0-9]+\.[0-9]+\.zip$`.
 - `versions[].artifact` MUST equal `<version>.zip` where `<version>` is the
   value of `versions[].version` in the same entry.
-- The file named by `versions[].artifact` MUST exist in `versions/`.
+- `versions[].srcArtifact` MUST match `^[0-9]+\.[0-9]+\.[0-9]+-src\.zip$`.
+- `versions[].srcArtifact` MUST equal `<version>-src.zip` where `<version>`
+  is the value of `versions[].version` in the same entry.
+- The file named by `versions[].artifact` MUST exist at
+  `versions/<version>/<version>.zip`.
+- The file named by `versions[].srcArtifact` MUST exist at
+  `versions/<version>/<version>-src.zip`.
+- `versions[].sha256` MUST match the bytes of the deployment artifact exactly.
+- `versions[].srcSha256` MUST match the bytes of the source archive exactly.
 - ZIP artifacts are deployment artifacts per `package-format.md`
   (all agent and flow `.agent.md` files placed under `agents/` in the ZIP).
 - `versions` SHOULD be sorted in ascending semantic version order.
@@ -70,12 +80,16 @@ Each entry in `versions` MUST be an object with:
             "version": "1.0.0",
             "artifact": "1.0.0.zip",
             "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "srcArtifact": "1.0.0-src.zip",
+            "srcSha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
             "createdAt": "2026-05-02T00:00:00Z"
         },
         {
             "version": "1.1.0",
             "artifact": "1.1.0.zip",
             "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "srcArtifact": "1.1.0-src.zip",
+            "srcSha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
             "createdAt": "2026-05-02T01:00:00Z"
         }
     ]

@@ -50,10 +50,20 @@ A package submission should include:
 
 - required package files
 - valid metadata and manifest entries
-- semantic version and artifact path
-- SHA-256 checksum for artifacts
+- semantic version and artifact paths
+- SHA-256 checksums for both the deployment artifact and source archive
+- a version snapshot folder at `versions/<version>/` containing:
+  - `metadata.json` — verbatim copy of the package metadata at release time
+  - `agents/` — verbatim copy of the agents source tree at release time
+  - `flows/` — verbatim copy of the flows source tree at release time
+    (if the package contains flows)
+  - `<version>.zip` — the deployment artifact
+  - `<version>-src.zip` — the source archive
 - package, agent, and flow content licensed under MIT
 - only content the contributor authored or can submit under MIT
+
+The version snapshot folder MUST be treated as immutable after publication.
+No file inside a released version folder may be modified or removed.
 
 Submitted package content is accepted only under the MIT license.
 Do not submit third-party content unless you have the right to

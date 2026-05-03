@@ -12,7 +12,11 @@ are to be interpreted as described in RFC 2119.
 
 - Package versions MUST use semantic versioning: `MAJOR.MINOR.PATCH`.
 - Pre-release and build metadata MUST NOT be used.
-- Each released version MUST have exactly one ZIP artifact at `versions/<version>.zip`.
+- Each released version MUST have a snapshot folder at
+  `versions/<version>/` containing the deployment artifact
+  (`<version>.zip`), the source archive (`<version>-src.zip`),
+  a `metadata.json` snapshot, and source tree snapshots
+  (`agents/` and `flows/` if present).
 
 ## Manifest and Metadata Consistency
 
@@ -21,8 +25,13 @@ are to be interpreted as described in RFC 2119.
 - `manifest.json.versions[].version` MUST be unique.
 - `manifest.json.versions[].artifact` MUST equal `<version>.zip` where
   `<version>` matches the entry's own `version` field.
-- `manifest.json.versions[].sha256` MUST match artifact bytes exactly.
-- Every `agents/*.agent.md` file inside `versions/<version>.zip`
+- `manifest.json.versions[].sha256` MUST match the deployment artifact
+  bytes exactly.
+- `manifest.json.versions[].srcArtifact` MUST equal `<version>-src.zip`
+  where `<version>` matches the entry's own `version` field.
+- `manifest.json.versions[].srcSha256` MUST match the source archive
+  bytes exactly.
+- Every `agents/*.agent.md` file inside `versions/<version>/<version>.zip`
   MUST have frontmatter `version` equal to `<version>`.
 
 ## Compatibility Policy
@@ -34,7 +43,11 @@ are to be interpreted as described in RFC 2119.
 ## Immutability Rules
 
 - Published ZIP artifacts for a specific version MUST be immutable.
-- `sha256` for a published version MUST NOT change.
+- Published source archives for a specific version MUST be immutable.
+- Published version snapshot folders (`versions/<version>/`) MUST be
+  immutable. No file inside a released version folder MUST be modified
+  or removed after publication.
+- `sha256` and `srcSha256` for a published version MUST NOT change.
 - If artifact content changes, a new version MUST be published.
 
 ## Deprecation Rules

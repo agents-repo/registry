@@ -39,18 +39,49 @@ packages/
             <flow-id>.agent.md
             <flow-id>.metadata.json
         versions/
-            <version>.zip
+            <version>/
+                metadata.json
+                agents/
+                    <agent-id>.agent.md
+                    <agent-id>.metadata.json
+                flows/
+                    <flow-id>.agent.md
+                    <flow-id>.metadata.json
+                <version>.zip
+                <version>-src.zip
             manifest.json
 ```
 
 Package constraints:
 
-- `metadata.json` MUST exist at the package root.
-- `versions/` MUST exist and contain at least one ZIP artifact.
+- `metadata.json` MUST exist at the package root and MUST reflect
+  the latest released version.
+- `versions/` MUST exist and contain at least one version folder.
 - `versions/manifest.json` MUST exist.
 - A package MUST contain at least one entry in `agents/` or `flows/`.
 - `agents/` MAY be absent if the package contains no agents.
 - `flows/` MAY be absent if the package contains no flows.
+
+## Version Snapshot Rules
+
+Each released version MUST have a corresponding snapshot folder at
+`versions/<version>/`. A version snapshot folder:
+
+- MUST contain `metadata.json` — a verbatim copy of the package
+  `metadata.json` as it existed at release time.
+- MUST contain `agents/` with the same contents as the package root
+  `agents/` at release time, if the package contains agents.
+- MUST contain `flows/` with the same contents as the package root
+  `flows/` at release time, if the package contains flows.
+- MUST contain `<version>.zip` — the deployment artifact.
+- MUST contain `<version>-src.zip` — the source archive.
+- MUST be treated as immutable once published. No file inside a
+  released version folder MUST be modified or removed.
+
+The package root `agents/`, `flows/`, and `metadata.json` represent
+the current working state and MUST be updated to reflect the latest
+released version. They are not the authoritative historical source
+for any specific version; version snapshot folders are.
 
 ## Agent Entry Rules
 
@@ -70,23 +101,43 @@ For every flow `<flow-id>`:
 
 ## Artifact Rules
 
-- Each `<version>.zip` in `versions/` is a deployment artifact
-  intended to be extracted into a project's `.github/` folder.
-- A ZIP MUST contain a single `agents/` directory.
+Each released version MUST produce two ZIP artifacts stored inside
+its version snapshot folder at `versions/<version>/`.
+
+### Deployment Artifact (`<version>.zip`)
+
+- `<version>.zip` is the deployment artifact intended to be
+  extracted into a project's `.github/` folder.
+- A deployment ZIP MUST contain a single `agents/` directory.
 - The `agents/` directory MUST include the `.agent.md` file for
   every agent and every flow present in the package at that version.
 - Agent files are placed as `agents/<agent-id>.agent.md`.
 - Flow files are also placed as `agents/<flow-id>.agent.md`
   because Copilot reads flows as agent instructions.
-- Within `versions/<version>.zip`, every bundled
-  `agents/*.agent.md` frontmatter `version` MUST equal `<version>`.
-- `.metadata.json` sidecars MUST NOT be included in ZIP artifacts.
-- `metadata.json` at the package root MUST NOT be included in
-  ZIP artifacts.
-- ZIP file names MUST follow `<semver>.zip` with no `v` prefix.
-- `versions/manifest.json` MUST list all released ZIP artifacts.
-- Additional artifact variants (e.g. full source archives) are
-  reserved for future spec versions.
+- Within `<version>.zip`, every bundled `agents/*.agent.md`
+  frontmatter `version` MUST equal `<version>`.
+- `.metadata.json` sidecars MUST NOT be included in the
+  deployment ZIP.
+- `metadata.json` MUST NOT be included in the deployment ZIP.
+
+### Source Archive (`<version>-src.zip`)
+
+- `<version>-src.zip` is the source archive for that version.
+- A source archive MUST contain the full package source at release
+  time: `metadata.json`, `agents/` (with all `.agent.md` and
+  `.metadata.json` files), and `flows/` (if present).
+- The `versions/` folder MUST NOT be included in the source archive.
+- `.metadata.json` sidecars MUST be included in the source archive.
+- `metadata.json` MUST be included in the source archive.
+
+### General Artifact Rules
+
+- Deployment ZIP file names MUST follow `<semver>.zip`
+  with no `v` prefix.
+- Source archive file names MUST follow `<semver>-src.zip`
+  with no `v` prefix.
+- `versions/manifest.json` MUST list both artifacts for every
+  released version.
 
 ## Determinism Rules
 
@@ -104,7 +155,13 @@ packages/my-package/
         my-agent.agent.md
         my-agent.metadata.json
     versions/
-        1.0.0.zip
+        1.0.0/
+            metadata.json
+            agents/
+                my-agent.agent.md
+                my-agent.metadata.json
+            1.0.0.zip
+            1.0.0-src.zip
         manifest.json
 ```
 
@@ -122,7 +179,29 @@ packages/my-package/
         triage.agent.md
         triage.metadata.json
     versions/
-        1.0.0.zip
-        1.1.0.zip
+        1.0.0/
+            metadata.json
+            agents/
+                planner.agent.md
+                planner.metadata.json
+                executor.agent.md
+                executor.metadata.json
+            flows/
+                triage.agent.md
+                triage.metadata.json
+            1.0.0.zip
+            1.0.0-src.zip
+        1.1.0/
+            metadata.json
+            agents/
+                planner.agent.md
+                planner.metadata.json
+                executor.agent.md
+                executor.metadata.json
+            flows/
+                triage.agent.md
+                triage.metadata.json
+            1.1.0.zip
+            1.1.0-src.zip
         manifest.json
 ```
