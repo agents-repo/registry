@@ -130,6 +130,8 @@ body:
         - version: 1.0.0
         - artifact: 1.0.0.zip
         - sha256: <64-char-lowercase-hex>
+        - srcArtifact: 1.0.0-src.zip
+        - srcSha256: <64-char-lowercase-hex>
         - manifest.createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
     validations:
       required: true
