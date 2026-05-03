@@ -31,7 +31,13 @@ are to be interpreted as described in RFC 2119.
   where `<version>` matches the entry's own `version` field.
 - `manifest.json.versions[].srcSha256` MUST match the source archive
   bytes exactly.
-- Every `agents/*.agent.md` file inside `versions/<version>/<version>.zip`
+- Every `.agent.md` file inside `versions/<version>/<version>.zip`
+  MUST have frontmatter `version` equal to `<version>`.
+- Every `.agent.md` file inside `versions/<version>/<version>-src.zip`
+  MUST have frontmatter `version` equal to `<version>`.
+- Every `.agent.md` file inside `versions/<version>/agents/`
+  MUST have frontmatter `version` equal to `<version>`.
+- Every `.agent.md` file inside `versions/<version>/flows/`, if present,
   MUST have frontmatter `version` equal to `<version>`.
 
 ## Compatibility Policy
