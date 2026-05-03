@@ -58,16 +58,16 @@ Package format:
         <flow-id>.metadata.json
     versions/
         manifest.json
-                <version>/
-                        metadata.json
-                        agents/
-                                <agent-id>.agent.md
-                                <agent-id>.metadata.json
-                        flows/
-                                <flow-id>.agent.md
-                                <flow-id>.metadata.json
-                        <version>.zip
-                        <version>-src.zip
+        <version>/
+            metadata.json
+            agents/
+                <agent-id>.agent.md
+                <agent-id>.metadata.json
+            flows/
+                <flow-id>.agent.md
+                <flow-id>.metadata.json
+            <version>.zip
+            <version>-src.zip
 ```
 
 Package rules:
