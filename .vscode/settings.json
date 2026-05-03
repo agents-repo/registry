@@ -1,3 +1,25 @@
 {
-    "git.rebaseWhenSync": true
+    "git.rebaseWhenSync": true,
+    "files.eol": "\n",
+    "files.insertFinalNewline": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "editor.rulers": [
+        80
+    ],
+    "editor.wordWrap": "off",
+    "[markdown]": {
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 80,
+        "editor.rulers": [
+            80
+        ]
+    },
+    "git.confirmSync": true,
+    "git.branchProtection": [
+        "main"
+    ],
+    "search.exclude": {
+        "**/node_modules": true
+    }
 }
