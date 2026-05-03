@@ -55,6 +55,22 @@ body:
     validations:
       required: true
 
+  - type: textarea
+    id: impacted-dependencies
+    attributes:
+      label: Impacted dependent files or surfaces
+      description: >-
+        List specs, templates, docs, and JSON examples that may require
+        updates because of this rule change.
+      placeholder: |
+        - specs/manifest-schema.md
+        - specs/versioning-rules.md
+        - .github/pull_request_template.md
+        - README.md example tree
+        - metadata.json or versions/manifest.json examples
+    validations:
+      required: true
+
   - type: checkboxes
     id: quality-checks
     attributes:

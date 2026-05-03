@@ -42,6 +42,8 @@ If relevant, describe impact on:
 
 - [ ] Markdown linting passes.
 - [ ] New or changed docs are deterministic and clear.
+- [ ] Definition/rule changes were checked across affected specs, templates,
+  README examples, and relevant metadata/manifest JSON examples.
 - [ ] Any JSON examples are valid and consistent with specs.
 - [ ] Any package or artifact references are accurate.
 

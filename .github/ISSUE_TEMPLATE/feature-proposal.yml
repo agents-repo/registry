@@ -10,6 +10,9 @@ body:
         Use this form for new capabilities in the registry workflow,
         governance, or contributor experience.
 
+        If your request changes normative rules or format definitions in
+        `specs/`, use the "Spec change request" issue template instead.
+
         **Branch name:** `feat/<issue-number>-<short-slug>`
         **Example:** `feat/15-search-index`
         Create this issue first to get the issue number, then open the branch.

@@ -43,6 +43,10 @@ When updating files in specs/:
 2. Describe compatibility impact.
 3. Update any dependent examples or references.
 4. Keep wording machine-readable and unambiguous.
+5. Propagate changed definitions/rules to dependent specs, workflow templates,
+  and documentation examples.
+6. In the PR description, list dependent files checked and whether each surface
+  was updated or intentionally left unchanged.
 
 ## Package Submission Expectations
 
