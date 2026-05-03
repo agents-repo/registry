@@ -136,7 +136,7 @@ body:
       placeholder: |
         - metadata.createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
         - metadata.updatedAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
-        - manifest.schemaVersion: <manifest schema version>
+        - manifest.schemaVersion: 1.0.0
         - manifest.name: my-package-name
         - manifest.latest: 1.0.0
         - version: 1.0.0
