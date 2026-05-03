@@ -165,7 +165,7 @@ body:
           required: true
         - label: I authored this content or have the right to submit it under MIT.
           required: true
-        - label: I did not include third-party content without MIT-compatible redistribution rights.
+        - label: I did not include third-party content unless it is licensed under MIT.
           required: true
         - label: ZIP content includes only required files.
           required: true
