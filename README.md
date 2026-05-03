@@ -11,7 +11,7 @@ Registry responsibilities:
 
 - Store agent and flow packages under `packages/`.
 - Store package metadata and manifests.
-- Store versioned ZIP bundles for releases.
+- Store versioned deployment ZIPs and source archives for releases.
 - Maintain AI-readable specifications in `specs/`.
 - Provide examples and placeholder validation/build scripts.
 
@@ -57,8 +57,17 @@ Package format:
         <flow-id>.agent.md
         <flow-id>.metadata.json
     versions/
-        <version>.zip
         manifest.json
+                <version>/
+                        metadata.json
+                        agents/
+                                <agent-id>.agent.md
+                                <agent-id>.metadata.json
+                        flows/
+                                <flow-id>.agent.md
+                                <flow-id>.metadata.json
+                        <version>.zip
+                        <version>-src.zip
 ```
 
 Package rules:
@@ -66,8 +75,16 @@ Package rules:
 - A package must have at least one agent or flow.
 - `agents/` or `flows/` may be absent if unused.
 - `versions/manifest.json` tracks all releases.
+- Each published release lives in `versions/<version>/`.
+- `versions/<version>/metadata.json` preserves the historical package metadata
+    for that release.
+- `versions/<version>/agents/` and `versions/<version>/flows/` preserve the
+    historical source tree for that release.
+- Each release includes `<version>.zip` and `<version>-src.zip`.
 - Use semantic versioning with no `v` prefix.
 - Use SHA-256 checksums.
+- The package root `metadata.json`, `agents/`, and `flows/` describe the
+    current working state.
 - ZIP bundles merge all `agents/*.agent.md` and `flows/*.agent.md`
   into a single `agents/` folder for extraction into `.github/`.
 
