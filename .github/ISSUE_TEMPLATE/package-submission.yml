@@ -121,12 +121,16 @@ body:
     id: release
     attributes:
       label: Release metadata
-      description: Provide initial version and artifact details.
+      description: >-
+        Provide required package metadata timestamps from metadata.json,
+        plus the initial version and artifact details for the manifest.
       placeholder: |
+        - metadata.createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
+        - metadata.updatedAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
         - version: 1.0.0
         - artifact: 1.0.0.zip
         - sha256: <64-char-lowercase-hex>
-        - createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
+        - manifest.createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
     validations:
       required: true
 
