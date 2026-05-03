@@ -67,7 +67,7 @@ No file inside a released version folder may be modified or removed.
 
 Submitted package content is accepted only under the MIT license.
 Do not submit third-party content unless you have the right to
-redistribute it under MIT-compatible terms.
+submit and redistribute it under the MIT license.
 
 ## Validation
 
