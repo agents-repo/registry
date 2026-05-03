@@ -15,18 +15,17 @@ body:
         **Example:** `package/56-my-package-name`
         Create this issue first to get the issue number, then open the branch.
 
-  - type: checkboxes
+  - type: dropdown
     id: package-type
     attributes:
       label: Package contents
       description: >-
-        Select all that apply. A package must contain at least one per
+        Select the package contents. A package must contain at least one per
         specs/package-format.md.
       options:
-        - label: Contains agents (`agents/` directory)
-          required: false
-        - label: Contains flows (`flows/` directory)
-          required: false
+        - Contains agents (`agents/` directory)
+        - Contains flows (`flows/` directory)
+        - Contains both agents and flows
     validations:
       required: true
 
