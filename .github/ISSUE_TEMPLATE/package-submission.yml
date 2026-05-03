@@ -165,8 +165,11 @@ body:
       options:
         - label: I followed specs/package-format.md.
           required: true
-        - label: I followed specs/agent-format.md for any files under agents/.
-        - label: I followed specs/flow-format.md for any files under flows/.
+        - label: >-
+            I followed specs/agent-format.md for any files under agents/
+            and/or specs/flow-format.md for any files under flows/, as
+            applicable to this package.
+          required: true
         - label: I followed specs/metadata-schema.md.
           required: true
         - label: I followed specs/manifest-schema.md.
