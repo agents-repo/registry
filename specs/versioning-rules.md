@@ -66,8 +66,12 @@ are to be interpreted as described in RFC 2119.
 
 ## Specification Versioning
 
-- Spec files in `specs/` MUST include explicit version markers in titles.
-- Breaking schema or format changes to specs SHOULD increment spec major version.
+- Spec files in `specs/` MUST include explicit version markers in titles
+  using the format `vMAJOR.MINOR`.
+- Breaking schema or format changes to specs SHOULD increment `MAJOR`
+  and reset `MINOR` to `0`.
+- Backward-compatible clarifications or additions to specs SHOULD
+  increment `MINOR`.
 - Tooling SHOULD validate against declared spec versions.
 
 ## Examples
