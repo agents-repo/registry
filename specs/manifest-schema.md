@@ -42,9 +42,9 @@ Each entry in `versions` MUST be an object with:
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
 | `version` | string | yes | Semantic version (`MAJOR.MINOR.PATCH`) |
-| `artifact` | string | yes | Deployment ZIP path in `versions/<version>/` |
+| `artifact` | string | yes | Deployment ZIP filename; referenced file MUST be located in `versions/<version>/` |
 | `sha256` | string | yes | Lowercase hex, exactly 64 characters |
-| `srcArtifact` | string | yes | Source archive path in `versions/<version>/` |
+| `srcArtifact` | string | yes | Source archive filename; referenced file MUST be located in `versions/<version>/` |
 | `srcSha256` | string | yes | Lowercase hex, exactly 64 characters |
 | `createdAt` | string | yes | RFC 3339 timestamp |
 
