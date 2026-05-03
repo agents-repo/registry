@@ -85,9 +85,9 @@ Body sections required in order:
 
 ## ZIP Bundle Rules
 
-- Each `versions/<version>.zip` is a deployment artifact for
-  extraction into a project's `.github/` folder.
-- Within `versions/<version>.zip`, each bundled
+- Each `versions/<version>/<version>.zip` is a deployment artifact
+  for extraction into a project's `.github/` folder.
+- Within `versions/<version>/<version>.zip`, each bundled
   `agents/*.agent.md` frontmatter `version` MUST equal `<version>`.
 - Agent `<agent-id>.agent.md` files are placed as
   `agents/<agent-id>.agent.md` in the ZIP.
