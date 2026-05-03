@@ -18,6 +18,9 @@ Describe the change and why it is needed.
 
 List affected paths:
 
+- [ ] Root config files (for example: package.json, package-lock.json,
+  .gitignore, .markdownlint-cli2.yaml)
+- [ ] Root automation/tooling directories (for example: .husky/)
 - [ ] README.md
 - [ ] specs/
 - [ ] packages/
