@@ -182,7 +182,16 @@ body:
           required: true
         - label: I did not include third-party content unless it is licensed under MIT.
           required: true
-        - label: ZIP content includes only required files.
+        - label: >-
+            Deployment ZIP (<version>.zip) includes only bundled
+            agents/*.agent.md files for all agents and flows in this
+            version, per specs/package-format.md.
+          required: true
+        - label: >-
+            Source ZIP (<version>-src.zip) includes full package source,
+            including .metadata.json sidecars and other top-level package
+            files present at release time, and excludes versions/ per
+            specs/package-format.md.
           required: true
         - label: >-
             metadata.json includes valid createdAt and updatedAt
