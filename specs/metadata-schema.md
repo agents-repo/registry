@@ -17,8 +17,8 @@ are to be interpreted as described in RFC 2119.
   `packages/<package-id>/versions/<version>/metadata.json` for every
   released version.
 - The package root `metadata.json` MUST reflect the latest released version
-  and is the working copy. It is not the authoritative historical source
-  for any specific version.
+  only. It MUST NOT be used to represent unreleased changes and is not the
+  authoritative historical source for any specific version.
 - The authoritative metadata for a specific version is
   `versions/<version>/metadata.json` inside the version snapshot folder.
 - All metadata files MUST be valid UTF-8 encoded JSON.
