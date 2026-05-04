@@ -76,6 +76,7 @@ Package rules:
 - `agents/` or `flows/` may be absent if unused.
 - `versions/manifest.json` tracks all releases.
 - Each published release lives in `versions/<version>/`.
+- Published version snapshot folders are write-once and immutable; files in `versions/<version>/` must not be modified or removed after publication.
 - `versions/<version>/metadata.json` preserves the historical package metadata
     for that release.
 - `versions/<version>/agents/` and `versions/<version>/flows/` preserve the
