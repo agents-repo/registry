@@ -1,0 +1,19 @@
+{
+  "name": "agents-registry",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tooling and validation scripts for the Copilot Agents Registry.",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "validate": "node scripts/validate.js",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"**/.*/**/*.md\" \"!packages/**/versions/**/*.md\" \"!**/*.agent.md\"",
+    "prepare": "husky"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "husky": "^9",
+    "markdownlint-cli2": "^0.22.1"
+  }
+}

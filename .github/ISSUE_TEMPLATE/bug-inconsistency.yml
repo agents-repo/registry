@@ -1,0 +1,63 @@
+name: Bug or inconsistency report
+description: Report a broken rule, mismatch, or validation problem.
+title: "fix: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Branch name:** `fix/<issue-number>-<short-slug>`
+        **Example:** `fix/42-correct-manifest-artifact-rule`
+        Create this issue first to get the issue number, then open the branch.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is broken or inconsistent?
+    validations:
+      required: true
+
+  - type: input
+    id: affected-file
+    attributes:
+      label: Affected file
+      description: Provide a path if known.
+      placeholder: specs/manifest-schema.md
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      description: How can we reproduce the issue?
+      placeholder: |
+        1. Go to ...
+        2. Run ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Validation output, screenshots, or links.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I confirmed this issue is still reproducible.
+          required: true
+        - label: I searched for existing similar issues.
+          required: true

@@ -1,0 +1,72 @@
+name: Feature proposal
+description: Propose a new capability for the registry platform.
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for new capabilities in the registry workflow,
+        governance, or contributor experience.
+
+        If your request changes normative rules or format definitions in
+        `specs/`, use the "Spec change request" issue template instead.
+
+        **Branch name:** `feat/<issue-number>-<short-slug>`
+        **Example:** `feat/15-search-index`
+        Create this issue first to get the issue number, then open the branch.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What feature do you want to add?
+      placeholder: Add a short and clear feature summary.
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this needed for the registry?
+      placeholder: Describe the problem or opportunity.
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Proposed scope
+      description: What is in scope and out of scope?
+      placeholder: |
+        In scope:
+        -
+        Out of scope:
+        -
+    validations:
+      required: true
+
+  - type: textarea
+    id: impacted-areas
+    attributes:
+      label: Impacted areas
+      description: Which folders or docs are affected?
+      placeholder: |
+        - specs/
+        - packages/
+        - examples/
+        - scripts/
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I reviewed existing issues and this is not duplicated.
+          required: true
+        - label: I described measurable acceptance criteria.
+          required: true
+        - label: I can help test or review this feature.
+          required: false
