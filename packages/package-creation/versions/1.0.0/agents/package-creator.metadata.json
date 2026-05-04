@@ -1,0 +1,19 @@
+{
+    "name": "package-creator",
+    "description": "Drafts and revises registry package source files from an approved blueprint, producing all required agent definitions, flow definitions, and metadata sidecars.",
+    "license": "MIT",
+    "inputs": [
+        {
+            "name": "package-blueprint",
+            "type": "object",
+            "description": "Structured blueprint from package-requirements-analyst specifying package shape, IDs, descriptions, and metadata values."
+        }
+    ],
+    "outputs": [
+        {
+            "name": "package-source-tree",
+            "type": "object",
+            "description": "The full set of authored package source files including metadata.json, agent pairs, and flow pairs ready for review."
+        }
+    ]
+}
