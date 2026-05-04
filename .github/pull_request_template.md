@@ -27,6 +27,7 @@ List affected paths:
 - [ ] examples/
 - [ ] scripts/
 - [ ] .github/
+- [ ] .vscode/
 
 ## Spec and Format Impact
 
