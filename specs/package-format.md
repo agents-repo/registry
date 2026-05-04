@@ -55,7 +55,9 @@ packages/
 Package constraints:
 
 - `metadata.json` MUST exist at the package root and MUST reflect
-  the latest released version.
+  the package's current working state. It MAY include unreleased
+  changes prior to publication; the released copy for each version
+  is preserved in `versions/<version>/metadata.json`.
 - `versions/` MUST exist and contain at least one version folder.
 - `versions/manifest.json` MUST exist.
 - A package MUST contain at least one entry in `agents/` or `flows/`.
