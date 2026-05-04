@@ -62,8 +62,8 @@ are to be interpreted as described in RFC 2119.
     "description": "Multi-agent package for PR review automation.",
     "owner": "agents-repo",
     "license": "MIT",
-    "homepage": "https://github.com/agents-repo/registry",
-    "repository": "https://github.com/agents-repo/registry",
+    "homepage": "https://github.com/agents-repo/my-package",
+    "repository": "https://github.com/agents-repo/my-package",
     "tags": ["productivity", "review", "automation"],
     "createdAt": "2026-05-02T00:00:00Z",
     "updatedAt": "2026-05-02T00:00:00Z"
