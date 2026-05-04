@@ -84,6 +84,9 @@ Body sections required in order:
   present in `agents/` within the same package.
 - `<flow-id>.metadata.json` fields are defined in
   `metadata-schema.md`.
+- For package root `flows/<flow-id>.agent.md`, frontmatter `version`
+  MUST follow the root working-copy consistency rules defined in
+  `versioning-rules.md`.
 
 ## ZIP Bundle Rules
 

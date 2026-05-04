@@ -79,9 +79,18 @@ Each released version MUST have a corresponding snapshot folder at
   released version folder MUST be modified or removed.
 
 The package root `agents/`, `flows/`, and `metadata.json` represent
-the current working state and MUST be updated to reflect the latest
-released version. They are not the authoritative historical source
-for any specific version; version snapshot folders are.
+the current working state. They are not the authoritative historical
+source for any specific version; version snapshot folders are.
+
+For the package root working state:
+
+- All root `.agent.md` files across `agents/` and `flows/` MUST share
+  one identical frontmatter `version` value.
+- The shared root frontmatter `version` MUST be greater than or equal
+  to `versions/manifest.json` `latest` (semantic version precedence).
+- At the package state that publishes `versions/<version>/`, the shared
+  root frontmatter `version` MUST equal `<version>`, and
+  `versions/manifest.json` `latest` MUST equal `<version>`.
 
 ## Agent Entry Rules
 

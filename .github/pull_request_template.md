@@ -45,6 +45,8 @@ If relevant, describe impact on:
 - [ ] New or changed docs are deterministic and clear.
 - [ ] Definition/rule changes were checked across affected specs, templates,
   README examples, and relevant metadata/manifest JSON examples.
+- [ ] Root `agents/` and `flows/` `.agent.md` frontmatter `version` values
+    follow `versioning-rules.md` relative to `versions/manifest.json` `latest`.
 - [ ] Any JSON examples are valid and consistent with specs.
 - [ ] Any package or artifact references are accurate.
 

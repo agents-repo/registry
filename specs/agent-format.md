@@ -82,6 +82,9 @@ Body sections required in order:
   `<agent-id>.metadata.json`, the values MUST be identical.
 - `<agent-id>.metadata.json` fields are defined in
   `metadata-schema.md`.
+- For package root `agents/<agent-id>.agent.md`, frontmatter `version`
+  MUST follow the root working-copy consistency rules defined in
+  `versioning-rules.md`.
 
 ## ZIP Bundle Rules
 

@@ -40,6 +40,16 @@ are to be interpreted as described in RFC 2119.
 - Every `.agent.md` file inside `versions/<version>/flows/`, if present,
   MUST have frontmatter `version` equal to `<version>`.
 
+## Root Working-Copy Version Consistency
+
+- All root `.agent.md` files across `agents/` and `flows/` within a
+  package MUST share one identical frontmatter `version` value.
+- The shared root frontmatter `version` MUST be greater than or equal
+  to `manifest.json.latest` (semantic version precedence).
+- At the package state that publishes `versions/<version>/`, the shared
+  root frontmatter `version` MUST equal `<version>`, and
+  `manifest.json.latest` MUST equal `<version>`.
+
 ## Compatibility Policy
 
 - PATCH increments MUST be backward-compatible bug fixes and clarifications.

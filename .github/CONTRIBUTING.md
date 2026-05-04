@@ -58,6 +58,9 @@ A package submission should include:
 - unique agent and flow IDs across both `agents/` and `flows/` within a
   package, to avoid collisions when deployment ZIP content is flattened into
   a single `agents/` directory
+- a shared root frontmatter `version` across all `.agent.md` files in
+  `agents/` and `flows/`, aligned with `versions/manifest.json` `latest`
+  for the release being submitted
 - SHA-256 checksums for both the deployment artifact and source archive
 - a version snapshot folder at `versions/<version>/` containing:
   - `metadata.json` — verbatim copy of the package metadata at release time

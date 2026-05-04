@@ -76,7 +76,9 @@ Package rules:
 - `agents/` or `flows/` may be absent if unused.
 - `versions/manifest.json` tracks all releases.
 - Each published release lives in `versions/<version>/`.
-- Published version snapshot folders are write-once and immutable; files in `versions/<version>/` must not be modified or removed after publication.
+- Published version snapshot folders are write-once and immutable;
+    files in `versions/<version>/` must not be modified or removed
+    after publication.
 - `versions/<version>/metadata.json` preserves the historical package metadata
     for that release.
 - `versions/<version>/agents/` and `versions/<version>/flows/` preserve the
@@ -86,6 +88,11 @@ Package rules:
 - Use SHA-256 checksums.
 - The package root `metadata.json`, `agents/`, and `flows/` describe the
     current working state.
+- All root `.agent.md` files in `agents/` and `flows/` must share the
+    same frontmatter `version` within a package.
+- During development, that shared root frontmatter version may be equal
+    to or ahead of `versions/manifest.json` `latest`; at release
+    publication, it must match `latest`.
 - Agent IDs and flow IDs must be unique across a package; do not reuse the
     same ID in both `agents/` and `flows/`.
 - ZIP bundles merge all `agents/*.agent.md` and `flows/*.agent.md`

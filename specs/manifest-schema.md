@@ -66,6 +66,8 @@ Each entry in `versions` MUST be an object with:
 - `versions[].srcSha256` MUST match the bytes of the source archive exactly.
 - ZIP artifacts are deployment artifacts per `package-format.md`
   (all agent and flow `.agent.md` files placed under `agents/` in the ZIP).
+- Root source-tree `.agent.md` frontmatter `version` consistency relative
+  to `latest` MUST satisfy `versioning-rules.md`.
 - `versions` SHOULD be sorted in ascending semantic version order.
 
 ## Canonical JSON Example
