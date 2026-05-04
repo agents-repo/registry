@@ -85,6 +85,8 @@ Package rules:
 - Use SHA-256 checksums.
 - The package root `metadata.json`, `agents/`, and `flows/` describe the
     current working state.
+- Agent IDs and flow IDs must be unique across a package; do not reuse the
+    same ID in both `agents/` and `flows/`.
 - ZIP bundles merge all `agents/*.agent.md` and `flows/*.agent.md`
   into a single `agents/` folder for extraction into `.github/`.
 
