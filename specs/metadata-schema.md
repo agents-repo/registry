@@ -17,10 +17,10 @@ are to be interpreted as described in RFC 2119.
   `packages/<package-id>/versions/<version>/metadata.json` for every
   released version.
 - The package root `metadata.json` MUST reflect the package's current working
-  state. It MAY include unreleased changes prior to publication. The released
-  copy for each version is preserved at
-  `packages/<package-id>/versions/<version>/metadata.json` and is not the
-  authoritative historical source for any specific version.
+  state. It MAY include unreleased changes prior to publication. The package
+  root `metadata.json` is not the authoritative historical source for any
+  specific released version. The released copy for each version is preserved
+  at `packages/<package-id>/versions/<version>/metadata.json`.
 - The authoritative metadata for a specific version is
   `versions/<version>/metadata.json` inside the version snapshot folder.
   See `specs/package-format.md` for the full working-state invariants.
