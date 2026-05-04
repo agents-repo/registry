@@ -176,6 +176,11 @@ body:
           required: true
         - label: I followed specs/versioning-rules.md for the initial release.
           required: true
+        - label: >-
+            All agent IDs and flow IDs are unique across both agents/ and
+            flows/ in this package, to avoid collisions in the deployment
+            artifact, per specs/package-format.md.
+          required: true
         - label: The submitted package content is licensed under MIT.
           required: true
         - label: I authored this content or have the right to submit it under MIT.
