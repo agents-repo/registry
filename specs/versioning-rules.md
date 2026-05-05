@@ -100,11 +100,13 @@ supported spec document version in this table.
 ## Specification Versioning
 
 - Spec files in `specs/` MUST include explicit version markers in titles
-  using the format `vMAJOR.MINOR`.
+  using the format `MAJOR.MINOR.PATCH`.
 - Breaking schema or format changes to specs SHOULD increment `MAJOR`
-  and reset `MINOR` to `0`.
-- Backward-compatible clarifications or additions to specs SHOULD
-  increment `MINOR`.
+  and reset `MINOR` and `PATCH` to `0`.
+- Backward-compatible additions to specs SHOULD increment `MINOR` and
+  reset `PATCH` to `0`.
+- Backward-compatible clarifications or bug fixes to specs SHOULD
+  increment `PATCH`.
 - Tooling SHOULD validate against declared spec versions.
 
 ## Examples
