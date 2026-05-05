@@ -52,6 +52,8 @@ When updating files in specs/:
 
 A package submission should include:
 
+- updated `packages/index.json` entry reflecting the new or updated
+  package
 - required package files
 - valid metadata and manifest entries
 - semantic version and artifact paths

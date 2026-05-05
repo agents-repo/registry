@@ -49,6 +49,8 @@ If relevant, describe impact on:
     follow `versioning-rules.md` relative to `versions/manifest.json` `latest`.
 - [ ] Any JSON examples are valid and consistent with specs.
 - [ ] Any package or artifact references are accurate.
+- [ ] `packages/index.json` updated if a package was added, changed,
+  or published.
 
 ## Risk and Rollback
 

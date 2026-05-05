@@ -24,6 +24,7 @@ Runtime logic is out of scope for this initial baseline.
 registry/
     packages/
         .keep
+        index.json
     specs/
         package-format.md
         metadata-schema.md
@@ -31,6 +32,7 @@ registry/
         agent-format.md
         flow-format.md
         versioning-rules.md
+        index-schema.md
     examples/
         sample-agent/
             README.md
@@ -69,6 +71,12 @@ Package format:
             <version>.zip
             <version>-src.zip
 ```
+
+Registry index:
+
+- `packages/index.json` lists all packages with summary fields for
+  webapp consumption.
+- See `specs/index-schema.md` for the schema.
 
 Package rules:
 
@@ -111,6 +119,7 @@ Primary spec documents:
 - `specs/agent-format.md`
 - `specs/flow-format.md`
 - `specs/versioning-rules.md`
+- `specs/index-schema.md`
 
 ## Related Repositories
 
