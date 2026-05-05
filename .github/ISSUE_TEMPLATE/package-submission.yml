@@ -130,10 +130,11 @@ body:
     attributes:
       label: Release metadata
       description: >-
-        Provide required package metadata timestamps from metadata.json,
-        plus the required top-level manifest fields and the initial version
-        entry artifact details.
+        Provide required package metadata schemaVersion and timestamps from
+        metadata.json, plus the required top-level manifest fields and the
+        initial version entry artifact details.
       placeholder: |
+        - metadata.schemaVersion: 1.0.0
         - metadata.createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
         - metadata.updatedAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
         - manifest.schemaVersion: 1.0.0
@@ -199,8 +200,12 @@ body:
             specs/package-format.md.
           required: true
         - label: >-
-            metadata.json includes valid createdAt and updatedAt
-            RFC 3339 timestamps.
+            metadata.json includes schemaVersion: 1.0.0, and valid createdAt
+            and updatedAt RFC 3339 timestamps.
+          required: true
+        - label: >-
+            All agent and flow .metadata.json sidecars include
+            schemaVersion: 1.0.0.
           required: true
         - label: manifest.json version entries include a valid createdAt timestamp.
           required: true

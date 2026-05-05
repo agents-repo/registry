@@ -94,6 +94,8 @@ Package rules:
 - Each release includes `<version>.zip` and `<version>-src.zip`.
 - Use semantic versioning with no `v` prefix.
 - Use SHA-256 checksums.
+- `metadata.json` and all `.metadata.json` sidecars must include
+    `schemaVersion: "1.0.0"`.
 - The package root `metadata.json`, `agents/`, and `flows/` describe the
     current working state.
 - All root `.agent.md` files in `agents/` and `flows/` must share the
