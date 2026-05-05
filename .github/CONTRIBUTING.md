@@ -39,7 +39,9 @@ Create the issue first to obtain the issue number, then open the branch.
 2. Link related issues in the PR body.
 3. Use deterministic language for normative rules.
 4. Include examples when changing specification behavior.
-5. Use `.github/pull_request_template.md` for every PR.
+5. Use `.github/pull_request_template.md` for every PR, or if it cannot be
+   applied programmatically, include its required sections manually in the PR
+   body.
 
 ## Specification Changes
 
