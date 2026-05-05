@@ -100,7 +100,7 @@ supported spec document version in this table.
 ## Specification Versioning
 
 - Spec files in `specs/` MUST include explicit version markers in titles
-  using the format `MAJOR.MINOR.PATCH`.
+  using the exact syntax `(<MAJOR>.<MINOR>.<PATCH>)`.
 - Breaking schema or format changes to specs SHOULD increment `MAJOR`
   and reset `MINOR` and `PATCH` to `0`.
 - Backward-compatible additions to specs SHOULD increment `MINOR` and
