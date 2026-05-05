@@ -13,6 +13,9 @@ Most contributions are documentation, schema, and package-structure changes.
 2. Confirm scope and acceptance criteria.
 3. Align on whether the change is breaking or non-breaking.
 
+Issue form selection MUST match the task type and MUST use one form in
+`.github/ISSUE_TEMPLATE/`.
+
 ## Branch Naming
 
 Branch names MUST follow the pattern `<prefix>/<issue-number>-<slug>`,
@@ -34,6 +37,7 @@ Create the issue first to obtain the issue number, then open the branch.
 2. Link related issues in the PR body.
 3. Use deterministic language for normative rules.
 4. Include examples when changing specification behavior.
+5. Use `.github/pull_request_template.md` for every PR.
 
 ## Specification Changes
 

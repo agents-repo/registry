@@ -64,3 +64,25 @@ pre-commit hook may also run this check.
 
 Open an issue using `.github/ISSUE_TEMPLATE/` forms before any change.
 See `.github/CONTRIBUTING.md` for the full workflow.
+
+## Issue and PR Template Enforcement
+
+When opening tracking issues, the agent MUST use the issue form under
+`.github/ISSUE_TEMPLATE/` that matches the task type:
+
+- bug or inconsistency: `.github/ISSUE_TEMPLATE/bug-inconsistency.yml`
+- spec change: `.github/ISSUE_TEMPLATE/spec-change.yml`
+- feature proposal: `.github/ISSUE_TEMPLATE/feature-proposal.yml`
+- task or chore: `.github/ISSUE_TEMPLATE/task-chore.yml`
+- package submission: `.github/ISSUE_TEMPLATE/package-submission.yml`
+
+When opening a pull request, the agent MUST follow
+`.github/pull_request_template.md`.
+
+The agent MUST report template usage in its final PR handoff summary,
+including which issue form was used and confirmation that the PR body
+follows `.github/pull_request_template.md`.
+
+If the available tool path cannot programmatically apply a template, the
+agent MUST explicitly state that limitation and MUST include all required
+sections from the intended template in the issue or PR body.
