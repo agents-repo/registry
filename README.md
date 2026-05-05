@@ -39,13 +39,57 @@ registry/
         sample-flow/
             README.md
     scripts/
-        build.js
-        validate.js
+        lib/
+            errors.ts
+            frontmatter.ts
+            git.ts
+            types.ts
+            validate-package.ts
+        build.ts
+        validate.ts
+        package-validate.ts
+        package-build.ts
+        package-build-validate.ts
+    tsconfig.json
     README.md
     LICENSE
 ```
 
+## Package Development Workflow
+
+Contributors and AI agents work only on source files under the package root.
+The scripts manage all versioned artifacts.
+
+### Required pipeline
+
+```bash
+# 1. Validate working-state source files
+npm run package:validate -- --package <id>
+
+# 2. Build and publish a version snapshot (chains build-validate automatically)
+npm run package:build -- --package <id>
+
+# 3. Deep artifact verification (also auto-invoked by package:build)
+npm run package:build-validate -- --package <id>
+```
+
+### Overwrite protection
+
+- Overwriting an existing `versions/<version>/` requires `--force-rebuild`.
+- `--force-rebuild` is **not allowed** on protected branches: `main`, `master`,
+  `release/*`.
+- On a protected branch with a pre-existing version, the build hard-fails with
+  `ERR_OVERWRITE_PROTECTED_BRANCH`. Publish a new semver instead.
+
+### No manual edits under `versions/`
+
+All content under `versions/` is generated exclusively by `package-build`.
+Contributors and AI agents MUST NOT manually create, modify, or remove any file
+under `versions/`. See `specs/package-format.md` and `specs/versioning-rules.md`.
+
 ## Package Baseline
+
+Package format:
 
 Package format:
 

@@ -30,6 +30,30 @@ supported spec document version in this table.
   a `metadata.json` snapshot, and source tree snapshots
   (`agents/` and `flows/` if present).
 
+## Script-Gated Publication
+
+- `versions/` content (snapshot folders and `manifest.json`) MUST be
+  produced exclusively by the `package-build` script.
+- Contributors and AI agents MUST NOT manually create or modify any file
+  under `versions/`.
+- The mandatory release pipeline is:
+  `package:validate` → `package:build` (internal revalidate) →
+  `package:build-validate` (auto-chained by `package:build`).
+
+## Version Overwrite Policy
+
+- By default, the `package-build` script MUST NOT overwrite an existing
+  `versions/<version>/` snapshot. Attempting to do so without the
+  `--force-rebuild` flag MUST produce an `ERR_VERSION_EXISTS` error.
+- The `--force-rebuild` flag allows overwriting an existing snapshot
+  ONLY on non-protected branches. On protected branches the flag MUST be
+  rejected with `ERR_OVERWRITE_PROTECTED_BRANCH`.
+- Protected branches are: `main`, `master`, and any branch matching
+  `release/*`.
+- When `--force-rebuild` succeeds, the existing snapshot is atomically
+  replaced; `manifest.json` and `packages/index.json` are updated
+  accordingly.
+
 ## Manifest and Metadata Consistency
 
 - `manifest.json.latest` MUST equal the maximum semantic version in

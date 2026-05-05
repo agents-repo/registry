@@ -26,6 +26,27 @@ A package is a named container that holds one or more agents and flows.
 
 All package directories MUST exist under `packages/`.
 
+## Contributor Workflow
+
+Contributors and AI agents MUST follow this pipeline to produce a release:
+
+1. Author or update source files under the package root
+   (`metadata.json`, `agents/`, `flows/`). These are the only files
+   contributors and AI agents are authorized to write directly.
+2. Run `npm run package:validate -- --package <id>` to confirm the working state
+   passes all preflight checks.
+3. Run `npm run package:build -- --package <id>` to generate the version snapshot.
+   This command internally re-runs validation, builds both ZIP artifacts, computes
+   SHA-256 checksums, writes `versions/<version>/`, updates `versions/manifest.json`,
+   and updates `packages/index.json`. It automatically chains `package:build-validate`
+   after generation and rolls back on failure.
+4. `package:build-validate` (auto-chained by step 3) performs deep structural and
+   security inspection of the generated artifacts.
+
+Contributors and AI agents MUST NOT manually create or modify any file under
+`versions/`. The `package-build` script is the sole authorized writer for all
+content under `versions/`.
+
 ## Naming Rules
 
 - Package directory name MUST be lowercase kebab-case.
@@ -80,6 +101,10 @@ Package constraints:
 
 Each released version MUST have a corresponding snapshot folder at
 `versions/<version>/`. A version snapshot folder:
+
+- MUST be created exclusively by the `package-build` script. Contributors
+  and AI agents MUST NOT manually create, modify, or remove any file inside
+  `versions/<version>/` or `versions/manifest.json`.
 
 - MUST contain `metadata.json` — a verbatim copy of the package
   `metadata.json` as it existed at release time.

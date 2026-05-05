@@ -52,6 +52,7 @@ table above unless it explicitly supports a newer schema version.
 | `tags` | array of string | 1 to 20 lowercase tags |
 | `createdAt` | string | RFC 3339 timestamp |
 | `updatedAt` | string | RFC 3339 timestamp |
+| `version` | string | Semver (`MAJOR.MINOR.PATCH`); current release target |
 
 ### Optional Fields
 
@@ -67,6 +68,10 @@ table above unless it explicitly supports a newer schema version.
 - `name` MUST match the package directory name exactly.
 - `license` MUST equal `MIT`.
 - `updatedAt` MUST be greater than or equal to `createdAt`.
+- `version` MUST be a valid semantic version in the format
+  `MAJOR.MINOR.PATCH` with no pre-release or build metadata suffixes.
+- `version` MUST be greater than or equal to `versions/manifest.json`
+  `latest` when the manifest exists for the package.
 - Arrays MUST NOT contain duplicate values.
 - Unknown fields SHOULD use the `x-` prefix for extensions.
 
@@ -83,7 +88,8 @@ table above unless it explicitly supports a newer schema version.
     "repository": "https://github.com/agents-repo/my-package",
     "tags": ["productivity", "review", "automation"],
     "createdAt": "2026-05-02T00:00:00Z",
-    "updatedAt": "2026-05-02T00:00:00Z"
+    "updatedAt": "2026-05-02T00:00:00Z",
+    "version": "1.0.0"
 }
 ```
 
