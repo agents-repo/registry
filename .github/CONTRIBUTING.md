@@ -56,6 +56,8 @@ A package submission should include:
   including the package record and its `updatedAt` value
 - required package files
 - valid metadata and manifest entries
+- `schemaVersion: "1.0.0"` in `metadata.json` and in every
+  `.metadata.json` sidecar (agent and flow)
 - semantic version and artifact paths
 - unique agent and flow IDs across both `agents/` and `flows/` within a
   package, to avoid collisions when deployment ZIP content is flattened into
