@@ -43,6 +43,9 @@ If relevant, describe impact on:
 
 - [ ] Markdown linting passes.
 - [ ] New or changed docs are deterministic and clear.
+- [ ] Matching issue template was used (or required sections were included
+    manually when template application was not possible), and this PR follows
+    `.github/pull_request_template.md` (or includes its required sections).
 - [ ] Definition/rule changes were checked across affected specs, templates,
   README examples, and relevant metadata/manifest JSON examples.
 - [ ] Root `agents/` and `flows/` `.agent.md` frontmatter `version` values
