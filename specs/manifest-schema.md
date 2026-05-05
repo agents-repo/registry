@@ -1,4 +1,4 @@
-# Manifest Schema Specification (v0.1)
+# Manifest Schema Specification (1.0.0)
 
 This document defines the deterministic `manifest.json`
 format for package releases.
@@ -11,11 +11,11 @@ are to be interpreted as described in RFC 2119.
 ## Schema Version Lifecycle
 
 `schemaVersion` identifies the manifest **format** version, not the package
-release version and not the spec document version (`v0.1`).
+release version and not the spec document version (`1.0.0`).
 
-| `schemaVersion` | Defined by spec document | Notes |
-| --- | --- | --- |
-| `1.0.0` | This document (v0.1) | Initial manifest format |
+| Version | Applies To | Status | Notes |
+| --- | --- | --- | --- |
+| `1.0.0` | manifest schemaVersion | current | Initial entry |
 
 Tooling MUST reject manifests whose `schemaVersion` is not in the table above
 unless it explicitly supports a newer schema version.

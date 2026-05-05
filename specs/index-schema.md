@@ -1,4 +1,4 @@
-# Index Schema Specification (v0.1)
+# Index Schema Specification (1.0.0)
 
 This document defines the deterministic `index.json` format
 for the registry-level package index.
@@ -7,6 +7,18 @@ for the registry-level package index.
 
 The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY
 are to be interpreted as described in RFC 2119.
+
+## Schema Version Lifecycle
+
+`schemaVersion` identifies the index **format** version, not the package
+release version and not the spec document version (`1.0.0`).
+
+| Version | Applies To | Status | Notes |
+| --- | --- | --- | --- |
+| `1.0.0` | index schemaVersion | current | Initial entry |
+
+Tooling MUST reject index files whose `schemaVersion` is not in the table above
+unless it explicitly supports a newer schema version.
 
 ## Purpose
 
@@ -23,6 +35,7 @@ needing to enumerate the `packages/` directory.
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
+| `schemaVersion` | string | yes | MUST be `1.0.0`; see [Schema Version Lifecycle](#schema-version-lifecycle) |
 | `updatedAt` | string | yes | RFC 3339; MUST be updated when index changes |
 | `packages` | array | yes | MAY be empty; one entry per package |
 
@@ -68,6 +81,7 @@ Each entry in `packages` MUST be an object with:
 
 ```json
 {
+    "schemaVersion": "1.0.0",
     "updatedAt": "2026-05-05T00:00:00Z",
     "packages": [
         {

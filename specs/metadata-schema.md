@@ -1,4 +1,4 @@
-# Metadata Schema Specification (v0.1)
+# Metadata Schema Specification (1.0.0)
 
 This document defines the deterministic metadata contracts
 for packages, agents, and flows.
@@ -9,6 +9,18 @@ The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY
 are to be interpreted as described in RFC 2119.
 
 ## Package Metadata
+
+### Schema Version Lifecycle
+
+`schemaVersion` identifies the package metadata **format** version, not the
+package release version and not the spec document version (`1.0.0`).
+
+| Version | Applies To | Status | Notes |
+| --- | --- | --- | --- |
+| `1.0.0` | package metadata schemaVersion | current | Initial entry |
+
+Tooling MUST reject package metadata whose `schemaVersion` is not in the
+table above unless it explicitly supports a newer schema version.
 
 ### File Location
 
@@ -30,6 +42,7 @@ are to be interpreted as described in RFC 2119.
 
 | Field | Type | Constraints |
 | --- | --- | --- |
+| `schemaVersion` | string | MUST be `1.0.0`; see [Schema Version Lifecycle](#schema-version-lifecycle) |
 | `name` | string | MUST match package directory name |
 | `description` | string | 1 to 300 characters |
 | `owner` | string | GitHub owner or organization slug |
@@ -61,6 +74,7 @@ are to be interpreted as described in RFC 2119.
 
 ```json
 {
+    "schemaVersion": "1.0.0",
     "name": "my-package",
     "description": "Multi-agent package for PR review automation.",
     "owner": "agents-repo",
@@ -75,6 +89,18 @@ are to be interpreted as described in RFC 2119.
 
 ## Agent Metadata
 
+### Schema Version Lifecycle
+
+`schemaVersion` identifies the agent metadata **format** version, not the
+package release version and not the spec document version (`1.0.0`).
+
+| Version | Applies To | Status | Notes |
+| --- | --- | --- | --- |
+| `1.0.0` | agent metadata schemaVersion | current | Initial entry |
+
+Tooling MUST reject agent metadata whose `schemaVersion` is not in the
+table above unless it explicitly supports a newer schema version.
+
 ### File Location
 
 - Agent metadata MUST be stored as
@@ -87,6 +113,7 @@ are to be interpreted as described in RFC 2119.
 
 | Field | Type | Constraints |
 | --- | --- | --- |
+| `schemaVersion` | string | MUST be `1.0.0`; see [Schema Version Lifecycle](#schema-version-lifecycle-1) |
 | `name` | string | MUST equal `<agent-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
@@ -121,6 +148,7 @@ are to be interpreted as described in RFC 2119.
 
 ```json
 {
+    "schemaVersion": "1.0.0",
     "name": "planner",
     "description": "Plans the steps to complete a PR review task.",
     "license": "MIT",
@@ -129,6 +157,18 @@ are to be interpreted as described in RFC 2119.
 ```
 
 ## Flow Metadata
+
+### Schema Version Lifecycle
+
+`schemaVersion` identifies the flow metadata **format** version, not the
+package release version and not the spec document version (`1.0.0`).
+
+| Version | Applies To | Status | Notes |
+| --- | --- | --- | --- |
+| `1.0.0` | flow metadata schemaVersion | current | Initial entry |
+
+Tooling MUST reject flow metadata whose `schemaVersion` is not in the
+table above unless it explicitly supports a newer schema version.
 
 ### File Location
 
@@ -142,6 +182,7 @@ are to be interpreted as described in RFC 2119.
 
 | Field | Type | Constraints |
 | --- | --- | --- |
+| `schemaVersion` | string | MUST be `1.0.0`; see [Schema Version Lifecycle](#schema-version-lifecycle-2) |
 | `name` | string | MUST equal `<flow-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
@@ -178,6 +219,7 @@ are to be interpreted as described in RFC 2119.
 
 ```json
 {
+    "schemaVersion": "1.0.0",
     "name": "triage",
     "description": "Routes incoming issues to the appropriate agent.",
     "license": "MIT",

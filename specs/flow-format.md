@@ -1,4 +1,4 @@
-# Flow Format Specification (v0.1)
+# Flow Format Specification (1.0.0)
 
 This document defines the deterministic format for flows
 within a package.
@@ -7,6 +7,18 @@ within a package.
 
 The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY
 are to be interpreted as described in RFC 2119.
+
+## Schema Version Lifecycle
+
+This specification defines flow file format and rules. It does not define
+a JSON `schemaVersion` field.
+
+| Version | Applies To | Status | Notes |
+| --- | --- | --- | --- |
+| `1.0.0` | spec document version | current | Initial entry |
+
+Tooling and processes that validate flow format SHOULD use the latest
+supported spec document version in this table.
 
 ## Required Files
 

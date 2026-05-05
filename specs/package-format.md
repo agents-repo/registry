@@ -1,4 +1,4 @@
-# Package Format Specification (v0.1)
+# Package Format Specification (1.0.0)
 
 This document defines the deterministic directory and file format
 for packages stored in the registry.
@@ -7,6 +7,18 @@ for packages stored in the registry.
 
 The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY
 are to be interpreted as described in RFC 2119.
+
+## Schema Version Lifecycle
+
+This specification defines package layout and rules. It does not define
+a JSON `schemaVersion` field.
+
+| Version | Applies To | Status | Notes |
+| --- | --- | --- | --- |
+| `1.0.0` | spec document version | current | Initial entry |
+
+Tooling and processes that validate package format SHOULD use the latest
+supported spec document version in this table.
 
 ## Scope
 
