@@ -134,17 +134,17 @@ body:
         metadata.json, plus the required top-level manifest fields and the
         initial version entry artifact details.
       placeholder: |
-        - metadata.schemaVersion: 1.0.0
+        - metadata.schemaVersion: "1.0.0"
         - metadata.createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
         - metadata.updatedAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
-        - manifest.schemaVersion: 1.0.0
-        - manifest.name: my-package-name
-        - manifest.latest: 1.0.0
-        - version: 1.0.0
+        - manifest.schemaVersion: "1.0.0"
+        - manifest.name: "my-package-name"
+        - manifest.latest: "1.0.0"
+        - version: "1.0.0"
         - createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
-        - artifact: 1.0.0.zip
+        - artifact: "1.0.0.zip"
         - sha256: <64-char-lowercase-hex>
-        - srcArtifact: 1.0.0-src.zip
+        - srcArtifact: "1.0.0-src.zip"
         - srcSha256: <64-char-lowercase-hex>
     validations:
       required: true
