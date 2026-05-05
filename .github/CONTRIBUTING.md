@@ -13,8 +13,10 @@ Most contributions are documentation, schema, and package-structure changes.
 2. Confirm scope and acceptance criteria.
 3. Align on whether the change is breaking or non-breaking.
 
-Issue form selection MUST match the task type and MUST use one form in
-`.github/ISSUE_TEMPLATE/`.
+Issue form selection MUST match the task type. Contributors MUST use the
+matching form in `.github/ISSUE_TEMPLATE/` when tooling can apply it directly;
+otherwise, they MUST manually include the intended template's sections in the
+issue body.
 
 ## Branch Naming
 
