@@ -153,6 +153,17 @@ its version snapshot folder at `versions/<version>/`.
 - `versions/manifest.json` MUST list both artifacts for every
   released version.
 
+## Registry Index
+
+- `packages/index.json` MUST exist at the root of the `packages/`
+  directory.
+- `packages/index.json` MUST be kept current and reflect all packages
+  present under `packages/`.
+- The format and validation rules for `packages/index.json` are defined
+  in `specs/index-schema.md`.
+- When a package is added, updated, or a new version is published,
+  `packages/index.json` MUST be updated accordingly.
+
 ## Determinism Rules
 
 - Paths in documentation and manifests MUST use forward slashes.
