@@ -53,7 +53,7 @@ are to be interpreted as described in RFC 2119.
 ## Registry Index Update Rules
 
 - When a new version is published (`versions/<version>/` is created and
-  `manifest.json` `latest` is updated), the corresponding entry in
+  `manifest.json.latest` is updated), the corresponding entry in
   `packages/index.json` MUST be updated to reflect the new `latest`
   value and any changed summary fields.
 - `packages/index.json` `updatedAt` MUST be updated whenever an entry
