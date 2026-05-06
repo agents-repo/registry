@@ -296,16 +296,26 @@ function validateManifest(
     );
   }
 
-  if (typeof m['latest'] !== 'string' || !semver.valid(m['latest'])) {
+  if (typeof m['latest'] !== 'string') {
     issues.push(
-      err('ERR_VALIDATION_FAILED', `manifest.json latest must be a valid semver`),
+      err('ERR_VALIDATION_FAILED', `manifest.json latest must be a string`),
+    );
+  } else if (m['latest'].length > 0 && !semver.valid(m['latest'])) {
+    // latest can be empty for unpublished packages; if non-empty, must be valid semver
+    issues.push(
+      err('ERR_VALIDATION_FAILED', `manifest.json latest must be a valid semver (if set)`),
     );
   }
 
-  if (!Array.isArray(m['versions']) || m['versions'].length === 0) {
+  if (!Array.isArray(m['versions'])) {
     issues.push(
-      err('ERR_VALIDATION_FAILED', 'manifest.json versions must be a non-empty array'),
+      err('ERR_VALIDATION_FAILED', 'manifest.json versions must be an array'),
     );
+    return m as unknown as Manifest;
+  }
+
+  // Empty versions is allowed for unpublished packages (first release)
+  if (m['versions'].length === 0) {
     return m as unknown as Manifest;
   }
 

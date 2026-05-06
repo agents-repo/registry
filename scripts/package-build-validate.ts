@@ -452,4 +452,7 @@ function main(): void {
   }
 }
 
-main();
+// Run CLI only when this file is directly executed, not when imported
+if (require.main === module) {
+  main();
+}
