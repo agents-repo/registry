@@ -9,6 +9,7 @@
     "package:validate": "tsx scripts/package-validate.ts",
     "package:build": "tsx scripts/package-build.ts",
     "package:build-validate": "tsx scripts/package-build-validate.ts",
+    "package:create": "tsx scripts/package-create.ts",
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"**/.*/**/*.md\" \"!packages/**/versions/**/*.md\" \"!**/*.agent.md\"",
     "prepare": "husky",
     "typecheck": "tsc --noEmit"
