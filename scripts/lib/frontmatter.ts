@@ -1,20 +1,23 @@
+import matter from 'gray-matter';
+
 /**
- * Extracts scalar key-value pairs from YAML frontmatter.
- * Only handles simple string and number scalar values sufficient for
- * .agent.md files.
+ * Extracts scalar key-value pairs from YAML frontmatter using gray-matter.
  */
 export function parseFrontmatter(content: string): Record<string, string> {
-  const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---(\r?\n|$)/);
-  if (!match) return {};
-
   const result: Record<string, string> = {};
-  for (const line of match[1].split(/\r?\n/)) {
-    const m = line.match(/^([a-zA-Z_][a-zA-Z0-9_-]*):\s*(.+)$/);
-    if (m) {
-      const raw = m[2].trim();
-      // Strip optional surrounding single or double quotes
-      result[m[1]] = raw.replace(/^(['"])(.*)\1$/, '$2');
+
+  try {
+    const parsed = matter(content);
+    for (const [key, value] of Object.entries(parsed.data)) {
+      if (typeof value === 'string') {
+        result[key] = value;
+      } else if (typeof value === 'number' || typeof value === 'boolean') {
+        result[key] = String(value);
+      }
     }
+  } catch {
+    return {};
   }
+
   return result;
 }

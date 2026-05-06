@@ -1,4 +1,6 @@
-import { execSync } from 'child_process';
+import { simpleGit } from 'simple-git';
+
+const git = simpleGit();
 
 const PROTECTED_BRANCHES: Array<string | RegExp> = [
   'main',
@@ -6,12 +8,10 @@ const PROTECTED_BRANCHES: Array<string | RegExp> = [
   /^release\/.+/,
 ];
 
-export function getCurrentBranch(): string {
+export async function getCurrentBranch(): Promise<string> {
   try {
-    return execSync('git rev-parse --abbrev-ref HEAD', {
-      encoding: 'utf-8',
-      stdio: ['pipe', 'pipe', 'pipe'],
-    }).trim();
+    const branch = await git.revparse(['--abbrev-ref', 'HEAD']);
+    return branch.trim();
   } catch {
     return '';
   }

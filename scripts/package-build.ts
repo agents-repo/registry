@@ -241,7 +241,7 @@ function rollback(versionDir: string): void {
 // Entry point
 // ---------------------------------------------------------------------------
 
-function main(): void {
+async function main(): Promise<void> {
   const { packageId, forceRebuild } = parseArgs(process.argv);
 
   const repoRoot = path.resolve(__dirname, '..');
@@ -275,7 +275,7 @@ function main(): void {
   const versionExists = fs.existsSync(versionDir);
 
   if (versionExists) {
-    const branch = getCurrentBranch();
+    const branch = await getCurrentBranch();
     if (forceRebuild) {
       if (isProtectedBranch(branch)) {
         throw new PackageError(
@@ -406,4 +406,11 @@ function main(): void {
   console.log(`  Index updated       : packages/index.json`);
 }
 
-main();
+main().catch((error) => {
+  if (error instanceof PackageError) {
+    console.error(`[${error.code}] ${error.message}`);
+  } else {
+    console.error('Unexpected error during build:', error);
+  }
+  process.exit(1);
+});
