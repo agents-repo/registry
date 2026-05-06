@@ -1,0 +1,15 @@
+{
+    "schemaVersion": "1.0.0",
+    "name": "hello-agent",
+    "latest": "1.0.0",
+    "versions": [
+        {
+            "version": "1.0.0",
+            "artifact": "1.0.0.zip",
+            "sha256": "03df38bda22a26262f68402e770d7d7df5599f82bcdc340bad8526368e602a9e",
+            "srcArtifact": "1.0.0-src.zip",
+            "srcSha256": "bc9ee3f42aeeb91d3a032d910d31f18fcdbfa6ed1c9a16080166a54bac860467",
+            "createdAt": "2026-05-06T03:43:34.771Z"
+        }
+    ]
+}
