@@ -30,8 +30,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createInterface, Interface } from 'node:readline';
+import { fileURLToPath } from 'node:url';
 import { PackageScaffolder } from './lib/scaffolder';
 import type { AgentDef, UserMetadata } from './lib/scaffolder';
+
+const scriptDir = fileURLToPath(new URL('.', import.meta.url));
 
 // ---------------------------------------------------------------------------
 // Prompt helpers
@@ -272,7 +275,7 @@ function validateTags(tags: string[]): void {
 }
 
 function ensurePackageDoesNotExist(packageId: string): void {
-  const repoRoot = path.resolve(__dirname, '..');
+  const repoRoot = path.resolve(scriptDir, '..');
   const packageDir = path.join(repoRoot, 'packages', packageId);
   if (fs.existsSync(packageDir)) {
     fail(`Package "${packageId}" already exists at ${packageDir}`);
@@ -601,7 +604,7 @@ async function main(): Promise<void> {
       }
     }
 
-    const repoRoot = path.resolve(__dirname, '..');
+    const repoRoot = path.resolve(scriptDir, '..');
     new PackageScaffolder(
       { packageId: request.packageId, metadata: request.metadata, agents: request.agents, flows: request.flows },
       repoRoot,

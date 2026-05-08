@@ -13,7 +13,10 @@
  */
 
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { PackageValidator } from './lib/validate-package';
+
+const scriptDir = fileURLToPath(new URL('.', import.meta.url));
 
 // ---------------------------------------------------------------------------
 // CLI argument parsing
@@ -36,7 +39,7 @@ function parseArgs(argv: string[]): { packageId: string } {
 function main(): void {
   const { packageId } = parseArgs(process.argv);
 
-  const repoRoot = path.resolve(__dirname, '..');
+  const repoRoot = path.resolve(scriptDir, '..');
   const packagesDir = path.join(repoRoot, 'packages');
 
   console.log(`Validating package: ${packageId}`);

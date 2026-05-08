@@ -22,6 +22,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ErrorCode, PackageError } from './lib/errors';
 import { GitContext } from './lib/git';
 import { IndexManager } from './lib/index-manager';
@@ -29,6 +30,8 @@ import { ManifestManager } from './lib/manifest-manager';
 import { Package } from './lib/package';
 import { ZipBuilder } from './lib/zip-builder';
 import { Checksum } from './lib/checksum';
+
+const scriptDir = fileURLToPath(new URL('.', import.meta.url));
 
 // ---------------------------------------------------------------------------
 // CLI argument parsing
@@ -74,7 +77,7 @@ function rollback(versionDir: string): void {
 async function main(): Promise<void> {
   const { packageId, forceRebuild } = parseArgs(process.argv);
 
-  const repoRoot = path.resolve(__dirname, '..');
+  const repoRoot = path.resolve(scriptDir, '..');
   const packagesDir = path.join(repoRoot, 'packages');
   const pkg = new Package(packageId, packagesDir);
 

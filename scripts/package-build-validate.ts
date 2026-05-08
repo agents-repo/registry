@@ -22,9 +22,13 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import semver from 'semver';
 import { SnapshotValidator } from './lib/snapshot-validator';
 import type { ValidationReport } from './lib/types';
+
+const scriptDir = fileURLToPath(new URL('.', import.meta.url));
+const scriptPath = fileURLToPath(import.meta.url);
 
 // ---------------------------------------------------------------------------
 // CLI argument parsing
@@ -68,7 +72,7 @@ export function runBuildValidate(
 function main(): void {
   const { packageId, version: versionArg } = parseArgs(process.argv);
 
-  const repoRoot = path.resolve(__dirname, '..');
+  const repoRoot = path.resolve(scriptDir, '..');
   const packagesDir = path.join(repoRoot, 'packages');
 
   let version = versionArg;
@@ -116,6 +120,6 @@ function main(): void {
 }
 
 // Run CLI only when this file is directly executed, not when imported
-if (require.main === module) {
+if (process.argv[1] && path.resolve(process.argv[1]) === scriptPath) {
   main();
 }
