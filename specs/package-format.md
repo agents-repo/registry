@@ -36,12 +36,14 @@ Contributors and AI agents MUST follow this pipeline to produce a release:
 2. Run `npm run package:validate -- --package <id>` to confirm the working state
    passes all preflight checks.
 3. Run `npm run package:build -- --package <id>` to generate the version snapshot.
-   This command internally re-runs validation, builds both ZIP artifacts, computes
-   SHA-256 checksums, writes `versions/<version>/`, updates `versions/manifest.json`,
-   and updates `packages/index.json`. It automatically chains `package:build-validate`
-   after generation and rolls back on failure.
-4. `package:build-validate` (auto-chained by step 3) performs deep structural and
+  This command builds both ZIP artifacts, computes SHA-256 checksums, writes
+  `versions/<version>/`, updates `versions/manifest.json`, and updates
+  `packages/index.json`.
+4. Run `npm run package:build-validate -- --package <id>` for deep structural and
    security inspection of the generated artifacts.
+
+The scripts in this pipeline SHOULD remain single-responsibility and MUST NOT
+implicitly invoke another pipeline step.
 
 Contributors and AI agents MUST NOT manually create or modify any file under
 `versions/`. The `package-build` script is the sole authorized writer for all

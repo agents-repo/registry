@@ -8,9 +8,6 @@
  *
  * When --version is omitted, the version is read from packages/<id>/metadata.json.
  *
- * This script is also called automatically by package-build after each build.
- * On failure, package-build rolls back the version snapshot.
- *
  * Checks performed:
  *   - Expected files present in versions/<version>/
  *   - No unexpected extra files in the snapshot directory

@@ -10,14 +10,12 @@
  * under versions/. See specs/package-format.md and specs/versioning-rules.md.
  *
  * Workflow:
- *   1. Run internal package validation (same as package:validate).
- *   2. Enforce overwrite-protection rules (see specs/versioning-rules.md).
- *   3. Build the deployment ZIP and source archive.
- *   4. Compute SHA-256 checksums.
- *   5. Write the version snapshot to versions/<version>/.
- *   6. Upsert the manifest at versions/manifest.json.
- *   7. Update packages/index.json.
- *   8. Auto-invoke package-build-validate; roll back on failure.
+ *   1. Read target version and enforce overwrite-protection rules.
+ *   2. Build the deployment ZIP and source archive.
+ *   3. Compute SHA-256 checksums.
+ *   4. Write the version snapshot to versions/<version>/.
+ *   5. Upsert the manifest at versions/manifest.json.
+ *   6. Update packages/index.json.
  *
  * Exits 0 on success, non-zero on failure.
  */
@@ -29,8 +27,6 @@ import { GitContext } from './lib/git';
 import { IndexManager } from './lib/index-manager';
 import { ManifestManager } from './lib/manifest-manager';
 import { Package } from './lib/package';
-import { PackageValidator } from './lib/validate-package';
-import { SnapshotValidator } from './lib/snapshot-validator';
 import { ZipBuilder } from './lib/zip-builder';
 import { Checksum } from './lib/checksum';
 
@@ -82,26 +78,12 @@ async function main(): Promise<void> {
   const packagesDir = path.join(repoRoot, 'packages');
   const pkg = new Package(packageId, packagesDir);
 
-  // Step 1: Internal validation
-  console.log(`[1/8] Validating package: ${packageId}`);
-  const report = new PackageValidator(packageId, packagesDir).validate();
-  for (const w of report.warnings) {
-    console.warn(`  [WARN]  ${w.message}`);
-  }
-  for (const e of report.errors) {
-    console.error(`  [ERROR] (${e.code}) ${e.message}`);
-  }
-  if (!report.passed) {
-    console.error(`Build aborted: validation failed for package "${packageId}"`);
-    process.exit(1);
-  }
-
-  // Step 2: Read metadata to get target version
+  // Step 1: Read metadata to get target version
   const metadata = pkg.loadMetadata();
   const version = metadata.version;
-  console.log(`[2/8] Target version: ${version}`);
+  console.log(`[1/6] Target version: ${version}`);
 
-  // Step 3: Overwrite-protection checks
+  // Step 2: Overwrite-protection checks
   const versionDir = pkg.versionDir(version);
   const versionExists = fs.existsSync(versionDir);
   const git = new GitContext();
@@ -117,7 +99,7 @@ async function main(): Promise<void> {
         );
       }
       console.log(
-        `[3/8] --force-rebuild on branch "${branch}": overwriting existing version "${version}"`,
+        `[2/6] --force-rebuild on branch "${branch}": overwriting existing version "${version}"`,
       );
       fs.rmSync(versionDir, { recursive: true, force: true });
     } else {
@@ -128,11 +110,11 @@ async function main(): Promise<void> {
       );
     }
   } else {
-    console.log(`[3/8] Overwrite check passed (new version)`);
+    console.log(`[2/6] Overwrite check passed (new version)`);
   }
 
-  // Step 4: Create version snapshot directory structure
-  console.log(`[4/8] Building version snapshot for ${version}`);
+  // Step 3: Create version snapshot directory structure
+  console.log(`[3/6] Building version snapshot for ${version}`);
   fs.mkdirSync(versionDir, { recursive: true });
 
   const snapshotMetaPath = path.join(versionDir, 'metadata.json');
@@ -161,13 +143,13 @@ async function main(): Promise<void> {
       }
     }
 
-    // Step 5: Build deployment ZIP
-    console.log(`[5/8] Building deployment ZIP: ${version}.zip`);
+    // Step 4: Build deployment ZIP
+    console.log(`[4/6] Building deployment ZIP: ${version}.zip`);
     const zipBuilder = new ZipBuilder(pkg.packageDir, version);
     zipBuilder.buildDeploymentZip(deployZipPath);
 
     // Build source archive
-    console.log(`[6/8] Building source archive: ${version}-src.zip`);
+    console.log(`[5/6] Building source archive: ${version}-src.zip`);
     zipBuilder.buildSourceZip(srcZipPath);
 
     // Step 6: Compute checksums
@@ -176,8 +158,7 @@ async function main(): Promise<void> {
     console.log(`       deploy sha256: ${deployZipSha256}`);
     console.log(`       src    sha256: ${srcZipSha256}`);
 
-    // Step 7: Upsert manifest.json
-    console.log(`[7/8] Updating versions/manifest.json`);
+    console.log(`[6/6] Updating versions/manifest.json`);
     const manifestManager = new ManifestManager(pkg.manifestPath, packageId);
     const manifest = manifestManager.load();
     const updatedManifest = manifestManager.upsert(manifest, {
@@ -193,23 +174,6 @@ async function main(): Promise<void> {
     // Update packages/index.json
     const indexPath = path.join(repoRoot, 'packages', 'index.json');
     new IndexManager(indexPath).update(packageId, metadata, updatedManifest.latest);
-
-    // Step 8: Auto-invoke package-build-validate
-    console.log(`[8/8] Running package-build-validate`);
-    const validateReport = new SnapshotValidator(packageId, version, packagesDir).validate();
-    for (const w of validateReport.warnings) {
-      console.warn(`  [WARN]  ${w.message}`);
-    }
-    for (const e of validateReport.errors) {
-      console.error(`  [ERROR] (${e.code}) ${e.message}`);
-    }
-    if (!validateReport.passed) {
-      rollback(versionDir);
-      console.error(
-        `Build validation failed for version "${version}". Changes rolled back.`,
-      );
-      process.exit(1);
-    }
   } catch (error) {
     rollback(versionDir);
     if (error instanceof PackageError) {

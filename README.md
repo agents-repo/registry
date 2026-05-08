@@ -66,12 +66,15 @@ The scripts manage all versioned artifacts.
 # 1. Validate working-state source files
 npm run package:validate -- --package <id>
 
-# 2. Build and publish a version snapshot (chains build-validate automatically)
+# 2. Build and publish a version snapshot
 npm run package:build -- --package <id>
 
-# 3. Deep artifact verification (also auto-invoked by package:build)
+# 3. Deep artifact verification
 npm run package:build-validate -- --package <id>
 ```
+
+Scripts are intentionally single-responsibility. They do not chain each other;
+orchestration is performed externally (for example by CI or AI agents).
 
 ### Overwrite protection
 
