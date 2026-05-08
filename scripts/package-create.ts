@@ -1,16 +1,11 @@
 #!/usr/bin/env tsx
 /**
- * package-create - Interactive and non-interactive scaffolding for new registry packages.
+ * package-create - Args-only scaffolding for new registry packages.
  *
- * Interactive usage:
- *   npm run package:create
- *   npm run package:create -- --package <id>
+ * Usage:
+ *   npm run package:create -- --package <id> --template <template-id> --description "..."
  *
- * Non-interactive usage:
- *   npm run package:create -- --non-interactive --package <id> --template <template-id> --description "..."
- *
- * Non-interactive flags:
- *   --non-interactive
+ * Flags:
  *   --package <id>
  *   --template <single-agent|single-agent-flows|multi-agent|blank>
  *   --name <value>
@@ -29,43 +24,11 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { createInterface, Interface } from 'node:readline';
 import { fileURLToPath } from 'node:url';
 import { PackageScaffolder } from './lib/scaffolder';
 import type { AgentDef, UserMetadata } from './lib/scaffolder';
 
 const scriptDir = fileURLToPath(new URL('.', import.meta.url));
-
-// ---------------------------------------------------------------------------
-// Prompt helpers
-// ---------------------------------------------------------------------------
-
-let rl: Interface | undefined;
-
-function ensureReadline(): Interface {
-  if (!rl) {
-    rl = createInterface({
-      input: process.stdin,
-      output: process.stdout,
-    });
-  }
-  return rl;
-}
-
-async function prompt(question: string): Promise<string> {
-  return new Promise((resolve) => {
-    ensureReadline().question(question, (answer) => {
-      resolve(answer);
-    });
-  });
-}
-
-function closePrompt(): void {
-  if (rl) {
-    rl.close();
-    rl = undefined;
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Validation helpers
@@ -77,7 +40,6 @@ function isValidPackageId(id: string): boolean {
 
 function fail(message: string): never {
   console.error(`Error: ${message}`);
-  closePrompt();
   process.exit(1);
 }
 
@@ -132,7 +94,6 @@ const TEMPLATES: Template[] = [
 // ---------------------------------------------------------------------------
 
 interface ParsedArgs {
-  nonInteractive: boolean;
   help: boolean;
   packageId?: string;
   templateId?: string;
@@ -150,7 +111,6 @@ interface ParsedArgs {
 function parseArgs(argv: string[]): ParsedArgs {
   const args = argv.slice(2);
   const parsed: ParsedArgs = {
-    nonInteractive: false,
     help: false,
     agents: [],
     flows: [],
@@ -195,10 +155,6 @@ function parseArgs(argv: string[]): ParsedArgs {
   for (let i = 0; i < args.length; i += 1) {
     const arg = args[i];
 
-    if (arg === '--non-interactive') {
-      parsed.nonInteractive = true;
-      continue;
-    }
     if (arg === '--help' || arg === '-h') {
       parsed.help = true;
       continue;
@@ -230,12 +186,8 @@ function requireArgValue(flag: string, value: string | undefined): string {
 
 function printHelp(): void {
   console.log('package-create usage:\n');
-  console.log('Interactive:');
-  console.log('  npm run package:create');
-  console.log('  npm run package:create -- --package hello-agent');
-  console.log('\nNon-interactive (AI/programmatic):');
-  console.log('  npm run package:create -- --non-interactive --package hello-agent --template single-agent --description "Hello package"');
-  console.log('  npm run package:create -- --non-interactive --package hello-agent --template multi-agent --description "Hello package" --agent custom-agent|Custom Agent|Custom work --flow intake-flow|Intake Flow|Coordinates requests');
+  console.log('  npm run package:create -- --package hello-agent --template single-agent --description "Hello package"');
+  console.log('  npm run package:create -- --package hello-agent --template multi-agent --description "Hello package" --agent custom-agent|Custom Agent|Custom work --flow intake-flow|Intake Flow|Coordinates requests');
   console.log('\nTemplates: single-agent, single-agent-flows, multi-agent, blank');
 }
 
@@ -316,130 +268,7 @@ function ensureUniqueEntityIds(agents: AgentDef[], flows: AgentDef[]): void {
 }
 
 // ---------------------------------------------------------------------------
-// Interactive collection
-// ---------------------------------------------------------------------------
-
-async function getAndValidatePackageIdInteractive(prefilled?: string): Promise<string> {
-  let packageId = prefilled;
-
-  if (!packageId) {
-    packageId = await prompt('Enter package ID (kebab-case): ');
-  }
-
-  packageId = packageId.trim();
-
-  if (!isValidPackageId(packageId)) {
-    fail(`Invalid package ID: "${packageId}". Must be lowercase alphanumeric with hyphens.`);
-  }
-
-  ensurePackageDoesNotExist(packageId);
-  return packageId;
-}
-
-async function selectTemplateInteractive(): Promise<Template> {
-  console.log('\n--- Package Templates ---');
-  TEMPLATES.forEach((t, i) => {
-    console.log(`  ${i + 1}. ${t.label}`);
-    console.log(`     ${t.description}`);
-  });
-
-  const choice = (await prompt('\nSelect template (1-4): ')).trim();
-  const index = Number.parseInt(choice, 10) - 1;
-
-  if (index < 0 || index >= TEMPLATES.length) {
-    fail('Invalid template selection');
-  }
-
-  return TEMPLATES[index];
-}
-
-async function collectMetadataInteractive(packageId: string): Promise<UserMetadata> {
-  console.log('\n--- Package Metadata ---');
-
-  const name = (await prompt(`Package name [${packageIdToName(packageId)}]: `)).trim() || packageIdToName(packageId);
-
-  const description = (await prompt('Description (1-300 chars): ')).trim();
-  validateDescription(description);
-
-  const owner = (await prompt('Owner/Organization [agents-repo]: ')).trim() || 'agents-repo';
-
-  const tagsInput = (await prompt('Tags (comma-separated) [agent,test]: ')).trim();
-  const tags = tagsInput
-    ? tagsInput.split(',').map((t) => t.trim().toLowerCase()).filter(Boolean)
-    : ['agent', 'test'];
-  validateTags(tags);
-
-  const homepage = (await prompt(`Homepage [https://github.com/${owner}/${packageId}]: `)).trim() || `https://github.com/${owner}/${packageId}`;
-
-  const repository = (await prompt(`Repository [https://github.com/${owner}/${packageId}]: `)).trim() || `https://github.com/${owner}/${packageId}`;
-
-  const maintainersInput = (await prompt('Maintainers (comma-separated, optional): ')).trim();
-  const maintainers = maintainersInput
-    ? maintainersInput.split(',').map((m) => m.trim()).filter(Boolean)
-    : undefined;
-
-  return {
-    name,
-    description,
-    owner,
-    tags,
-    homepage,
-    repository,
-    maintainers,
-  };
-}
-
-async function collectAgentsInteractive(initialAgents: Array<{ id: string; name: string }>): Promise<AgentDef[]> {
-  const agents: AgentDef[] = [];
-
-  for (const a of initialAgents) {
-    const desc = (await prompt(`Description for "${a.name}" agent: `)).trim() || a.name;
-    agents.push({ id: a.id, name: a.name, description: desc });
-  }
-
-  while (true) {
-    const more = (await prompt('\nAdd more agents? (y/n) [n]: ')).trim().toLowerCase();
-    if (more !== 'y') break;
-
-    const agentId = (await prompt('Agent ID (kebab-case): ')).trim();
-    if (!isValidPackageId(agentId)) {
-      console.error('Invalid agent ID');
-      continue;
-    }
-
-    const agentName = (await prompt('Agent name: ')).trim() || agentId;
-    const agentDesc = (await prompt('Description: ')).trim() || agentName;
-    agents.push({ id: agentId, name: agentName, description: agentDesc });
-  }
-
-  return agents;
-}
-
-async function collectFlowsInteractive(hasFlows: boolean): Promise<AgentDef[]> {
-  if (!hasFlows) return [];
-
-  const flows: AgentDef[] = [];
-
-  while (true) {
-    const more = (await prompt('\nAdd flows? (y/n) [n]: ')).trim().toLowerCase();
-    if (more !== 'y') break;
-
-    const flowId = (await prompt('Flow ID (kebab-case): ')).trim();
-    if (!isValidPackageId(flowId)) {
-      console.error('Invalid flow ID');
-      continue;
-    }
-
-    const flowName = (await prompt('Flow name: ')).trim() || flowId;
-    const flowDesc = (await prompt('Description: ')).trim() || flowName;
-    flows.push({ id: flowId, name: flowName, description: flowDesc });
-  }
-
-  return flows;
-}
-
-// ---------------------------------------------------------------------------
-// Non-interactive collection
+// Args collection
 // ---------------------------------------------------------------------------
 
 function parseEntitySpec(kind: 'agent' | 'flow', value: string): AgentDef {
@@ -507,7 +336,7 @@ function mergeTemplateAndCustomAgents(template: Template, custom: AgentDef[]): A
   return Array.from(byId.values());
 }
 
-function buildCreationRequestNonInteractive(parsed: ParsedArgs): CreationRequest {
+function buildCreationRequest(parsed: ParsedArgs): CreationRequest {
   const packageId = requireArgValue('--package', parsed.packageId);
   if (!isValidPackageId(packageId)) {
     fail(`Invalid package ID: ${packageId}`);
@@ -541,45 +370,7 @@ function buildCreationRequestNonInteractive(parsed: ParsedArgs): CreationRequest
 // Main entry point
 // ---------------------------------------------------------------------------
 
-async function buildCreationRequestInteractive(parsed: ParsedArgs): Promise<CreationRequest> {
-  const packageId = await getAndValidatePackageIdInteractive(parsed.packageId);
-  console.log(`Package ID: ${packageId}`);
-
-  const template = await selectTemplateInteractive();
-  console.log(`Template: ${template.label}`);
-
-  const metadata = await collectMetadataInteractive(packageId);
-  console.log('Metadata collected');
-
-  const agents = await collectAgentsInteractive(template.agents);
-  const flows = await collectFlowsInteractive(template.hasFlows);
-
-  ensureUniqueEntityIds(agents, flows);
-
-  return {
-    packageId,
-    template,
-    metadata,
-    agents,
-    flows,
-  };
-}
-
-async function confirmInteractive(request: CreationRequest): Promise<boolean> {
-  console.log('\n--- Summary ---');
-  console.log(`Package ID: ${request.packageId}`);
-  console.log(`Name: ${request.metadata.name}`);
-  console.log(`Description: ${request.metadata.description}`);
-  console.log(`Owner: ${request.metadata.owner}`);
-  console.log(`Tags: ${request.metadata.tags.join(', ')}`);
-  console.log(`Agents: ${request.agents.map((a) => a.id).join(', ') || '(none)'}`);
-  console.log(`Flows: ${request.flows.map((f) => f.id).join(', ') || '(none)'}`);
-
-  const confirm = (await prompt('\nProceed with creation? (y/n) [y]: ')).trim().toLowerCase();
-  return confirm !== 'n';
-}
-
-async function main(): Promise<void> {
+function main(): void {
   const parsed = parseArgs(process.argv);
 
   if (parsed.help) {
@@ -590,19 +381,7 @@ async function main(): Promise<void> {
   console.log('\nCopilot Agents Registry - Package Create\n');
 
   try {
-    let request: CreationRequest;
-
-    if (parsed.nonInteractive) {
-      request = buildCreationRequestNonInteractive(parsed);
-      console.log('Mode: non-interactive');
-    } else {
-      request = await buildCreationRequestInteractive(parsed);
-      const proceed = await confirmInteractive(request);
-      if (!proceed) {
-        console.log('Creation cancelled');
-        return;
-      }
-    }
+    const request = buildCreationRequest(parsed);
 
     const repoRoot = path.resolve(scriptDir, '..');
     new PackageScaffolder(
@@ -619,13 +398,7 @@ async function main(): Promise<void> {
   } catch (error) {
     console.error('Error:', error);
     process.exit(1);
-  } finally {
-    closePrompt();
   }
 }
 
-main().catch((err) => {
-  console.error('Fatal error:', err);
-  closePrompt();
-  process.exit(1);
-});
+main();
