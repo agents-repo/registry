@@ -12,8 +12,8 @@
  * Exits 0 on success, non-zero on any validation error.
  */
 
-import path from 'path';
-import { validatePackage } from './lib/validate-package';
+import path from 'node:path';
+import { PackageValidator } from './lib/validate-package';
 
 // ---------------------------------------------------------------------------
 // CLI argument parsing
@@ -41,7 +41,7 @@ function main(): void {
 
   console.log(`Validating package: ${packageId}`);
 
-  const report = validatePackage(packageId, packagesDir);
+  const report = new PackageValidator(packageId, packagesDir).validate();
 
   for (const w of report.warnings) {
     console.warn(`  [WARN]  ${w.message}`);

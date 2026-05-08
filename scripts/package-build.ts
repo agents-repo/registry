@@ -22,23 +22,17 @@
  * Exits 0 on success, non-zero on failure.
  */
 
-import crypto from 'crypto';
-import fs from 'fs';
-import path from 'path';
-import AdmZip from 'adm-zip';
-import semver from 'semver';
+import fs from 'node:fs';
+import path from 'node:path';
 import { ErrorCode, PackageError } from './lib/errors';
-import { parseFrontmatter } from './lib/frontmatter';
-import { getCurrentBranch, isProtectedBranch } from './lib/git';
-import type {
-  Manifest,
-  ManifestVersionEntry,
-  PackageIndex,
-  PackageIndexEntry,
-  PackageMetadata,
-} from './lib/types';
-import { validatePackage } from './lib/validate-package';
-import { runBuildValidate } from './package-build-validate';
+import { GitContext } from './lib/git';
+import { IndexManager } from './lib/index-manager';
+import { ManifestManager } from './lib/manifest-manager';
+import { Package } from './lib/package';
+import { PackageValidator } from './lib/validate-package';
+import { SnapshotValidator } from './lib/snapshot-validator';
+import { ZipBuilder } from './lib/zip-builder';
+import { Checksum } from './lib/checksum';
 
 // ---------------------------------------------------------------------------
 // CLI argument parsing
@@ -60,166 +54,6 @@ function parseArgs(argv: string[]): BuildArgs {
     packageId: args[idx + 1],
     forceRebuild: args.includes('--force-rebuild'),
   };
-}
-
-// ---------------------------------------------------------------------------
-// SHA-256 helper
-// ---------------------------------------------------------------------------
-
-function sha256File(filePath: string): string {
-  const data = fs.readFileSync(filePath);
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// ---------------------------------------------------------------------------
-// ZIP builders
-// ---------------------------------------------------------------------------
-
-/**
- * Builds the deployment ZIP: only agents/<id>.agent.md entries for all
- * agents and flows in the package, with frontmatter version stamped to
- * match the release version.
- */
-function buildDeploymentZip(
-  packageDir: string,
-  version: string,
-  outputPath: string,
-): void {
-  const zip = new AdmZip();
-
-  function addAgentMd(srcPath: string, entryName: string): void {
-    let content = fs.readFileSync(srcPath, 'utf-8');
-    const fm = parseFrontmatter(content);
-    if (fm['version'] !== version) {
-      // Stamp the correct version into frontmatter
-      content = content.replace(
-        /^(---\r?\n[\s\S]*?version:\s*)([^\r\n]+)/m,
-        `$1${version}`,
-      );
-    }
-    zip.addFile(entryName, Buffer.from(content, 'utf-8'));
-  }
-
-  const agentsDir = path.join(packageDir, 'agents');
-  if (fs.existsSync(agentsDir)) {
-    for (const f of fs.readdirSync(agentsDir)) {
-      if (f.endsWith('.agent.md')) {
-        addAgentMd(path.join(agentsDir, f), `agents/${f}`);
-      }
-    }
-  }
-
-  const flowsDir = path.join(packageDir, 'flows');
-  if (fs.existsSync(flowsDir)) {
-    for (const f of fs.readdirSync(flowsDir)) {
-      if (f.endsWith('.agent.md')) {
-        // Flows are merged into agents/ in the deployment ZIP
-        addAgentMd(path.join(flowsDir, f), `agents/${f}`);
-      }
-    }
-  }
-
-  zip.writeZip(outputPath);
-}
-
-/**
- * Builds the source archive ZIP: full package source except versions/.
- */
-function buildSourceZip(
-  packageDir: string,
-  outputPath: string,
-): void {
-  const zip = new AdmZip();
-
-  function addDir(dir: string, prefix: string): void {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (entry.name === 'versions') continue;
-      const fullPath = path.join(dir, entry.name);
-      const zipName = prefix ? `${prefix}/${entry.name}` : entry.name;
-      if (entry.isDirectory()) {
-        addDir(fullPath, zipName);
-      } else {
-        zip.addFile(zipName, fs.readFileSync(fullPath));
-      }
-    }
-  }
-
-  addDir(packageDir, '');
-  zip.writeZip(outputPath);
-}
-
-// ---------------------------------------------------------------------------
-// Manifest helpers
-// ---------------------------------------------------------------------------
-
-function loadManifest(manifestPath: string, packageId: string): Manifest {
-  if (fs.existsSync(manifestPath)) {
-    return JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) as Manifest;
-  }
-  return {
-    schemaVersion: '1.0.0',
-    name: packageId,
-    latest: '',
-    versions: [],
-  };
-}
-
-function upsertManifestEntry(
-  manifest: Manifest,
-  entry: ManifestVersionEntry,
-): Manifest {
-  const existing = manifest.versions.findIndex(
-    (v) => v.version === entry.version,
-  );
-  if (existing >= 0) {
-    manifest.versions[existing] = entry;
-  } else {
-    manifest.versions.push(entry);
-  }
-  manifest.versions.sort((a, b) => semver.compare(a.version, b.version));
-  const maxVer = semver.maxSatisfying(
-    manifest.versions.map((v) => v.version),
-    '*',
-  );
-  manifest.latest = maxVer ?? entry.version;
-  return manifest;
-}
-
-// ---------------------------------------------------------------------------
-// Index helpers
-// ---------------------------------------------------------------------------
-
-function updateIndex(
-  indexPath: string,
-  packageId: string,
-  metadata: PackageMetadata,
-  manifestLatest: string,
-): void {
-  let index: PackageIndex;
-  if (fs.existsSync(indexPath)) {
-    index = JSON.parse(fs.readFileSync(indexPath, 'utf-8')) as PackageIndex;
-  } else {
-    index = { schemaVersion: '1.0.0', updatedAt: '', packages: [] };
-  }
-
-  const entry: PackageIndexEntry = {
-    id: packageId,
-    name: metadata.name,
-    description: metadata.description,
-    latest: manifestLatest,
-    tags: metadata.tags,
-  };
-
-  const existing = index.packages.findIndex((p) => p.id === packageId);
-  if (existing >= 0) {
-    index.packages[existing] = entry;
-  } else {
-    index.packages.push(entry);
-    index.packages.sort((a, b) => a.id.localeCompare(b.id));
-  }
-
-  index.updatedAt = new Date().toISOString();
-  fs.writeFileSync(indexPath, JSON.stringify(index, null, 4) + '\n', 'utf-8');
 }
 
 // ---------------------------------------------------------------------------
@@ -246,11 +80,11 @@ async function main(): Promise<void> {
 
   const repoRoot = path.resolve(__dirname, '..');
   const packagesDir = path.join(repoRoot, 'packages');
-  const packageDir = path.join(packagesDir, packageId);
+  const pkg = new Package(packageId, packagesDir);
 
   // Step 1: Internal validation
   console.log(`[1/8] Validating package: ${packageId}`);
-  const report = validatePackage(packageId, packagesDir);
+  const report = new PackageValidator(packageId, packagesDir).validate();
   for (const w of report.warnings) {
     console.warn(`  [WARN]  ${w.message}`);
   }
@@ -263,21 +97,19 @@ async function main(): Promise<void> {
   }
 
   // Step 2: Read metadata to get target version
-  const metadataPath = path.join(packageDir, 'metadata.json');
-  const metadata = JSON.parse(
-    fs.readFileSync(metadataPath, 'utf-8'),
-  ) as PackageMetadata;
+  const metadata = pkg.loadMetadata();
   const version = metadata.version;
   console.log(`[2/8] Target version: ${version}`);
 
   // Step 3: Overwrite-protection checks
-  const versionDir = path.join(packageDir, 'versions', version);
+  const versionDir = pkg.versionDir(version);
   const versionExists = fs.existsSync(versionDir);
+  const git = new GitContext();
 
   if (versionExists) {
-    const branch = await getCurrentBranch();
+    const branch = await git.getBranch();
     if (forceRebuild) {
-      if (isProtectedBranch(branch)) {
+      if (git.isProtected(branch)) {
         throw new PackageError(
           ErrorCode.ERR_OVERWRITE_PROTECTED_BRANCH,
           `Cannot overwrite version "${version}" on protected branch "${branch}". ` +
@@ -309,53 +141,46 @@ async function main(): Promise<void> {
 
   try {
     // Copy metadata.json verbatim
-    fs.copyFileSync(metadataPath, snapshotMetaPath);
+    fs.copyFileSync(pkg.metadataPath, snapshotMetaPath);
 
     // Copy agents/ tree
-    const agentsDir = path.join(packageDir, 'agents');
-    if (fs.existsSync(agentsDir)) {
+    if (fs.existsSync(pkg.agentsDir)) {
       const snapshotAgentsDir = path.join(versionDir, 'agents');
       fs.mkdirSync(snapshotAgentsDir, { recursive: true });
-      for (const f of fs.readdirSync(agentsDir)) {
-        fs.copyFileSync(
-          path.join(agentsDir, f),
-          path.join(snapshotAgentsDir, f),
-        );
+      for (const f of fs.readdirSync(pkg.agentsDir)) {
+        fs.copyFileSync(path.join(pkg.agentsDir, f), path.join(snapshotAgentsDir, f));
       }
     }
 
     // Copy flows/ tree
-    const flowsDir = path.join(packageDir, 'flows');
-    if (fs.existsSync(flowsDir)) {
+    if (fs.existsSync(pkg.flowsDir)) {
       const snapshotFlowsDir = path.join(versionDir, 'flows');
       fs.mkdirSync(snapshotFlowsDir, { recursive: true });
-      for (const f of fs.readdirSync(flowsDir)) {
-        fs.copyFileSync(
-          path.join(flowsDir, f),
-          path.join(snapshotFlowsDir, f),
-        );
+      for (const f of fs.readdirSync(pkg.flowsDir)) {
+        fs.copyFileSync(path.join(pkg.flowsDir, f), path.join(snapshotFlowsDir, f));
       }
     }
 
     // Step 5: Build deployment ZIP
     console.log(`[5/8] Building deployment ZIP: ${version}.zip`);
-    buildDeploymentZip(packageDir, version, deployZipPath);
+    const zipBuilder = new ZipBuilder(pkg.packageDir, version);
+    zipBuilder.buildDeploymentZip(deployZipPath);
 
     // Build source archive
     console.log(`[6/8] Building source archive: ${version}-src.zip`);
-    buildSourceZip(packageDir, srcZipPath);
+    zipBuilder.buildSourceZip(srcZipPath);
 
     // Step 6: Compute checksums
-    const deployZipSha256 = sha256File(deployZipPath);
-    const srcZipSha256 = sha256File(srcZipPath);
+    const deployZipSha256 = Checksum.sha256(deployZipPath);
+    const srcZipSha256 = Checksum.sha256(srcZipPath);
     console.log(`       deploy sha256: ${deployZipSha256}`);
     console.log(`       src    sha256: ${srcZipSha256}`);
 
     // Step 7: Upsert manifest.json
     console.log(`[7/8] Updating versions/manifest.json`);
-    const manifestPath = path.join(packageDir, 'versions', 'manifest.json');
-    const manifest = loadManifest(manifestPath, packageId);
-    const updatedManifest = upsertManifestEntry(manifest, {
+    const manifestManager = new ManifestManager(pkg.manifestPath, packageId);
+    const manifest = manifestManager.load();
+    const updatedManifest = manifestManager.upsert(manifest, {
       version,
       artifact: `${version}.zip`,
       sha256: deployZipSha256,
@@ -363,19 +188,15 @@ async function main(): Promise<void> {
       srcSha256: srcZipSha256,
       createdAt: new Date().toISOString(),
     });
-    fs.writeFileSync(
-      manifestPath,
-      JSON.stringify(updatedManifest, null, 4) + '\n',
-      'utf-8',
-    );
+    manifestManager.save(updatedManifest);
 
     // Update packages/index.json
     const indexPath = path.join(repoRoot, 'packages', 'index.json');
-    updateIndex(indexPath, packageId, metadata, updatedManifest.latest);
+    new IndexManager(indexPath).update(packageId, metadata, updatedManifest.latest);
 
     // Step 8: Auto-invoke package-build-validate
     console.log(`[8/8] Running package-build-validate`);
-    const validateReport = runBuildValidate(packageId, version, packagesDir);
+    const validateReport = new SnapshotValidator(packageId, version, packagesDir).validate();
     for (const w of validateReport.warnings) {
       console.warn(`  [WARN]  ${w.message}`);
     }

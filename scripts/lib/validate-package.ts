@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import semver from 'semver';
 import { parseFrontmatter } from './frontmatter';
 import type {
@@ -413,6 +413,24 @@ function validateManifest(
   }
 
   return m as unknown as Manifest;
+}
+
+// ---------------------------------------------------------------------------
+// PackageValidator class
+// ---------------------------------------------------------------------------
+
+export class PackageValidator {
+  private readonly packageId: string;
+  private readonly packagesDir: string;
+
+  constructor(packageId: string, packagesDir: string) {
+    this.packageId = packageId;
+    this.packagesDir = packagesDir;
+  }
+
+  validate(): ValidationReport {
+    return validatePackage(this.packageId, this.packagesDir);
+  }
 }
 
 // ---------------------------------------------------------------------------

@@ -30,7 +30,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createInterface, Interface } from 'node:readline';
-import type { PackageMetadata } from './lib/types';
+import { PackageScaffolder } from './lib/scaffolder';
+import type { AgentDef, UserMetadata } from './lib/scaffolder';
 
 // ---------------------------------------------------------------------------
 // Prompt helpers
@@ -69,10 +70,6 @@ function closePrompt(): void {
 
 function isValidPackageId(id: string): boolean {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id);
-}
-
-function currentIsoTimestamp(): string {
-  return new Date().toISOString();
 }
 
 function fail(message: string): never {
@@ -240,73 +237,8 @@ function printHelp(): void {
 }
 
 // ---------------------------------------------------------------------------
-// Template content generators
-// ---------------------------------------------------------------------------
-
-function generateAgentMarkdown(id: string, description: string): string {
-  return `---
-name: ${id}
-description: ${description}
-version: 1.0.0
-license: MIT
----
-
-# Overview
-
-${description}
-
-## Responsibilities
-
-- Primary responsibility placeholder
-- Secondary responsibility placeholder
-
-## Constraints
-
-- Constraint or limitation placeholder
-
-## Interaction Contract
-
-Input: Describe expected input type or format
-Output: Describe expected output type or format
-`;
-}
-
-function generateAgentMetadata(id: string, description: string): object {
-  return {
-    schemaVersion: '1.0.0',
-    name: id,
-    description,
-  };
-}
-
-function generateEmptyManifest(packageId: string): object {
-  return {
-    schemaVersion: '1.0.0',
-    name: packageId,
-    latest: '',
-    versions: [],
-  };
-}
-
-// ---------------------------------------------------------------------------
 // Mode-normalized models
 // ---------------------------------------------------------------------------
-
-interface UserMetadata {
-  name: string;
-  description: string;
-  owner: string;
-  tags: string[];
-  homepage: string;
-  repository: string;
-  maintainers?: string[];
-}
-
-interface AgentDef {
-  id: string;
-  name: string;
-  description: string;
-}
 
 interface CreationRequest {
   packageId: string;
@@ -603,80 +535,6 @@ function buildCreationRequestNonInteractive(parsed: ParsedArgs): CreationRequest
 }
 
 // ---------------------------------------------------------------------------
-// File creation
-// ---------------------------------------------------------------------------
-
-function createPackageStructure(
-  packageId: string,
-  metadata: UserMetadata,
-  agents: AgentDef[],
-  flows: AgentDef[],
-): void {
-  const repoRoot = path.resolve(__dirname, '..');
-  const packageDir = path.join(repoRoot, 'packages', packageId);
-
-  fs.mkdirSync(path.join(packageDir, 'agents'), { recursive: true });
-  fs.mkdirSync(path.join(packageDir, 'flows'), { recursive: true });
-  fs.mkdirSync(path.join(packageDir, 'versions'), { recursive: true });
-
-  const now = currentIsoTimestamp();
-  const packageMetadata: PackageMetadata = {
-    schemaVersion: '1.0.0',
-    name: packageId,
-    description: metadata.description,
-    owner: metadata.owner,
-    license: 'MIT',
-    homepage: metadata.homepage,
-    repository: metadata.repository,
-    tags: metadata.tags,
-    createdAt: now,
-    updatedAt: now,
-    version: '1.0.0',
-    ...(metadata.maintainers && { maintainers: metadata.maintainers }),
-  };
-
-  fs.writeFileSync(
-    path.join(packageDir, 'metadata.json'),
-    JSON.stringify(packageMetadata, null, 4) + '\n',
-    'utf-8',
-  );
-
-  for (const agent of agents) {
-    fs.writeFileSync(
-      path.join(packageDir, 'agents', `${agent.id}.agent.md`),
-      generateAgentMarkdown(agent.id, agent.description),
-      'utf-8',
-    );
-
-    fs.writeFileSync(
-      path.join(packageDir, 'agents', `${agent.id}.metadata.json`),
-      JSON.stringify(generateAgentMetadata(agent.id, agent.description), null, 4) + '\n',
-      'utf-8',
-    );
-  }
-
-  for (const flow of flows) {
-    fs.writeFileSync(
-      path.join(packageDir, 'flows', `${flow.id}.agent.md`),
-      generateAgentMarkdown(flow.id, flow.description),
-      'utf-8',
-    );
-
-    fs.writeFileSync(
-      path.join(packageDir, 'flows', `${flow.id}.metadata.json`),
-      JSON.stringify(generateAgentMetadata(flow.id, flow.description), null, 4) + '\n',
-      'utf-8',
-    );
-  }
-
-  fs.writeFileSync(
-    path.join(packageDir, 'versions', 'manifest.json'),
-    JSON.stringify(generateEmptyManifest(packageId), null, 4) + '\n',
-    'utf-8',
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Main entry point
 // ---------------------------------------------------------------------------
 
@@ -743,7 +601,11 @@ async function main(): Promise<void> {
       }
     }
 
-    createPackageStructure(request.packageId, request.metadata, request.agents, request.flows);
+    const repoRoot = path.resolve(__dirname, '..');
+    new PackageScaffolder(
+      { packageId: request.packageId, metadata: request.metadata, agents: request.agents, flows: request.flows },
+      repoRoot,
+    ).scaffold();
 
     console.log('\nPackage created successfully\n');
     console.log(`Location: packages/${request.packageId}/\n`);
