@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { getSchemaCurrentVersion } from './schema-versions';
 import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 
 export class IndexManager {
@@ -13,7 +14,7 @@ export class IndexManager {
     if (fs.existsSync(this.indexPath)) {
       index = JSON.parse(fs.readFileSync(this.indexPath, 'utf-8')) as PackageIndex;
     } else {
-      index = { schemaVersion: '1.0.0', updatedAt: '', packages: [] };
+      index = { schemaVersion: getSchemaCurrentVersion('index'), updatedAt: '', packages: [] };
     }
 
     const entry: PackageIndexEntry = {

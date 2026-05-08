@@ -141,8 +141,10 @@ Package rules:
 - Each release includes `<version>.zip` and `<version>-src.zip`.
 - Use semantic versioning with no `v` prefix.
 - Use SHA-256 checksums.
-- `metadata.json` and all `.metadata.json` sidecars must include
-    `schemaVersion: "1.0.0"`.
+- `metadata.json` and all `.metadata.json` sidecars must include a
+    `schemaVersion` supported by `specs/schema-versions.json`.
+- Deprecated schema versions produce warnings; end-of-life schema versions
+    are rejected by validation tooling.
 - The package root `metadata.json`, `agents/`, and `flows/` describe the
     current working state.
 - All root `.agent.md` files in `agents/` and `flows/` must share the
@@ -169,6 +171,7 @@ Primary spec documents:
 - `specs/flow-format.md`
 - `specs/versioning-rules.md`
 - `specs/index-schema.md`
+- `specs/schema-versions.json`
 
 ## Related Repositories
 

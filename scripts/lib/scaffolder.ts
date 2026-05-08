@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { getSchemaCurrentVersion } from './schema-versions';
 import type { PackageMetadata } from './types';
 
 export interface AgentDef {
@@ -42,9 +43,14 @@ export class PackageScaffolder {
     fs.mkdirSync(path.join(packageDir, 'flows'), { recursive: true });
     fs.mkdirSync(path.join(packageDir, 'versions'), { recursive: true });
 
+    const packageSchemaVersion = getSchemaCurrentVersion('metadata.package');
+    const agentMetadataSchemaVersion = getSchemaCurrentVersion('metadata.agent');
+    const flowMetadataSchemaVersion = getSchemaCurrentVersion('metadata.flow');
+    const manifestSchemaVersion = getSchemaCurrentVersion('manifest');
+
     const now = new Date().toISOString();
     const packageMetadata: PackageMetadata = {
-      schemaVersion: '1.0.0',
+      schemaVersion: packageSchemaVersion,
       name: packageId,
       description: metadata.description,
       owner: metadata.owner,
@@ -72,7 +78,7 @@ export class PackageScaffolder {
       );
       fs.writeFileSync(
         path.join(packageDir, 'agents', `${agent.id}.metadata.json`),
-        JSON.stringify(this.generateAgentMetadata(agent.id, agent.description), null, 4) + '\n',
+        JSON.stringify(this.generateAgentMetadata(agent.id, agent.description, agentMetadataSchemaVersion), null, 4) + '\n',
         'utf-8',
       );
     }
@@ -85,14 +91,14 @@ export class PackageScaffolder {
       );
       fs.writeFileSync(
         path.join(packageDir, 'flows', `${flow.id}.metadata.json`),
-        JSON.stringify(this.generateAgentMetadata(flow.id, flow.description), null, 4) + '\n',
+        JSON.stringify(this.generateAgentMetadata(flow.id, flow.description, flowMetadataSchemaVersion), null, 4) + '\n',
         'utf-8',
       );
     }
 
     fs.writeFileSync(
       path.join(packageDir, 'versions', 'manifest.json'),
-      JSON.stringify(this.generateEmptyManifest(packageId), null, 4) + '\n',
+      JSON.stringify(this.generateEmptyManifest(packageId, manifestSchemaVersion), null, 4) + '\n',
       'utf-8',
     );
   }
@@ -125,17 +131,17 @@ Output: Describe expected output type or format
 `;
   }
 
-  private generateAgentMetadata(id: string, description: string): object {
+  private generateAgentMetadata(id: string, description: string, schemaVersion: string): object {
     return {
-      schemaVersion: '1.0.0',
+      schemaVersion,
       name: id,
       description,
     };
   }
 
-  private generateEmptyManifest(packageId: string): object {
+  private generateEmptyManifest(packageId: string, schemaVersion: string): object {
     return {
-      schemaVersion: '1.0.0',
+      schemaVersion,
       name: packageId,
       latest: '',
       versions: [],

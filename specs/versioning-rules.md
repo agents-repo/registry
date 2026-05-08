@@ -20,6 +20,18 @@ define a JSON `schemaVersion` field.
 Tooling and processes that enforce versioning behavior SHOULD use the latest
 supported spec document version in this table.
 
+## Schema Lifecycle Policy
+
+- `schemaVersion` values are metadata/manifest/index format versions and are
+  independent from package release versions.
+- Tooling MUST resolve supported schema versions from
+  `specs/schema-versions.json`.
+- New packages SHOULD use the `current` schema version for each schema family.
+- Existing packages MAY continue using older schema versions when they remain
+  in the `supported` set.
+- Tooling SHOULD emit warnings for schema versions marked `deprecated`.
+- Tooling MUST reject schema versions marked `eol`.
+
 ## Package Versioning
 
 - Package versions MUST use semantic versioning: `MAJOR.MINOR.PATCH`.

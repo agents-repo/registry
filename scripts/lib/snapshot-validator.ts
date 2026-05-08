@@ -3,6 +3,7 @@ import path from 'node:path';
 import AdmZip from 'adm-zip';
 import { Checksum } from './checksum';
 import { parseFrontmatter } from './frontmatter';
+import { describeSchemaVersionStatus, getSchemaCurrentVersion } from './schema-versions';
 import type { Manifest, ValidationIssue, ValidationReport } from './types';
 
 export class SnapshotValidator {
@@ -68,6 +69,13 @@ export class SnapshotValidator {
     }
     if (!fs.existsSync(snapshotMetaPath)) {
       issues.push(this.err('ERR_VALIDATION_FAILED', `Missing snapshot metadata.json`));
+    } else {
+      try {
+        const snapshotMeta = JSON.parse(fs.readFileSync(snapshotMetaPath, 'utf-8')) as Record<string, unknown>;
+        issues.push(...this.validateSchemaVersion(snapshotMeta['schemaVersion'], 'Snapshot metadata.json'));
+      } catch {
+        issues.push(this.err('ERR_VALIDATION_FAILED', `Snapshot metadata.json is not valid JSON`));
+      }
     }
 
     // 3. No unexpected files in the version snapshot directory
@@ -162,6 +170,37 @@ export class SnapshotValidator {
 
   private warn(message: string): ValidationIssue {
     return { code: 'WARN', severity: 'warning', message };
+  }
+
+  private validateSchemaVersion(value: unknown, context: string): ValidationIssue[] {
+    const result = describeSchemaVersionStatus('metadata.package', value);
+    const current = getSchemaCurrentVersion('metadata.package');
+    const supported = result.expected.join(', ');
+
+    if (result.status === 'deprecated') {
+      return [
+        this.warn(
+          `${context}: schemaVersion ${JSON.stringify(value)} is deprecated; current is ${JSON.stringify(current)}.`,
+        ),
+      ];
+    }
+    if (result.status === 'eol') {
+      return [
+        this.err(
+          'ERR_METADATA_INVALID',
+          `${context}: schemaVersion ${JSON.stringify(value)} is end-of-life; supported versions are [${supported}].`,
+        ),
+      ];
+    }
+    if (result.status === 'unsupported') {
+      return [
+        this.err(
+          'ERR_METADATA_INVALID',
+          `${context}: unsupported schemaVersion ${JSON.stringify(value)}; supported versions are [${supported}].`,
+        ),
+      ];
+    }
+    return [];
   }
 
   private scanZip(

@@ -2,6 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
 import { parseFrontmatter } from './frontmatter';
+import {
+  describeSchemaVersionStatus,
+  getSchemaCurrentVersion,
+  type SchemaFamily,
+} from './schema-versions';
 import type {
   Manifest,
   PackageMetadata,
@@ -19,6 +24,49 @@ function err(code: string, message: string): ValidationIssue {
 
 function warn(message: string): ValidationIssue {
   return { code: 'WARN', severity: 'warning', message };
+}
+
+function validateSchemaVersion(
+  issues: ValidationIssue[],
+  opts: {
+    family: SchemaFamily;
+    value: unknown;
+    context: string;
+    errorCode: string;
+  },
+): void {
+  const { family, value, context, errorCode } = opts;
+  const result = describeSchemaVersionStatus(family, value);
+  const expected = result.expected.join(', ');
+  const current = getSchemaCurrentVersion(family);
+
+  if (result.status === 'deprecated') {
+    issues.push(
+      warn(
+        `${context}: schemaVersion ${JSON.stringify(value)} is deprecated for ${family}; current is ${JSON.stringify(current)}.`,
+      ),
+    );
+    return;
+  }
+
+  if (result.status === 'eol') {
+    issues.push(
+      err(
+        errorCode,
+        `${context}: schemaVersion ${JSON.stringify(value)} is end-of-life for ${family}; supported versions are [${expected}].`,
+      ),
+    );
+    return;
+  }
+
+  if (result.status === 'unsupported') {
+    issues.push(
+      err(
+        errorCode,
+        `${context}: unsupported schemaVersion ${JSON.stringify(value)} for ${family}; supported versions are [${expected}].`,
+      ),
+    );
+  }
 }
 
 function isHttpsUrl(value: string): boolean {
@@ -68,15 +116,12 @@ function validateMetadata(
   }
 
   const m = metadata as Record<string, unknown>;
-
-  if (m['schemaVersion'] !== '1.0.0') {
-    issues.push(
-      err(
-        'ERR_METADATA_INVALID',
-        `schemaVersion must be "1.0.0", got: ${JSON.stringify(m['schemaVersion'])}`,
-      ),
-    );
-  }
+  validateSchemaVersion(issues, {
+    family: 'metadata.package',
+    value: m['schemaVersion'],
+    context: 'metadata.json',
+    errorCode: 'ERR_METADATA_INVALID',
+  });
 
   if (typeof m['name'] !== 'string' || m['name'] !== packageId) {
     issues.push(
@@ -202,6 +247,22 @@ function validateEntryFiles(
       );
     }
 
+    if (fs.existsSync(metaPath)) {
+      const { data: metaData, error: metaError } = readJsonFile(metaPath);
+      if (metaError) {
+        issues.push(err('ERR_METADATA_INVALID', metaError));
+      } else if (typeof metaData === 'object' && metaData !== null) {
+        const md = metaData as Record<string, unknown>;
+        const family: SchemaFamily = dirLabel === 'agents' ? 'metadata.agent' : 'metadata.flow';
+        validateSchemaVersion(issues, {
+          family,
+          value: md['schemaVersion'],
+          context: `${dirLabel}/${stem}.metadata.json`,
+          errorCode: 'ERR_METADATA_INVALID',
+        });
+      }
+    }
+
     const content = fs.readFileSync(mdPath, 'utf-8');
     const fm = parseFrontmatter(content);
 
@@ -278,14 +339,12 @@ function validateManifest(
 
   const m = data as Record<string, unknown>;
 
-  if (m['schemaVersion'] !== '1.0.0') {
-    issues.push(
-      err(
-        'ERR_VALIDATION_FAILED',
-        `manifest.json schemaVersion must be "1.0.0", got: ${JSON.stringify(m['schemaVersion'])}`,
-      ),
-    );
-  }
+  validateSchemaVersion(issues, {
+    family: 'manifest',
+    value: m['schemaVersion'],
+    context: 'manifest.json',
+    errorCode: 'ERR_VALIDATION_FAILED',
+  });
 
   if (typeof m['name'] !== 'string' || m['name'] !== packageId) {
     issues.push(
@@ -546,7 +605,31 @@ export function validatePackage(
     }
   }
 
-  // 7. Manifest validation (if present)
+  // 7. Frontmatter version must equal metadata.json version
+  const metaVersionForCheck = (() => {
+    const metadataPath = path.join(packageDir, 'metadata.json');
+    if (!fs.existsSync(metadataPath)) return undefined;
+    const { data } = readJsonFile(metadataPath);
+    if (!data || typeof data !== 'object') return undefined;
+    return (data as Record<string, unknown>)['version'] as string | undefined;
+  })();
+
+  if (metaVersionForCheck && semver.valid(metaVersionForCheck)) {
+    const uniqueVersions = new Set(allVersions);
+    if (uniqueVersions.size === 1) {
+      const sharedFrontmatterVersion = Array.from(uniqueVersions)[0];
+      if (sharedFrontmatterVersion !== metaVersionForCheck) {
+        issues.push(
+          err(
+            'ERR_VALIDATION_FAILED',
+            `Frontmatter version "${sharedFrontmatterVersion}" in .agent.md files does not match metadata.json version "${metaVersionForCheck}"`,
+          ),
+        );
+      }
+    }
+  }
+
+  // 8. Manifest validation (if present)
   const manifestPath = path.join(packageDir, 'versions', 'manifest.json');
   if (fs.existsSync(manifestPath)) {
     validateManifest(manifestPath, packageId, issues);

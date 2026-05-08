@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import semver from 'semver';
+import { getSchemaCurrentVersion } from './schema-versions';
 import type { Manifest, ManifestVersionEntry } from './types';
 
 export class ManifestManager {
@@ -16,7 +17,7 @@ export class ManifestManager {
       return JSON.parse(fs.readFileSync(this.manifestPath, 'utf-8')) as Manifest;
     }
     return {
-      schemaVersion: '1.0.0',
+      schemaVersion: getSchemaCurrentVersion('manifest'),
       name: this.packageId,
       latest: '',
       versions: [],

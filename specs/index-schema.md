@@ -20,6 +20,16 @@ release version and not the spec document version (`1.0.0`).
 Tooling MUST reject index files whose `schemaVersion` is not in the table above
 unless it explicitly supports a newer schema version.
 
+Tooling MUST use `specs/schema-versions.json` as the machine-readable source of
+truth for supported, deprecated, and end-of-life `schemaVersion` values.
+
+Lifecycle enforcement:
+
+- `schemaVersion` values marked `deprecated` SHOULD produce a warning.
+- `schemaVersion` values marked `eol` MUST be rejected.
+- New packages SHOULD use the current schema version.
+- Existing packages MAY continue using older supported versions.
+
 ## Purpose
 
 `packages/index.json` is the machine-readable entry point for consumers
@@ -35,7 +45,7 @@ needing to enumerate the `packages/` directory.
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
-| `schemaVersion` | string | yes | MUST be `1.0.0`; see [Schema Version Lifecycle](#schema-version-lifecycle) |
+| `schemaVersion` | string | yes | MUST be a supported `index` schema version from `specs/schema-versions.json`; see [Schema Version Lifecycle](#schema-version-lifecycle) |
 | `updatedAt` | string | yes | RFC 3339; MUST be updated when index changes |
 | `packages` | array | yes | MAY be empty; one entry per package |
 
