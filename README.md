@@ -13,7 +13,7 @@ Registry responsibilities:
 - Store package metadata and manifests.
 - Store versioned deployment ZIPs and source archives for releases.
 - Maintain AI-readable specifications in `specs/`.
-- Provide examples and placeholder validation/build scripts.
+- Provide examples and package-scoped build and validation scripts.
 
 This repository is intentionally data-first and specification-first.
 Runtime logic is out of scope for this initial baseline.
@@ -45,8 +45,6 @@ registry/
             git.ts
             types.ts
             validate-package.ts
-        build.ts
-        validate.ts
         package-validate.ts
         package-build.ts
         package-validate-artifacts.ts
@@ -91,8 +89,6 @@ Contributors and AI agents MUST NOT manually create, modify, or remove any file
 under `versions/`. See `specs/package-format.md` and `specs/versioning-rules.md`.
 
 ## Package Baseline
-
-Package format:
 
 Package format:
 

@@ -5,8 +5,6 @@
   "type": "module",
   "description": "Tooling and validation scripts for the Copilot Agents Registry.",
   "scripts": {
-    "build": "tsx scripts/build.ts",
-    "validate": "tsx scripts/validate.ts",
     "package:validate": "tsx scripts/package-validate.ts",
     "package:build": "tsx scripts/package-build.ts",
     "package:validate-artifacts": "tsx scripts/package-validate-artifacts.ts",
