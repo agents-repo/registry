@@ -49,7 +49,7 @@ registry/
         validate.ts
         package-validate.ts
         package-build.ts
-        package-build-validate.ts
+        package-validate-artifacts.ts
     tsconfig.json
     README.md
     LICENSE
@@ -70,7 +70,7 @@ npm run package:validate -- --package <id>
 npm run package:build -- --package <id>
 
 # 3. Deep artifact verification
-npm run package:build-validate -- --package <id>
+npm run package:validate-artifacts -- --package <id>
 ```
 
 Scripts are intentionally single-responsibility. They do not chain each other;

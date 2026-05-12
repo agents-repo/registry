@@ -49,7 +49,7 @@ supported spec document version in this table.
 - Contributors and AI agents MUST NOT manually create or modify any file
   under `versions/`.
 - The mandatory release pipeline is:
-  `package:validate` → `package:build` → `package:build-validate`.
+  `package:validate` → `package:build` → `package:validate-artifacts`.
 - Pipeline orchestration MUST be explicit (for example CI jobs or AI agents);
   scripts MUST NOT implicitly invoke other pipeline steps.
 

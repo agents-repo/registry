@@ -88,7 +88,7 @@ npm run package:validate -- --package <id>
 npm run package:build -- --package <id>
 
 # 3. Deep artifact verification
-npm run package:build-validate -- --package <id>
+npm run package:validate-artifacts -- --package <id>
 ```
 
 These scripts are single-responsibility and do not chain one another; orchestration

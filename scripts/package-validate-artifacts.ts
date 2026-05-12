@@ -1,10 +1,10 @@
 #!/usr/bin/env tsx
 /**
- * package-build-validate — Deep structural and security validation for a
+ * package-validate-artifacts — Deep structural and security validation for a
  * built package version snapshot.
  *
  * Usage:
- *   npm run package:build-validate -- --package <id> [--version <semver>]
+ *   npm run package:validate-artifacts -- --package <id> [--version <semver>]
  *
  * When --version is omitted, the version is read from packages/<id>/metadata.json.
  *
@@ -49,7 +49,7 @@ function parseArgs(argv: string[]): BuildValidateArgs {
   const verIdx = args.indexOf('--version');
   return {
     packageId: args[pkgIdx + 1],
-    version: verIdx !== -1 ? args[verIdx + 1] : undefined,
+    version: verIdx >= 0 ? args[verIdx + 1] : undefined,
   };
 }
 

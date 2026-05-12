@@ -39,7 +39,7 @@ Contributors and AI agents MUST follow this pipeline to produce a release:
   This command builds both ZIP artifacts, computes SHA-256 checksums, writes
   `versions/<version>/`, updates `versions/manifest.json`, and updates
   `packages/index.json`.
-4. Run `npm run package:build-validate -- --package <id>` for deep structural and
+4. Run `npm run package:validate-artifacts -- --package <id>` for deep structural and
    security inspection of the generated artifacts.
 
 The scripts in this pipeline SHOULD remain single-responsibility and MUST NOT

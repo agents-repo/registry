@@ -55,7 +55,7 @@ If relevant, describe impact on:
 - [ ] `packages/index.json` updated if a package was added, changed,
   or published.
 - [ ] If a package version was published: `npm run package:build` and
-  `npm run package:build-validate` completed successfully and their output
+  `npm run package:validate-artifacts` completed successfully and their output
   has been reviewed.
 - [ ] If a package version was published: no files under `versions/` were
   manually authored or modified outside of `package-build` script output.

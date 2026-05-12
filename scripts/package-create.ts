@@ -394,7 +394,7 @@ function main(): void {
     console.log('Next steps:');
     console.log(`  1. npm run package:validate -- --package ${request.packageId}`);
     console.log(`  2. npm run package:build -- --package ${request.packageId}`);
-    console.log(`  3. npm run package:build-validate -- --package ${request.packageId}\n`);
+    console.log(`  3. npm run package:validate-artifacts -- --package ${request.packageId}\n`);
   } catch (error) {
     console.error('Error:', error);
     process.exit(1);
