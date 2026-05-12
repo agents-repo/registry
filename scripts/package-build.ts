@@ -194,11 +194,13 @@ async function main(): Promise<void> {
   console.log(`  Index updated       : packages/index.json`);
 }
 
-main().catch((error) => {
+try {
+  await main();
+} catch (error) {
   if (error instanceof PackageError) {
     console.error(`[${error.code}] ${error.message}`);
   } else {
     console.error('Unexpected error during build:', error);
   }
   process.exit(1);
-});
+}
