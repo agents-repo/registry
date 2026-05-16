@@ -40,13 +40,10 @@ registry/
             README.md
     scripts/
         lib/
-            errors.ts
-            frontmatter.ts
-            git.ts
-            types.ts
-            validate-package.ts
+            ... (modular helpers, validators, and build/create utilities)
         package-validate.ts
         package-build.ts
+        package-create.ts
         package-validate-artifacts.ts
     tsconfig.json
     README.md
