@@ -440,7 +440,7 @@ function validateManifest(
   // Check latest equals max version
   if (
     typeof m['latest'] === 'string' &&
-    semver.valid(m['latest']) &&
+    (m['latest'].length === 0 || ValidationUtils.isReleaseVersion(m['latest'])) &&
     versionSet.size > 0
   ) {
     const versions = Array.from(versionSet);
@@ -525,8 +525,8 @@ export function validatePackage(
           const metaVersion = (data as Record<string, unknown>)['version'] as string;
           const manifestLatest = (mfData as Record<string, unknown>)['latest'] as string;
           if (
-            semver.valid(metaVersion) &&
-            semver.valid(manifestLatest) &&
+            ValidationUtils.isReleaseVersion(metaVersion as string) &&
+            (manifestLatest.length === 0 || ValidationUtils.isReleaseVersion(manifestLatest as string)) &&
             semver.lt(metaVersion, manifestLatest)
           ) {
             issues.push(
@@ -598,7 +598,7 @@ export function validatePackage(
     return (data as Record<string, unknown>)['version'] as string | undefined;
   })();
 
-  if (metaVersionForCheck && semver.valid(metaVersionForCheck)) {
+  if (metaVersionForCheck && ValidationUtils.isReleaseVersion(metaVersionForCheck as string)) {
     const uniqueVersions = new Set(allVersions);
     if (uniqueVersions.size === 1) {
       const sharedFrontmatterVersion = Array.from(uniqueVersions)[0];
