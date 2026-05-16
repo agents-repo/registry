@@ -26,7 +26,7 @@ import { parseCreateArgs } from './lib/create/args';
 import { printCreateSuccess } from './lib/create/output';
 import { buildCreationRequest } from './lib/create/request-builder';
 import { printCreateHelp } from './lib/create/templates';
-import { resolveScriptPaths } from './lib/cli/paths';
+import { resolveScriptPaths } from './lib/cli';
 import { PackageScaffolder } from './lib/scaffolder';
 
 function fail(message: string): never {

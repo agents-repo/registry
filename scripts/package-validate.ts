@@ -12,8 +12,7 @@
  * Exits 0 on success, non-zero on any validation error.
  */
 
-import { parseRequiredPackageId } from './lib/cli/args';
-import { resolveScriptPaths } from './lib/cli/paths';
+import { parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
 import { exitWithValidationResult } from './lib/cli/reporting';
 import { PackageValidator } from './lib/validate-package';
 

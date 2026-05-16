@@ -23,10 +23,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseOptionalFlagValue, parseRequiredPackageId } from './lib/cli/args';
-import { resolveScriptPaths } from './lib/cli/paths';
+import {
+  parseOptionalFlagValue,
+  parseReleaseVersion,
+  parseRequiredPackageId,
+  resolveScriptPaths,
+} from './lib/cli';
 import { exitWithValidationResult } from './lib/cli/reporting';
-import { parseReleaseVersion } from './lib/cli/version';
 import { SnapshotValidator } from './lib/snapshot-validator';
 import type { ValidationReport } from './lib/types';
 
