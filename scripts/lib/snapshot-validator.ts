@@ -111,7 +111,14 @@ export class SnapshotValidator {
         return { packageId: this.packageId, errors, warnings, passed: errors.length === 0 };
       }
 
-      issues.push(...this.validateSchemaVersion(manifest.schemaVersion, 'versions/manifest.json', 'manifest'));
+      issues.push(
+        ...this.validateSchemaVersion(
+          manifest.schemaVersion,
+          'versions/manifest.json',
+          'manifest',
+          'ERR_VALIDATION_FAILED',
+        ),
+      );
 
       const entry = manifest.versions.find((v) => v.version === this.version);
       if (!entry) {
@@ -174,31 +181,36 @@ export class SnapshotValidator {
     return { code: 'WARN', severity: 'warning', message };
   }
 
-  private validateSchemaVersion(value: unknown, context: string, family: SchemaFamily = 'metadata.package'): ValidationIssue[] {
+  private validateSchemaVersion(
+    value: unknown,
+    context: string,
+    family: SchemaFamily = 'metadata.package',
+    errorCode = 'ERR_METADATA_INVALID',
+  ): ValidationIssue[] {
     const result = describeSchemaVersionStatus(family, value);
-    const current = getSchemaCurrentVersion('metadata.package');
+    const current = getSchemaCurrentVersion(family);
     const supported = result.expected.join(', ');
 
     if (result.status === 'deprecated') {
       return [
         this.warn(
-          `${context}: schemaVersion ${JSON.stringify(value)} is deprecated; current is ${JSON.stringify(current)}.`,
+          `${context}: schemaVersion ${JSON.stringify(value)} is deprecated for ${family}; current is ${JSON.stringify(current)}.`,
         ),
       ];
     }
     if (result.status === 'eol') {
       return [
         this.err(
-          'ERR_METADATA_INVALID',
-          `${context}: schemaVersion ${JSON.stringify(value)} is end-of-life; supported versions are [${supported}].`,
+          errorCode,
+          `${context}: schemaVersion ${JSON.stringify(value)} is end-of-life for ${family}; supported versions are [${supported}].`,
         ),
       ];
     }
     if (result.status === 'unsupported') {
       return [
         this.err(
-          'ERR_METADATA_INVALID',
-          `${context}: unsupported schemaVersion ${JSON.stringify(value)}; supported versions are [${supported}].`,
+          errorCode,
+          `${context}: unsupported schemaVersion ${JSON.stringify(value)} for ${family}; supported versions are [${supported}].`,
         ),
       ];
     }
