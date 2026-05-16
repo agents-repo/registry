@@ -186,13 +186,25 @@ async function main(): Promise<void> {
     try {
       new IndexManager(indexPath).update(packageId, metadata, updatedManifest.latest);
     } catch (indexError) {
-      // Rollback manifest if index update fails
+      // Rollback manifest and index if index update fails
       try {
         manifestManager.save(oldManifest);
         console.error(`  [ROLLBACK] Restored versions/manifest.json after index update failure`);
       } catch (restoreError) {
         console.error(`  [ROLLBACK] Failed to restore versions/manifest.json:`, restoreError);
       }
+
+      try {
+        if (oldIndexContent !== null) {
+          fs.writeFileSync(indexPath, oldIndexContent, 'utf-8');
+        } else if (fs.existsSync(indexPath)) {
+          fs.unlinkSync(indexPath);
+        }
+        console.error(`  [ROLLBACK] Restored packages/index.json after index update failure`);
+      } catch (restoreError) {
+        console.error(`  [ROLLBACK] Failed to restore packages/index.json:`, restoreError);
+      }
+
       throw indexError;
     }
   } catch (error) {
