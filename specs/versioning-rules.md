@@ -67,6 +67,46 @@ supported spec document version in this table.
   replaced; `manifest.json` and `packages/index.json` are updated
   accordingly.
 
+  ## CI Branch Detection Strategy
+
+  In continuous integration (CI) environments, repository checkouts may be in
+  a detached HEAD state (for pull requests and tag builds), where `git rev-parse
+  --abbrev-ref HEAD` returns "HEAD" instead of the branch name.
+  To prevent the protected-branch guard from being silently bypassed,
+  the `package-build` script uses the following branch detection strategy:
+
+  1. **Git-based detection**: Attempt to detect the branch using
+     `git rev-parse --abbrev-ref HEAD`.
+  1. **Environment variable fallback**: If git returns "HEAD", empty string, or
+     throws an error, fall back to GitHub Actions environment variables:
+     - `GITHUB_BASE_REF` (for pull requests): The target branch being merged into
+       (used when available, as it is the more restrictive check).
+     - `GITHUB_REF_NAME`: The current branch or tag name (used when
+       `GITHUB_BASE_REF` is not set).
+  1. **Fail-safe default**: If no detection method succeeds, the branch is
+     treated as "HEAD" (see below).
+
+  ### Protected Branch Designation
+
+  The `package-build` script treats a branch as **protected** if it matches
+  any of the following:
+  - Literal branch names: `main`, `master`
+  - Pattern: any branch matching `release/*`
+  - Special cases: `HEAD` (fail-safe for unresolved detection) and empty string
+
+  The fail-safe treatment of `HEAD` and empty string ensures that detection
+  failures in CI environments do not accidentally allow `--force-rebuild` to
+  overwrite versions on protected branches.
+
+  ### Example: Pull Request Scenario
+
+  In a pull request checkout:
+  - Git detects "HEAD" (detached state)
+  - `GITHUB_BASE_REF` = "main" (the target branch)
+  - `GITHUB_REF_NAME` = "feature/my-feature" (the source branch)
+  - Result: Branch is detected as "main" (the base branch), treated as protected
+  - Outcome: `--force-rebuild` is rejected with `ERR_OVERWRITE_PROTECTED_BRANCH`
+
 ## Manifest and Metadata Consistency
 
 - `manifest.json.latest` MUST equal the maximum semantic version in

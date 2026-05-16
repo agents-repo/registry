@@ -76,11 +76,17 @@ orchestration is performed externally (for example by CI or AI agents).
 
 ### Overwrite protection
 
-- Overwriting an existing `versions/<version>/` requires `--force-rebuild`.
-- `--force-rebuild` is **not allowed** on protected branches: `main`, `master`,
   `release/*`.
-- On a protected branch with a pre-existing version, the build hard-fails with
   `ERR_OVERWRITE_PROTECTED_BRANCH`. Publish a new semver instead.
+
+#### CI Branch Detection
+
+In CI environments (GitHub Actions), the `package-build` script detects the
+target branch using `git rev-parse --abbrev-ref HEAD` first, then falls back
+to GitHub Actions environment variables (`GITHUB_BASE_REF`, `GITHUB_REF_NAME`)
+if git returns `HEAD` (detached state). This ensures the protected-branch guard
+works correctly in pull requests and tag builds, where the repository is
+checked out in detached HEAD state. See `specs/versioning-rules.md` for details.
 
 ### No manual edits under `versions/`
 

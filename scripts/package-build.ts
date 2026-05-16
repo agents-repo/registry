@@ -61,7 +61,7 @@ async function main(): Promise<void> {
   const git = new GitContext();
 
   if (versionExists) {
-    const branch = await git.getBranch();
+    const { branch, source } = await git.getBranchWithSource();
     if (forceRebuild) {
       if (git.isProtected(branch)) {
         throw new PackageError(
@@ -71,7 +71,7 @@ async function main(): Promise<void> {
         );
       }
       console.log(
-        `[2/6] --force-rebuild on branch "${branch}": overwriting existing version "${version}"`,
+        `[2/6] --force-rebuild on branch "${branch}" (detected from ${source}): overwriting existing version "${version}"`,
       );
       fs.rmSync(versionDir, { recursive: true, force: true });
     } else {
