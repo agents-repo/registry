@@ -2,18 +2,32 @@
   "name": "agents-registry",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Tooling and validation scripts for the Copilot Agents Registry.",
   "scripts": {
-    "build": "node scripts/build.js",
-    "validate": "node scripts/validate.js",
+    "package:validate": "tsx scripts/package-validate.ts",
+    "package:build": "tsx scripts/package-build.ts",
+    "package:validate-artifacts": "tsx scripts/package-validate-artifacts.ts",
+    "package:create": "tsx scripts/package-create.ts",
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"**/.*/**/*.md\" \"!packages/**/versions/**/*.md\" \"!**/*.agent.md\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typecheck": "tsc --noEmit"
   },
   "engines": {
     "node": ">=20"
   },
+  "packageManager": "npm@10.5.0",
   "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
+    "@types/node": "^20.0.0",
+    "@types/semver": "^7.5.8",
+    "adm-zip": "^0.5.16",
+    "gray-matter": "^4.0.3",
     "husky": "^9",
-    "markdownlint-cli2": "^0.22.1"
+    "markdownlint-cli2": "^0.22.1",
+    "semver": "^7.6.3",
+    "simple-git": "^3.36.0",
+    "tsx": "^4.19.1",
+    "typescript": "^6.0.0"
   }
 }

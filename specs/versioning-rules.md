@@ -20,6 +20,18 @@ define a JSON `schemaVersion` field.
 Tooling and processes that enforce versioning behavior SHOULD use the latest
 supported spec document version in this table.
 
+## Schema Lifecycle Policy
+
+- `schemaVersion` values are metadata/manifest/index format versions and are
+  independent from package release versions.
+- Tooling MUST resolve supported schema versions from
+  `specs/schema-versions.json`.
+- New packages SHOULD use the `current` schema version for each schema family.
+- Existing packages MAY continue using older schema versions when they remain
+  in the `supported` set.
+- Tooling SHOULD emit warnings for schema versions marked `deprecated`.
+- Tooling MUST reject schema versions marked `eol`.
+
 ## Package Versioning
 
 - Package versions MUST use semantic versioning: `MAJOR.MINOR.PATCH`.
@@ -29,6 +41,71 @@ supported spec document version in this table.
   (`<version>.zip`), the source archive (`<version>-src.zip`),
   a `metadata.json` snapshot, and source tree snapshots
   (`agents/` and `flows/` if present).
+
+## Script-Gated Publication
+
+- `versions/` content (snapshot folders and `manifest.json`) MUST be
+  produced exclusively by the `package-build` script.
+- Contributors and AI agents MUST NOT manually create or modify any file
+  under `versions/`.
+- The mandatory release pipeline is:
+  `package:validate` → `package:build` → `package:validate-artifacts`.
+- Pipeline orchestration MUST be explicit (for example CI jobs or AI agents);
+  scripts MUST NOT implicitly invoke other pipeline steps.
+
+## Version Overwrite Policy
+
+- By default, the `package-build` script MUST NOT overwrite an existing
+  `versions/<version>/` snapshot. Attempting to do so without the
+  `--force-rebuild` flag MUST produce an `ERR_VERSION_EXISTS` error.
+- The `--force-rebuild` flag allows overwriting an existing snapshot
+  ONLY on non-protected branches. On protected branches the flag MUST be
+  rejected with `ERR_OVERWRITE_PROTECTED_BRANCH`.
+- Protected branches are: `main`, `master`, and any branch matching
+  `release/*`.
+- When `--force-rebuild` succeeds, the existing snapshot is atomically
+  replaced; `manifest.json` and `packages/index.json` are updated
+  accordingly.
+
+  ## CI Branch Detection Strategy
+
+  In continuous integration (CI) environments, repository checkouts may be in
+  a detached HEAD state (for pull requests and tag builds), where `git rev-parse
+  --abbrev-ref HEAD` returns "HEAD" instead of the branch name.
+  To prevent the protected-branch guard from being silently bypassed,
+  the `package-build` script uses the following branch detection strategy:
+
+  1. **Git-based detection**: Attempt to detect the branch using
+     `git rev-parse --abbrev-ref HEAD`.
+  1. **Environment variable fallback**: If git returns "HEAD", empty string, or
+     throws an error, fall back to GitHub Actions environment variables:
+     - `GITHUB_BASE_REF` (for pull requests): The target branch being merged into
+       (used when available, as it is the more restrictive check).
+     - `GITHUB_REF_NAME`: The current branch or tag name (used when
+       `GITHUB_BASE_REF` is not set).
+  1. **Fail-safe default**: If no detection method succeeds, the branch is
+     treated as "HEAD" (see below).
+
+  ### Protected Branch Designation
+
+  The `package-build` script treats a branch as **protected** if it matches
+  any of the following:
+  - Literal branch names: `main`, `master`
+  - Pattern: any branch matching `release/*`
+  - Special cases: `HEAD` (fail-safe for unresolved detection) and empty string
+
+  The fail-safe treatment of `HEAD` and empty string ensures that detection
+  failures in CI environments do not accidentally allow `--force-rebuild` to
+  overwrite versions on protected branches.
+
+  ### Example: Pull Request Scenario
+
+  In a pull request checkout:
+  - Git detects "HEAD" (detached state)
+  - `GITHUB_BASE_REF` = "main" (the target branch)
+  - `GITHUB_REF_NAME` = "feature/my-feature" (the source branch)
+  - Result: Branch is detected as "main" (the base branch), treated as protected
+  - Outcome: `--force-rebuild` is rejected with `ERR_OVERWRITE_PROTECTED_BRANCH`
 
 ## Manifest and Metadata Consistency
 

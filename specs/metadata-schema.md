@@ -22,6 +22,16 @@ package release version and not the spec document version (`1.0.0`).
 Tooling MUST reject package metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
 
+Tooling MUST use `specs/schema-versions.json` as the machine-readable source of
+truth for supported, deprecated, and end-of-life `schemaVersion` values.
+
+Lifecycle enforcement:
+
+- `schemaVersion` values marked `deprecated` SHOULD produce a warning.
+- `schemaVersion` values marked `eol` MUST be rejected.
+- New packages SHOULD use the current schema version.
+- Existing packages MAY continue using older supported versions.
+
 ### File Location
 
 - Package metadata MUST be stored as `packages/<package-id>/metadata.json`.
@@ -42,7 +52,7 @@ table above unless it explicitly supports a newer schema version.
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `schemaVersion` | string | MUST be `1.0.0`; see [Schema Version Lifecycle](#schema-version-lifecycle) |
+| `schemaVersion` | string | MUST be a supported `metadata.package` schema version from `specs/schema-versions.json`; see [Schema Version Lifecycle](#schema-version-lifecycle) |
 | `name` | string | MUST match package directory name |
 | `description` | string | 1 to 300 characters |
 | `owner` | string | GitHub owner or organization slug |
@@ -52,6 +62,7 @@ table above unless it explicitly supports a newer schema version.
 | `tags` | array of string | 1 to 20 lowercase tags |
 | `createdAt` | string | RFC 3339 timestamp |
 | `updatedAt` | string | RFC 3339 timestamp |
+| `version` | string | Semver (`MAJOR.MINOR.PATCH`); current release target |
 
 ### Optional Fields
 
@@ -67,6 +78,10 @@ table above unless it explicitly supports a newer schema version.
 - `name` MUST match the package directory name exactly.
 - `license` MUST equal `MIT`.
 - `updatedAt` MUST be greater than or equal to `createdAt`.
+- `version` MUST be a valid semantic version in the format
+  `MAJOR.MINOR.PATCH` with no pre-release or build metadata suffixes.
+- `version` MUST be greater than or equal to `versions/manifest.json`
+  `latest` when the manifest exists for the package.
 - Arrays MUST NOT contain duplicate values.
 - Unknown fields SHOULD use the `x-` prefix for extensions.
 
@@ -83,7 +98,8 @@ table above unless it explicitly supports a newer schema version.
     "repository": "https://github.com/agents-repo/my-package",
     "tags": ["productivity", "review", "automation"],
     "createdAt": "2026-05-02T00:00:00Z",
-    "updatedAt": "2026-05-02T00:00:00Z"
+    "updatedAt": "2026-05-02T00:00:00Z",
+    "version": "1.0.0"
 }
 ```
 
@@ -101,6 +117,16 @@ package release version and not the spec document version (`1.0.0`).
 Tooling MUST reject agent metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
 
+Tooling MUST use `specs/schema-versions.json` as the machine-readable source of
+truth for supported, deprecated, and end-of-life `schemaVersion` values.
+
+Lifecycle enforcement:
+
+- `schemaVersion` values marked `deprecated` SHOULD produce a warning.
+- `schemaVersion` values marked `eol` MUST be rejected.
+- New packages SHOULD use the current schema version.
+- Existing packages MAY continue using older supported versions.
+
 ### File Location
 
 - Agent metadata MUST be stored as
@@ -113,7 +139,7 @@ table above unless it explicitly supports a newer schema version.
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `schemaVersion` | string | MUST be `1.0.0`; see [Schema Version Lifecycle](#schema-version-lifecycle-1) |
+| `schemaVersion` | string | MUST be a supported `metadata.agent` schema version from `specs/schema-versions.json`; see [Schema Version Lifecycle](#schema-version-lifecycle-1) |
 | `name` | string | MUST equal `<agent-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
@@ -170,6 +196,16 @@ package release version and not the spec document version (`1.0.0`).
 Tooling MUST reject flow metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
 
+Tooling MUST use `specs/schema-versions.json` as the machine-readable source of
+truth for supported, deprecated, and end-of-life `schemaVersion` values.
+
+Lifecycle enforcement:
+
+- `schemaVersion` values marked `deprecated` SHOULD produce a warning.
+- `schemaVersion` values marked `eol` MUST be rejected.
+- New packages SHOULD use the current schema version.
+- Existing packages MAY continue using older supported versions.
+
 ### File Location
 
 - Flow metadata MUST be stored as
@@ -182,7 +218,7 @@ table above unless it explicitly supports a newer schema version.
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `schemaVersion` | string | MUST be `1.0.0`; see [Schema Version Lifecycle](#schema-version-lifecycle-2) |
+| `schemaVersion` | string | MUST be a supported `metadata.flow` schema version from `specs/schema-versions.json`; see [Schema Version Lifecycle](#schema-version-lifecycle-2) |
 | `name` | string | MUST equal `<flow-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |

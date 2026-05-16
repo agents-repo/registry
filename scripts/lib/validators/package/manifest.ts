@@ -1,0 +1,142 @@
+import semver from 'semver';
+import { ValidationUtils } from '../../validation-utils';
+import type { Manifest, ValidationIssue } from '../../types';
+import { err } from '../common/issues';
+import { readJsonFile } from './json-reader';
+import { validateSchemaVersion } from './schema-version';
+
+export function validateManifest(
+  manifestPath: string,
+  packageId: string,
+  issues: ValidationIssue[],
+): Manifest | null {
+  const { data, error } = readJsonFile(manifestPath);
+  if (error) {
+    issues.push(err('ERR_VALIDATION_FAILED', error));
+    return null;
+  }
+
+  const m = data as Record<string, unknown>;
+
+  validateSchemaVersion(issues, {
+    family: 'manifest',
+    value: m['schemaVersion'],
+    context: 'manifest.json',
+    errorCode: 'ERR_VALIDATION_FAILED',
+  });
+
+  if (typeof m['name'] !== 'string' || m['name'] !== packageId) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json name must equal "${packageId}", got: ${JSON.stringify(m['name'])}`,
+      ),
+    );
+  }
+
+  if (typeof m['latest'] !== 'string') {
+    issues.push(err('ERR_VALIDATION_FAILED', 'manifest.json latest must be a string'));
+  } else if (!ValidationUtils.isReleaseVersion(m['latest'] as string)) {
+    issues.push(
+      err('ERR_VALIDATION_FAILED', 'manifest.json latest must be a MAJOR.MINOR.PATCH release version'),
+    );
+  }
+
+  if (!Array.isArray(m['versions'])) {
+    issues.push(err('ERR_VALIDATION_FAILED', 'manifest.json versions must be an array'));
+    return m as unknown as Manifest;
+  }
+
+  if (m['versions'].length === 0) {
+    issues.push(
+      err('ERR_VALIDATION_FAILED', 'manifest.json versions must contain at least one entry'),
+    );
+    return m as unknown as Manifest;
+  }
+
+  const versionSet = new Set<string>();
+  for (const entry of m['versions'] as unknown[]) {
+    if (typeof entry !== 'object' || entry === null) {
+      issues.push(err('ERR_VALIDATION_FAILED', 'manifest.json versions entries must be objects'));
+      continue;
+    }
+
+    const e = entry as Record<string, unknown>;
+    const ver = e['version'] as string;
+
+    if (typeof ver !== 'string' || !ValidationUtils.isReleaseVersion(ver)) {
+      issues.push(
+        err('ERR_VALIDATION_FAILED', 'manifest.json version entry "version" must be a MAJOR.MINOR.PATCH release version'),
+      );
+    } else {
+      if (versionSet.has(ver)) {
+        issues.push(err('ERR_VALIDATION_FAILED', `manifest.json duplicate version entry: ${ver}`));
+      }
+      versionSet.add(ver);
+
+      if (e['artifact'] !== `${ver}.zip`) {
+        issues.push(
+          err(
+            'ERR_VALIDATION_FAILED',
+            `manifest.json version ${ver}: artifact must be "${ver}.zip"`,
+          ),
+        );
+      }
+
+      if (e['srcArtifact'] !== `${ver}-src.zip`) {
+        issues.push(
+          err(
+            'ERR_VALIDATION_FAILED',
+            `manifest.json version ${ver}: srcArtifact must be "${ver}-src.zip"`,
+          ),
+        );
+      }
+
+      if (typeof e['sha256'] !== 'string' || !/^[0-9a-f]{64}$/.test(e['sha256'])) {
+        issues.push(
+          err(
+            'ERR_VALIDATION_FAILED',
+            `manifest.json version ${ver}: sha256 must be 64 lowercase hex characters`,
+          ),
+        );
+      }
+
+      if (typeof e['srcSha256'] !== 'string' || !/^[0-9a-f]{64}$/.test(e['srcSha256'])) {
+        issues.push(
+          err(
+            'ERR_VALIDATION_FAILED',
+            `manifest.json version ${ver}: srcSha256 must be 64 lowercase hex characters`,
+          ),
+        );
+      }
+
+      if (typeof e['createdAt'] !== 'string' || !ValidationUtils.isRfc3339(e['createdAt'])) {
+        issues.push(
+          err(
+            'ERR_VALIDATION_FAILED',
+            `manifest.json version ${ver}: createdAt must be an RFC 3339 timestamp`,
+          ),
+        );
+      }
+    }
+  }
+
+  if (
+    typeof m['latest'] === 'string' &&
+    ValidationUtils.isReleaseVersion(m['latest']) &&
+    versionSet.size > 0
+  ) {
+    const versions = Array.from(versionSet);
+    const maxVer = semver.maxSatisfying(versions, '*');
+    if (maxVer !== m['latest']) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `manifest.json latest "${m['latest']}" must equal the maximum version "${maxVer}"`,
+        ),
+      );
+    }
+  }
+
+  return m as unknown as Manifest;
+}

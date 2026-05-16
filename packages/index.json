@@ -1,5 +1,16 @@
 {
     "schemaVersion": "1.0.0",
-    "updatedAt": "2026-05-05T00:00:00Z",
-    "packages": []
+    "updatedAt": "2026-05-16T02:48:11.942Z",
+    "packages": [
+        {
+            "id": "hello-agent",
+            "name": "hello-agent",
+            "description": "Hello Agent package scaffolded by package-create",
+            "latest": "1.0.0",
+            "tags": [
+                "agent",
+                "hello"
+            ]
+        }
+    ]
 }

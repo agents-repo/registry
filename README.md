@@ -13,7 +13,7 @@ Registry responsibilities:
 - Store package metadata and manifests.
 - Store versioned deployment ZIPs and source archives for releases.
 - Maintain AI-readable specifications in `specs/`.
-- Provide examples and placeholder validation/build scripts.
+- Provide examples and package-scoped build and validation scripts.
 
 This repository is intentionally data-first and specification-first.
 Runtime logic is out of scope for this initial baseline.
@@ -39,11 +39,57 @@ registry/
         sample-flow/
             README.md
     scripts/
-        build.js
-        validate.js
+        lib/
+            ... (modular helpers, validators, and build/create utilities)
+        package-validate.ts
+        package-build.ts
+        package-create.ts
+        package-validate-artifacts.ts
+    tsconfig.json
     README.md
     LICENSE
 ```
+
+## Package Development Workflow
+
+Contributors and AI agents work only on source files under the package root.
+The scripts manage all versioned artifacts.
+
+### Required pipeline
+
+```bash
+# 1. Validate working-state source files
+npm run package:validate -- --package <id>
+
+# 2. Build and publish a version snapshot
+npm run package:build -- --package <id>
+
+# 3. Deep artifact verification
+npm run package:validate-artifacts -- --package <id>
+```
+
+Scripts are intentionally single-responsibility. They do not chain each other;
+orchestration is performed externally (for example by CI or AI agents).
+
+### Overwrite protection
+
+  `release/*`.
+  `ERR_OVERWRITE_PROTECTED_BRANCH`. Publish a new semver instead.
+
+#### CI Branch Detection
+
+In CI environments (GitHub Actions), the `package-build` script detects the
+target branch using `git rev-parse --abbrev-ref HEAD` first, then falls back
+to GitHub Actions environment variables (`GITHUB_BASE_REF`, `GITHUB_REF_NAME`)
+if git returns `HEAD` (detached state). This ensures the protected-branch guard
+works correctly in pull requests and tag builds, where the repository is
+checked out in detached HEAD state. See `specs/versioning-rules.md` for details.
+
+### No manual edits under `versions/`
+
+All content under `versions/` is generated exclusively by `package-build`.
+Contributors and AI agents MUST NOT manually create, modify, or remove any file
+under `versions/`. See `specs/package-format.md` and `specs/versioning-rules.md`.
 
 ## Package Baseline
 
@@ -94,8 +140,10 @@ Package rules:
 - Each release includes `<version>.zip` and `<version>-src.zip`.
 - Use semantic versioning with no `v` prefix.
 - Use SHA-256 checksums.
-- `metadata.json` and all `.metadata.json` sidecars must include
-    `schemaVersion: "1.0.0"`.
+- `metadata.json` and all `.metadata.json` sidecars must include a
+    `schemaVersion` supported by `specs/schema-versions.json`.
+- Deprecated schema versions produce warnings; end-of-life schema versions
+    are rejected by validation tooling.
 - The package root `metadata.json`, `agents/`, and `flows/` describe the
     current working state.
 - All root `.agent.md` files in `agents/` and `flows/` must share the
@@ -122,6 +170,7 @@ Primary spec documents:
 - `specs/flow-format.md`
 - `specs/versioning-rules.md`
 - `specs/index-schema.md`
+- `specs/schema-versions.json`
 
 ## Related Repositories
 
