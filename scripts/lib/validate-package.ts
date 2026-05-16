@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import type { ValidationIssue, ValidationReport } from './types';
 import { validateEntryFiles } from './validators/package/entries';
@@ -8,6 +8,7 @@ import {
   validateUniqueIdsAcrossEntryTypes,
 } from './validators/package/entry-consistency';
 import { validateManifest } from './validators/package/manifest';
+import { getManifestPath, hasManifest } from './validators/package/manifest-preflight';
 import { validateMetadata } from './validators/package/metadata';
 import { loadPackageMetadata, resolvePackageDir } from './validators/package/preflight';
 import {
@@ -72,8 +73,10 @@ export function validatePackage(
   validateFrontmatterVersionMatchesMetadata(packageDir, sharedFrontmatterVersion, issues);
 
   // 8. Manifest validation (if present)
-  const manifestPath = path.join(packageDir, 'versions', 'manifest.json');
-  validateManifestIfPresent(manifestPath, packageId, issues);
+  const manifestPath = getManifestPath(packageDir);
+  if (hasManifest(packageDir)) {
+    validateManifest(manifestPath, packageId, issues);
+  }
 
   const { errors, warnings } = splitIssues(issues);
 
@@ -85,12 +88,3 @@ export function validatePackage(
   };
 }
 
-function validateManifestIfPresent(
-  manifestPath: string,
-  packageId: string,
-  issues: ValidationIssue[],
-): void {
-  if (fs.existsSync(manifestPath)) {
-    validateManifest(manifestPath, packageId, issues);
-  }
-}
