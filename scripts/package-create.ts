@@ -22,14 +22,12 @@
  * Exits 0 on success, non-zero on failure.
  */
 
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { parseCreateArgs } from './lib/create/args';
+import { printCreateSuccess } from './lib/create/output';
 import { buildCreationRequest } from './lib/create/request-builder';
 import { printCreateHelp } from './lib/create/templates';
+import { resolveScriptPaths } from './lib/cli/paths';
 import { PackageScaffolder } from './lib/scaffolder';
-
-const scriptDir = fileURLToPath(new URL('.', import.meta.url));
 
 function fail(message: string): never {
   console.error(`Error: ${message}`);
@@ -51,7 +49,7 @@ function main(): void {
   console.log('\nCopilot Agents Registry - Package Create\n');
 
   try {
-    const repoRoot = path.resolve(scriptDir, '..');
+    const { repoRoot } = resolveScriptPaths(import.meta.url);
     const request = buildCreationRequest(parsed, repoRoot, fail);
 
     new PackageScaffolder(
@@ -59,12 +57,7 @@ function main(): void {
       repoRoot,
     ).scaffold();
 
-    console.log('\nPackage created successfully\n');
-    console.log(`Location: packages/${request.packageId}/\n`);
-    console.log('Next steps:');
-    console.log(`  1. npm run package:validate -- --package ${request.packageId}`);
-    console.log(`  2. npm run package:build -- --package ${request.packageId}`);
-    console.log(`  3. npm run package:validate-artifacts -- --package ${request.packageId}\n`);
+    printCreateSuccess(request.packageId);
   } catch (error) {
     console.error('Error:', error);
     process.exit(1);
