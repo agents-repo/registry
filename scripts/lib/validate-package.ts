@@ -194,7 +194,7 @@ function validateMetadata(
   } else if (
     typeof m['createdAt'] === 'string' &&
     isRfc3339(m['createdAt']) &&
-    m['updatedAt'] < m['createdAt']
+    Date.parse(m['updatedAt'] as string) < Date.parse(m['createdAt'] as string)
   ) {
     issues.push(
       err('ERR_METADATA_INVALID', 'updatedAt must be greater than or equal to createdAt'),
