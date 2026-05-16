@@ -1,7 +1,7 @@
 {
     "schemaVersion": "1.0.0",
     "name": "hello-agent",
-    "latest": "1.1.0",
+    "latest": "1.0.0",
     "versions": [
         {
             "version": "1.0.0",
