@@ -49,3 +49,11 @@ export function loadPackageMetadata(
 
   return data;
 }
+
+export function getManifestPath(packageDir: string): string {
+  return path.join(packageDir, 'versions', 'manifest.json');
+}
+
+export function hasManifest(packageDir: string): boolean {
+  return fs.existsSync(getManifestPath(packageDir));
+}

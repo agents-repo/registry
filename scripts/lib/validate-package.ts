@@ -3,12 +3,16 @@ import { splitIssues } from './validators/common/issues';
 import {
   validateHasEntries,
   validateUniqueIdsAcrossEntryTypes,
-} from './validators/package/entry-consistency';
+} from './validators/package/entries';
 import { loadPackageEntries } from './validators/package/entry-loading';
 import { validateManifest } from './validators/package/manifest';
-import { getManifestPath, hasManifest } from './validators/package/manifest-preflight';
 import { validateMetadata } from './validators/package/metadata';
-import { loadPackageMetadata, resolvePackageDir } from './validators/package/preflight';
+import {
+  getManifestPath,
+  hasManifest,
+  loadPackageMetadata,
+  resolvePackageDir,
+} from './validators/package/preflight';
 import {
   validateFrontmatterVersionMatchesMetadata,
   validateMetadataVersionAgainstManifestLatest,
