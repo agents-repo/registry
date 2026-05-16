@@ -2,7 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { ValidationIssue, ValidationReport } from './types';
 import { validateEntryFiles } from './validators/package/entries';
-import { err, splitIssues } from './validators/common/issues';
+import { splitIssues } from './validators/common/issues';
+import {
+  validateHasEntries,
+  validateUniqueIdsAcrossEntryTypes,
+} from './validators/package/entry-consistency';
 import { validateManifest } from './validators/package/manifest';
 import { validateMetadata } from './validators/package/metadata';
 import { loadPackageMetadata, resolvePackageDir } from './validators/package/preflight';
@@ -58,28 +62,9 @@ export function validatePackage(
   const agentEntries = validateEntryFiles(agentsDir, 'agents', issues);
   const flowEntries = validateEntryFiles(flowsDir, 'flows', issues);
 
-  // 4. At least one agent or flow
-  if (agentEntries.length === 0 && flowEntries.length === 0) {
-    issues.push(
-      err(
-        'ERR_VALIDATION_FAILED',
-        'Package must contain at least one agent (agents/) or flow (flows/)',
-      ),
-    );
-  }
-
-  // 5. Unique IDs across agents and flows
-  const agentIds = new Set(agentEntries.map((e) => e.id));
-  for (const flow of flowEntries) {
-    if (agentIds.has(flow.id)) {
-      issues.push(
-        err(
-          'ERR_VALIDATION_FAILED',
-          `ID "${flow.id}" is used in both agents/ and flows/; IDs must be unique across both`,
-        ),
-      );
-    }
-  }
+  // 4-5. Entry consistency checks
+  validateHasEntries(agentEntries, flowEntries, issues);
+  validateUniqueIdsAcrossEntryTypes(agentEntries, flowEntries, issues);
 
   // 6. Frontmatter version consistency checks
   const allEntries = [...agentEntries, ...flowEntries];
