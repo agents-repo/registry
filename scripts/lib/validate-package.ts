@@ -7,6 +7,7 @@ import {
   getSchemaCurrentVersion,
   type SchemaFamily,
 } from './schema-versions';
+import { ValidationUtils } from './validation-utils';
 import type {
   Manifest,
   PackageMetadata,
@@ -67,22 +68,6 @@ function validateSchemaVersion(
       ),
     );
   }
-}
-
-function isHttpsUrl(value: string): boolean {
-  try {
-    const u = new URL(value);
-    return u.protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
-
-const RFC3339_RE =
-  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})$/;
-
-function isRfc3339(value: string): boolean {
-  return RFC3339_RE.test(value);
 }
 
 function readJsonFile(
@@ -152,13 +137,13 @@ function validateMetadata(
     );
   }
 
-  if (typeof m['homepage'] !== 'string' || !isHttpsUrl(m['homepage'])) {
+  if (typeof m['homepage'] !== 'string' || !ValidationUtils.isHttpsUrl(m['homepage'])) {
     issues.push(
       err('ERR_METADATA_INVALID', `homepage must be an HTTPS URL, got: ${JSON.stringify(m['homepage'])}`),
     );
   }
 
-  if (typeof m['repository'] !== 'string' || !isHttpsUrl(m['repository'])) {
+  if (typeof m['repository'] !== 'string' || !ValidationUtils.isHttpsUrl(m['repository'])) {
     issues.push(
       err(
         'ERR_METADATA_INVALID',
@@ -185,15 +170,15 @@ function validateMetadata(
     }
   }
 
-  if (typeof m['createdAt'] !== 'string' || !isRfc3339(m['createdAt'])) {
+  if (typeof m['createdAt'] !== 'string' || !ValidationUtils.isRfc3339(m['createdAt'])) {
     issues.push(err('ERR_METADATA_INVALID', 'createdAt must be an RFC 3339 timestamp'));
   }
 
-  if (typeof m['updatedAt'] !== 'string' || !isRfc3339(m['updatedAt'])) {
+  if (typeof m['updatedAt'] !== 'string' || !ValidationUtils.isRfc3339(m['updatedAt'])) {
     issues.push(err('ERR_METADATA_INVALID', 'updatedAt must be an RFC 3339 timestamp'));
   } else if (
     typeof m['createdAt'] === 'string' &&
-    isRfc3339(m['createdAt']) &&
+    ValidationUtils.isRfc3339(m['createdAt']) &&
     Date.parse(m['updatedAt'] as string) < Date.parse(m['createdAt'] as string)
   ) {
     issues.push(
@@ -203,8 +188,7 @@ function validateMetadata(
 
   if (
     typeof m['version'] !== 'string' ||
-    !semver.valid(m['version']) ||
-    m['version'] !== semver.clean(m['version'])
+    !ValidationUtils.isReleaseVersion(m['version'])
   ) {
     issues.push(
       err(
@@ -275,11 +259,11 @@ function validateEntryFiles(
       );
     }
 
-    if (!fm['version'] || !semver.valid(fm['version'])) {
+    if (!fm['version'] || !ValidationUtils.isReleaseVersion(fm['version'])) {
       issues.push(
         err(
           'ERR_VALIDATION_FAILED',
-          `${dirLabel}/${mdFile}: frontmatter version must be a valid semver, got: ${JSON.stringify(fm['version'])}`,
+          `${dirLabel}/${mdFile}: frontmatter version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(fm['version'])}`,
         ),
       );
     }
@@ -359,10 +343,10 @@ function validateManifest(
     issues.push(
       err('ERR_VALIDATION_FAILED', `manifest.json latest must be a string`),
     );
-  } else if (m['latest'].length > 0 && !semver.valid(m['latest'])) {
-    // latest can be empty for unpublished packages; if non-empty, must be valid semver
+  } else if (m['latest'].length > 0 && !ValidationUtils.isReleaseVersion(m['latest'] as string)) {
+    // latest can be empty for unpublished packages; if non-empty, must be MAJOR.MINOR.PATCH
     issues.push(
-      err('ERR_VALIDATION_FAILED', `manifest.json latest must be a valid semver (if set)`),
+      err('ERR_VALIDATION_FAILED', `manifest.json latest must be a MAJOR.MINOR.PATCH release version (if set)`),
     );
   }
 
@@ -388,9 +372,9 @@ function validateManifest(
     const e = entry as Record<string, unknown>;
     const ver = e['version'] as string;
 
-    if (typeof ver !== 'string' || !semver.valid(ver)) {
+    if (typeof ver !== 'string' || !ValidationUtils.isReleaseVersion(ver)) {
       issues.push(
-        err('ERR_VALIDATION_FAILED', `manifest.json version entry "version" must be valid semver`),
+        err('ERR_VALIDATION_FAILED', `manifest.json version entry "version" must be a MAJOR.MINOR.PATCH release version`),
       );
     } else {
       if (versionSet.has(ver)) {
@@ -442,7 +426,7 @@ function validateManifest(
         );
       }
 
-      if (typeof e['createdAt'] !== 'string' || !isRfc3339(e['createdAt'])) {
+      if (typeof e['createdAt'] !== 'string' || !ValidationUtils.isRfc3339(e['createdAt'])) {
         issues.push(
           err(
             'ERR_VALIDATION_FAILED',
