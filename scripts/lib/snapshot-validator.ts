@@ -218,7 +218,7 @@ export class SnapshotValidator {
 
     const entries = zip.getEntries();
     const seenExact = new Set<string>();
-    const seenLower = new Set<string>();
+    const seenLower = new Map<string, string>();
 
     for (const entry of entries) {
       const name = entry.entryName;
@@ -257,15 +257,17 @@ export class SnapshotValidator {
       }
 
       const lower = name.toLowerCase();
-      if (seenLower.has(lower) && !seenExact.has(name)) {
+      const firstSeen = seenLower.get(lower);
+      if (firstSeen !== undefined && firstSeen !== name) {
         issues.push(
           this.err(
             'ERR_ZIP_COLLISION',
-            `Case-collision ZIP entry: "${name}" collides with an existing entry`,
+            `Case-collision ZIP entry: "${name}" collides with "${firstSeen}"`,
           ),
         );
+      } else if (firstSeen === undefined) {
+        seenLower.set(lower, name);
       }
-      seenLower.add(lower);
 
       if (opts.type === 'deployment') {
         if (!/^agents\/[a-z0-9]+(?:-[a-z0-9]+)*\.agent\.md$/.test(name)) {
