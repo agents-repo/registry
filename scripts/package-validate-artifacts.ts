@@ -24,10 +24,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import semver from 'semver';
+import { parseOptionalFlagValue, parseRequiredPackageId } from './lib/cli/args';
+import { resolveScriptPaths } from './lib/cli/paths';
+import { exitWithValidationResult } from './lib/cli/reporting';
 import { SnapshotValidator } from './lib/snapshot-validator';
 import type { ValidationReport } from './lib/types';
 
-const scriptDir = fileURLToPath(new URL('.', import.meta.url));
 const scriptPath = fileURLToPath(import.meta.url);
 
 // ---------------------------------------------------------------------------
@@ -40,16 +42,9 @@ interface BuildValidateArgs {
 }
 
 function parseArgs(argv: string[]): BuildValidateArgs {
-  const args = argv.slice(2);
-  const pkgIdx = args.indexOf('--package');
-  if (pkgIdx === -1 || !args[pkgIdx + 1]) {
-    console.error('Error: --package <id> is required');
-    process.exit(1);
-  }
-  const verIdx = args.indexOf('--version');
   return {
-    packageId: args[pkgIdx + 1],
-    version: verIdx >= 0 ? args[verIdx + 1] : undefined,
+    packageId: parseRequiredPackageId(argv),
+    version: parseOptionalFlagValue(argv, '--version'),
   };
 }
 
@@ -71,9 +66,7 @@ export function runBuildValidate(
 
 function main(): void {
   const { packageId, version: versionArg } = parseArgs(process.argv);
-
-  const repoRoot = path.resolve(scriptDir, '..');
-  const packagesDir = path.join(repoRoot, 'packages');
+  const { packagesDir } = resolveScriptPaths(import.meta.url);
 
   let version = versionArg;
   if (!version) {
@@ -104,22 +97,10 @@ function main(): void {
 
   const report = runBuildValidate(packageId, version, packagesDir);
 
-  for (const w of report.warnings) {
-    console.warn(`  [WARN]  ${w.message}`);
-  }
-  for (const e of report.errors) {
-    console.error(`  [ERROR] (${e.code}) ${e.message}`);
-  }
-
-  if (report.passed) {
-    console.log(`Build validation passed for ${packageId}@${version}`);
-    process.exit(0);
-  } else {
-    console.error(
-      `Build validation failed for ${packageId}@${version} — ${report.errors.length} error(s)`,
-    );
-    process.exit(1);
-  }
+  exitWithValidationResult(report, {
+    successMessage: `Build validation passed for ${packageId}@${version}`,
+    failurePrefix: `Build validation failed for ${packageId}@${version}`,
+  });
 }
 
 // Run CLI only when this file is directly executed, not when imported
