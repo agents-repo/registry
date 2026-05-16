@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { readJsonFile, writeJsonFile } from './io/json';
 import { getSchemaCurrentVersion } from './schema-versions';
 import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 
@@ -12,7 +13,7 @@ export class IndexManager {
   update(packageId: string, metadata: PackageMetadata, manifestLatest: string): void {
     let index: PackageIndex;
     if (fs.existsSync(this.indexPath)) {
-      index = JSON.parse(fs.readFileSync(this.indexPath, 'utf-8')) as PackageIndex;
+      index = readJsonFile<PackageIndex>(this.indexPath);
     } else {
       index = { schemaVersion: getSchemaCurrentVersion('index'), updatedAt: '', packages: [] };
     }
@@ -34,6 +35,6 @@ export class IndexManager {
     }
 
     index.updatedAt = new Date().toISOString();
-    fs.writeFileSync(this.indexPath, JSON.stringify(index, null, 4) + '\n', 'utf-8');
+    writeJsonFile(this.indexPath, index);
   }
 }

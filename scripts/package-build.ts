@@ -23,10 +23,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { rollbackVersionDirectory, warnIfIndexMayBeInconsistent } from './lib/build/rollback';
+import { updateManifestAndIndexWithRollback } from './lib/build/registry-sync';
+import { prepareVersionSnapshot } from './lib/build/snapshot-writer';
 import { ErrorCode, PackageError } from './lib/errors';
 import { GitContext } from './lib/git';
-import { IndexManager } from './lib/index-manager';
-import { ManifestManager } from './lib/manifest-manager';
 import { Package } from './lib/package';
 import { ValidationUtils } from './lib/validation-utils';
 import { ZipBuilder } from './lib/zip-builder';
@@ -54,21 +55,6 @@ function parseArgs(argv: string[]): BuildArgs {
     packageId: args[idx + 1],
     forceRebuild: args.includes('--force-rebuild'),
   };
-}
-
-// ---------------------------------------------------------------------------
-// Rollback helper
-// ---------------------------------------------------------------------------
-
-function rollback(versionDir: string): void {
-  if (fs.existsSync(versionDir)) {
-    try {
-      fs.rmSync(versionDir, { recursive: true, force: true });
-      console.error(`  [ROLLBACK] Removed partial version directory: ${versionDir}`);
-    } catch {
-      console.error(`  [ROLLBACK] Failed to remove: ${versionDir}`);
-    }
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -125,34 +111,9 @@ async function main(): Promise<void> {
 
   // Step 3: Create version snapshot directory structure
   console.log(`[3/6] Building version snapshot for ${version}`);
-  fs.mkdirSync(versionDir, { recursive: true });
-
-  const snapshotMetaPath = path.join(versionDir, 'metadata.json');
-  const deployZipPath = path.join(versionDir, `${version}.zip`);
-  const srcZipPath = path.join(versionDir, `${version}-src.zip`);
+  const { deployZipPath, srcZipPath } = prepareVersionSnapshot(pkg, versionDir, version);
 
   try {
-    // Copy metadata.json verbatim
-    fs.copyFileSync(pkg.metadataPath, snapshotMetaPath);
-
-    // Copy agents/ tree
-    if (fs.existsSync(pkg.agentsDir)) {
-      const snapshotAgentsDir = path.join(versionDir, 'agents');
-      fs.mkdirSync(snapshotAgentsDir, { recursive: true });
-      for (const f of fs.readdirSync(pkg.agentsDir)) {
-        fs.copyFileSync(path.join(pkg.agentsDir, f), path.join(snapshotAgentsDir, f));
-      }
-    }
-
-    // Copy flows/ tree
-    if (fs.existsSync(pkg.flowsDir)) {
-      const snapshotFlowsDir = path.join(versionDir, 'flows');
-      fs.mkdirSync(snapshotFlowsDir, { recursive: true });
-      for (const f of fs.readdirSync(pkg.flowsDir)) {
-        fs.copyFileSync(path.join(pkg.flowsDir, f), path.join(snapshotFlowsDir, f));
-      }
-    }
-
     // Step 4: Build deployment ZIP
     console.log(`[4/6] Building deployment ZIP: ${version}.zip`);
     const zipBuilder = new ZipBuilder(pkg.packageDir, version);
@@ -170,70 +131,22 @@ async function main(): Promise<void> {
 
     // Prepare manifest update with rollback support
     console.log(`[6/6] Updating versions/manifest.json and packages/index.json`);
-    const manifestManager = new ManifestManager(pkg.manifestPath, packageId);
-    const manifest = manifestManager.load();
-    const oldManifest = JSON.parse(JSON.stringify(manifest)); // Deep copy for rollback
-    
-    const updatedManifest = manifestManager.upsert(manifest, {
-      version,
-      artifact: `${version}.zip`,
-      sha256: deployZipSha256,
-      srcArtifact: `${version}-src.zip`,
-      srcSha256: srcZipSha256,
-      createdAt: new Date().toISOString(),
-    });
-    manifestManager.save(updatedManifest);
-    
-    // Prepare index update with rollback support
     const indexPath = path.join(repoRoot, 'packages', 'index.json');
-    const oldIndexContent = fs.existsSync(indexPath) 
-      ? fs.readFileSync(indexPath, 'utf-8') 
-      : null;
-    
-    try {
-      new IndexManager(indexPath).update(packageId, metadata, updatedManifest.latest);
-    } catch (indexError) {
-      // Rollback manifest and index if index update fails
-      try {
-        manifestManager.save(oldManifest);
-        console.error(`  [ROLLBACK] Restored versions/manifest.json after index update failure`);
-      } catch (restoreError) {
-        console.error(`  [ROLLBACK] Failed to restore versions/manifest.json:`, restoreError);
-      }
-
-      try {
-        if (oldIndexContent !== null) {
-          fs.writeFileSync(indexPath, oldIndexContent, 'utf-8');
-        } else if (fs.existsSync(indexPath)) {
-          fs.unlinkSync(indexPath);
-        }
-        console.error(`  [ROLLBACK] Restored packages/index.json after index update failure`);
-      } catch (restoreError) {
-        console.error(`  [ROLLBACK] Failed to restore packages/index.json:`, restoreError);
-      }
-
-      throw indexError;
-    }
+    updateManifestAndIndexWithRollback({
+      packageId,
+      manifestPath: pkg.manifestPath,
+      indexPath,
+      metadata,
+      version,
+      deployZipSha256,
+      srcZipSha256,
+    });
   } catch (error) {
-    rollback(versionDir);
+    rollbackVersionDirectory(versionDir);
     
     // Attempt to restore old index.json if it was overwritten
     const indexPath = path.join(repoRoot, 'packages', 'index.json');
-    if (fs.existsSync(indexPath)) {
-      try {
-        // Try to detect and restore old index if needed
-        const currentIndex = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
-        if (currentIndex[packageId] !== undefined) {
-          // Index was partially updated; this needs manual intervention
-          console.error(
-            `  [CRITICAL] packages/index.json may be inconsistent. ` +
-              `Review the index for package "${packageId}" and ensure it matches versions/manifest.json.`
-          );
-        }
-      } catch {
-        // Index JSON is malformed; leave for user to diagnose
-      }
-    }
+    warnIfIndexMayBeInconsistent(indexPath, packageId);
     
     if (error instanceof PackageError) {
       console.error(`[${error.code}] ${error.message}`);

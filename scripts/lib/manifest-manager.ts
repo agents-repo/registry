@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { readJsonFile, writeJsonFile } from './io/json';
 import semver from 'semver';
 import { getSchemaCurrentVersion } from './schema-versions';
 import { ValidationUtils } from './validation-utils';
@@ -15,7 +16,7 @@ export class ManifestManager {
 
   load(): Manifest {
     if (fs.existsSync(this.manifestPath)) {
-      return JSON.parse(fs.readFileSync(this.manifestPath, 'utf-8')) as Manifest;
+      return readJsonFile<Manifest>(this.manifestPath);
     }
     return {
       schemaVersion: getSchemaCurrentVersion('manifest'),
@@ -58,6 +59,6 @@ export class ManifestManager {
   }
 
   save(manifest: Manifest): void {
-    fs.writeFileSync(this.manifestPath, JSON.stringify(manifest, null, 4) + '\n', 'utf-8');
+    writeJsonFile(this.manifestPath, manifest);
   }
 }

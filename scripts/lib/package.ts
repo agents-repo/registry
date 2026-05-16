@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import { readJsonFile } from './io/json';
 import path from 'node:path';
 import type { PackageMetadata } from './types';
 
@@ -24,7 +24,7 @@ export class Package {
   }
 
   loadMetadata(): PackageMetadata {
-    return JSON.parse(fs.readFileSync(this.metadataPath, 'utf-8')) as PackageMetadata;
+    return readJsonFile<PackageMetadata>(this.metadataPath);
   }
 
   versionDir(version: string): string {
