@@ -85,17 +85,20 @@ function main(): void {
     const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8')) as {
       version?: string;
     };
-    if (!metadata.version || !semver.valid(metadata.version)) {
-      console.error(`Invalid or missing version in metadata.json for package: ${packageId}`);
+    const parsed = semver.parse(metadata.version ?? '');
+    if (!parsed || parsed.prerelease.length > 0 || parsed.build.length > 0) {
+      console.error(`Version in metadata.json must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(metadata.version)}`);
       process.exit(1);
     }
-    version = metadata.version;
+    version = parsed.version;
   }
 
-  if (!semver.valid(version)) {
-    console.error(`Invalid semver: ${version}`);
+  const parsedVersion = semver.parse(version ?? '');
+  if (!parsedVersion || parsedVersion.prerelease.length > 0 || parsedVersion.build.length > 0) {
+    console.error(`--version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(version)}`);
     process.exit(1);
   }
+  version = parsedVersion.version;
 
   console.log(`Validating build for ${packageId}@${version}`);
 
