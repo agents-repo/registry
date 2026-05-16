@@ -220,6 +220,5 @@ body:
             not manually authored or modified.
           required: true
         - label: >-
-            `npm run package:validate-artifacts` passed for this version
-            (auto-chained by `package:build`).
+            `npm run package:validate-artifacts` passed for this version.
           required: true
