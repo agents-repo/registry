@@ -23,10 +23,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import semver from 'semver';
 import { parseOptionalFlagValue, parseRequiredPackageId } from './lib/cli/args';
 import { resolveScriptPaths } from './lib/cli/paths';
 import { exitWithValidationResult } from './lib/cli/reporting';
+import { parseReleaseVersion } from './lib/cli/version';
 import { SnapshotValidator } from './lib/snapshot-validator';
 import type { ValidationReport } from './lib/types';
 
@@ -78,20 +78,20 @@ function main(): void {
     const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8')) as {
       version?: string;
     };
-    const parsed = semver.parse(metadata.version ?? '');
-    if (!parsed || parsed.prerelease.length > 0 || parsed.build.length > 0) {
+    const parsedVersion = parseReleaseVersion(metadata.version);
+    if (!parsedVersion) {
       console.error(`Version in metadata.json must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(metadata.version)}`);
       process.exit(1);
     }
-    version = parsed.version;
+    version = parsedVersion;
   }
 
-  const parsedVersion = semver.parse(version ?? '');
-  if (!parsedVersion || parsedVersion.prerelease.length > 0 || parsedVersion.build.length > 0) {
+  const normalizedVersion = parseReleaseVersion(version);
+  if (!normalizedVersion) {
     console.error(`--version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(version)}`);
     process.exit(1);
   }
-  version = parsedVersion.version;
+  version = normalizedVersion;
 
   console.log(`Validating build for ${packageId}@${version}`);
 
