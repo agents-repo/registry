@@ -87,4 +87,3 @@ export function validatePackage(
     passed: errors.length === 0,
   };
 }
-
