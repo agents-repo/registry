@@ -161,9 +161,12 @@ async function main(): Promise<void> {
     console.log(`       deploy sha256: ${deployZipSha256}`);
     console.log(`       src    sha256: ${srcZipSha256}`);
 
-    console.log(`[6/6] Updating versions/manifest.json`);
+    // Prepare manifest update with rollback support
+    console.log(`[6/6] Updating versions/manifest.json and packages/index.json`);
     const manifestManager = new ManifestManager(pkg.manifestPath, packageId);
     const manifest = manifestManager.load();
+    const oldManifest = JSON.parse(JSON.stringify(manifest)); // Deep copy for rollback
+    
     const updatedManifest = manifestManager.upsert(manifest, {
       version,
       artifact: `${version}.zip`,
@@ -173,12 +176,46 @@ async function main(): Promise<void> {
       createdAt: new Date().toISOString(),
     });
     manifestManager.save(updatedManifest);
-
-    // Update packages/index.json
+    
+    // Prepare index update with rollback support
     const indexPath = path.join(repoRoot, 'packages', 'index.json');
-    new IndexManager(indexPath).update(packageId, metadata, updatedManifest.latest);
+    const oldIndexContent = fs.existsSync(indexPath) 
+      ? fs.readFileSync(indexPath, 'utf-8') 
+      : null;
+    
+    try {
+      new IndexManager(indexPath).update(packageId, metadata, updatedManifest.latest);
+    } catch (indexError) {
+      // Rollback manifest if index update fails
+      try {
+        manifestManager.save(oldManifest);
+        console.error(`  [ROLLBACK] Restored versions/manifest.json after index update failure`);
+      } catch (restoreError) {
+        console.error(`  [ROLLBACK] Failed to restore versions/manifest.json:`, restoreError);
+      }
+      throw indexError;
+    }
   } catch (error) {
     rollback(versionDir);
+    
+    // Attempt to restore old index.json if it was overwritten
+    const indexPath = path.join(repoRoot, 'packages', 'index.json');
+    if (fs.existsSync(indexPath)) {
+      try {
+        // Try to detect and restore old index if needed
+        const currentIndex = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
+        if (currentIndex[packageId] !== undefined) {
+          // Index was partially updated; this needs manual intervention
+          console.error(
+            `  [CRITICAL] packages/index.json may be inconsistent. ` +
+              `Review the index for package "${packageId}" and ensure it matches versions/manifest.json.`
+          );
+        }
+      } catch {
+        // Index JSON is malformed; leave for user to diagnose
+      }
+    }
+    
     if (error instanceof PackageError) {
       console.error(`[${error.code}] ${error.message}`);
     } else {
