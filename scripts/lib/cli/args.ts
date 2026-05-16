@@ -16,3 +16,7 @@ export function parseOptionalFlagValue(argv: string[], flag: string): string | u
   }
   return args[idx + 1];
 }
+
+export function hasFlag(argv: string[], flag: string): boolean {
+  return argv.slice(2).includes(flag);
+}

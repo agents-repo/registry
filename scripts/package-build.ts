@@ -22,10 +22,11 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { rollbackVersionDirectory, warnIfIndexMayBeInconsistent } from './lib/build/rollback';
 import { updateManifestAndIndexWithRollback } from './lib/build/registry-sync';
 import { prepareVersionSnapshot } from './lib/build/snapshot-writer';
+import { hasFlag, parseRequiredPackageId } from './lib/cli/args';
+import { resolveScriptPaths } from './lib/cli/paths';
 import { ErrorCode, PackageError } from './lib/errors';
 import { GitContext } from './lib/git';
 import { Package } from './lib/package';
@@ -33,39 +34,15 @@ import { ValidationUtils } from './lib/validation-utils';
 import { ZipBuilder } from './lib/zip-builder';
 import { Checksum } from './lib/checksum';
 
-const scriptDir = fileURLToPath(new URL('.', import.meta.url));
-
-// ---------------------------------------------------------------------------
-// CLI argument parsing
-// ---------------------------------------------------------------------------
-
-interface BuildArgs {
-  packageId: string;
-  forceRebuild: boolean;
-}
-
-function parseArgs(argv: string[]): BuildArgs {
-  const args = argv.slice(2);
-  const idx = args.indexOf('--package');
-  if (idx === -1 || !args[idx + 1]) {
-    console.error('Error: --package <id> is required');
-    process.exit(1);
-  }
-  return {
-    packageId: args[idx + 1],
-    forceRebuild: args.includes('--force-rebuild'),
-  };
-}
-
 // ---------------------------------------------------------------------------
 // Entry point
 // ---------------------------------------------------------------------------
 
 async function main(): Promise<void> {
-  const { packageId, forceRebuild } = parseArgs(process.argv);
+  const packageId = parseRequiredPackageId(process.argv);
+  const forceRebuild = hasFlag(process.argv, '--force-rebuild');
 
-  const repoRoot = path.resolve(scriptDir, '..');
-  const packagesDir = path.join(repoRoot, 'packages');
+  const { repoRoot, packagesDir } = resolveScriptPaths(import.meta.url);
   const pkg = new Package(packageId, packagesDir);
 
   // Step 1: Read metadata to get target version
