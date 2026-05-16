@@ -143,11 +143,11 @@ async function main(): Promise<void> {
     });
   } catch (error) {
     rollbackVersionDirectory(versionDir);
-    
+
     // Attempt to restore old index.json if it was overwritten
     const indexPath = path.join(repoRoot, 'packages', 'index.json');
     warnIfIndexMayBeInconsistent(indexPath, packageId);
-    
+
     if (error instanceof PackageError) {
       console.error(`[${error.code}] ${error.message}`);
     } else {
