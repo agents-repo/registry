@@ -22,7 +22,6 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import {
   parseOptionalFlagValue,
   parseReleaseVersion,
@@ -31,9 +30,6 @@ import {
 } from './lib/cli';
 import { exitWithValidationResult } from './lib/cli/reporting';
 import { SnapshotValidator } from './lib/snapshot-validator';
-import type { ValidationReport } from './lib/types';
-
-const scriptPath = fileURLToPath(import.meta.url);
 
 // ---------------------------------------------------------------------------
 // CLI argument parsing
@@ -49,18 +45,6 @@ function parseArgs(argv: string[]): BuildValidateArgs {
     packageId: parseRequiredPackageId(argv),
     version: parseOptionalFlagValue(argv, '--version'),
   };
-}
-
-// ---------------------------------------------------------------------------
-// Exported function for use by package-build
-// ---------------------------------------------------------------------------
-
-export function runBuildValidate(
-  packageId: string,
-  version: string,
-  packagesDir: string,
-): ValidationReport {
-  return new SnapshotValidator(packageId, version, packagesDir).validate();
 }
 
 // ---------------------------------------------------------------------------
@@ -98,7 +82,7 @@ function main(): void {
 
   console.log(`Validating build for ${packageId}@${version}`);
 
-  const report = runBuildValidate(packageId, version, packagesDir);
+  const report = new SnapshotValidator(packageId, version, packagesDir).validate();
 
   exitWithValidationResult(report, {
     successMessage: `Build validation passed for ${packageId}@${version}`,
@@ -106,7 +90,4 @@ function main(): void {
   });
 }
 
-// Run CLI only when this file is directly executed, not when imported
-if (process.argv[1] && path.resolve(process.argv[1]) === scriptPath) {
-  main();
-}
+main();
