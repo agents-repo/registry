@@ -1,6 +1,6 @@
 import { ValidationUtils } from '../../validation-utils';
 import type { PackageMetadata, ValidationIssue } from '../../types';
-import { err } from './issues';
+import { err } from '../common/issues';
 import { validateSchemaVersion } from './schema-version';
 
 export function validateMetadata(

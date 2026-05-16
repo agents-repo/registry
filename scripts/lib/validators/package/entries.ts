@@ -4,7 +4,7 @@ import { parseFrontmatter } from '../../frontmatter';
 import { ValidationUtils } from '../../validation-utils';
 import type { SchemaFamily } from '../../schema-versions';
 import type { ValidationIssue } from '../../types';
-import { err, warn } from './issues';
+import { err, warn } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
 

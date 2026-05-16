@@ -4,7 +4,7 @@ import {
   type SchemaFamily,
 } from '../../schema-versions';
 import type { ValidationIssue } from '../../types';
-import { err, warn } from './issues';
+import { err, warn } from '../common/issues';
 
 export function validateSchemaVersion(
   issues: ValidationIssue[],

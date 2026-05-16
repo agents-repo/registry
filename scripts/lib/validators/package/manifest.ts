@@ -1,7 +1,7 @@
 import semver from 'semver';
 import { ValidationUtils } from '../../validation-utils';
 import type { Manifest, ValidationIssue } from '../../types';
-import { err } from './issues';
+import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
 

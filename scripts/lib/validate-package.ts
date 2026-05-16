@@ -4,7 +4,7 @@ import semver from 'semver';
 import { ValidationUtils } from './validation-utils';
 import type { ValidationIssue, ValidationReport } from './types';
 import { validateEntryFiles } from './validators/package/entries';
-import { err, splitIssues } from './validators/package/issues';
+import { err, splitIssues } from './validators/common/issues';
 import { readJsonFile } from './validators/package/json-reader';
 import { validateManifest } from './validators/package/manifest';
 import { validateMetadata } from './validators/package/metadata';

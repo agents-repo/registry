@@ -1,7 +1,7 @@
 import AdmZip from 'adm-zip';
 import { parseFrontmatter } from '../../frontmatter';
 import type { ValidationIssue } from '../../types';
-import { err } from './issues';
+import { err } from '../common/issues';
 
 const DISALLOWED_SOURCE_EXTENSIONS = new Set([
   '.exe',

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { Checksum } from './checksum';
 import type { Manifest, ValidationIssue, ValidationReport } from './types';
-import { err, splitIssues } from './validators/snapshot/issues';
+import { err, splitIssues } from './validators/common/issues';
 import { validateSchemaVersion } from './validators/snapshot/schema-version';
 import { scanSnapshotZip } from './validators/snapshot/zip-scan';
 
