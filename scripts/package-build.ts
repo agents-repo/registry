@@ -28,6 +28,7 @@ import { GitContext } from './lib/git';
 import { IndexManager } from './lib/index-manager';
 import { ManifestManager } from './lib/manifest-manager';
 import { Package } from './lib/package';
+import { ValidationUtils } from './lib/validation-utils';
 import { ZipBuilder } from './lib/zip-builder';
 import { Checksum } from './lib/checksum';
 
@@ -84,6 +85,12 @@ async function main(): Promise<void> {
   // Step 1: Read metadata to get target version
   const metadata = pkg.loadMetadata();
   const version = metadata.version;
+  if (!ValidationUtils.isReleaseVersion(version)) {
+    throw new PackageError(
+      ErrorCode.ERR_VALIDATION_FAILED,
+      `metadata.json version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(version)}`,
+    );
+  }
   console.log(`[1/6] Target version: ${version}`);
 
   // Step 2: Overwrite-protection checks

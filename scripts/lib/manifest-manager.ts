@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import semver from 'semver';
 import { getSchemaCurrentVersion } from './schema-versions';
+import { ValidationUtils } from './validation-utils';
 import type { Manifest, ManifestVersionEntry } from './types';
 
 export class ManifestManager {
@@ -25,6 +26,21 @@ export class ManifestManager {
   }
 
   upsert(manifest: Manifest, entry: ManifestVersionEntry): Manifest {
+    if (!ValidationUtils.isReleaseVersion(entry.version)) {
+      throw new Error(
+        `manifest entry version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(entry.version)}`,
+      );
+    }
+
+    const invalidExisting = manifest.versions.find(
+      (v) => !ValidationUtils.isReleaseVersion(v.version),
+    );
+    if (invalidExisting) {
+      throw new Error(
+        `manifest contains non-release version entry: ${JSON.stringify(invalidExisting.version)}`,
+      );
+    }
+
     const updated = { ...manifest, versions: [...manifest.versions] };
     const existing = updated.versions.findIndex((v) => v.version === entry.version);
     if (existing >= 0) {
