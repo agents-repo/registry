@@ -46,7 +46,6 @@ export class PackageScaffolder {
     const packageSchemaVersion = getSchemaCurrentVersion('metadata.package');
     const agentMetadataSchemaVersion = getSchemaCurrentVersion('metadata.agent');
     const flowMetadataSchemaVersion = getSchemaCurrentVersion('metadata.flow');
-    const manifestSchemaVersion = getSchemaCurrentVersion('manifest');
 
     const now = new Date().toISOString();
     const packageMetadata: PackageMetadata = {
@@ -95,12 +94,6 @@ export class PackageScaffolder {
         'utf-8',
       );
     }
-
-    fs.writeFileSync(
-      path.join(packageDir, 'versions', 'manifest.json'),
-      JSON.stringify(this.generateEmptyManifest(packageId, manifestSchemaVersion), null, 4) + '\n',
-      'utf-8',
-    );
   }
 
   private generateAgentMarkdown(id: string, description: string): string {
@@ -136,15 +129,6 @@ Output: Describe expected output type or format
       schemaVersion,
       name: id,
       description,
-    };
-  }
-
-  private generateEmptyManifest(packageId: string, schemaVersion: string): object {
-    return {
-      schemaVersion,
-      name: packageId,
-      latest: '',
-      versions: [],
     };
   }
 }
