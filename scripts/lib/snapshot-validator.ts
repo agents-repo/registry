@@ -3,7 +3,7 @@ import path from 'node:path';
 import AdmZip from 'adm-zip';
 import { Checksum } from './checksum';
 import { parseFrontmatter } from './frontmatter';
-import { describeSchemaVersionStatus, getSchemaCurrentVersion } from './schema-versions';
+import { describeSchemaVersionStatus, getSchemaCurrentVersion, type SchemaFamily } from './schema-versions';
 import type { Manifest, ValidationIssue, ValidationReport } from './types';
 
 export class SnapshotValidator {
@@ -111,6 +111,8 @@ export class SnapshotValidator {
         return { packageId: this.packageId, errors, warnings, passed: errors.length === 0 };
       }
 
+      issues.push(...this.validateSchemaVersion(manifest.schemaVersion, 'versions/manifest.json', 'manifest'));
+
       const entry = manifest.versions.find((v) => v.version === this.version);
       if (!entry) {
         issues.push(
@@ -172,8 +174,8 @@ export class SnapshotValidator {
     return { code: 'WARN', severity: 'warning', message };
   }
 
-  private validateSchemaVersion(value: unknown, context: string): ValidationIssue[] {
-    const result = describeSchemaVersionStatus('metadata.package', value);
+  private validateSchemaVersion(value: unknown, context: string, family: SchemaFamily = 'metadata.package'): ValidationIssue[] {
+    const result = describeSchemaVersionStatus(family, value);
     const current = getSchemaCurrentVersion('metadata.package');
     const supported = result.expected.join(', ');
 
