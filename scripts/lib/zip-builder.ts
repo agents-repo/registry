@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import AdmZip from 'adm-zip';
+import { PackageError, ErrorCode } from './errors';
 
 export class ZipBuilder {
   private readonly packageDir: string;
@@ -13,12 +14,21 @@ export class ZipBuilder {
 
   buildDeploymentZip(outputPath: string): void {
     const zip = new AdmZip();
+    const seenEntries = new Set<string>();
 
     const agentsDir = path.join(this.packageDir, 'agents');
     if (fs.existsSync(agentsDir)) {
       for (const f of fs.readdirSync(agentsDir)) {
         if (f.endsWith('.agent.md')) {
-          zip.addFile(`agents/${f}`, fs.readFileSync(path.join(agentsDir, f)));
+          const entryName = `agents/${f}`;
+          if (seenEntries.has(entryName)) {
+            throw new PackageError(
+              ErrorCode.ERR_ZIP_COLLISION,
+              `Collision building deployment ZIP: \"${entryName}\" already exists`,
+            );
+          }
+          seenEntries.add(entryName);
+          zip.addFile(entryName, fs.readFileSync(path.join(agentsDir, f)));
         }
       }
     }
@@ -28,7 +38,15 @@ export class ZipBuilder {
       for (const f of fs.readdirSync(flowsDir)) {
         if (f.endsWith('.agent.md')) {
           // Flows are merged into agents/ in the deployment ZIP
-          zip.addFile(`agents/${f}`, fs.readFileSync(path.join(flowsDir, f)));
+          const entryName = `agents/${f}`;
+          if (seenEntries.has(entryName)) {
+            throw new PackageError(
+              ErrorCode.ERR_ZIP_COLLISION,
+              `Collision building deployment ZIP: \"${entryName}\" already exists`,
+            );
+          }
+          seenEntries.add(entryName);
+          zip.addFile(entryName, fs.readFileSync(path.join(flowsDir, f)));
         }
       }
     }
