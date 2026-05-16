@@ -343,10 +343,9 @@ function validateManifest(
     issues.push(
       err('ERR_VALIDATION_FAILED', `manifest.json latest must be a string`),
     );
-  } else if (m['latest'].length > 0 && !ValidationUtils.isReleaseVersion(m['latest'] as string)) {
-    // latest can be empty for unpublished packages; if non-empty, must be MAJOR.MINOR.PATCH
+  } else if (!ValidationUtils.isReleaseVersion(m['latest'] as string)) {
     issues.push(
-      err('ERR_VALIDATION_FAILED', `manifest.json latest must be a MAJOR.MINOR.PATCH release version (if set)`),
+      err('ERR_VALIDATION_FAILED', `manifest.json latest must be a MAJOR.MINOR.PATCH release version`),
     );
   }
 
@@ -357,8 +356,10 @@ function validateManifest(
     return m as unknown as Manifest;
   }
 
-  // Empty versions is allowed for unpublished packages (first release)
   if (m['versions'].length === 0) {
+    issues.push(
+      err('ERR_VALIDATION_FAILED', 'manifest.json versions must contain at least one entry'),
+    );
     return m as unknown as Manifest;
   }
 
@@ -440,7 +441,7 @@ function validateManifest(
   // Check latest equals max version
   if (
     typeof m['latest'] === 'string' &&
-    (m['latest'].length === 0 || ValidationUtils.isReleaseVersion(m['latest'])) &&
+    ValidationUtils.isReleaseVersion(m['latest']) &&
     versionSet.size > 0
   ) {
     const versions = Array.from(versionSet);
@@ -526,7 +527,7 @@ export function validatePackage(
           const manifestLatest = (mfData as Record<string, unknown>)['latest'] as string;
           if (
             ValidationUtils.isReleaseVersion(metaVersion as string) &&
-            (manifestLatest.length === 0 || ValidationUtils.isReleaseVersion(manifestLatest as string)) &&
+            ValidationUtils.isReleaseVersion(manifestLatest as string) &&
             semver.lt(metaVersion, manifestLatest)
           ) {
             issues.push(
