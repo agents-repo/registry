@@ -3,9 +3,9 @@ import path from 'node:path';
 import type { ValidationIssue, ValidationReport } from './types';
 import { validateEntryFiles } from './validators/package/entries';
 import { err, splitIssues } from './validators/common/issues';
-import { readJsonFile } from './validators/package/json-reader';
 import { validateManifest } from './validators/package/manifest';
 import { validateMetadata } from './validators/package/metadata';
+import { loadPackageMetadata, resolvePackageDir } from './validators/package/preflight';
 import {
   validateFrontmatterVersionMatchesMetadata,
   validateMetadataVersionAgainstManifestLatest,
@@ -39,36 +39,16 @@ export function validatePackage(
   packagesDir: string,
 ): ValidationReport {
   const issues: ValidationIssue[] = [];
-  const packageDir = path.join(packagesDir, packageId);
-
-  // 1. Package directory exists
-  if (!fs.existsSync(packageDir)) {
-    return {
-      packageId,
-      errors: [
-        {
-          code: 'ERR_PACKAGE_NOT_FOUND',
-          severity: 'error',
-          message: `Package directory not found: ${packageDir}`,
-        },
-      ],
-      warnings: [],
-      passed: false,
-    };
+  const { packageDir, report } = resolvePackageDir(packageId, packagesDir);
+  if (report) {
+    return report;
   }
 
   // 2. metadata.json
-  const metadataPath = path.join(packageDir, 'metadata.json');
-  if (!fs.existsSync(metadataPath)) {
-    issues.push(err('ERR_METADATA_INVALID', 'metadata.json is missing from package root'));
-  } else {
-    const { data, error } = readJsonFile(metadataPath);
-    if (error) {
-      issues.push(err('ERR_METADATA_INVALID', error));
-    } else {
-      validateMetadata(data, packageId, issues);
-      validateMetadataVersionAgainstManifestLatest(packageDir, data, issues);
-    }
+  const metadata = loadPackageMetadata(packageDir, issues);
+  if (metadata !== null) {
+    validateMetadata(metadata, packageId, issues);
+    validateMetadataVersionAgainstManifestLatest(packageDir, metadata, issues);
   }
 
   // 3. Agent and flow entries
@@ -108,9 +88,7 @@ export function validatePackage(
 
   // 8. Manifest validation (if present)
   const manifestPath = path.join(packageDir, 'versions', 'manifest.json');
-  if (fs.existsSync(manifestPath)) {
-    validateManifest(manifestPath, packageId, issues);
-  }
+  validateManifestIfPresent(manifestPath, packageId, issues);
 
   const { errors, warnings } = splitIssues(issues);
 
@@ -120,4 +98,14 @@ export function validatePackage(
     warnings,
     passed: errors.length === 0,
   };
+}
+
+function validateManifestIfPresent(
+  manifestPath: string,
+  packageId: string,
+  issues: ValidationIssue[],
+): void {
+  if (fs.existsSync(manifestPath)) {
+    validateManifest(manifestPath, packageId, issues);
+  }
 }
