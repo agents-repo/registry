@@ -1,12 +1,10 @@
-import { existsSync } from 'node:fs';
-import path from 'node:path';
 import type { ValidationIssue, ValidationReport } from './types';
-import { validateEntryFiles } from './validators/package/entries';
 import { splitIssues } from './validators/common/issues';
 import {
   validateHasEntries,
   validateUniqueIdsAcrossEntryTypes,
 } from './validators/package/entry-consistency';
+import { loadPackageEntries } from './validators/package/entry-loading';
 import { validateManifest } from './validators/package/manifest';
 import { getManifestPath, hasManifest } from './validators/package/manifest-preflight';
 import { validateMetadata } from './validators/package/metadata';
@@ -57,18 +55,13 @@ export function validatePackage(
   }
 
   // 3. Agent and flow entries
-  const agentsDir = path.join(packageDir, 'agents');
-  const flowsDir = path.join(packageDir, 'flows');
-
-  const agentEntries = validateEntryFiles(agentsDir, 'agents', issues);
-  const flowEntries = validateEntryFiles(flowsDir, 'flows', issues);
+  const { agentEntries, flowEntries, allEntries } = loadPackageEntries(packageDir, issues);
 
   // 4-5. Entry consistency checks
   validateHasEntries(agentEntries, flowEntries, issues);
   validateUniqueIdsAcrossEntryTypes(agentEntries, flowEntries, issues);
 
   // 6. Frontmatter version consistency checks
-  const allEntries = [...agentEntries, ...flowEntries];
   const sharedFrontmatterVersion = validateSharedFrontmatterVersion(allEntries, issues);
   validateFrontmatterVersionMatchesMetadata(packageDir, sharedFrontmatterVersion, issues);
 
