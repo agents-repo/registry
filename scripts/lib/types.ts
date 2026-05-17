@@ -24,9 +24,9 @@ export interface PackageMetadata {
   createdAt: string;
   updatedAt: string;
   version: string;
-  status?: StatusValue;
-  category?: string;
-  estimateOverallCost?: EstimateOverallCost;
+  status: StatusValue;
+  category: string;
+  estimateOverallCost: EstimateOverallCost;
   quickstart?: string;
   customAttributes?: Record<string, unknown>;
   [key: string]: unknown;
