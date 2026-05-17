@@ -55,7 +55,7 @@ function validateEntryMetadataV110(
   }
 
   if (
-    typeof md['customAttributes'] !== 'undefined' &&
+    md['customAttributes'] !== undefined &&
     (typeof md['customAttributes'] !== 'object' ||
       md['customAttributes'] === null ||
       Array.isArray(md['customAttributes']))

@@ -98,7 +98,7 @@ export function validateMetadata(
   } else if (
     typeof m['createdAt'] === 'string' &&
     ValidationUtils.isRfc3339(m['createdAt']) &&
-    Date.parse(m['updatedAt'] as string) < Date.parse(m['createdAt'] as string)
+    Date.parse(m['updatedAt']) < Date.parse(m['createdAt'])
   ) {
     issues.push(
       err('ERR_METADATA_INVALID', 'updatedAt must be greater than or equal to createdAt'),
@@ -146,7 +146,7 @@ export function validateMetadata(
         );
       }
       if (
-        typeof cost['estimatedCost'] !== 'undefined' &&
+        cost['estimatedCost'] !== undefined &&
         (typeof cost['estimatedCost'] !== 'number' || Number.isNaN(cost['estimatedCost']))
       ) {
         issues.push(
@@ -157,7 +157,7 @@ export function validateMetadata(
   }
 
   if (
-    typeof m['quickstart'] !== 'undefined' &&
+    m['quickstart'] !== undefined &&
     (typeof m['quickstart'] !== 'string' || !ValidationUtils.isHttpsUrl(m['quickstart']))
   ) {
     issues.push(
@@ -169,7 +169,7 @@ export function validateMetadata(
   }
 
   if (
-    typeof m['customAttributes'] !== 'undefined' &&
+    m['customAttributes'] !== undefined &&
     (typeof m['customAttributes'] !== 'object' || m['customAttributes'] === null || Array.isArray(m['customAttributes']))
   ) {
     issues.push(
