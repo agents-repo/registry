@@ -143,10 +143,15 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
   }
   if (
     cost['estimatedCost'] !== undefined &&
-    (typeof cost['estimatedCost'] !== 'number' || Number.isNaN(cost['estimatedCost']))
+    (typeof cost['estimatedCost'] !== 'number' ||
+      Number.isNaN(cost['estimatedCost']) ||
+      cost['estimatedCost'] < 0)
   ) {
     issues.push(
-      err('ERR_METADATA_INVALID', 'estimateOverallCost.estimatedCost must be a number when provided'),
+      err(
+        'ERR_METADATA_INVALID',
+        'estimateOverallCost.estimatedCost must be a non-negative number when provided',
+      ),
     );
   }
 }

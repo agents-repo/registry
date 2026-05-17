@@ -70,7 +70,7 @@ Each entry in `packages` MUST be an object with:
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
 | `band` | string | yes | MUST be `low`, `medium`, `high`, or `mixed` |
-| `estimatedCost` | number | no | Numeric aggregate estimate |
+| `estimatedCost` | number | no | Non-negative numeric aggregate estimate |
 
 ## Validation Rules
 
@@ -83,6 +83,8 @@ Each entry in `packages` MUST be an object with:
 - `packages[].status`, `packages[].category`, and
   `packages[].estimateOverallCost` MUST reflect the current
   `packages/<id>/metadata.json` values.
+- `packages[].estimateOverallCost.estimatedCost`, when present, MUST be a
+  non-negative number.
 - `packages[].quickstart`, when present, MUST reflect the current
   `packages/<id>/metadata.json` value.
 - Package detail-only metadata (for example `customAttributes`) MUST NOT

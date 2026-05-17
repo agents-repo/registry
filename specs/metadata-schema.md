@@ -87,14 +87,14 @@ Additional optional fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `estimateOverallCost.estimatedCost` | number | MAY be provided as a numeric aggregate estimate |
+| `estimateOverallCost.estimatedCost` | number | MAY be provided as a non-negative numeric aggregate estimate |
 
 ### EstimateOverallCost Object Schema
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
 | `band` | string | yes | MUST be `low`, `medium`, `high`, or `mixed` |
-| `estimatedCost` | number | no | Numeric aggregate estimate |
+| `estimatedCost` | number | no | Non-negative numeric aggregate estimate |
 
 ### Validation Rules
 
@@ -109,6 +109,8 @@ Additional optional fields:
 - `status`, `category`, and `estimateOverallCost.band` are required.
 - `estimateOverallCost.band` MUST be one of `low`, `medium`, `high`, or
   `mixed`.
+- `estimateOverallCost.estimatedCost`, when present, MUST be a non-negative
+  number.
 - `quickstart`, when present, MUST be an HTTPS URL.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix for extensions.
