@@ -79,6 +79,19 @@ function projectQuickstart(value: unknown, packageId: string): { quickstart: str
   return { quickstart: value };
 }
 
+function projectEstimatedCost(value: unknown, packageId: string): { estimatedCost: number } | {} {
+  if (value === undefined) {
+    return {};
+  }
+  if (typeof value !== 'number' || value < 0) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `metadata.json estimateOverallCost.estimatedCost for package "${packageId}" must be a non-negative number when provided`,
+    );
+  }
+  return { estimatedCost: value };
+}
+
 export class IndexManager {
   private readonly indexPath: string;
 
@@ -110,9 +123,7 @@ export class IndexManager {
       status: requireStatus(metadata.status, packageId),
       category: requireCategory(metadata.category, packageId),
       estimateOverallCost: {
-        ...(typeof metadata.estimateOverallCost?.estimatedCost === 'number'
-          ? { estimatedCost: metadata.estimateOverallCost.estimatedCost }
-          : {}),
+        ...projectEstimatedCost(metadata.estimateOverallCost?.estimatedCost, packageId),
         band: requirePackageBand(metadata.estimateOverallCost?.band, packageId),
       },
       ...projectQuickstart(metadata.quickstart, packageId),
