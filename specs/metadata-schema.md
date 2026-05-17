@@ -277,7 +277,7 @@ Lifecycle enforcement:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `schemaVersion` | string | Supported `metadata.flow` schema version |
+| `schemaVersion` | string | MUST be a supported `metadata.flow` schema version from `specs/schema-versions.json`; see Schema Version Lifecycle above |
 | `name` | string | MUST equal `<flow-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
