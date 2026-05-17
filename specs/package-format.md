@@ -31,8 +31,9 @@ All package directories MUST exist under `packages/`.
 Contributors and AI agents MUST follow this pipeline to produce a release:
 
 1. Author or update source files under the package root
-  (`metadata.json`, `README.md`, `agents/`, `flows/`). These are the only files
-   contributors and AI agents are authorized to write directly.
+  (`metadata.json`, `README.md` (optional), `agents/`, `flows/`).
+  These are the only files contributors and AI agents are authorized to write
+  directly.
 2. Run `npm run package:validate -- --package <id>` to confirm the working state
    passes all preflight checks.
 3. Run `npm run package:build -- --package <id>` to generate the version snapshot.
@@ -67,7 +68,7 @@ content under `versions/`.
 packages/
     <package-id>/
         metadata.json
-        README.md
+        README.md (optional)
         agents/
             <agent-id>.agent.md
             <agent-id>.metadata.json
@@ -225,7 +226,7 @@ its version snapshot folder at `versions/<version>/`.
 ```text
 packages/my-package/
     metadata.json
-    README.md
+    README.md (optional)
     agents/
         my-agent.agent.md
         my-agent.metadata.json
@@ -245,7 +246,7 @@ packages/my-package/
 ```text
 packages/my-package/
     metadata.json
-    README.md
+    README.md (optional)
     agents/
         planner.agent.md
         planner.metadata.json
