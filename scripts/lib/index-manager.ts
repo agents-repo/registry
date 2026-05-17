@@ -1,20 +1,81 @@
 import fs from 'node:fs';
+import { ErrorCode, PackageError } from './errors';
 import { readJsonFile, writeJsonFile } from './io/json';
 import { getSchemaCurrentVersion } from './schema-versions';
+import { ValidationUtils } from './validation-utils';
 import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 
-function toPackageBand(value: unknown): 'low' | 'medium' | 'high' | 'mixed' {
+function requirePackageBand(value: unknown, packageId: string): 'low' | 'medium' | 'high' | 'mixed' {
   if (value === 'low' || value === 'medium' || value === 'high' || value === 'mixed') {
     return value;
   }
-  return 'mixed';
+  throw new PackageError(
+    ErrorCode.ERR_METADATA_INVALID,
+    `metadata.json estimateOverallCost.band for package "${packageId}" must be one of "low", "medium", "high", "mixed"`,
+  );
 }
 
-function toStatus(value: unknown): 'active' | 'deprecated' | 'archived' | 'yanked' {
+function requireStatus(value: unknown, packageId: string): 'active' | 'deprecated' | 'archived' | 'yanked' {
   if (value === 'active' || value === 'deprecated' || value === 'archived' || value === 'yanked') {
     return value;
   }
-  return 'active';
+  throw new PackageError(
+    ErrorCode.ERR_METADATA_INVALID,
+    `metadata.json status for package "${packageId}" must be one of "active", "deprecated", "archived", "yanked"`,
+  );
+}
+
+function requireCategory(value: unknown, packageId: string): string {
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value;
+  }
+  throw new PackageError(
+    ErrorCode.ERR_METADATA_INVALID,
+    `metadata.json category for package "${packageId}" must be a non-empty string`,
+  );
+}
+
+function requireNonEmptyString(value: unknown, field: string, packageId: string): string {
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value;
+  }
+  throw new PackageError(
+    ErrorCode.ERR_METADATA_INVALID,
+    `metadata.json ${field} for package "${packageId}" must be a non-empty string`,
+  );
+}
+
+function requireTags(value: unknown, packageId: string): string[] {
+  if (!Array.isArray(value) || value.length < 1) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `metadata.json tags for package "${packageId}" must be a non-empty array of strings`,
+    );
+  }
+
+  for (const tag of value) {
+    if (typeof tag !== 'string' || tag.trim().length === 0) {
+      throw new PackageError(
+        ErrorCode.ERR_METADATA_INVALID,
+        `metadata.json tags for package "${packageId}" must contain only non-empty strings`,
+      );
+    }
+  }
+
+  return value;
+}
+
+function projectQuickstart(value: unknown, packageId: string): { quickstart: string } | {} {
+  if (value === undefined) {
+    return {};
+  }
+  if (typeof value !== 'string' || value.trim().length === 0 || !ValidationUtils.isHttpsUrl(value)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `metadata.json quickstart for package "${packageId}" must be an HTTPS URL when provided`,
+    );
+  }
+  return { quickstart: value };
 }
 
 export class IndexManager {
@@ -25,6 +86,13 @@ export class IndexManager {
   }
 
   update(packageId: string, metadata: PackageMetadata, manifestLatest: string): void {
+    if (typeof metadata.estimateOverallCost !== 'object' || metadata.estimateOverallCost === null) {
+      throw new PackageError(
+        ErrorCode.ERR_METADATA_INVALID,
+        `metadata.json estimateOverallCost for package "${packageId}" must be an object`,
+      );
+    }
+
     let index: PackageIndex;
     if (fs.existsSync(this.indexPath)) {
       index = readJsonFile<PackageIndex>(this.indexPath);
@@ -34,21 +102,19 @@ export class IndexManager {
 
     const entry: PackageIndexEntry = {
       id: packageId,
-      name: metadata.name,
-      description: metadata.description,
+      name: requireNonEmptyString(metadata.name, 'name', packageId),
+      description: requireNonEmptyString(metadata.description, 'description', packageId),
       latest: manifestLatest,
-      tags: metadata.tags,
-      status: toStatus(metadata.status),
-      category: typeof metadata.category === 'string' && metadata.category.length > 0 ? metadata.category : 'general',
+      tags: requireTags(metadata.tags, packageId),
+      status: requireStatus(metadata.status, packageId),
+      category: requireCategory(metadata.category, packageId),
       estimateOverallCost: {
         ...(typeof metadata.estimateOverallCost?.estimatedCost === 'number'
           ? { estimatedCost: metadata.estimateOverallCost.estimatedCost }
           : {}),
-        band: toPackageBand(metadata.estimateOverallCost?.band),
+        band: requirePackageBand(metadata.estimateOverallCost?.band, packageId),
       },
-      ...(typeof metadata.quickstart === 'string' && metadata.quickstart.length > 0
-        ? { quickstart: metadata.quickstart }
-        : {}),
+      ...projectQuickstart(metadata.quickstart, packageId),
     };
 
     const existing = index.packages.findIndex((p) => p.id === packageId);
