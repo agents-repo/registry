@@ -9,7 +9,7 @@ import { err, warn } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
 
-function validateEntryMetadataV110(
+function validateEntryMetadataRequiredFields(
   md: Record<string, unknown>,
   context: string,
   issues: ValidationIssue[],
@@ -124,7 +124,7 @@ function validateMetadataSidecar(
     errorCode: 'ERR_METADATA_INVALID',
   });
 
-  validateEntryMetadataV110(md, `${dirLabel}/${stem}.metadata.json`, issues);
+  validateEntryMetadataRequiredFields(md, `${dirLabel}/${stem}.metadata.json`, issues);
 }
 
 function validateFrontmatter(
