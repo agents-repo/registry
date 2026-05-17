@@ -87,7 +87,7 @@ Additional optional fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `estimateOverallCost` | object | `estimatedCost` MAY be provided as a number |
+| `estimateOverallCost.estimatedCost` | number | MAY be provided as a numeric aggregate estimate |
 
 ### EstimateOverallCost Object Schema
 
