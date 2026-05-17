@@ -15,7 +15,7 @@ define a JSON `schemaVersion` field.
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | spec document version | current | Initial entry |
+| `1.0.0` | spec document version | current | Initial release |
 
 Tooling and processes that enforce versioning behavior SHOULD use the latest
 supported spec document version in this table.
