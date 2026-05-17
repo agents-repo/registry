@@ -1,15 +1,8 @@
 import { ValidationUtils } from '../../validation-utils';
 import type { PackageMetadata, ValidationIssue } from '../../types';
+import { isStatus, isPackageCostBand } from '../../types';
 import { err } from '../common/issues';
 import { validateSchemaVersion } from './schema-version';
-
-function isStatus(value: unknown): value is 'active' | 'deprecated' | 'archived' | 'yanked' {
-  return value === 'active' || value === 'deprecated' || value === 'archived' || value === 'yanked';
-}
-
-function isBand(value: unknown): value is 'low' | 'medium' | 'high' | 'mixed' {
-  return value === 'low' || value === 'medium' || value === 'high' || value === 'mixed';
-}
 
 function validateName(
   m: Record<string, unknown>,
@@ -140,7 +133,7 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
   }
 
   const cost = estimateOverallCost as Record<string, unknown>;
-  if (!isBand(cost['band'])) {
+  if (!isPackageCostBand(cost['band'])) {
     issues.push(
       err(
         'ERR_METADATA_INVALID',

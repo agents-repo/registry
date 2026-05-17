@@ -1,6 +1,25 @@
-export type StatusValue = 'active' | 'deprecated' | 'archived' | 'yanked';
-export type CostBand = 'low' | 'medium' | 'high';
-export type PackageCostBand = CostBand | 'mixed';
+// Validation constants (single source of truth)
+export const STATUS_VALUES = ['active', 'deprecated', 'archived', 'yanked'] as const;
+export const COST_BANDS = ['low', 'medium', 'high'] as const;
+export const PACKAGE_COST_BANDS = ['low', 'medium', 'high', 'mixed'] as const;
+
+// Derive types from constants to eliminate duplication
+export type StatusValue = typeof STATUS_VALUES[number];
+export type CostBand = typeof COST_BANDS[number];
+export type PackageCostBand = typeof PACKAGE_COST_BANDS[number];
+
+// Type guards
+export function isStatus(value: unknown): value is StatusValue {
+  return STATUS_VALUES.includes(value as any);
+}
+
+export function isCostBand(value: unknown): value is CostBand {
+  return COST_BANDS.includes(value as any);
+}
+
+export function isPackageCostBand(value: unknown): value is PackageCostBand {
+  return PACKAGE_COST_BANDS.includes(value as any);
+}
 
 export interface EstimateCost {
   estimatedCost: number;

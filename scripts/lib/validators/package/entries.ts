@@ -4,17 +4,10 @@ import { parseFrontmatter } from '../../frontmatter';
 import { ValidationUtils } from '../../validation-utils';
 import type { SchemaFamily } from '../../schema-versions';
 import type { ValidationIssue } from '../../types';
+import { isStatus, isCostBand } from '../../types';
 import { err, warn } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
-
-function isStatus(value: unknown): value is 'active' | 'deprecated' | 'archived' | 'yanked' {
-  return value === 'active' || value === 'deprecated' || value === 'archived' || value === 'yanked';
-}
-
-function isCostBand(value: unknown): value is 'low' | 'medium' | 'high' {
-  return value === 'low' || value === 'medium' || value === 'high';
-}
 
 function validateEntryMetadataV110(
   md: Record<string, unknown>,

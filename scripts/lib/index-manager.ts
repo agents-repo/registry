@@ -4,24 +4,25 @@ import { readJsonFile, writeJsonFile } from './io/json';
 import { getSchemaCurrentVersion } from './schema-versions';
 import { ValidationUtils } from './validation-utils';
 import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
+import { isStatus, isPackageCostBand, STATUS_VALUES, PACKAGE_COST_BANDS } from './types';
 
 function requirePackageBand(value: unknown, packageId: string): 'low' | 'medium' | 'high' | 'mixed' {
-  if (value === 'low' || value === 'medium' || value === 'high' || value === 'mixed') {
+  if (isPackageCostBand(value)) {
     return value;
   }
   throw new PackageError(
     ErrorCode.ERR_METADATA_INVALID,
-    `metadata.json estimateOverallCost.band for package "${packageId}" must be one of "low", "medium", "high", "mixed"`,
+    `metadata.json estimateOverallCost.band for package "${packageId}" must be one of "${PACKAGE_COST_BANDS.join('", "')}"`,
   );
 }
 
 function requireStatus(value: unknown, packageId: string): 'active' | 'deprecated' | 'archived' | 'yanked' {
-  if (value === 'active' || value === 'deprecated' || value === 'archived' || value === 'yanked') {
+  if (isStatus(value)) {
     return value;
   }
   throw new PackageError(
     ErrorCode.ERR_METADATA_INVALID,
-    `metadata.json status for package "${packageId}" must be one of "active", "deprecated", "archived", "yanked"`,
+    `metadata.json status for package "${packageId}" must be one of "${STATUS_VALUES.join('", "')}"`,
   );
 }
 
