@@ -11,12 +11,13 @@
         "hello"
     ],
     "createdAt": "2026-05-06T03:32:09.636Z",
-    "updatedAt": "2026-05-06T03:32:09.636Z",
+    "updatedAt": "2026-05-17T00:00:00.000Z",
     "version": "1.0.0",
     "status": "active",
     "category": "assistant",
     "estimateOverallCost": {
-        "band": "mixed"
+        "estimatedCost": 1,
+        "band": "low"
     },
     "quickstart": "https://github.com/agents-repo/registry/tree/main/packages/hello-agent"
 }

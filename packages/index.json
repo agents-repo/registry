@@ -1,6 +1,6 @@
 {
     "schemaVersion": "1.0.0",
-    "updatedAt": "2026-05-16T02:48:11.942Z",
+    "updatedAt": "2026-05-17T07:18:14.869Z",
     "packages": [
         {
             "id": "hello-agent",
@@ -14,7 +14,8 @@
             "status": "active",
             "category": "assistant",
             "estimateOverallCost": {
-                "band": "mixed"
+                "estimatedCost": 1,
+                "band": "low"
             },
             "quickstart": "https://github.com/agents-repo/registry/tree/main/packages/hello-agent"
         }
