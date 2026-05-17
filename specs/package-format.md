@@ -67,7 +67,7 @@ content under `versions/`.
 packages/
     <package-id>/
         metadata.json
-    README.md
+        README.md
         agents/
             <agent-id>.agent.md
             <agent-id>.metadata.json
