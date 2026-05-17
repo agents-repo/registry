@@ -80,18 +80,20 @@ The scripts manage all versioned artifacts.
 ### Required pipeline
 
 ```bash
-# 1. Validate working-state source files
-npm run package:validate -- --package <id>
-
-# 2. Build and publish a version snapshot
+# 1. Build and publish a version snapshot
 npm run package:build -- --package <id>
 
-# 3. Deep artifact verification
+# 2. Deep artifact verification
 npm run package:validate-artifacts -- --package <id>
 ```
 
-Scripts are intentionally single-responsibility. They do not chain each other;
-orchestration is performed externally (for example by CI or AI agents).
+The `package-build` script automatically runs preflight validation equivalent
+to `package:validate` before building artifacts. Scripts are intentionally
+single-responsibility, and orchestration is still performed externally
+(for example by CI or AI agents).
+
+During development, you MAY run `npm run package:validate -- --package <id>`
+manually to check the working state before the package is ready to build.
 
 ### PR and Copilot checks
 

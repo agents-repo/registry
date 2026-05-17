@@ -81,18 +81,21 @@ snapshot. Publish a new semver instead.
 A package submission MUST use the following pipeline before opening a PR:
 
 ```bash
-# 1. Validate working-state source files
-npm run package:validate -- --package <id>
-
-# 2. Build and publish a version snapshot
+# 1. Build and publish a version snapshot
 npm run package:build -- --package <id>
 
-# 3. Deep artifact verification
+# 2. Deep artifact verification
 npm run package:validate-artifacts -- --package <id>
 ```
 
-These scripts are single-responsibility and do not chain one another; orchestration
-is handled externally (for example CI or AI agents).
+The `package-build` script automatically runs preflight validation equivalent
+to `package:validate` before building artifacts. These scripts remain
+single-responsibility, and orchestration is handled externally
+(for example CI or AI agents).
+
+During development, contributors MAY run
+`npm run package:validate -- --package <id>` manually to check the working
+state before the package is ready to build.
 
 The only files contributors and AI agents author directly are:
 

@@ -49,9 +49,12 @@ supported spec document version in this table.
 - Contributors and AI agents MUST NOT manually create or modify any file
   under `versions/`.
 - The mandatory release pipeline is:
-  `package:validate` → `package:build` → `package:validate-artifacts`.
-- Pipeline orchestration MUST be explicit (for example CI jobs or AI agents);
-  scripts MUST NOT implicitly invoke other pipeline steps.
+  `package:build` → `package:validate-artifacts`.
+- The `package-build` script MUST run preflight validation equivalent to
+  `package:validate` before building artifacts.
+- Pipeline orchestration MUST be explicit (for example CI jobs or AI agents).
+- Scripts MUST NOT invoke other pipeline scripts implicitly.
+- Internal shared validation logic within `package-build` is permitted.
 
 ## Version Overwrite Policy
 

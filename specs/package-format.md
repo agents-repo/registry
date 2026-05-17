@@ -34,17 +34,17 @@ Contributors and AI agents MUST follow this pipeline to produce a release:
   (`metadata.json`, `README.md` (optional), `agents/`, `flows/`).
   These are the only files contributors and AI agents are authorized to write
   directly.
-2. Run `npm run package:validate -- --package <id>` to confirm the working state
-   passes all preflight checks.
-3. Run `npm run package:build -- --package <id>` to generate the version snapshot.
-  This command builds both ZIP artifacts, computes SHA-256 checksums, writes
-  `versions/<version>/`, updates `versions/manifest.json`, and updates
+2. Run `npm run package:build -- --package <id>` to generate the version
+  snapshot. This command automatically runs preflight validation equivalent to
+  `package:validate`, builds both ZIP artifacts, computes SHA-256 checksums,
+  writes `versions/<version>/`, updates `versions/manifest.json`, and updates
   `packages/index.json`.
-4. Run `npm run package:validate-artifacts -- --package <id>` to validate
+3. Run `npm run package:validate-artifacts -- --package <id>` to validate
    generated artifacts for structural and security issues.
 
-The scripts in this pipeline SHOULD remain single-responsibility and MUST NOT
-implicitly invoke another pipeline step.
+The scripts in this pipeline SHOULD remain single-responsibility.
+They MUST NOT invoke another pipeline script implicitly.
+Internal shared validation logic within `package-build` is permitted.
 
 Contributors and AI agents MUST NOT manually create or modify any file under
 `versions/`. The `package-build` script is the sole authorized writer for all

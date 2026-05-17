@@ -153,13 +153,15 @@ Use this package as a starting point for agents and flows in the registry.
 
 ## Usage
 
-Run validation and build commands from the repository root:
+Run build and validation commands from the repository root:
 
 \`\`\`bash
-npm run package:validate -- --package ${packageId}
 npm run package:build -- --package ${packageId}
 npm run package:validate-artifacts -- --package ${packageId} --version 1.0.0
 \`\`\`
+
+The build script automatically runs preflight validation before generating
+artifacts.
 `;
   }
 
