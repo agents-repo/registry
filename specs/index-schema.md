@@ -60,7 +60,7 @@ Each entry in `packages` MUST be an object with:
 | `description` | string | yes | MUST match `metadata.json` `description` |
 | `latest` | string | yes | MUST equal `manifest.json` `latest` |
 | `tags` | array of string | yes | MUST match `metadata.json` `tags` |
-| `status` | string | yes | Enum: `active`, `deprecated`, `archived`, `yanked` |
+| `status` | string | yes | MUST match `metadata.json` `status` enum |
 | `category` | string | yes | MUST match package `metadata.json` |
 | `estimateOverallCost` | object | yes | Includes required `band` |
 | `quickstart` | string | no | HTTPS URL |
@@ -83,6 +83,10 @@ Each entry in `packages` MUST be an object with:
 - `packages[].status`, `packages[].category`, and
   `packages[].estimateOverallCost` MUST reflect the current
   `packages/<id>/metadata.json` values.
+- `packages[].status` semantics MUST follow `specs/metadata-schema.md`
+  Status Lifecycle Semantics.
+- `packages[].status` value MUST be one of `active`, `deprecated`,
+  `archived`, or `yanked`.
 - `packages[].estimateOverallCost.estimatedCost`, when present, MUST be a
   non-negative number.
 - `packages[].quickstart`, when present, MUST reflect the current

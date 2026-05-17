@@ -168,6 +168,8 @@ supported spec document version in this table.
 
 ## Deprecation Rules
 
+- Lifecycle semantics for `active`, `deprecated`, `archived`, and `yanked`
+  statuses are defined in `specs/metadata-schema.md`.
 - Deprecated versions SHOULD remain available for reproducibility.
 - Deprecation status SHOULD be described in
   release notes or package documentation.

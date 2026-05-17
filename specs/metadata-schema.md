@@ -64,6 +64,36 @@ Lifecycle enforcement:
 | `updatedAt` | string | RFC 3339 timestamp |
 | `version` | string | Semver (`MAJOR.MINOR.PATCH`); current release target |
 
+### Status Lifecycle Semantics
+
+The `status` field communicates lifecycle meaning for package, agent, and flow
+metadata. Consumers MUST interpret these values consistently.
+
+| Status | Semantic Meaning | Consumer Behavior |
+| --- | --- | --- |
+| `active` | Maintained and recommended for new use. | Included by default. |
+| `deprecated` | Available but discouraged. | Included with warning. |
+| `archived` | Historical/repro use only. | Not recommended by default. |
+| `yanked` | Withdrawn for serious concerns. | Excluded by default. |
+
+Status handling requirements:
+
+- Producers MUST emit one valid status value for each package, agent, and flow
+  metadata document.
+- Consumers MUST preserve the exact status value during reads/writes and
+  projections.
+- Status semantics apply uniformly to package metadata, agent metadata, and flow
+  metadata.
+- Consumers SHOULD include `active` in default discovery and recommendations.
+- Consumers SHOULD include `deprecated` in default discovery and SHOULD surface
+  a warning.
+- Migration guidance for `deprecated` SHOULD be provided in package
+  documentation when applicable.
+- Consumers MAY include `archived` in discovery but SHOULD NOT recommend it by
+  default.
+- Consumers MUST exclude `yanked` from default listings and recommendations
+  unless explicitly requested by ID or equivalent direct lookup.
+
 Additional required fields:
 
 | Field | Type | Constraints |
@@ -87,7 +117,7 @@ Additional optional fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `estimateOverallCost.estimatedCost` | number | MAY be provided as a non-negative numeric aggregate estimate |
+| `estimateOverallCost.estimatedCost` | number | MAY be non-negative estimate |
 
 ### EstimateOverallCost Object Schema
 
@@ -283,7 +313,7 @@ Lifecycle enforcement:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `schemaVersion` | string | MUST be a supported `metadata.flow` schema version from `specs/schema-versions.json`; see Schema Version Lifecycle above |
+| `schemaVersion` | string | MUST be a supported `metadata.flow` schema version from `specs/schema-versions.json`; see [Schema Version Lifecycle](#schema-version-lifecycle-2) |
 | `name` | string | MUST equal `<flow-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
