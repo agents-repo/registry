@@ -11,7 +11,7 @@
         "hello"
     ],
     "createdAt": "2026-05-06T03:32:09.636Z",
-    "updatedAt": "2026-05-17T00:00:00.000Z",
+    "updatedAt": "2026-05-17T08:00:00.000Z",
     "version": "1.0.0",
     "status": "active",
     "category": "assistant",
@@ -19,5 +19,5 @@
         "estimatedCost": 1,
         "band": "low"
     },
-    "quickstart": "https://github.com/agents-repo/registry/tree/main/packages/hello-agent"
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md"
 }

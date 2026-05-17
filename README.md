@@ -127,6 +127,7 @@ Package format:
 ```text
 <package-id>/
     metadata.json
+    README.md
     agents/
         <agent-id>.agent.md
         <agent-id>.metadata.json
@@ -175,6 +176,8 @@ Package rules:
     are rejected by validation tooling.
 - The package root `metadata.json`, `agents/`, and `flows/` describe the
     current working state.
+- Package root `README.md` may be used for package-level documentation;
+    when metadata `quickstart` is provided, it should point to this README.
 - All root `.agent.md` files in `agents/` and `flows/` must share the
     same frontmatter `version` within a package.
 - During development, that shared root frontmatter version may be equal

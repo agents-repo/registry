@@ -48,6 +48,7 @@ export class PackageScaffolder {
     const flowMetadataSchemaVersion = getSchemaCurrentVersion('metadata.flow');
 
     const now = new Date().toISOString();
+    const packageReadmeUrl = `https://github.com/agents-repo/registry/blob/main/packages/${packageId}/README.md`;
     const packageMetadata: PackageMetadata = {
       schemaVersion: packageSchemaVersion,
       name: packageId,
@@ -65,12 +66,19 @@ export class PackageScaffolder {
       estimateOverallCost: {
         band: 'mixed',
       },
+      quickstart: packageReadmeUrl,
       ...(metadata.maintainers && { maintainers: metadata.maintainers }),
     };
 
     fs.writeFileSync(
       path.join(packageDir, 'metadata.json'),
       JSON.stringify(packageMetadata, null, 4) + '\n',
+      'utf-8',
+    );
+
+    fs.writeFileSync(
+      path.join(packageDir, 'README.md'),
+      this.generatePackageReadme(packageId, metadata.description),
       'utf-8',
     );
 
@@ -126,6 +134,32 @@ ${description}
 
 Input: Describe expected input type or format
 Output: Describe expected output type or format
+`;
+  }
+
+  private generatePackageReadme(packageId: string, description: string): string {
+    return `# ${packageId}
+
+${description}
+
+## Quickstart
+
+Use this package as a starting point for agents and flows in the registry.
+
+## Package Contents
+
+- Agents and flows under this package root
+- Metadata contract in \`metadata.json\`
+
+## Usage
+
+Run validation and build commands from the repository root:
+
+\`\`\`bash
+npm run package:validate -- --package ${packageId}
+npm run package:build -- --package ${packageId}
+npm run package:validate-artifacts -- --package ${packageId} --version 1.0.0
+\`\`\`
 `;
   }
 
