@@ -225,7 +225,7 @@ its version snapshot folder at `versions/<version>/`.
 ```text
 packages/my-package/
     metadata.json
-  README.md
+    README.md
     agents/
         my-agent.agent.md
         my-agent.metadata.json
@@ -245,7 +245,7 @@ packages/my-package/
 ```text
 packages/my-package/
     metadata.json
-  README.md
+    README.md
     agents/
         planner.agent.md
         planner.metadata.json

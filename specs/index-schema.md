@@ -117,13 +117,13 @@ Each entry in `packages` MUST be an object with:
             "name": "my-package",
             "description": "Multi-agent package for PR review automation.",
             "latest": "1.1.0",
-          "tags": ["productivity", "review", "automation"],
-          "status": "active",
-          "category": "automation",
-          "estimateOverallCost": {
-            "band": "mixed"
-          },
-          "quickstart": "https://github.com/agents-repo/my-package#quickstart"
+            "tags": ["productivity", "review", "automation"],
+            "status": "active",
+            "category": "automation",
+            "estimateOverallCost": {
+                "band": "mixed"
+            },
+            "quickstart": "https://github.com/agents-repo/my-package#quickstart"
         }
     ]
 }
