@@ -127,7 +127,7 @@ Package format:
 ```text
 <package-id>/
     metadata.json
-    README.md
+    README.md (optional)
     agents/
         <agent-id>.agent.md
         <agent-id>.metadata.json
