@@ -102,6 +102,124 @@ export function validateUniqueIdsAcrossEntryTypes(
   }
 }
 
+function validateMetadataSidecar(
+  metaPath: string,
+  dirLabel: 'agents' | 'flows',
+  stem: string,
+  issues: ValidationIssue[],
+): void {
+  if (!fs.existsSync(metaPath)) {
+    return;
+  }
+
+  const { data: metaData, error: metaError } = readJsonFile(metaPath);
+  if (metaError) {
+    issues.push(err('ERR_METADATA_INVALID', metaError));
+    return;
+  }
+
+  if (typeof metaData !== 'object' || metaData === null) {
+    return;
+  }
+
+  const md = metaData as Record<string, unknown>;
+  const family: SchemaFamily = dirLabel === 'agents' ? 'metadata.agent' : 'metadata.flow';
+  validateSchemaVersion(issues, {
+    family,
+    value: md['schemaVersion'],
+    context: `${dirLabel}/${stem}.metadata.json`,
+    errorCode: 'ERR_METADATA_INVALID',
+  });
+
+  validateEntryMetadataV110(md, `${dirLabel}/${stem}.metadata.json`, issues);
+}
+
+function validateFrontmatter(
+  mdPath: string,
+  dirLabel: 'agents' | 'flows',
+  mdFile: string,
+  stem: string,
+  issues: ValidationIssue[],
+): string {
+  const content = fs.readFileSync(mdPath, 'utf-8');
+  const frontmatter = parseFrontmatter(content);
+
+  if (!frontmatter['name'] || frontmatter['name'] !== stem) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `${dirLabel}/${mdFile}: frontmatter name "${frontmatter['name']}" must equal stem "${stem}"`,
+      ),
+    );
+  }
+
+  if (!frontmatter['version'] || !ValidationUtils.isReleaseVersion(frontmatter['version'])) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `${dirLabel}/${mdFile}: frontmatter version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(frontmatter['version'])}`,
+      ),
+    );
+  }
+
+  if (frontmatter['license'] && frontmatter['license'] !== 'MIT') {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `${dirLabel}/${mdFile}: frontmatter license must be "MIT", got: ${JSON.stringify(frontmatter['license'])}`,
+      ),
+    );
+  }
+
+  if (frontmatter['description'] && frontmatter['description'].length > 300) {
+    issues.push(warn(`${dirLabel}/${mdFile}: frontmatter description exceeds 300 characters`));
+  }
+
+  return frontmatter['version'] ?? '';
+}
+
+function validateSingleEntryFile(
+  entryDir: string,
+  dirLabel: 'agents' | 'flows',
+  mdFile: string,
+  issues: ValidationIssue[],
+): EntryVersion {
+  const stem = mdFile.replace(/\.agent\.md$/, '');
+  const mdPath = path.join(entryDir, mdFile);
+  const metaPath = path.join(entryDir, `${stem}.metadata.json`);
+
+  if (!fs.existsSync(metaPath)) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `${dirLabel}/${stem}.metadata.json is missing (required for ${mdFile})`,
+      ),
+    );
+  }
+
+  validateMetadataSidecar(metaPath, dirLabel, stem, issues);
+  const frontmatterVersion = validateFrontmatter(mdPath, dirLabel, mdFile, stem, issues);
+  return { id: stem, frontmatterVersion };
+}
+
+function warnUnmatchedMetadataFiles(
+  files: string[],
+  agentMdFiles: string[],
+  dirLabel: 'agents' | 'flows',
+  issues: ValidationIssue[],
+): void {
+  const metaFiles = files.filter(
+    (fileName) => fileName.endsWith('.metadata.json') && !fileName.startsWith('.'),
+  );
+
+  for (const metaFile of metaFiles) {
+    const stem = metaFile.replace(/\.metadata\.json$/, '');
+    if (!agentMdFiles.includes(`${stem}.agent.md`)) {
+      issues.push(warn(`${dirLabel}/${metaFile}: found .metadata.json with no matching .agent.md`));
+    }
+  }
+}
+
 export function validateEntryFiles(
   entryDir: string,
   dirLabel: 'agents' | 'flows',
@@ -117,84 +235,10 @@ export function validateEntryFiles(
   const agentMdFiles = files.filter((fileName) => fileName.endsWith('.agent.md'));
 
   for (const mdFile of agentMdFiles) {
-    const stem = mdFile.replace(/\.agent\.md$/, '');
-    const mdPath = path.join(entryDir, mdFile);
-    const metaPath = path.join(entryDir, `${stem}.metadata.json`);
-
-    if (!fs.existsSync(metaPath)) {
-      issues.push(
-        err(
-          'ERR_VALIDATION_FAILED',
-          `${dirLabel}/${stem}.metadata.json is missing (required for ${mdFile})`,
-        ),
-      );
-    }
-
-    if (fs.existsSync(metaPath)) {
-      const { data: metaData, error: metaError } = readJsonFile(metaPath);
-      if (metaError) {
-        issues.push(err('ERR_METADATA_INVALID', metaError));
-      } else if (typeof metaData === 'object' && metaData !== null) {
-        const md = metaData as Record<string, unknown>;
-        const family: SchemaFamily = dirLabel === 'agents' ? 'metadata.agent' : 'metadata.flow';
-        validateSchemaVersion(issues, {
-          family,
-          value: md['schemaVersion'],
-          context: `${dirLabel}/${stem}.metadata.json`,
-          errorCode: 'ERR_METADATA_INVALID',
-        });
-
-        validateEntryMetadataV110(md, `${dirLabel}/${stem}.metadata.json`, issues);
-      }
-    }
-
-    const content = fs.readFileSync(mdPath, 'utf-8');
-    const frontmatter = parseFrontmatter(content);
-
-    if (!frontmatter['name'] || frontmatter['name'] !== stem) {
-      issues.push(
-        err(
-          'ERR_VALIDATION_FAILED',
-          `${dirLabel}/${mdFile}: frontmatter name "${frontmatter['name']}" must equal stem "${stem}"`,
-        ),
-      );
-    }
-
-    if (!frontmatter['version'] || !ValidationUtils.isReleaseVersion(frontmatter['version'])) {
-      issues.push(
-        err(
-          'ERR_VALIDATION_FAILED',
-          `${dirLabel}/${mdFile}: frontmatter version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(frontmatter['version'])}`,
-        ),
-      );
-    }
-
-    if (frontmatter['license'] && frontmatter['license'] !== 'MIT') {
-      issues.push(
-        err(
-          'ERR_VALIDATION_FAILED',
-          `${dirLabel}/${mdFile}: frontmatter license must be "MIT", got: ${JSON.stringify(frontmatter['license'])}`,
-        ),
-      );
-    }
-
-    if (frontmatter['description'] && frontmatter['description'].length > 300) {
-      issues.push(warn(`${dirLabel}/${mdFile}: frontmatter description exceeds 300 characters`));
-    }
-
-    entries.push({ id: stem, frontmatterVersion: frontmatter['version'] ?? '' });
+    entries.push(validateSingleEntryFile(entryDir, dirLabel, mdFile, issues));
   }
 
-  const metaFiles = files.filter(
-    (fileName) => fileName.endsWith('.metadata.json') && !fileName.startsWith('.'),
-  );
-
-  for (const metaFile of metaFiles) {
-    const stem = metaFile.replace(/\.metadata\.json$/, '');
-    if (!agentMdFiles.includes(`${stem}.agent.md`)) {
-      issues.push(warn(`${dirLabel}/${metaFile}: found .metadata.json with no matching .agent.md`));
-    }
-  }
+  warnUnmatchedMetadataFiles(files, agentMdFiles, dirLabel, issues);
 
   return entries;
 }
