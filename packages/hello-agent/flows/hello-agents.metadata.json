@@ -1,5 +1,5 @@
 {
-    "schemaVersion": "1.1.0",
+    "schemaVersion": "1.0.0",
     "name": "hello-agents",
     "description": "Invokes hello-agent and hello-again in sequence",
     "license": "MIT",

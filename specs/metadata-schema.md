@@ -1,4 +1,4 @@
-# Metadata Schema Specification (1.1.0)
+# Metadata Schema Specification (1.0.0)
 
 This document defines the deterministic metadata contracts
 for packages, agents, and flows.
@@ -17,8 +17,7 @@ package release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | package metadata schemaVersion | supported | Initial entry |
-| `1.1.0` | package metadata schemaVersion | current | Adds WebApp cost fields |
+| `1.0.0` | package metadata schemaVersion | current | Includes WebApp fields |
 
 Tooling MUST reject package metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
@@ -65,7 +64,7 @@ Lifecycle enforcement:
 | `updatedAt` | string | RFC 3339 timestamp |
 | `version` | string | Semver (`MAJOR.MINOR.PATCH`); current release target |
 
-Additional required fields for package `schemaVersion: "1.1.0"`:
+Additional required fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
@@ -84,13 +83,13 @@ Additional required fields for package `schemaVersion: "1.1.0"`:
 | `quickstart` | string | HTTPS URL |
 | `customAttributes` | object | Arbitrary key-value map for detail rendering |
 
-Additional optional fields for package `schemaVersion: "1.1.0"`:
+Additional optional fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
 | `estimateOverallCost` | object | `estimatedCost` MAY be provided as a number |
 
-### EstimateOverallCost Object Schema (`schemaVersion: "1.1.0"`)
+### EstimateOverallCost Object Schema
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
@@ -107,10 +106,9 @@ Additional optional fields for package `schemaVersion: "1.1.0"`:
 - `version` MUST be greater than or equal to `versions/manifest.json`
   `latest` when the manifest exists for the package.
 - Arrays MUST NOT contain duplicate values.
-- For package `schemaVersion: "1.1.0"`, `status`, `category`, and
-  `estimateOverallCost.band` are required.
-- For package `schemaVersion: "1.1.0"`, `estimateOverallCost.band`
-  MUST be one of `low`, `medium`, `high`, or `mixed`.
+- `status`, `category`, and `estimateOverallCost.band` are required.
+- `estimateOverallCost.band` MUST be one of `low`, `medium`, `high`, or
+  `mixed`.
 - `quickstart`, when present, MUST be an HTTPS URL.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix for extensions.
@@ -119,7 +117,7 @@ Additional optional fields for package `schemaVersion: "1.1.0"`:
 
 ```json
 {
-    "schemaVersion": "1.1.0",
+    "schemaVersion": "1.0.0",
     "name": "my-package",
     "description": "Multi-agent package for PR review automation.",
     "owner": "agents-repo",
@@ -148,8 +146,7 @@ package release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | agent metadata schemaVersion | supported | Initial entry |
-| `1.1.0` | agent metadata schemaVersion | current | Adds WebApp cost fields |
+| `1.0.0` | agent metadata schemaVersion | current | Includes WebApp fields |
 
 Tooling MUST reject agent metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
@@ -181,7 +178,7 @@ Lifecycle enforcement:
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
 
-Additional required fields for agent `schemaVersion: "1.1.0"`:
+Additional required fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
@@ -198,7 +195,7 @@ Additional required fields for agent `schemaVersion: "1.1.0"`:
 | `outputs` | array of `Contract` | Output contracts; see `agent-format.md` |
 | `customAttributes` | object | Arbitrary key-value map for detail rendering |
 
-### EstimateCost Object Schema (`schemaVersion: "1.1.0"`)
+### EstimateCost Object Schema
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
@@ -221,10 +218,8 @@ Additional required fields for agent `schemaVersion: "1.1.0"`:
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
 - When `outputs` is present in both this file and
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
-- For agent `schemaVersion: "1.1.0"`, `status`, `category`, and
-  `estimateCost` are required.
-- For agent `schemaVersion: "1.1.0"`, `estimateCost.band`
-  MUST be one of `low`, `medium`, or `high`.
+- `status`, `category`, and `estimateCost` are required.
+- `estimateCost.band` MUST be one of `low`, `medium`, or `high`.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
@@ -232,7 +227,7 @@ Additional required fields for agent `schemaVersion: "1.1.0"`:
 
 ```json
 {
-    "schemaVersion": "1.1.0",
+    "schemaVersion": "1.0.0",
     "name": "planner",
     "description": "Plans the steps to complete a PR review task.",
     "license": "MIT",
@@ -255,8 +250,7 @@ package release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | flow metadata schemaVersion | supported | Initial entry |
-| `1.1.0` | flow metadata schemaVersion | current | Adds WebApp cost fields |
+| `1.0.0` | flow metadata schemaVersion | current | Includes WebApp fields |
 
 Tooling MUST reject flow metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
@@ -288,7 +282,7 @@ Lifecycle enforcement:
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
 
-Additional required fields for flow `schemaVersion: "1.1.0"`:
+Additional required fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
@@ -323,10 +317,8 @@ Additional required fields for flow `schemaVersion: "1.1.0"`:
   `<flow-id>.agent.md` frontmatter, the values MUST be identical.
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
-- For flow `schemaVersion: "1.1.0"`, `status`, `category`, and
-  `estimateCost` are required.
-- For flow `schemaVersion: "1.1.0"`, `estimateCost.band`
-  MUST be one of `low`, `medium`, or `high`.
+- `status`, `category`, and `estimateCost` are required.
+- `estimateCost.band` MUST be one of `low`, `medium`, or `high`.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
@@ -334,7 +326,7 @@ Additional required fields for flow `schemaVersion: "1.1.0"`:
 
 ```json
 {
-    "schemaVersion": "1.1.0",
+    "schemaVersion": "1.0.0",
     "name": "triage",
     "description": "Routes incoming issues to the appropriate agent.",
     "license": "MIT",

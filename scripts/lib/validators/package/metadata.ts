@@ -117,42 +117,39 @@ export function validateMetadata(
     );
   }
 
-  const schemaVersion = m['schemaVersion'];
-  if (schemaVersion === '1.1.0') {
-    if (!isStatus(m['status'])) {
+  if (!isStatus(m['status'])) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `status must be one of "active", "deprecated", "archived", "yanked", got: ${JSON.stringify(m['status'])}`,
+      ),
+    );
+  }
+
+  if (typeof m['category'] !== 'string' || m['category'].trim().length === 0) {
+    issues.push(err('ERR_METADATA_INVALID', 'category must be a non-empty string'));
+  }
+
+  const estimateOverallCost = m['estimateOverallCost'];
+  if (typeof estimateOverallCost !== 'object' || estimateOverallCost === null) {
+    issues.push(err('ERR_METADATA_INVALID', 'estimateOverallCost must be an object'));
+  } else {
+    const cost = estimateOverallCost as Record<string, unknown>;
+    if (!isBand(cost['band'])) {
       issues.push(
         err(
           'ERR_METADATA_INVALID',
-          `status must be one of "active", "deprecated", "archived", "yanked", got: ${JSON.stringify(m['status'])}`,
+          `estimateOverallCost.band must be one of "low", "medium", "high", "mixed", got: ${JSON.stringify(cost['band'])}`,
         ),
       );
     }
-
-    if (typeof m['category'] !== 'string' || m['category'].trim().length === 0) {
-      issues.push(err('ERR_METADATA_INVALID', 'category must be a non-empty string'));
-    }
-
-    const estimateOverallCost = m['estimateOverallCost'];
-    if (typeof estimateOverallCost !== 'object' || estimateOverallCost === null) {
-      issues.push(err('ERR_METADATA_INVALID', 'estimateOverallCost must be an object'));
-    } else {
-      const cost = estimateOverallCost as Record<string, unknown>;
-      if (!isBand(cost['band'])) {
-        issues.push(
-          err(
-            'ERR_METADATA_INVALID',
-            `estimateOverallCost.band must be one of "low", "medium", "high", "mixed", got: ${JSON.stringify(cost['band'])}`,
-          ),
-        );
-      }
-      if (
-        cost['estimatedCost'] !== undefined &&
-        (typeof cost['estimatedCost'] !== 'number' || Number.isNaN(cost['estimatedCost']))
-      ) {
-        issues.push(
-          err('ERR_METADATA_INVALID', 'estimateOverallCost.estimatedCost must be a number when provided'),
-        );
-      }
+    if (
+      cost['estimatedCost'] !== undefined &&
+      (typeof cost['estimatedCost'] !== 'number' || Number.isNaN(cost['estimatedCost']))
+    ) {
+      issues.push(
+        err('ERR_METADATA_INVALID', 'estimateOverallCost.estimatedCost must be a number when provided'),
+      );
     }
   }
 

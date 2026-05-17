@@ -144,9 +144,7 @@ export function validateEntryFiles(
           errorCode: 'ERR_METADATA_INVALID',
         });
 
-        if (md['schemaVersion'] === '1.1.0') {
-          validateEntryMetadataV110(md, `${dirLabel}/${stem}.metadata.json`, issues);
-        }
+        validateEntryMetadataV110(md, `${dirLabel}/${stem}.metadata.json`, issues);
       }
     }
 

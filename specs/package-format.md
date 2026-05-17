@@ -202,9 +202,9 @@ its version snapshot folder at `versions/<version>/`.
   in `specs/index-schema.md`.
 - When a package is added, updated, or a new version is published,
   `packages/index.json` MUST be updated accordingly.
-- For package metadata `schemaVersion: "1.1.0"`, index entries MUST
+- For package metadata, index entries MUST
   project package `status`, `category`, and `estimateOverallCost.band`.
-- For package metadata `schemaVersion: "1.1.0"`, index entries MAY
+- For package metadata, index entries MAY
   project `estimateOverallCost.estimatedCost` and `quickstart`.
 - Package detail-only fields (for example `customAttributes`) MUST NOT
   be projected into `packages/index.json`.

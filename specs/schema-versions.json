@@ -2,20 +2,20 @@
     "schemaRegistryVersion": "1.0.0",
     "schemas": {
         "metadata.package": {
-            "current": "1.1.0",
-            "supported": ["1.0.0", "1.1.0"],
+            "current": "1.0.0",
+            "supported": ["1.0.0"],
             "deprecated": [],
             "eol": []
         },
         "metadata.agent": {
-            "current": "1.1.0",
-            "supported": ["1.0.0", "1.1.0"],
+            "current": "1.0.0",
+            "supported": ["1.0.0"],
             "deprecated": [],
             "eol": []
         },
         "metadata.flow": {
-            "current": "1.1.0",
-            "supported": ["1.0.0", "1.1.0"],
+            "current": "1.0.0",
+            "supported": ["1.0.0"],
             "deprecated": [],
             "eol": []
         },
@@ -26,8 +26,8 @@
             "eol": []
         },
         "index": {
-            "current": "1.1.0",
-            "supported": ["1.0.0", "1.1.0"],
+            "current": "1.0.0",
+            "supported": ["1.0.0"],
             "deprecated": [],
             "eol": []
         }

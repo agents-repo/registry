@@ -1,4 +1,4 @@
-# Index Schema Specification (1.1.0)
+# Index Schema Specification (1.0.0)
 
 This document defines the deterministic `index.json` format
 for the registry-level package index.
@@ -15,8 +15,7 @@ release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | index schemaVersion | supported | Initial entry |
-| `1.1.0` | index schemaVersion | current | Adds WebApp listing projection |
+| `1.0.0` | index schemaVersion | current | Includes WebApp listing projection |
 
 Tooling MUST reject index files whose `schemaVersion` is not in the table above
 unless it explicitly supports a newer schema version.
@@ -110,7 +109,7 @@ Each entry in `packages` MUST be an object with:
 
 ```json
 {
-    "schemaVersion": "1.1.0",
+    "schemaVersion": "1.0.0",
     "updatedAt": "2026-05-05T00:00:00Z",
     "packages": [
         {
