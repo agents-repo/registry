@@ -8,6 +8,62 @@ import { err, warn } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
 
+function isStatus(value: unknown): value is 'active' | 'deprecated' | 'archived' | 'yanked' {
+  return value === 'active' || value === 'deprecated' || value === 'archived' || value === 'yanked';
+}
+
+function isCostBand(value: unknown): value is 'low' | 'medium' | 'high' {
+  return value === 'low' || value === 'medium' || value === 'high';
+}
+
+function validateEntryMetadataV110(
+  md: Record<string, unknown>,
+  context: string,
+  issues: ValidationIssue[],
+): void {
+  if (!isStatus(md['status'])) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `${context}: status must be one of "active", "deprecated", "archived", "yanked"`,
+      ),
+    );
+  }
+
+  if (typeof md['category'] !== 'string' || md['category'].trim().length === 0) {
+    issues.push(err('ERR_METADATA_INVALID', `${context}: category must be a non-empty string`));
+  }
+
+  const estimateCost = md['estimateCost'];
+  if (typeof estimateCost !== 'object' || estimateCost === null) {
+    issues.push(err('ERR_METADATA_INVALID', `${context}: estimateCost must be an object`));
+  } else {
+    const cost = estimateCost as Record<string, unknown>;
+    if (typeof cost['estimatedCost'] !== 'number' || Number.isNaN(cost['estimatedCost'])) {
+      issues.push(
+        err('ERR_METADATA_INVALID', `${context}: estimateCost.estimatedCost must be a number`),
+      );
+    }
+    if (!isCostBand(cost['band'])) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: estimateCost.band must be one of "low", "medium", "high"`,
+        ),
+      );
+    }
+  }
+
+  if (
+    typeof md['customAttributes'] !== 'undefined' &&
+    (typeof md['customAttributes'] !== 'object' ||
+      md['customAttributes'] === null ||
+      Array.isArray(md['customAttributes']))
+  ) {
+    issues.push(err('ERR_METADATA_INVALID', `${context}: customAttributes must be an object when provided`));
+  }
+}
+
 export interface EntryVersion {
   id: string;
   frontmatterVersion: string;
@@ -87,6 +143,10 @@ export function validateEntryFiles(
           context: `${dirLabel}/${stem}.metadata.json`,
           errorCode: 'ERR_METADATA_INVALID',
         });
+
+        if (md['schemaVersion'] === '1.1.0') {
+          validateEntryMetadataV110(md, `${dirLabel}/${stem}.metadata.json`, issues);
+        }
       }
     }
 

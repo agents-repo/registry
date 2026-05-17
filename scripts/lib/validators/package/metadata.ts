@@ -3,6 +3,14 @@ import type { PackageMetadata, ValidationIssue } from '../../types';
 import { err } from '../common/issues';
 import { validateSchemaVersion } from './schema-version';
 
+function isStatus(value: unknown): value is 'active' | 'deprecated' | 'archived' | 'yanked' {
+  return value === 'active' || value === 'deprecated' || value === 'archived' || value === 'yanked';
+}
+
+function isBand(value: unknown): value is 'low' | 'medium' | 'high' | 'mixed' {
+  return value === 'low' || value === 'medium' || value === 'high' || value === 'mixed';
+}
+
 export function validateMetadata(
   metadata: unknown,
   packageId: string,
@@ -106,6 +114,66 @@ export function validateMetadata(
         'ERR_METADATA_INVALID',
         `version must be a valid semantic version (MAJOR.MINOR.PATCH), got: ${JSON.stringify(m['version'])}`,
       ),
+    );
+  }
+
+  const schemaVersion = m['schemaVersion'];
+  if (schemaVersion === '1.1.0') {
+    if (!isStatus(m['status'])) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `status must be one of "active", "deprecated", "archived", "yanked", got: ${JSON.stringify(m['status'])}`,
+        ),
+      );
+    }
+
+    if (typeof m['category'] !== 'string' || m['category'].trim().length === 0) {
+      issues.push(err('ERR_METADATA_INVALID', 'category must be a non-empty string'));
+    }
+
+    const estimateOverallCost = m['estimateOverallCost'];
+    if (typeof estimateOverallCost !== 'object' || estimateOverallCost === null) {
+      issues.push(err('ERR_METADATA_INVALID', 'estimateOverallCost must be an object'));
+    } else {
+      const cost = estimateOverallCost as Record<string, unknown>;
+      if (!isBand(cost['band'])) {
+        issues.push(
+          err(
+            'ERR_METADATA_INVALID',
+            `estimateOverallCost.band must be one of "low", "medium", "high", "mixed", got: ${JSON.stringify(cost['band'])}`,
+          ),
+        );
+      }
+      if (
+        typeof cost['estimatedCost'] !== 'undefined' &&
+        (typeof cost['estimatedCost'] !== 'number' || Number.isNaN(cost['estimatedCost']))
+      ) {
+        issues.push(
+          err('ERR_METADATA_INVALID', 'estimateOverallCost.estimatedCost must be a number when provided'),
+        );
+      }
+    }
+  }
+
+  if (
+    typeof m['quickstart'] !== 'undefined' &&
+    (typeof m['quickstart'] !== 'string' || !ValidationUtils.isHttpsUrl(m['quickstart']))
+  ) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `quickstart must be an HTTPS URL when provided, got: ${JSON.stringify(m['quickstart'])}`,
+      ),
+    );
+  }
+
+  if (
+    typeof m['customAttributes'] !== 'undefined' &&
+    (typeof m['customAttributes'] !== 'object' || m['customAttributes'] === null || Array.isArray(m['customAttributes']))
+  ) {
+    issues.push(
+      err('ERR_METADATA_INVALID', 'customAttributes must be an object when provided'),
     );
   }
 

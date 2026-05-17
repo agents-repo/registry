@@ -19,31 +19,37 @@ Define lean, user-facing metadata fields with entity-specific cost semantics:
 ## MUST and OPTIONAL (new-publish path)
 
 Package MUST:
+
 - `status`
 - `category`
 - `estimateOverallCost.band`
 
 Package OPTIONAL:
+
 - `estimateOverallCost.estimatedCost`
 - `quickstart`
 - `customAttributes`
 
 Agent MUST:
+
 - `status`
 - `category`
 - `estimateCost.estimatedCost`
 - `estimateCost.band`
 
 Agent OPTIONAL:
+
 - `customAttributes`
 
 Flow MUST:
+
 - `status`
 - `category`
 - `estimateCost.estimatedCost`
 - `estimateCost.band`
 
 Flow OPTIONAL:
+
 - `customAttributes`
 
 ## Notes

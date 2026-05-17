@@ -1,4 +1,4 @@
-# Index Schema Specification (1.0.0)
+# Index Schema Specification (1.1.0)
 
 This document defines the deterministic `index.json` format
 for the registry-level package index.
@@ -15,7 +15,8 @@ release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | index schemaVersion | current | Initial entry |
+| `1.0.0` | index schemaVersion | supported | Initial entry |
+| `1.1.0` | index schemaVersion | current | Adds WebApp listing projection |
 
 Tooling MUST reject index files whose `schemaVersion` is not in the table above
 unless it explicitly supports a newer schema version.
@@ -60,6 +61,17 @@ Each entry in `packages` MUST be an object with:
 | `description` | string | yes | MUST match `metadata.json` `description` |
 | `latest` | string | yes | MUST equal `manifest.json` `latest` |
 | `tags` | array of string | yes | MUST match `metadata.json` `tags` |
+| `status` | string | yes | Enum: `active`, `deprecated`, `archived`, `yanked` |
+| `category` | string | yes | MUST match package `metadata.json` |
+| `estimateOverallCost` | object | yes | Includes required `band` |
+| `quickstart` | string | no | HTTPS URL |
+
+`estimateOverallCost` object schema:
+
+| Field | Type | Required | Constraints |
+| --- | --- | --- | --- |
+| `band` | string | yes | MUST be `low`, `medium`, `high`, or `mixed` |
+| `estimatedCost` | number | no | Numeric aggregate estimate |
 
 ## Validation Rules
 
@@ -69,6 +81,13 @@ Each entry in `packages` MUST be an object with:
   corresponding `packages/<id>/versions/manifest.json`.
 - `packages[].name`, `packages[].description`, and `packages[].tags`
   MUST reflect the current `packages/<id>/metadata.json` values.
+- `packages[].status`, `packages[].category`, and
+  `packages[].estimateOverallCost` MUST reflect the current
+  `packages/<id>/metadata.json` values.
+- `packages[].quickstart`, when present, MUST reflect the current
+  `packages/<id>/metadata.json` value.
+- Package detail-only metadata (for example `customAttributes`) MUST NOT
+  be copied into `packages/index.json`.
 - `updatedAt` MUST be updated whenever a package entry is added,
   modified, or removed.
 - The index MUST contain one entry for every package directory under
@@ -91,7 +110,7 @@ Each entry in `packages` MUST be an object with:
 
 ```json
 {
-    "schemaVersion": "1.0.0",
+    "schemaVersion": "1.1.0",
     "updatedAt": "2026-05-05T00:00:00Z",
     "packages": [
         {
@@ -99,7 +118,13 @@ Each entry in `packages` MUST be an object with:
             "name": "my-package",
             "description": "Multi-agent package for PR review automation.",
             "latest": "1.1.0",
-            "tags": ["productivity", "review", "automation"]
+          "tags": ["productivity", "review", "automation"],
+          "status": "active",
+          "category": "automation",
+          "estimateOverallCost": {
+            "band": "mixed"
+          },
+          "quickstart": "https://github.com/agents-repo/my-package#quickstart"
         }
     ]
 }

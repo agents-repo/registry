@@ -60,6 +60,11 @@ export class PackageScaffolder {
       createdAt: now,
       updatedAt: now,
       version: '1.0.0',
+      status: 'active',
+      category: 'general',
+      estimateOverallCost: {
+        band: 'mixed',
+      },
       ...(metadata.maintainers && { maintainers: metadata.maintainers }),
     };
 
@@ -129,6 +134,13 @@ Output: Describe expected output type or format
       schemaVersion,
       name: id,
       description,
+      license: 'MIT',
+      status: 'active',
+      category: 'general',
+      estimateCost: {
+        estimatedCost: 1,
+        band: 'medium',
+      },
     };
   }
 }

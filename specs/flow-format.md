@@ -96,6 +96,9 @@ Body sections required in order:
   present in `agents/` within the same package.
 - `<flow-id>.metadata.json` fields are defined in
   `metadata-schema.md`.
+- For flow metadata `schemaVersion: "1.1.0"`,
+  `<flow-id>.metadata.json` MUST include `status`, `category`, and
+  `estimateCost`.
 - For package root `flows/<flow-id>.agent.md`, frontmatter `version`
   MUST follow the root working-copy consistency rules defined in
   `versioning-rules.md`.

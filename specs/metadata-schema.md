@@ -1,4 +1,4 @@
-# Metadata Schema Specification (1.0.0)
+# Metadata Schema Specification (1.1.0)
 
 This document defines the deterministic metadata contracts
 for packages, agents, and flows.
@@ -17,7 +17,8 @@ package release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | package metadata schemaVersion | current | Initial entry |
+| `1.0.0` | package metadata schemaVersion | supported | Initial entry |
+| `1.1.0` | package metadata schemaVersion | current | Adds WebApp cost fields |
 
 Tooling MUST reject package metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
@@ -64,6 +65,14 @@ Lifecycle enforcement:
 | `updatedAt` | string | RFC 3339 timestamp |
 | `version` | string | Semver (`MAJOR.MINOR.PATCH`); current release target |
 
+Additional required fields for package `schemaVersion: "1.1.0"`:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `status` | string | MUST be `active`, `deprecated`, `archived`, or `yanked` |
+| `category` | string | Non-empty string |
+| `estimateOverallCost` | object | MUST follow `EstimateOverallCost` schema |
+
 ### Optional Fields
 
 | Field | Type | Constraints |
@@ -72,6 +81,21 @@ Lifecycle enforcement:
 | `compatibility` | object | Tooling and runtime compatibility |
 | `documentation` | string | HTTPS URL |
 | `keywords` | array of string | Additional searchable terms |
+| `quickstart` | string | HTTPS URL |
+| `customAttributes` | object | Arbitrary key-value map for detail rendering |
+
+Additional optional fields for package `schemaVersion: "1.1.0"`:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `estimateOverallCost` | object | `estimatedCost` MAY be provided as a number |
+
+### EstimateOverallCost Object Schema (`schemaVersion: "1.1.0"`)
+
+| Field | Type | Required | Constraints |
+| --- | --- | --- | --- |
+| `band` | string | yes | MUST be `low`, `medium`, `high`, or `mixed` |
+| `estimatedCost` | number | no | Numeric aggregate estimate |
 
 ### Validation Rules
 
@@ -83,13 +107,19 @@ Lifecycle enforcement:
 - `version` MUST be greater than or equal to `versions/manifest.json`
   `latest` when the manifest exists for the package.
 - Arrays MUST NOT contain duplicate values.
+- For package `schemaVersion: "1.1.0"`, `status`, `category`, and
+  `estimateOverallCost.band` are required.
+- For package `schemaVersion: "1.1.0"`, `estimateOverallCost.band`
+  MUST be one of `low`, `medium`, `high`, or `mixed`.
+- `quickstart`, when present, MUST be an HTTPS URL.
+- `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix for extensions.
 
 ### Canonical Example
 
 ```json
 {
-    "schemaVersion": "1.0.0",
+    "schemaVersion": "1.1.0",
     "name": "my-package",
     "description": "Multi-agent package for PR review automation.",
     "owner": "agents-repo",
@@ -99,7 +129,13 @@ Lifecycle enforcement:
     "tags": ["productivity", "review", "automation"],
     "createdAt": "2026-05-02T00:00:00Z",
     "updatedAt": "2026-05-02T00:00:00Z",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/my-package#quickstart"
 }
 ```
 
@@ -112,7 +148,8 @@ package release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | agent metadata schemaVersion | current | Initial entry |
+| `1.0.0` | agent metadata schemaVersion | supported | Initial entry |
+| `1.1.0` | agent metadata schemaVersion | current | Adds WebApp cost fields |
 
 Tooling MUST reject agent metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
@@ -144,6 +181,14 @@ Lifecycle enforcement:
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
 
+Additional required fields for agent `schemaVersion: "1.1.0"`:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `status` | string | MUST be `active`, `deprecated`, `archived`, or `yanked` |
+| `category` | string | Non-empty string |
+| `estimateCost` | object | MUST follow `EstimateCost` schema |
+
 ### Optional Fields
 
 | Field | Type | Constraints |
@@ -151,6 +196,14 @@ Lifecycle enforcement:
 | `tools` | array of string | Declared tool capabilities |
 | `inputs` | array of `Contract` | Input contracts; see `agent-format.md` |
 | `outputs` | array of `Contract` | Output contracts; see `agent-format.md` |
+| `customAttributes` | object | Arbitrary key-value map for detail rendering |
+
+### EstimateCost Object Schema (`schemaVersion: "1.1.0"`)
+
+| Field | Type | Required | Constraints |
+| --- | --- | --- | --- |
+| `estimatedCost` | number | yes | Numeric estimate |
+| `band` | string | yes | MUST be `low`, `medium`, or `high` |
 
 ### Validation Rules
 
@@ -168,16 +221,27 @@ Lifecycle enforcement:
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
 - When `outputs` is present in both this file and
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
+- For agent `schemaVersion: "1.1.0"`, `status`, `category`, and
+  `estimateCost` are required.
+- For agent `schemaVersion: "1.1.0"`, `estimateCost.band`
+  MUST be one of `low`, `medium`, or `high`.
+- `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
 ### Canonical Example
 
 ```json
 {
-    "schemaVersion": "1.0.0",
+    "schemaVersion": "1.1.0",
     "name": "planner",
     "description": "Plans the steps to complete a PR review task.",
     "license": "MIT",
+    "status": "active",
+    "category": "automation",
+    "estimateCost": {
+      "estimatedCost": 2,
+      "band": "medium"
+    },
     "tools": ["github", "filesystem"]
 }
 ```
@@ -191,7 +255,8 @@ package release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | flow metadata schemaVersion | current | Initial entry |
+| `1.0.0` | flow metadata schemaVersion | supported | Initial entry |
+| `1.1.0` | flow metadata schemaVersion | current | Adds WebApp cost fields |
 
 Tooling MUST reject flow metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
@@ -218,10 +283,18 @@ Lifecycle enforcement:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `schemaVersion` | string | MUST be a supported `metadata.flow` schema version from `specs/schema-versions.json`; see [Schema Version Lifecycle](#schema-version-lifecycle-2) |
+| `schemaVersion` | string | Supported `metadata.flow` schema version |
 | `name` | string | MUST equal `<flow-id>` (stem before `.agent.md`) |
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
+
+Additional required fields for flow `schemaVersion: "1.1.0"`:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `status` | string | MUST be `active`, `deprecated`, `archived`, or `yanked` |
+| `category` | string | Non-empty string |
+| `estimateCost` | object | MUST follow `EstimateCost` schema |
 
 ### Optional Fields
 
@@ -230,6 +303,7 @@ Lifecycle enforcement:
 | `agents` | array of string | Agent IDs referenced in this flow |
 | `inputs` | array of `Contract` | Flow input contracts; see `flow-format.md` |
 | `outputs` | array of `Contract` | Flow outputs; see `flow-format.md` |
+| `customAttributes` | object | Arbitrary key-value map for detail rendering |
 
 ### Validation Rules
 
@@ -249,16 +323,27 @@ Lifecycle enforcement:
   `<flow-id>.agent.md` frontmatter, the values MUST be identical.
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
+- For flow `schemaVersion: "1.1.0"`, `status`, `category`, and
+  `estimateCost` are required.
+- For flow `schemaVersion: "1.1.0"`, `estimateCost.band`
+  MUST be one of `low`, `medium`, or `high`.
+- `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
 ### Canonical Example
 
 ```json
 {
-    "schemaVersion": "1.0.0",
+    "schemaVersion": "1.1.0",
     "name": "triage",
     "description": "Routes incoming issues to the appropriate agent.",
     "license": "MIT",
+    "status": "active",
+    "category": "automation",
+    "estimateCost": {
+      "estimatedCost": 3,
+      "band": "medium"
+    },
     "agents": ["planner", "executor"]
 }
 ```

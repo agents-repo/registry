@@ -3,6 +3,20 @@ import { readJsonFile, writeJsonFile } from './io/json';
 import { getSchemaCurrentVersion } from './schema-versions';
 import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 
+function toPackageBand(value: unknown): 'low' | 'medium' | 'high' | 'mixed' {
+  if (value === 'low' || value === 'medium' || value === 'high' || value === 'mixed') {
+    return value;
+  }
+  return 'mixed';
+}
+
+function toStatus(value: unknown): 'active' | 'deprecated' | 'archived' | 'yanked' {
+  if (value === 'active' || value === 'deprecated' || value === 'archived' || value === 'yanked') {
+    return value;
+  }
+  return 'active';
+}
+
 export class IndexManager {
   private readonly indexPath: string;
 
@@ -24,6 +38,17 @@ export class IndexManager {
       description: metadata.description,
       latest: manifestLatest,
       tags: metadata.tags,
+      status: toStatus(metadata.status),
+      category: typeof metadata.category === 'string' && metadata.category.length > 0 ? metadata.category : 'general',
+      estimateOverallCost: {
+        ...(typeof metadata.estimateOverallCost?.estimatedCost === 'number'
+          ? { estimatedCost: metadata.estimateOverallCost.estimatedCost }
+          : {}),
+        band: toPackageBand(metadata.estimateOverallCost?.band),
+      },
+      ...(typeof metadata.quickstart === 'string' && metadata.quickstart.length > 0
+        ? { quickstart: metadata.quickstart }
+        : {}),
     };
 
     const existing = index.packages.findIndex((p) => p.id === packageId);

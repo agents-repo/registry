@@ -1,3 +1,17 @@
+export type StatusValue = 'active' | 'deprecated' | 'archived' | 'yanked';
+export type CostBand = 'low' | 'medium' | 'high';
+export type PackageCostBand = CostBand | 'mixed';
+
+export interface EstimateCost {
+  estimatedCost: number;
+  band: CostBand;
+}
+
+export interface EstimateOverallCost {
+  estimatedCost?: number;
+  band: PackageCostBand;
+}
+
 export interface PackageMetadata {
   schemaVersion: string;
   name: string;
@@ -10,6 +24,11 @@ export interface PackageMetadata {
   createdAt: string;
   updatedAt: string;
   version: string;
+  status?: StatusValue;
+  category?: string;
+  estimateOverallCost?: EstimateOverallCost;
+  quickstart?: string;
+  customAttributes?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
@@ -35,6 +54,10 @@ export interface PackageIndexEntry {
   description: string;
   latest: string;
   tags: string[];
+  status: StatusValue;
+  category: string;
+  estimateOverallCost: EstimateOverallCost;
+  quickstart?: string;
 }
 
 export interface PackageIndex {
