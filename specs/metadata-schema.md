@@ -195,7 +195,10 @@ Additional required fields:
 | `outputs` | array of `Contract` | Output contracts; see `agent-format.md` |
 | `customAttributes` | object | Arbitrary key-value map for detail rendering |
 
-### EstimateCost Object Schema
+### EstimateCost Object Schema (Shared: Agent and Flow)
+
+This object schema applies to both agent metadata `estimateCost` and
+flow metadata `estimateCost`.
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
@@ -219,6 +222,7 @@ Additional required fields:
 - When `outputs` is present in both this file and
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
 - `status`, `category`, and `estimateCost` are required.
+- `estimateCost.estimatedCost` MUST be a number.
 - `estimateCost.band` MUST be one of `low`, `medium`, or `high`.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
@@ -318,6 +322,7 @@ Additional required fields:
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
 - `status`, `category`, and `estimateCost` are required.
+- `estimateCost.estimatedCost` MUST be a number.
 - `estimateCost.band` MUST be one of `low`, `medium`, or `high`.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
