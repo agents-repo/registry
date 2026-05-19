@@ -127,7 +127,11 @@ function validateStatusAndCategory(m: Record<string, unknown>, issues: Validatio
 
 function validateEstimateOverallCost(m: Record<string, unknown>, issues: ValidationIssue[]): void {
   const estimateOverallCost = m['estimateOverallCost'];
-  if (typeof estimateOverallCost !== 'object' || estimateOverallCost === null) {
+  if (
+    typeof estimateOverallCost !== 'object' ||
+    estimateOverallCost === null ||
+    Array.isArray(estimateOverallCost)
+  ) {
     issues.push(err('ERR_METADATA_INVALID', 'estimateOverallCost must be an object'));
     return;
   }
