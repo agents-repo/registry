@@ -49,9 +49,11 @@ function readRequiredNpmVersion(rootDir: string): string {
     fail("package.json is missing packageManager.");
   }
 
-  const managerMatch = /^npm[/@](\d+\.\d+\.\d+)$/.exec(packageManager);
+  const managerMatch = /^npm@(\d+\.\d+\.\d+)(?:\+[^\s]+)?$/.exec(packageManager);
   if (!managerMatch?.[1]) {
-    fail(`Unsupported packageManager format: ${packageManager}. Expected npm@x.y.z.`);
+    fail(
+      `Unsupported packageManager format: ${packageManager}. Expected npm@x.y.z or npm@x.y.z+integrity.`,
+    );
   }
 
   return normalize(managerMatch[1]);
