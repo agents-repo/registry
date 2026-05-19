@@ -112,6 +112,12 @@ function validateMetadataSidecar(
   }
 
   if (typeof metaData !== 'object' || metaData === null) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `${dirLabel}/${stem}.metadata.json: metadata must be a JSON object`,
+      ),
+    );
     return;
   }
 
