@@ -101,7 +101,11 @@ export class IndexManager {
   }
 
   update(packageId: string, metadata: PackageMetadata, manifestLatest: string): void {
-    if (typeof metadata.estimateOverallCost !== 'object' || metadata.estimateOverallCost === null) {
+    if (
+      typeof metadata.estimateOverallCost !== 'object' ||
+      metadata.estimateOverallCost === null ||
+      Array.isArray(metadata.estimateOverallCost)
+    ) {
       throw new PackageError(
         ErrorCode.ERR_METADATA_INVALID,
         `metadata.json estimateOverallCost for package "${packageId}" must be an object`,
