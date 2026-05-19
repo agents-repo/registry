@@ -1,5 +1,7 @@
 ignores:
   - "node_modules/**"
 config:
+  MD013:
+    tables: false
   MD024:
     siblings_only: true

@@ -6,7 +6,7 @@ import { ValidationUtils } from './validation-utils';
 import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 import { isStatus, isPackageCostBand, STATUS_VALUES, PACKAGE_COST_BANDS } from './types';
 
-function requirePackageBand(value: unknown, packageId: string): 'low' | 'medium' | 'high' | 'mixed' {
+function requirePackageBand(value: unknown, packageId: string): 'minimal' | 'low' | 'moderate' | 'high' | 'critical' | 'mixed' {
   if (isPackageCostBand(value)) {
     return value;
   }

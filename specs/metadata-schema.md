@@ -123,8 +123,8 @@ Additional optional fields:
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
-| `band` | string | yes | MUST be `low`, `medium`, `high`, or `mixed` |
-| `estimatedCost` | number | no | Non-negative numeric aggregate estimate |
+| `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` |
+| `estimatedCost` | number | no | Aggregate relative effort on a 1–10 scale (not tokens or credits) |
 
 ### Validation Rules
 
@@ -137,10 +137,10 @@ Additional optional fields:
   `latest` when the manifest exists for the package.
 - Arrays MUST NOT contain duplicate values.
 - `status`, `category`, and `estimateOverallCost.band` are required.
-- `estimateOverallCost.band` MUST be one of `low`, `medium`, `high`, or
-  `mixed`.
-- `estimateOverallCost.estimatedCost`, when present, MUST be a non-negative
-  number.
+- `estimateOverallCost.band` MUST be one of `minimal`, `low`, `moderate`,
+  `high`, `critical`, or `mixed`.
+- `estimateOverallCost.estimatedCost`, when present, MUST be a number in the
+  range 1–10 inclusive.
 - `quickstart`, when present, MUST be an HTTPS URL.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix for extensions.
@@ -234,8 +234,19 @@ flow metadata `estimateCost`.
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
-| `estimatedCost` | number | yes | Numeric estimate |
-| `band` | string | yes | MUST be `low`, `medium`, or `high` |
+| `estimatedCost` | number | yes | Relative effort on a 1–10 scale; see band ranges below |
+| `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, or `critical` |
+
+`estimatedCost` is a relative effort rating (1–10). It is not denominated
+in tokens or API credits.
+
+| Band | `estimatedCost` Range |
+| --- | --- |
+| `minimal` | 1–2 |
+| `low` | 3–4 |
+| `moderate` | 5–6 |
+| `high` | 7–8 |
+| `critical` | 9–10 |
 
 ### Validation Rules
 
@@ -254,8 +265,9 @@ flow metadata `estimateCost`.
 - When `outputs` is present in both this file and
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
 - `status`, `category`, and `estimateCost` are required.
-- `estimateCost.estimatedCost` MUST be a number.
-- `estimateCost.band` MUST be one of `low`, `medium`, or `high`.
+- `estimateCost.estimatedCost` MUST be a number in the range 1–10 inclusive.
+- `estimateCost.band` MUST be one of `minimal`, `low`, `moderate`, `high`,
+  or `critical`.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
@@ -270,8 +282,8 @@ flow metadata `estimateCost`.
     "status": "active",
     "category": "automation",
     "estimateCost": {
-      "estimatedCost": 2,
-      "band": "medium"
+      "estimatedCost": 5,
+      "band": "moderate"
     },
     "tools": ["github", "filesystem"]
 }
@@ -354,8 +366,9 @@ Additional required fields:
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
 - `status`, `category`, and `estimateCost` are required.
-- `estimateCost.estimatedCost` MUST be a number.
-- `estimateCost.band` MUST be one of `low`, `medium`, or `high`.
+- `estimateCost.estimatedCost` MUST be a number in the range 1–10 inclusive.
+- `estimateCost.band` MUST be one of `minimal`, `low`, `moderate`, `high`,
+  or `critical`.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
@@ -370,8 +383,8 @@ Additional required fields:
     "status": "active",
     "category": "automation",
     "estimateCost": {
-      "estimatedCost": 3,
-      "band": "medium"
+      "estimatedCost": 7,
+      "band": "high"
     },
     "agents": ["planner", "executor"]
 }

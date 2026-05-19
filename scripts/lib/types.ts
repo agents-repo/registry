@@ -1,7 +1,7 @@
 // Validation constants (single source of truth)
 export const STATUS_VALUES = ['active', 'deprecated', 'archived', 'yanked'] as const;
-export const COST_BANDS = ['low', 'medium', 'high'] as const;
-export const PACKAGE_COST_BANDS = ['low', 'medium', 'high', 'mixed'] as const;
+export const COST_BANDS = ['minimal', 'low', 'moderate', 'high', 'critical'] as const;
+export const PACKAGE_COST_BANDS = ['minimal', 'low', 'moderate', 'high', 'critical', 'mixed'] as const;
 
 // Derive types from constants to eliminate duplication
 export type StatusValue = typeof STATUS_VALUES[number];

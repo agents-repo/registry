@@ -69,7 +69,7 @@ Each entry in `packages` MUST be an object with:
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
-| `band` | string | yes | MUST be `low`, `medium`, `high`, or `mixed` |
+| `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` |
 | `estimatedCost` | number | no | Non-negative numeric aggregate estimate |
 
 ## Validation Rules

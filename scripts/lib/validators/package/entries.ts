@@ -45,7 +45,7 @@ function validateEntryMetadataRequiredFields(
       issues.push(
         err(
           'ERR_METADATA_INVALID',
-          `${context}: estimateCost.band must be one of "low", "medium", "high"`,
+          `${context}: estimateCost.band must be one of "minimal", "low", "moderate", "high", "critical"`,
         ),
       );
     }

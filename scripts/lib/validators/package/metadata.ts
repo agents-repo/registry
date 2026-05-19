@@ -141,7 +141,7 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
     issues.push(
       err(
         'ERR_METADATA_INVALID',
-        `estimateOverallCost.band must be one of "low", "medium", "high", "mixed", got: ${JSON.stringify(cost['band'])}`,
+        `estimateOverallCost.band must be one of "minimal", "low", "moderate", "high", "critical", "mixed", got: ${JSON.stringify(cost['band'])}`,
       ),
     );
   }
