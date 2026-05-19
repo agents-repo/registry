@@ -7,6 +7,6 @@
     "category": "assistant",
     "estimateCost": {
         "estimatedCost": 1,
-        "band": "low"
+        "band": "minimal"
     }
 }
