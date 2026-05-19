@@ -4,6 +4,7 @@ import type { Manifest, ValidationIssue } from '../../types';
 import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
+import { SHA256_PATTERN, SCHEMA_FAMILY_MANIFEST } from '../../constants';
 
 export function validateManifest(
   manifestPath: string,
@@ -19,7 +20,7 @@ export function validateManifest(
   const m = data as Record<string, unknown>;
 
   validateSchemaVersion(issues, {
-    family: 'manifest',
+    family: SCHEMA_FAMILY_MANIFEST,
     value: m['schemaVersion'],
     context: 'manifest.json',
     errorCode: 'ERR_VALIDATION_FAILED',
@@ -92,7 +93,7 @@ export function validateManifest(
         );
       }
 
-      if (typeof e['sha256'] !== 'string' || !/^[0-9a-f]{64}$/.test(e['sha256'])) {
+      if (typeof e['sha256'] !== 'string' || !SHA256_PATTERN.test(e['sha256'])) {
         issues.push(
           err(
             'ERR_VALIDATION_FAILED',
@@ -101,7 +102,7 @@ export function validateManifest(
         );
       }
 
-      if (typeof e['srcSha256'] !== 'string' || !/^[0-9a-f]{64}$/.test(e['srcSha256'])) {
+      if (typeof e['srcSha256'] !== 'string' || !SHA256_PATTERN.test(e['srcSha256'])) {
         issues.push(
           err(
             'ERR_VALIDATION_FAILED',

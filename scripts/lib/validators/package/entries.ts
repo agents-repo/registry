@@ -8,6 +8,14 @@ import { isStatus, isCostBand } from '../../types';
 import { err, warn } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
+import {
+  ESTIMATED_COST_MIN,
+  ESTIMATED_COST_MAX,
+  DESCRIPTION_MAX_LENGTH,
+  LICENSE,
+  SCHEMA_FAMILY_AGENT,
+  SCHEMA_FAMILY_FLOW,
+} from '../../constants';
 
 function validateEntryMetadataRequiredFields(
   md: Record<string, unknown>,
@@ -39,8 +47,8 @@ function validateEntryMetadataRequiredFields(
     if (
       typeof cost['estimatedCost'] !== 'number' ||
       !Number.isFinite(cost['estimatedCost']) ||
-      cost['estimatedCost'] < 1 ||
-      cost['estimatedCost'] > 10
+      cost['estimatedCost'] < ESTIMATED_COST_MIN ||
+      cost['estimatedCost'] > ESTIMATED_COST_MAX
     ) {
       issues.push(
         err(
@@ -134,7 +142,7 @@ function validateMetadataSidecar(
   }
 
   const md = metaData as Record<string, unknown>;
-  const family: SchemaFamily = dirLabel === 'agents' ? 'metadata.agent' : 'metadata.flow';
+  const family: SchemaFamily = dirLabel === 'agents' ? SCHEMA_FAMILY_AGENT : SCHEMA_FAMILY_FLOW;
   validateSchemaVersion(issues, {
     family,
     value: md['schemaVersion'],
@@ -173,7 +181,7 @@ function validateFrontmatter(
     );
   }
 
-  if (frontmatter['license'] && frontmatter['license'] !== 'MIT') {
+  if (frontmatter['license'] && frontmatter['license'] !== LICENSE) {
     issues.push(
       err(
         'ERR_VALIDATION_FAILED',
@@ -182,7 +190,7 @@ function validateFrontmatter(
     );
   }
 
-  if (frontmatter['description'] && frontmatter['description'].length > 300) {
+  if (frontmatter['description'] && frontmatter['description'].length > DESCRIPTION_MAX_LENGTH) {
     issues.push(warn(`${dirLabel}/${mdFile}: frontmatter description exceeds 300 characters`));
   }
 

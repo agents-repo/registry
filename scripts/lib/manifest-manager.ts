@@ -3,6 +3,7 @@ import { readJsonFile, writeJsonFile } from './io/json';
 import semver from 'semver';
 import { getSchemaCurrentVersion } from './schema-versions';
 import { ValidationUtils } from './validation-utils';
+import { SCHEMA_FAMILY_MANIFEST } from './constants';
 import type { Manifest, ManifestVersionEntry } from './types';
 
 export class ManifestManager {
@@ -19,7 +20,7 @@ export class ManifestManager {
       return readJsonFile<Manifest>(this.manifestPath);
     }
     return {
-      schemaVersion: getSchemaCurrentVersion('manifest'),
+      schemaVersion: getSchemaCurrentVersion(SCHEMA_FAMILY_MANIFEST),
       name: this.packageId,
       latest: '',
       versions: [],

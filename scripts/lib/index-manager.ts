@@ -3,6 +3,7 @@ import { ErrorCode, PackageError } from './errors';
 import { readJsonFile, writeJsonFile } from './io/json';
 import { getSchemaCurrentVersion } from './schema-versions';
 import { ValidationUtils } from './validation-utils';
+import { ESTIMATED_COST_MIN, ESTIMATED_COST_MAX, SCHEMA_FAMILY_INDEX } from './constants';
 import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 import { isStatus, isPackageCostBand, STATUS_VALUES, PACKAGE_COST_BANDS } from './types';
 
@@ -83,7 +84,7 @@ function projectEstimatedCost(value: unknown, packageId: string): { estimatedCos
   if (value === undefined) {
     return {};
   }
-  if (typeof value !== 'number' || !Number.isFinite(value) || value < 1 || value > 10) {
+  if (typeof value !== 'number' || !Number.isFinite(value) || value < ESTIMATED_COST_MIN || value > ESTIMATED_COST_MAX) {
     throw new PackageError(
       ErrorCode.ERR_METADATA_INVALID,
       `metadata.json estimateOverallCost.estimatedCost for package "${packageId}" must be a finite number between 1 and 10 when provided`,
@@ -111,7 +112,7 @@ export class IndexManager {
     if (fs.existsSync(this.indexPath)) {
       index = readJsonFile<PackageIndex>(this.indexPath);
     } else {
-      index = { schemaVersion: getSchemaCurrentVersion('index'), updatedAt: '', packages: [] };
+      index = { schemaVersion: getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX), updatedAt: '', packages: [] };
     }
 
     const entry: PackageIndexEntry = {

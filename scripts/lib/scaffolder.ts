@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getSchemaCurrentVersion } from './schema-versions';
 import type { PackageMetadata } from './types';
+import { LICENSE, SCHEMA_FAMILY_PACKAGE, SCHEMA_FAMILY_AGENT, SCHEMA_FAMILY_FLOW } from './constants';
 
 export interface AgentDef {
   id: string;
@@ -43,9 +44,9 @@ export class PackageScaffolder {
     fs.mkdirSync(path.join(packageDir, 'flows'), { recursive: true });
     fs.mkdirSync(path.join(packageDir, 'versions'), { recursive: true });
 
-    const packageSchemaVersion = getSchemaCurrentVersion('metadata.package');
-    const agentMetadataSchemaVersion = getSchemaCurrentVersion('metadata.agent');
-    const flowMetadataSchemaVersion = getSchemaCurrentVersion('metadata.flow');
+    const packageSchemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_PACKAGE);
+    const agentMetadataSchemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_AGENT);
+    const flowMetadataSchemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_FLOW);
 
     const now = new Date().toISOString();
     const packageReadmeUrl = `https://github.com/agents-repo/registry/blob/main/packages/${packageId}/README.md`;
@@ -54,7 +55,7 @@ export class PackageScaffolder {
       name: packageId,
       description: metadata.description,
       owner: metadata.owner,
-      license: 'MIT',
+      license: LICENSE,
       homepage: metadata.homepage,
       repository: metadata.repository,
       tags: metadata.tags,
@@ -170,7 +171,7 @@ artifacts.
       schemaVersion,
       name: id,
       description,
-      license: 'MIT',
+      license: LICENSE,
       status: 'active',
       category: 'general',
       estimateCost: {

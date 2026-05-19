@@ -3,6 +3,15 @@ import type { PackageMetadata, ValidationIssue } from '../../types';
 import { isStatus, isPackageCostBand } from '../../types';
 import { err } from '../common/issues';
 import { validateSchemaVersion } from './schema-version';
+import {
+  DESCRIPTION_MIN_LENGTH,
+  DESCRIPTION_MAX_LENGTH,
+  TAGS_MAX_COUNT,
+  LICENSE,
+  ESTIMATED_COST_MIN,
+  ESTIMATED_COST_MAX,
+  SCHEMA_FAMILY_PACKAGE,
+} from '../../constants';
 
 function validateName(
   m: Record<string, unknown>,
@@ -22,8 +31,8 @@ function validateName(
 function validateBasicFields(m: Record<string, unknown>, issues: ValidationIssue[]): void {
   if (
     typeof m['description'] !== 'string' ||
-    m['description'].length < 1 ||
-    m['description'].length > 300
+    m['description'].length < DESCRIPTION_MIN_LENGTH ||
+    m['description'].length > DESCRIPTION_MAX_LENGTH
   ) {
     issues.push(
       err('ERR_METADATA_INVALID', 'description must be a string of 1 to 300 characters'),
@@ -34,7 +43,7 @@ function validateBasicFields(m: Record<string, unknown>, issues: ValidationIssue
     issues.push(err('ERR_METADATA_INVALID', 'owner must be a non-empty string'));
   }
 
-  if (m['license'] !== 'MIT') {
+  if (m['license'] !== LICENSE) {
     issues.push(
       err('ERR_METADATA_INVALID', `license must be "MIT", got: ${JSON.stringify(m['license'])}`),
     );
@@ -59,7 +68,7 @@ function validateUrls(m: Record<string, unknown>, issues: ValidationIssue[]): vo
 }
 
 function validateTags(m: Record<string, unknown>, issues: ValidationIssue[]): void {
-  if (!Array.isArray(m['tags']) || m['tags'].length < 1 || m['tags'].length > 20) {
+  if (!Array.isArray(m['tags']) || m['tags'].length < 1 || m['tags'].length > TAGS_MAX_COUNT) {
     issues.push(err('ERR_METADATA_INVALID', 'tags must be an array of 1 to 20 strings'));
     return;
   }
@@ -149,8 +158,8 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
     cost['estimatedCost'] !== undefined &&
     (typeof cost['estimatedCost'] !== 'number' ||
       !Number.isFinite(cost['estimatedCost']) ||
-      cost['estimatedCost'] < 1 ||
-      cost['estimatedCost'] > 10)
+      cost['estimatedCost'] < ESTIMATED_COST_MIN ||
+      cost['estimatedCost'] > ESTIMATED_COST_MAX)
   ) {
     issues.push(
       err(
@@ -198,7 +207,7 @@ export function validateMetadata(
 
   const m = metadata as Record<string, unknown>;
   validateSchemaVersion(issues, {
-    family: 'metadata.package',
+    family: SCHEMA_FAMILY_PACKAGE,
     value: m['schemaVersion'],
     context: 'metadata.json',
     errorCode: 'ERR_METADATA_INVALID',
