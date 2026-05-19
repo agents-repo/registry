@@ -139,7 +139,7 @@ body:
         - metadata.status: <active|deprecated|archived|yanked>
         - metadata.category: <non-empty string>
         - metadata.estimateOverallCost.band: <low|medium|high|mixed>
-        - metadata.estimateOverallCost.estimatedCost: <optional numeric value>
+        - metadata.estimateOverallCost.estimatedCost: <optional non-negative number>
         - metadata.createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
         - metadata.updatedAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
         - manifest.schemaVersion: <supported version from specs/schema-versions.json>
