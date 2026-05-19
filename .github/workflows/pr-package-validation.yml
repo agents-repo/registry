@@ -1,0 +1,83 @@
+name: PR Package Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - packages/**
+      - scripts/**
+      - specs/**
+      - package.json
+      - package-lock.json
+      - .github/workflows/pr-package-validation.yml
+
+jobs:
+  package-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Activate pinned npm
+        run: |
+          corepack enable
+          npm_version=$(node -e "const fs=require('node:fs');const pkg=JSON.parse(fs.readFileSync('package.json','utf8'));const packageManager=pkg.packageManager||'';if(!packageManager.startsWith('npm@')){throw new Error('package.json packageManager must be set to npm@<version>');}process.stdout.write(packageManager.slice(4));")
+          corepack prepare "npm@$npm_version" --activate
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate runtime
+        run: npm run env:check
+
+      - name: Determine changed packages
+        id: packages
+        run: |
+          base_ref="${{ github.base_ref }}"
+          git fetch --no-tags origin "$base_ref" --depth=1
+
+          changed_files=$(git diff --name-only "origin/$base_ref"...HEAD)
+          changed_packages=$(printf '%s\n' "$changed_files" | awk -F/ '/^packages\// {print $2}' | grep -v '^$' | sort -u)
+
+          if [ -z "$changed_packages" ]; then
+            echo "has_packages=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          {
+            echo "has_packages=true"
+            echo "package_list<<EOF"
+            printf '%s\n' "$changed_packages"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Run package pipeline
+        if: steps.packages.outputs.has_packages == 'true'
+        env:
+          PACKAGE_LIST: ${{ steps.packages.outputs.package_list }}
+        run: |
+          set -euo pipefail
+
+          while IFS= read -r pkg; do
+            [ -z "$pkg" ] && continue
+            echo "Running checks for package: $pkg"
+
+            npm run package:validate -- --package "$pkg"
+            npm run package:build -- --package "$pkg"
+
+            version=$(node -e "const fs=require('node:fs');const manifest=JSON.parse(fs.readFileSync('packages/' + process.argv[1] + '/versions/manifest.json','utf8'));process.stdout.write(manifest.latest);" "$pkg")
+
+            npm run package:validate-artifacts -- --package "$pkg" --version "$version"
+          done <<< "$PACKAGE_LIST"
+
+      - name: Skip when no package directory changed
+        if: steps.packages.outputs.has_packages != 'true'
+        run: echo "No package directories changed; package pipeline skipped."

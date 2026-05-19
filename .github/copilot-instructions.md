@@ -60,6 +60,32 @@ directly modifies package submission requirements.
 Run `npm run lint:md` before committing. If local git hooks are installed, the
 pre-commit hook may also run this check.
 
+## Copilot Runtime Environment
+
+Copilot tasks in this repository MUST use the pinned runtime below to avoid
+tooling drift.
+
+- Node.js: `24.15.0` (see `.nvmrc`)
+- npm: `11.12.1` (see `package.json` `packageManager`)
+
+Before running package or review tasks, execute:
+
+1. `corepack enable`
+2. `corepack prepare npm@11.12.1 --activate`
+3. `npm ci`
+4. `npm run env:check`
+
+For review tasks, run:
+
+1. `npm run lint:md`
+2. `npm run typecheck`
+
+For package tasks, run in order:
+
+1. `npm run package:validate -- --package <id>`
+2. `npm run package:build -- --package <id>`
+3. `npm run package:validate-artifacts -- --package <id> --version <version>`
+
 ## Contribution
 
 Open an issue using `.github/ISSUE_TEMPLATE/` forms before any change.
