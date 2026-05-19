@@ -176,7 +176,7 @@ artifacts.
       category: 'general',
       estimateCost: {
         estimatedCost: 1,
-        band: 'medium',
+        band: 'moderate',
       },
     };
   }
