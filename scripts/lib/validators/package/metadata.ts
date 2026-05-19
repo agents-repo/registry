@@ -148,13 +148,14 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
   if (
     cost['estimatedCost'] !== undefined &&
     (typeof cost['estimatedCost'] !== 'number' ||
-      Number.isNaN(cost['estimatedCost']) ||
-      cost['estimatedCost'] < 0)
+      !Number.isFinite(cost['estimatedCost']) ||
+      cost['estimatedCost'] < 1 ||
+      cost['estimatedCost'] > 10)
   ) {
     issues.push(
       err(
         'ERR_METADATA_INVALID',
-        'estimateOverallCost.estimatedCost must be a non-negative number when provided',
+        'estimateOverallCost.estimatedCost must be a finite number between 1 and 10 when provided',
       ),
     );
   }

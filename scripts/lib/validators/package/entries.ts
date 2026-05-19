@@ -36,9 +36,17 @@ function validateEntryMetadataRequiredFields(
     issues.push(err('ERR_METADATA_INVALID', `${context}: estimateCost must be an object`));
   } else {
     const cost = estimateCost as Record<string, unknown>;
-    if (typeof cost['estimatedCost'] !== 'number' || Number.isNaN(cost['estimatedCost'])) {
+    if (
+      typeof cost['estimatedCost'] !== 'number' ||
+      !Number.isFinite(cost['estimatedCost']) ||
+      cost['estimatedCost'] < 1 ||
+      cost['estimatedCost'] > 10
+    ) {
       issues.push(
-        err('ERR_METADATA_INVALID', `${context}: estimateCost.estimatedCost must be a number`),
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: estimateCost.estimatedCost must be a finite number between 1 and 10`,
+        ),
       );
     }
     if (!isCostBand(cost['band'])) {
