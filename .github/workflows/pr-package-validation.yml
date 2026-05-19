@@ -60,7 +60,11 @@ jobs:
 
       - name: Run package pipeline
         if: steps.packages.outputs.has_packages == 'true'
+        env:
+          PACKAGE_LIST: ${{ steps.packages.outputs.package_list }}
         run: |
+          set -euo pipefail
+
           while IFS= read -r pkg; do
             [ -z "$pkg" ] && continue
             echo "Running checks for package: $pkg"
@@ -71,9 +75,7 @@ jobs:
             version=$(node -e "const fs=require('node:fs');const manifest=JSON.parse(fs.readFileSync('packages/' + process.argv[1] + '/versions/manifest.json','utf8'));process.stdout.write(manifest.latest);" "$pkg")
 
             npm run package:validate-artifacts -- --package "$pkg" --version "$version"
-          done <<'EOF'
-          ${{ steps.packages.outputs.package_list }}
-          EOF
+          done <<< "$PACKAGE_LIST"
 
       - name: Skip when no package directory changed
         if: steps.packages.outputs.has_packages != 'true'
