@@ -28,7 +28,11 @@ function validateEntryMetadataRequiredFields(
   }
 
   const estimateCost = md['estimateCost'];
-  if (typeof estimateCost !== 'object' || estimateCost === null) {
+  if (
+    typeof estimateCost !== 'object' ||
+    estimateCost === null ||
+    Array.isArray(estimateCost)
+  ) {
     issues.push(err('ERR_METADATA_INVALID', `${context}: estimateCost must be an object`));
   } else {
     const cost = estimateCost as Record<string, unknown>;
