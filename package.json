@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Tooling and validation scripts for the Copilot Agents Registry.",
   "scripts": {
+    "env:check": "tsx scripts/validate-env.ts",
     "package:validate": "tsx scripts/package-validate.ts",
     "package:build": "tsx scripts/package-build.ts",
     "package:validate-artifacts": "tsx scripts/package-validate-artifacts.ts",
@@ -14,9 +15,9 @@
     "typecheck": "tsc --noEmit"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=24.15.0 <25"
   },
-  "packageManager": "npm@10.5.0",
+  "packageManager": "npm@11.12.1",
   "devDependencies": {
     "@types/adm-zip": "^0.5.7",
     "@types/node": "^20.0.0",

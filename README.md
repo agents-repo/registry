@@ -18,6 +18,28 @@ Registry responsibilities:
 This repository is intentionally data-first and specification-first.
 Runtime logic is out of scope for this initial baseline.
 
+## Development Environment
+
+Use the pinned runtime to keep local development, Copilot tasks, and CI aligned.
+
+### Runtime pins
+
+- Node.js: `24.15.0` (see `.nvmrc` and `.node-version`)
+- npm: `11.12.1` (see `packageManager` in `package.json`)
+
+### Setup
+
+```bash
+nvm use
+corepack enable
+corepack prepare npm@11.12.1 --activate
+npm ci
+npm run env:check
+```
+
+If you do not use `nvm`, install Node `24.15.0` manually and then run the
+same Corepack and npm commands.
+
 ## Repository Structure
 
 ```text
@@ -70,6 +92,13 @@ npm run package:validate-artifacts -- --package <id>
 
 Scripts are intentionally single-responsibility. They do not chain each other;
 orchestration is performed externally (for example by CI or AI agents).
+
+### PR and Copilot checks
+
+- PR baseline checks run markdown linting and typecheck with pinned runtime.
+- Package PR checks run package validate/build/validate-artifacts for changed
+    package directories.
+- Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
 
 ### Overwrite protection
 
