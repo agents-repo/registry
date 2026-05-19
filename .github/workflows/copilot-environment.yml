@@ -20,7 +20,15 @@ jobs:
       - name: Activate pinned npm
         run: |
           corepack enable
-          corepack prepare npm@11.12.1 --activate
+          PACKAGE_MANAGER="$(node -p "require('./package.json').packageManager")"
+          case "$PACKAGE_MANAGER" in
+            npm@*) ;;
+            *)
+              echo "Expected package.json packageManager to be an npm@... value, got: $PACKAGE_MANAGER"
+              exit 1
+              ;;
+          esac
+          corepack prepare "$PACKAGE_MANAGER" --activate
 
       - name: Show runtime versions
         run: |
