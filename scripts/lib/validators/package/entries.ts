@@ -11,6 +11,7 @@ import { validateSchemaVersion } from './schema-version';
 import {
   ESTIMATED_COST_MIN,
   ESTIMATED_COST_MAX,
+  DESCRIPTION_MIN_LENGTH,
   DESCRIPTION_MAX_LENGTH,
   LICENSE,
   SCHEMA_FAMILY_AGENT,
@@ -19,9 +20,35 @@ import {
 
 function validateEntryMetadataRequiredFields(
   md: Record<string, unknown>,
+  stem: string,
   context: string,
   issues: ValidationIssue[],
 ): void {
+  if (typeof md['name'] !== 'string' || md['name'] !== stem) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `${context}: name must equal the entry stem "${stem}", got: ${JSON.stringify(md['name'])}`,
+      ),
+    );
+  }
+
+  if (
+    typeof md['description'] !== 'string' ||
+    md['description'].length < DESCRIPTION_MIN_LENGTH ||
+    md['description'].length > DESCRIPTION_MAX_LENGTH
+  ) {
+    issues.push(
+      err('ERR_METADATA_INVALID', `${context}: description must be a string of 1 to 300 characters`),
+    );
+  }
+
+  if (md['license'] !== LICENSE) {
+    issues.push(
+      err('ERR_METADATA_INVALID', `${context}: license must be "MIT", got: ${JSON.stringify(md['license'])}`),
+    );
+  }
+
   if (!isStatus(md['status'])) {
     issues.push(
       err(
@@ -150,7 +177,7 @@ function validateMetadataSidecar(
     errorCode: 'ERR_METADATA_INVALID',
   });
 
-  validateEntryMetadataRequiredFields(md, `${dirLabel}/${stem}.metadata.json`, issues);
+  validateEntryMetadataRequiredFields(md, stem, `${dirLabel}/${stem}.metadata.json`, issues);
 }
 
 function validateFrontmatter(
