@@ -117,7 +117,7 @@ Additional optional fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `estimateOverallCost.estimatedCost` | number | MAY be non-negative estimate |
+| `estimateOverallCost.estimatedCost` | number | MAY be a number in the range 1–10 inclusive |
 
 ### EstimateOverallCost Object Schema
 
