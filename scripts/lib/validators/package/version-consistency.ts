@@ -3,6 +3,12 @@ import path from 'node:path';
 import semver from 'semver';
 import { ValidationUtils } from '../../validation-utils';
 import type { ValidationIssue } from '../../types';
+import {
+  AGENT_FILE_EXT,
+  MANIFEST_FILENAME,
+  METADATA_FILENAME,
+  VERSIONS_DIR,
+} from '../../constants';
 import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import type { EntryVersion } from './entries';
@@ -12,7 +18,7 @@ export function validateMetadataVersionAgainstManifestLatest(
   metadata: unknown,
   issues: ValidationIssue[],
 ): void {
-  const manifestPath = path.join(packageDir, 'versions', 'manifest.json');
+  const manifestPath = path.join(packageDir, VERSIONS_DIR, MANIFEST_FILENAME);
   if (!fs.existsSync(manifestPath)) {
     return;
   }
@@ -38,7 +44,7 @@ export function validateMetadataVersionAgainstManifestLatest(
     issues.push(
       err(
         'ERR_METADATA_INVALID',
-        `metadata.json version "${metaVersion}" must be >= manifest latest "${manifestLatest}"`,
+        `${METADATA_FILENAME} version "${metaVersion}" must be >= ${MANIFEST_FILENAME} latest "${manifestLatest}"`,
       ),
     );
   }
@@ -58,7 +64,7 @@ export function validateSharedFrontmatterVersion(
     issues.push(
       err(
         'ERR_VALIDATION_FAILED',
-        `All .agent.md files must share one identical frontmatter version; found: ${Array.from(unique).join(', ')}`,
+        `All ${AGENT_FILE_EXT} files must share one identical frontmatter version; found: ${Array.from(unique).join(', ')}`,
       ),
     );
     return undefined;
@@ -76,7 +82,7 @@ export function validateFrontmatterVersionMatchesMetadata(
     return;
   }
 
-  const metadataPath = path.join(packageDir, 'metadata.json');
+  const metadataPath = path.join(packageDir, METADATA_FILENAME);
   if (!fs.existsSync(metadataPath)) {
     return;
   }
@@ -95,7 +101,7 @@ export function validateFrontmatterVersionMatchesMetadata(
     issues.push(
       err(
         'ERR_VALIDATION_FAILED',
-        `Frontmatter version "${sharedFrontmatterVersion}" in .agent.md files does not match metadata.json version "${metadataVersion}"`,
+        `Frontmatter version "${sharedFrontmatterVersion}" in ${AGENT_FILE_EXT} files does not match ${METADATA_FILENAME} version "${metadataVersion}"`,
       ),
     );
   }

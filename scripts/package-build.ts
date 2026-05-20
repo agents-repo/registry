@@ -5,18 +5,19 @@
  * Usage:
  *   npm run package:build -- --package <id> [--force-rebuild]
  *
- * This script is the SOLE authorized writer for versions/ artifacts.
+ * This script is the SOLE authorized writer for versioned snapshot artifacts.
  * Contributors and AI agents MUST NOT manually create or modify files
- * under versions/. See specs/package-format.md and specs/versioning-rules.md.
+ * under the versions directory. See specs/package-format.md and
+ * specs/versioning-rules.md.
  *
  * Workflow:
  *   1. Run preflight validation equivalent to package:validate.
  *   2. Read target version and enforce overwrite-protection rules.
  *   3. Build the deployment ZIP and source archive.
  *   4. Compute SHA-256 checksums.
- *   5. Write the version snapshot to versions/<version>/.
- *   6. Upsert the manifest at versions/manifest.json.
- *   7. Update packages/index.json.
+ *   5. Write the version snapshot to the target version directory.
+ *   6. Upsert the manifest in the versions directory.
+ *   7. Update the package index file.
  *
  * Exits 0 on success, non-zero on failure.
  */
@@ -146,7 +147,7 @@ async function main(): Promise<void> {
   } catch (error) {
     rollbackVersionDirectory(versionDir);
 
-    // Attempt to restore old index.json if it was overwritten
+    // Attempt to restore the previous package index file if it was overwritten
     const indexPath = path.join(repoRoot, 'packages', INDEX_FILENAME);
     warnIfIndexMayBeInconsistent(indexPath, packageId);
 

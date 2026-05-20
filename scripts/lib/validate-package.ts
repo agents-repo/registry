@@ -51,7 +51,7 @@ export function validatePackage(
     return report;
   }
 
-  // 2. metadata.json
+  // 2. Package metadata
   const metadata = loadPackageMetadata(packageDir, issues);
   if (metadata !== null) {
     validateMetadata(metadata, packageId, issues);
