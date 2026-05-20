@@ -1,3 +1,34 @@
+import { STATUS_VALUES, COST_BANDS, PACKAGE_COST_BANDS } from './constants';
+export { STATUS_VALUES, COST_BANDS, PACKAGE_COST_BANDS };
+
+// Derive types from constants to eliminate duplication
+export type StatusValue = typeof STATUS_VALUES[number];
+export type CostBand = typeof COST_BANDS[number];
+export type PackageCostBand = typeof PACKAGE_COST_BANDS[number];
+
+// Type guards
+export function isStatus(value: unknown): value is StatusValue {
+  return STATUS_VALUES.includes(value as any);
+}
+
+export function isCostBand(value: unknown): value is CostBand {
+  return COST_BANDS.includes(value as any);
+}
+
+export function isPackageCostBand(value: unknown): value is PackageCostBand {
+  return PACKAGE_COST_BANDS.includes(value as any);
+}
+
+export interface EstimateCost {
+  estimatedCost: number;
+  band: CostBand;
+}
+
+export interface EstimateOverallCost {
+  estimatedCost?: number;
+  band: PackageCostBand;
+}
+
 export interface PackageMetadata {
   schemaVersion: string;
   name: string;
@@ -10,6 +41,11 @@ export interface PackageMetadata {
   createdAt: string;
   updatedAt: string;
   version: string;
+  status: StatusValue;
+  category: string;
+  estimateOverallCost: EstimateOverallCost;
+  quickstart?: string;
+  customAttributes?: Record<string, unknown>;
   [key: string]: unknown;
 }
 
@@ -35,6 +71,10 @@ export interface PackageIndexEntry {
   description: string;
   latest: string;
   tags: string[];
+  status: StatusValue;
+  category: string;
+  estimateOverallCost: EstimateOverallCost;
+  quickstart?: string;
 }
 
 export interface PackageIndex {

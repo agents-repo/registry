@@ -10,12 +10,13 @@
  * under versions/. See specs/package-format.md and specs/versioning-rules.md.
  *
  * Workflow:
- *   1. Read target version and enforce overwrite-protection rules.
- *   2. Build the deployment ZIP and source archive.
- *   3. Compute SHA-256 checksums.
- *   4. Write the version snapshot to versions/<version>/.
- *   5. Upsert the manifest at versions/manifest.json.
- *   6. Update packages/index.json.
+ *   1. Run preflight validation equivalent to package:validate.
+ *   2. Read target version and enforce overwrite-protection rules.
+ *   3. Build the deployment ZIP and source archive.
+ *   4. Compute SHA-256 checksums.
+ *   5. Write the version snapshot to versions/<version>/.
+ *   6. Upsert the manifest at versions/manifest.json.
+ *   7. Update packages/index.json.
  *
  * Exits 0 on success, non-zero on failure.
  */
@@ -26,9 +27,11 @@ import { rollbackVersionDirectory, warnIfIndexMayBeInconsistent } from './lib/bu
 import { updateManifestAndIndexWithRollback } from './lib/build/registry-sync';
 import { prepareVersionSnapshot } from './lib/build/snapshot-writer';
 import { hasFlag, parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
+import { printValidationIssues } from './lib/cli/reporting';
 import { ErrorCode, PackageError } from './lib/errors';
 import { GitContext } from './lib/git';
 import { Package } from './lib/package';
+import { PackageValidator } from './lib/validate-package';
 import { ValidationUtils } from './lib/validation-utils';
 import { ZipBuilder } from './lib/zip-builder';
 import { Checksum } from './lib/checksum';
@@ -44,8 +47,30 @@ async function main(): Promise<void> {
   const { repoRoot, packagesDir } = resolveScriptPaths(import.meta.url);
   const pkg = new Package(packageId, packagesDir);
 
-  // Step 1: Read metadata to get target version
+  // Step 1: Run preflight validation
+  console.log(`[1/7] Running preflight validation`);
+  const report = new PackageValidator(packageId, packagesDir).validate();
+  printValidationIssues(report);
+  if (!report.passed) {
+    throw new PackageError(
+      ErrorCode.ERR_VALIDATION_FAILED,
+      `Preflight validation failed for package: ${packageId} — ${report.errors.length} error(s)`,
+    );
+  }
+  console.log(`[1/7] Preflight passed`);
+
+  // Step 2: Read metadata to get target version, then re-validate the exact
+  // on-disk package state before proceeding with the build.
   const metadata = pkg.loadMetadata();
+  const postLoadReport = new PackageValidator(packageId, packagesDir).validate();
+  printValidationIssues(postLoadReport);
+  if (!postLoadReport.passed) {
+    throw new PackageError(
+      ErrorCode.ERR_VALIDATION_FAILED,
+      `Package changed after preflight validation for package: ${packageId} — ${postLoadReport.errors.length} error(s)`,
+    );
+  }
+
   const version = metadata.version;
   if (!ValidationUtils.isReleaseVersion(version)) {
     throw new PackageError(
@@ -53,9 +78,9 @@ async function main(): Promise<void> {
       `metadata.json version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(version)}`,
     );
   }
-  console.log(`[1/6] Target version: ${version}`);
+  console.log(`[2/7] Target version: ${version}`);
 
-  // Step 2: Overwrite-protection checks
+  // Step 3: Overwrite-protection checks
   const versionDir = pkg.versionDir(version);
   const versionExists = fs.existsSync(versionDir);
   const git = new GitContext();
@@ -71,7 +96,7 @@ async function main(): Promise<void> {
         );
       }
       console.log(
-        `[2/6] --force-rebuild on branch "${branch}" (detected from ${source}): overwriting existing version "${version}"`,
+        `[3/7] --force-rebuild on branch "${branch}" (detected from ${source}): overwriting existing version "${version}"`,
       );
       fs.rmSync(versionDir, { recursive: true, force: true });
     } else {
@@ -82,31 +107,31 @@ async function main(): Promise<void> {
       );
     }
   } else {
-    console.log(`[2/6] Overwrite check passed (new version)`);
+    console.log(`[3/7] Overwrite check passed (new version)`);
   }
 
-  // Step 3: Create version snapshot directory structure
-  console.log(`[3/6] Building version snapshot for ${version}`);
+  // Step 4: Create version snapshot directory structure
+  console.log(`[4/7] Building version snapshot for ${version}`);
   const { deployZipPath, srcZipPath } = prepareVersionSnapshot(pkg, versionDir, version);
 
   try {
-    // Step 4: Build deployment ZIP
-    console.log(`[4/6] Building deployment ZIP: ${version}.zip`);
+    // Step 5: Build deployment ZIP
+    console.log(`[5/7] Building deployment ZIP: ${version}.zip`);
     const zipBuilder = new ZipBuilder(pkg.packageDir, version);
     zipBuilder.buildDeploymentZip(deployZipPath);
 
     // Build source archive
-    console.log(`[5/6] Building source archive: ${version}-src.zip`);
+    console.log(`[6/7] Building source archive: ${version}-src.zip`);
     zipBuilder.buildSourceZip(srcZipPath);
 
-    // Step 6: Compute checksums
+    // Step 7: Compute checksums and update registry state
     const deployZipSha256 = Checksum.sha256(deployZipPath);
     const srcZipSha256 = Checksum.sha256(srcZipPath);
     console.log(`       deploy sha256: ${deployZipSha256}`);
     console.log(`       src    sha256: ${srcZipSha256}`);
 
     // Prepare manifest update with rollback support
-    console.log(`[6/6] Updating versions/manifest.json and packages/index.json`);
+    console.log(`[7/7] Updating versions/manifest.json and packages/index.json`);
     const indexPath = path.join(repoRoot, 'packages', 'index.json');
     updateManifestAndIndexWithRollback({
       packageId,

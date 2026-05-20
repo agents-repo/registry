@@ -130,11 +130,16 @@ body:
     attributes:
       label: Release metadata
       description: >-
-        Provide required package metadata schemaVersion and timestamps from
-        metadata.json, plus the required top-level manifest fields and the
-        initial version entry artifact details.
+        Provide required package metadata fields from metadata.json, plus the
+        required top-level manifest fields and the initial version entry
+        artifact details. See CONTRIBUTING.md "Submitted package checklist"
+        and specs/metadata-schema.md for complete requirements.
       placeholder: |
         - metadata.schemaVersion: <supported version from specs/schema-versions.json>
+        - metadata.status: <active|deprecated|archived|yanked>
+        - metadata.category: <non-empty string>
+        - metadata.estimateOverallCost.band: <minimal|low|moderate|high|critical|mixed>
+        - metadata.estimateOverallCost.estimatedCost: <optional integer 1-10>
         - metadata.createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
         - metadata.updatedAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
         - manifest.schemaVersion: <supported version from specs/schema-versions.json>

@@ -5,6 +5,7 @@ import type { ParsedArgs } from './args';
 import { requireArgValue } from './args';
 import type { Template } from './templates';
 import { resolveTemplate } from './templates';
+import { DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH, TAGS_MAX_COUNT, ID_PATTERN } from '../constants';
 
 export interface CreationRequest {
   packageId: string;
@@ -17,7 +18,7 @@ export interface CreationRequest {
 export type FailFn = (message: string) => never;
 
 function isValidPackageId(id: string): boolean {
-  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(id);
+  return ID_PATTERN.test(id);
 }
 
 function packageIdToName(packageId: string): string {
@@ -28,13 +29,13 @@ function packageIdToName(packageId: string): string {
 }
 
 function validateDescription(description: string, fail: FailFn): void {
-  if (description.length < 1 || description.length > 300) {
+  if (description.length < DESCRIPTION_MIN_LENGTH || description.length > DESCRIPTION_MAX_LENGTH) {
     fail('Description must be 1-300 characters');
   }
 }
 
 function validateTags(tags: string[], fail: FailFn): void {
-  if (tags.length > 20) {
+  if (tags.length > TAGS_MAX_COUNT) {
     fail('Maximum 20 tags allowed');
   }
 }

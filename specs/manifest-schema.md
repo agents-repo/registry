@@ -15,7 +15,7 @@ release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | manifest schemaVersion | current | Initial entry |
+| `1.0.0` | manifest schemaVersion | current | Initial release |
 
 Tooling MUST reject manifests whose `schemaVersion` is not in the table above
 unless it explicitly supports a newer schema version.

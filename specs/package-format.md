@@ -15,7 +15,7 @@ a JSON `schemaVersion` field.
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | spec document version | current | Initial entry |
+| `1.0.0` | spec document version | current | Initial release |
 
 Tooling and processes that validate package format SHOULD use the latest
 supported spec document version in this table.
@@ -31,19 +31,20 @@ All package directories MUST exist under `packages/`.
 Contributors and AI agents MUST follow this pipeline to produce a release:
 
 1. Author or update source files under the package root
-   (`metadata.json`, `agents/`, `flows/`). These are the only files
-   contributors and AI agents are authorized to write directly.
-2. Run `npm run package:validate -- --package <id>` to confirm the working state
-   passes all preflight checks.
-3. Run `npm run package:build -- --package <id>` to generate the version snapshot.
-  This command builds both ZIP artifacts, computes SHA-256 checksums, writes
-  `versions/<version>/`, updates `versions/manifest.json`, and updates
+  (`metadata.json`, `README.md` (optional), `agents/`, `flows/`).
+  These are the only files contributors and AI agents are authorized to write
+  directly.
+2. Run `npm run package:build -- --package <id>` to generate the version
+  snapshot. This command automatically runs preflight validation equivalent to
+  `package:validate`, builds both ZIP artifacts, computes SHA-256 checksums,
+  writes `versions/<version>/`, updates `versions/manifest.json`, and updates
   `packages/index.json`.
-4. Run `npm run package:validate-artifacts -- --package <id>` to validate
+3. Run `npm run package:validate-artifacts -- --package <id>` to validate
    generated artifacts for structural and security issues.
 
-The scripts in this pipeline SHOULD remain single-responsibility and MUST NOT
-implicitly invoke another pipeline step.
+The scripts in this pipeline SHOULD remain single-responsibility.
+They MUST NOT invoke another pipeline script implicitly.
+Internal shared validation logic within `package-build` is permitted.
 
 Contributors and AI agents MUST NOT manually create or modify any file under
 `versions/`. The `package-build` script is the sole authorized writer for all
@@ -67,6 +68,7 @@ content under `versions/`.
 packages/
     <package-id>/
         metadata.json
+        README.md (optional)
         agents/
             <agent-id>.agent.md
             <agent-id>.metadata.json
@@ -96,6 +98,9 @@ Package constraints:
 - `versions/` MUST exist and contain at least one version folder.
 - `versions/manifest.json` MUST exist.
 - A package MUST contain at least one entry in `agents/` or `flows/`.
+- `README.md` MAY be present at the package root.
+- When `README.md` is present, package metadata `quickstart` SHOULD point to the
+  package README URL.
 - `agents/` MAY be absent if the package contains no agents.
 - `flows/` MAY be absent if the package contains no flows.
 
@@ -202,6 +207,12 @@ its version snapshot folder at `versions/<version>/`.
   in `specs/index-schema.md`.
 - When a package is added, updated, or a new version is published,
   `packages/index.json` MUST be updated accordingly.
+- For package metadata, index entries MUST
+  project package `status`, `category`, and `estimateOverallCost.band`.
+- For package metadata, index entries MAY
+  project `estimateOverallCost.estimatedCost` and `quickstart`.
+- Package detail-only fields (for example `customAttributes`) MUST NOT
+  be projected into `packages/index.json`.
 
 ## Determinism Rules
 
@@ -215,6 +226,7 @@ its version snapshot folder at `versions/<version>/`.
 ```text
 packages/my-package/
     metadata.json
+    README.md (optional)
     agents/
         my-agent.agent.md
         my-agent.metadata.json
@@ -234,6 +246,7 @@ packages/my-package/
 ```text
 packages/my-package/
     metadata.json
+    README.md (optional)
     agents/
         planner.agent.md
         planner.metadata.json

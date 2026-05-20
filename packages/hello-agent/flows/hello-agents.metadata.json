@@ -1,5 +1,12 @@
 {
     "schemaVersion": "1.0.0",
     "name": "hello-agents",
-    "description": "Invokes hello-agent and hello-again in sequence"
+    "description": "Invokes hello-agent and hello-again in sequence",
+    "license": "MIT",
+    "status": "active",
+    "category": "assistant",
+    "estimateCost": {
+        "estimatedCost": 1,
+        "band": "minimal"
+    }
 }

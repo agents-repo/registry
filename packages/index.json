@@ -1,6 +1,6 @@
 {
     "schemaVersion": "1.0.0",
-    "updatedAt": "2026-05-16T02:48:11.942Z",
+    "updatedAt": "2026-05-20T05:19:47.976Z",
     "packages": [
         {
             "id": "hello-agent",
@@ -10,7 +10,14 @@
             "tags": [
                 "agent",
                 "hello"
-            ]
+            ],
+            "status": "active",
+            "category": "assistant",
+            "estimateOverallCost": {
+                "estimatedCost": 1,
+                "band": "low"
+            },
+            "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md"
         }
     ]
 }

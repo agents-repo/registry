@@ -15,7 +15,7 @@ define a JSON `schemaVersion` field.
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | spec document version | current | Initial entry |
+| `1.0.0` | spec document version | current | Initial release |
 
 Tooling and processes that enforce versioning behavior SHOULD use the latest
 supported spec document version in this table.
@@ -49,9 +49,12 @@ supported spec document version in this table.
 - Contributors and AI agents MUST NOT manually create or modify any file
   under `versions/`.
 - The mandatory release pipeline is:
-  `package:validate` → `package:build` → `package:validate-artifacts`.
-- Pipeline orchestration MUST be explicit (for example CI jobs or AI agents);
-  scripts MUST NOT implicitly invoke other pipeline steps.
+  `package:build` → `package:validate-artifacts`.
+- The `package-build` script MUST run preflight validation equivalent to
+  `package:validate` before building artifacts.
+- Pipeline orchestration MUST be explicit (for example CI jobs or AI agents).
+- Scripts MUST NOT invoke other pipeline scripts implicitly.
+- Internal shared validation logic within `package-build` is permitted.
 
 ## Version Overwrite Policy
 
@@ -168,6 +171,8 @@ supported spec document version in this table.
 
 ## Deprecation Rules
 
+- Lifecycle semantics for `active`, `deprecated`, `archived`, and `yanked`
+  statuses are defined in `specs/metadata-schema.md`.
 - Deprecated versions SHOULD remain available for reproducibility.
 - Deprecation status SHOULD be described in
   release notes or package documentation.

@@ -17,7 +17,7 @@ package release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | package metadata schemaVersion | current | Initial entry |
+| `1.0.0` | package metadata schemaVersion | current | Includes WebApp fields |
 
 Tooling MUST reject package metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
@@ -64,6 +64,44 @@ Lifecycle enforcement:
 | `updatedAt` | string | RFC 3339 timestamp |
 | `version` | string | Semver (`MAJOR.MINOR.PATCH`); current release target |
 
+### Status Lifecycle Semantics
+
+The `status` field communicates lifecycle meaning for package, agent, and flow
+metadata. Consumers MUST interpret these values consistently.
+
+| Status | Semantic Meaning | Consumer Behavior |
+| --- | --- | --- |
+| `active` | Maintained and recommended for new use. | Included by default. |
+| `deprecated` | Available but discouraged. | Included with warning. |
+| `archived` | Historical/repro use only. | Not recommended by default. |
+| `yanked` | Withdrawn for serious concerns. | Excluded by default. |
+
+Status handling requirements:
+
+- Producers MUST emit one valid status value for each package, agent, and flow
+  metadata document.
+- Consumers MUST preserve the exact status value during reads/writes and
+  projections.
+- Status semantics apply uniformly to package metadata, agent metadata, and flow
+  metadata.
+- Consumers SHOULD include `active` in default discovery and recommendations.
+- Consumers SHOULD include `deprecated` in default discovery and SHOULD surface
+  a warning.
+- Migration guidance for `deprecated` SHOULD be provided in package
+  documentation when applicable.
+- Consumers MAY include `archived` in discovery but SHOULD NOT recommend it by
+  default.
+- Consumers MUST exclude `yanked` from default listings and recommendations
+  unless explicitly requested by ID or equivalent direct lookup.
+
+Additional required fields:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `status` | string | MUST be `active`, `deprecated`, `archived`, or `yanked` |
+| `category` | string | Non-empty string |
+| `estimateOverallCost` | object | MUST follow `EstimateOverallCost` schema |
+
 ### Optional Fields
 
 | Field | Type | Constraints |
@@ -72,6 +110,21 @@ Lifecycle enforcement:
 | `compatibility` | object | Tooling and runtime compatibility |
 | `documentation` | string | HTTPS URL |
 | `keywords` | array of string | Additional searchable terms |
+| `quickstart` | string | HTTPS URL |
+| `customAttributes` | object | Arbitrary key-value map for detail rendering |
+
+Additional optional fields:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `estimateOverallCost.estimatedCost` | integer | MAY be an integer in the range 1–10 inclusive |
+
+### EstimateOverallCost Object Schema
+
+| Field | Type | Required | Constraints |
+| --- | --- | --- | --- |
+| `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` |
+| `estimatedCost` | integer | no | Aggregate relative effort as an integer on a 1–10 scale (not tokens or credits) |
 
 ### Validation Rules
 
@@ -83,6 +136,13 @@ Lifecycle enforcement:
 - `version` MUST be greater than or equal to `versions/manifest.json`
   `latest` when the manifest exists for the package.
 - Arrays MUST NOT contain duplicate values.
+- `status`, `category`, and `estimateOverallCost.band` are required.
+- `estimateOverallCost.band` MUST be one of `minimal`, `low`, `moderate`,
+  `high`, `critical`, or `mixed`.
+- `estimateOverallCost.estimatedCost`, when present, MUST be an integer in the
+  range 1–10 inclusive.
+- `quickstart`, when present, MUST be an HTTPS URL.
+- `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix for extensions.
 
 ### Canonical Example
@@ -99,7 +159,13 @@ Lifecycle enforcement:
     "tags": ["productivity", "review", "automation"],
     "createdAt": "2026-05-02T00:00:00Z",
     "updatedAt": "2026-05-02T00:00:00Z",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/my-package#quickstart"
 }
 ```
 
@@ -112,7 +178,7 @@ package release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | agent metadata schemaVersion | current | Initial entry |
+| `1.0.0` | agent metadata schemaVersion | current | Includes WebApp fields |
 
 Tooling MUST reject agent metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
@@ -144,6 +210,14 @@ Lifecycle enforcement:
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
 
+Additional required fields:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `status` | string | MUST be `active`, `deprecated`, `archived`, or `yanked` |
+| `category` | string | Non-empty string |
+| `estimateCost` | object | MUST follow `EstimateCost` schema |
+
 ### Optional Fields
 
 | Field | Type | Constraints |
@@ -151,6 +225,28 @@ Lifecycle enforcement:
 | `tools` | array of string | Declared tool capabilities |
 | `inputs` | array of `Contract` | Input contracts; see `agent-format.md` |
 | `outputs` | array of `Contract` | Output contracts; see `agent-format.md` |
+| `customAttributes` | object | Arbitrary key-value map for detail rendering |
+
+### EstimateCost Object Schema (Shared: Agent and Flow)
+
+This object schema applies to both agent metadata `estimateCost` and
+flow metadata `estimateCost`.
+
+| Field | Type | Required | Constraints |
+| --- | --- | --- | --- |
+| `estimatedCost` | integer | yes | Relative effort as an integer on a 1–10 scale; see band ranges below |
+| `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, or `critical` |
+
+`estimatedCost` is a relative effort rating (integer 1–10). It is not denominated
+in tokens or API credits.
+
+| Band | `estimatedCost` Range |
+| --- | --- |
+| `minimal` | 1–2 |
+| `low` | 3–4 |
+| `moderate` | 5–6 |
+| `high` | 7–8 |
+| `critical` | 9–10 |
 
 ### Validation Rules
 
@@ -168,6 +264,11 @@ Lifecycle enforcement:
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
 - When `outputs` is present in both this file and
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
+- `status`, `category`, and `estimateCost` are required.
+- `estimateCost.estimatedCost` MUST be an integer in the range 1–10 inclusive.
+- `estimateCost.band` MUST be one of `minimal`, `low`, `moderate`, `high`,
+  or `critical`.
+- `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
 ### Canonical Example
@@ -178,6 +279,12 @@ Lifecycle enforcement:
     "name": "planner",
     "description": "Plans the steps to complete a PR review task.",
     "license": "MIT",
+    "status": "active",
+    "category": "automation",
+    "estimateCost": {
+      "estimatedCost": 5,
+      "band": "moderate"
+    },
     "tools": ["github", "filesystem"]
 }
 ```
@@ -191,7 +298,7 @@ package release version and not the spec document version (`1.0.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | flow metadata schemaVersion | current | Initial entry |
+| `1.0.0` | flow metadata schemaVersion | current | Includes WebApp fields |
 
 Tooling MUST reject flow metadata whose `schemaVersion` is not in the
 table above unless it explicitly supports a newer schema version.
@@ -223,6 +330,14 @@ Lifecycle enforcement:
 | `description` | string | 1 to 300 characters |
 | `license` | string | MUST be `MIT` |
 
+Additional required fields:
+
+| Field | Type | Constraints |
+| --- | --- | --- |
+| `status` | string | MUST be `active`, `deprecated`, `archived`, or `yanked` |
+| `category` | string | Non-empty string |
+| `estimateCost` | object | MUST follow `EstimateCost` schema |
+
 ### Optional Fields
 
 | Field | Type | Constraints |
@@ -230,6 +345,7 @@ Lifecycle enforcement:
 | `agents` | array of string | Agent IDs referenced in this flow |
 | `inputs` | array of `Contract` | Flow input contracts; see `flow-format.md` |
 | `outputs` | array of `Contract` | Flow outputs; see `flow-format.md` |
+| `customAttributes` | object | Arbitrary key-value map for detail rendering |
 
 ### Validation Rules
 
@@ -249,6 +365,11 @@ Lifecycle enforcement:
   `<flow-id>.agent.md` frontmatter, the values MUST be identical.
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
+- `status`, `category`, and `estimateCost` are required.
+- `estimateCost.estimatedCost` MUST be an integer in the range 1–10 inclusive.
+- `estimateCost.band` MUST be one of `minimal`, `low`, `moderate`, `high`,
+  or `critical`.
+- `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
 ### Canonical Example
@@ -259,6 +380,12 @@ Lifecycle enforcement:
     "name": "triage",
     "description": "Routes incoming issues to the appropriate agent.",
     "license": "MIT",
+    "status": "active",
+    "category": "automation",
+    "estimateCost": {
+      "estimatedCost": 7,
+      "band": "high"
+    },
     "agents": ["planner", "executor"]
 }
 ```
