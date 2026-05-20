@@ -89,13 +89,13 @@ export class SnapshotValidator {
 
     // 4. Manifest exists and contains this version
     if (!fs.existsSync(manifestPath)) {
-      issues.push(err('ERR_VALIDATION_FAILED', `versions/manifest.json not found`));
+      issues.push(err('ERR_VALIDATION_FAILED', `${VERSIONS_DIR}/${MANIFEST_FILENAME} not found`));
     } else {
       let manifest: Manifest;
       try {
         manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) as Manifest;
       } catch {
-        issues.push(err('ERR_VALIDATION_FAILED', `versions/manifest.json is not valid JSON`));
+        issues.push(err('ERR_VALIDATION_FAILED', `${VERSIONS_DIR}/${MANIFEST_FILENAME} is not valid JSON`));
         const { errors, warnings } = splitIssues(issues);
         return { packageId: this.packageId, errors, warnings, passed: errors.length === 0 };
       }
@@ -103,7 +103,7 @@ export class SnapshotValidator {
       issues.push(
         ...validateSchemaVersion(
           manifest.schemaVersion,
-          'versions/manifest.json',
+          `${VERSIONS_DIR}/${MANIFEST_FILENAME}`,
           'manifest',
           'ERR_VALIDATION_FAILED',
         ),
@@ -114,7 +114,7 @@ export class SnapshotValidator {
         issues.push(
           err(
             'ERR_VALIDATION_FAILED',
-            `Version "${this.version}" not found in manifest.json`,
+            `Version "${this.version}" not found in ${MANIFEST_FILENAME}`,
           ),
         );
       } else {
