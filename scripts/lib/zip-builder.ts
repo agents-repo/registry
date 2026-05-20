@@ -25,7 +25,7 @@ export class ZipBuilder {
           if (seenEntries.has(entryName)) {
             throw new PackageError(
               ErrorCode.ERR_ZIP_COLLISION,
-              `Collision building deployment ZIP: \"${entryName}\" already exists`,
+              `Collision building deployment ZIP: "${entryName}" already exists`,
             );
           }
           seenEntries.add(entryName);
@@ -43,7 +43,7 @@ export class ZipBuilder {
           if (seenEntries.has(entryName)) {
             throw new PackageError(
               ErrorCode.ERR_ZIP_COLLISION,
-              `Collision building deployment ZIP: \"${entryName}\" already exists`,
+              `Collision building deployment ZIP: "${entryName}" already exists`,
             );
           }
           seenEntries.add(entryName);

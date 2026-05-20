@@ -39,5 +39,8 @@ jobs:
       - name: Lint markdown
         run: npm run lint:md
 
+      - name: Lint Sonar rules
+        run: npm run lint:sonar
+
       - name: Typecheck
         run: npm run typecheck
