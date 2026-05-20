@@ -184,8 +184,30 @@ function validateEntryMetadataOptionalFields(
   }
 }
 
+function normalizeFrontmatterSyncValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeFrontmatterSyncValue(item));
+  }
+
+  if (value && typeof value === 'object') {
+    const record = value as Record<string, unknown>;
+    const normalized: Record<string, unknown> = {};
+
+    for (const key of Object.keys(record).sort()) {
+      normalized[key] = normalizeFrontmatterSyncValue(record[key]);
+    }
+
+    return normalized;
+  }
+
+  return value;
+}
+
 function valuesEqualForFrontmatterSync(left: unknown, right: unknown): boolean {
-  return JSON.stringify(left) === JSON.stringify(right);
+  return (
+    JSON.stringify(normalizeFrontmatterSyncValue(left)) ===
+    JSON.stringify(normalizeFrontmatterSyncValue(right))
+  );
 }
 
 function validateFrontmatterParity(
