@@ -25,11 +25,157 @@ export class SnapshotValidator {
     this.packagesDir = packagesDir;
   }
 
-  validate(): ValidationReport {
-    const issues: ValidationIssue[] = [];
+  private getPaths(): {
+    versionDir: string;
+    manifestPath: string;
+    deployZipPath: string;
+    srcZipPath: string;
+    snapshotMetaPath: string;
+  } {
     const packageDir = path.join(this.packagesDir, this.packageId);
     const versionDir = path.join(packageDir, VERSIONS_DIR, this.version);
-    const manifestPath = path.join(packageDir, VERSIONS_DIR, MANIFEST_FILENAME);
+
+    return {
+      versionDir,
+      manifestPath: path.join(packageDir, VERSIONS_DIR, MANIFEST_FILENAME),
+      deployZipPath: path.join(versionDir, `${this.version}.zip`),
+      srcZipPath: path.join(versionDir, `${this.version}${SOURCE_ARCHIVE_SUFFIX}`),
+      snapshotMetaPath: path.join(versionDir, METADATA_FILENAME),
+    };
+  }
+
+  private validateSnapshotMetadata(snapshotMetaPath: string, issues: ValidationIssue[]): void {
+    if (!fs.existsSync(snapshotMetaPath)) {
+      issues.push(err('ERR_VALIDATION_FAILED', `Missing snapshot ${METADATA_FILENAME}`));
+      return;
+    }
+
+    try {
+      const snapshotMeta = JSON.parse(fs.readFileSync(snapshotMetaPath, 'utf-8')) as Record<string, unknown>;
+      issues.push(...validateSchemaVersion(snapshotMeta['schemaVersion'], `Snapshot ${METADATA_FILENAME}`));
+    } catch {
+      issues.push(err('ERR_VALIDATION_FAILED', `Snapshot ${METADATA_FILENAME} is not valid JSON`));
+    }
+  }
+
+  private validateRequiredSnapshotFiles(
+    deployZipPath: string,
+    srcZipPath: string,
+    snapshotMetaPath: string,
+    issues: ValidationIssue[],
+  ): void {
+    if (!fs.existsSync(deployZipPath)) {
+      issues.push(err('ERR_VALIDATION_FAILED', `Missing deployment ZIP: ${this.version}.zip`));
+    }
+
+    if (!fs.existsSync(srcZipPath)) {
+      issues.push(err('ERR_VALIDATION_FAILED', `Missing source archive: ${this.version}${SOURCE_ARCHIVE_SUFFIX}`));
+    }
+
+    this.validateSnapshotMetadata(snapshotMetaPath, issues);
+  }
+
+  private validateVersionDirEntries(versionDir: string, issues: ValidationIssue[]): void {
+    const allowedTopLevelEntries = new Set([
+      METADATA_FILENAME,
+      `${this.version}.zip`,
+      `${this.version}${SOURCE_ARCHIVE_SUFFIX}`,
+      AGENTS_DIR,
+      FLOWS_DIR,
+    ]);
+
+    for (const entry of fs.readdirSync(versionDir)) {
+      if (allowedTopLevelEntries.has(entry)) {
+        continue;
+      }
+
+      issues.push(
+        err(
+          'ERR_MANUAL_MUTATION',
+          `Unexpected file in version snapshot directory: "${entry}" — only script-generated files are allowed`,
+        ),
+      );
+    }
+  }
+
+  private verifyManifestChecksums(
+    entry: Manifest['versions'][number],
+    deployZipPath: string,
+    srcZipPath: string,
+    issues: ValidationIssue[],
+  ): void {
+    if (fs.existsSync(deployZipPath)) {
+      const actualDeployHash = Checksum.sha256(deployZipPath);
+      if (actualDeployHash !== entry.sha256) {
+        issues.push(
+          err(
+            'ERR_CHECKSUM_MISMATCH',
+            `Deployment ZIP sha256 mismatch for version "${this.version}": ` +
+              `manifest has "${entry.sha256}", computed "${actualDeployHash}"`,
+          ),
+        );
+      }
+    }
+
+    if (fs.existsSync(srcZipPath)) {
+      const actualSrcHash = Checksum.sha256(srcZipPath);
+      if (actualSrcHash !== entry.srcSha256) {
+        issues.push(
+          err(
+            'ERR_CHECKSUM_MISMATCH',
+            `Source archive sha256 mismatch for version "${this.version}": ` +
+              `manifest has "${entry.srcSha256}", computed "${actualSrcHash}"`,
+          ),
+        );
+      }
+    }
+  }
+
+  private validateManifestAndChecksums(
+    manifestPath: string,
+    deployZipPath: string,
+    srcZipPath: string,
+    issues: ValidationIssue[],
+  ): void {
+    if (!fs.existsSync(manifestPath)) {
+      issues.push(err('ERR_VALIDATION_FAILED', `${VERSIONS_DIR}/${MANIFEST_FILENAME} not found`));
+      return;
+    }
+
+    let manifest: Manifest;
+    try {
+      manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) as Manifest;
+    } catch {
+      issues.push(err('ERR_VALIDATION_FAILED', `${VERSIONS_DIR}/${MANIFEST_FILENAME} is not valid JSON`));
+      return;
+    }
+
+    issues.push(
+      ...validateSchemaVersion(
+        manifest.schemaVersion,
+        `${VERSIONS_DIR}/${MANIFEST_FILENAME}`,
+        'manifest',
+        'ERR_VALIDATION_FAILED',
+      ),
+    );
+
+    const entry = manifest.versions.find((versionEntry) => versionEntry.version === this.version);
+    if (!entry) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `Version "${this.version}" not found in ${MANIFEST_FILENAME}`,
+        ),
+      );
+      return;
+    }
+
+    this.verifyManifestChecksums(entry, deployZipPath, srcZipPath, issues);
+  }
+
+  validate(): ValidationReport {
+    const issues: ValidationIssue[] = [];
+    const { versionDir, manifestPath, deployZipPath, srcZipPath, snapshotMetaPath } = this.getPaths();
 
     // 1. Version directory exists
     if (!fs.existsSync(versionDir)) {
@@ -46,106 +192,13 @@ export class SnapshotValidator {
       };
     }
 
-    const deployZipPath = path.join(versionDir, `${this.version}.zip`);
-    const srcZipPath = path.join(versionDir, `${this.version}${SOURCE_ARCHIVE_SUFFIX}`);
-    const snapshotMetaPath = path.join(versionDir, METADATA_FILENAME);
-
-    // 2. Expected files present
-    if (!fs.existsSync(deployZipPath)) {
-      issues.push(err('ERR_VALIDATION_FAILED', `Missing deployment ZIP: ${this.version}.zip`));
-    }
-    if (!fs.existsSync(srcZipPath)) {
-      issues.push(err('ERR_VALIDATION_FAILED', `Missing source archive: ${this.version}${SOURCE_ARCHIVE_SUFFIX}`));
-    }
-    if (!fs.existsSync(snapshotMetaPath)) {
-      issues.push(err('ERR_VALIDATION_FAILED', `Missing snapshot ${METADATA_FILENAME}`));
-    } else {
-      try {
-        const snapshotMeta = JSON.parse(fs.readFileSync(snapshotMetaPath, 'utf-8')) as Record<string, unknown>;
-        issues.push(...validateSchemaVersion(snapshotMeta['schemaVersion'], `Snapshot ${METADATA_FILENAME}`));
-      } catch {
-        issues.push(err('ERR_VALIDATION_FAILED', `Snapshot ${METADATA_FILENAME} is not valid JSON`));
-      }
-    }
+    this.validateRequiredSnapshotFiles(deployZipPath, srcZipPath, snapshotMetaPath, issues);
 
     // 3. No unexpected files in the version snapshot directory
-    const allowedTopLevelEntries = new Set([
-      METADATA_FILENAME,
-      `${this.version}.zip`,
-      `${this.version}${SOURCE_ARCHIVE_SUFFIX}`,
-      AGENTS_DIR,
-      FLOWS_DIR,
-    ]);
-    for (const entry of fs.readdirSync(versionDir)) {
-      if (!allowedTopLevelEntries.has(entry)) {
-        issues.push(
-          err(
-            'ERR_MANUAL_MUTATION',
-            `Unexpected file in version snapshot directory: "${entry}" — only script-generated files are allowed`,
-          ),
-        );
-      }
-    }
+    this.validateVersionDirEntries(versionDir, issues);
 
     // 4. Manifest exists and contains this version
-    if (!fs.existsSync(manifestPath)) {
-      issues.push(err('ERR_VALIDATION_FAILED', `${VERSIONS_DIR}/${MANIFEST_FILENAME} not found`));
-    } else {
-      let manifest: Manifest;
-      try {
-        manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) as Manifest;
-      } catch {
-        issues.push(err('ERR_VALIDATION_FAILED', `${VERSIONS_DIR}/${MANIFEST_FILENAME} is not valid JSON`));
-        const { errors, warnings } = splitIssues(issues);
-        return { packageId: this.packageId, errors, warnings, passed: errors.length === 0 };
-      }
-
-      issues.push(
-        ...validateSchemaVersion(
-          manifest.schemaVersion,
-          `${VERSIONS_DIR}/${MANIFEST_FILENAME}`,
-          'manifest',
-          'ERR_VALIDATION_FAILED',
-        ),
-      );
-
-      const entry = manifest.versions.find((v) => v.version === this.version);
-      if (!entry) {
-        issues.push(
-          err(
-            'ERR_VALIDATION_FAILED',
-            `Version "${this.version}" not found in ${MANIFEST_FILENAME}`,
-          ),
-        );
-      } else {
-        // 5. Checksum verification
-        if (fs.existsSync(deployZipPath)) {
-          const actualDeployHash = Checksum.sha256(deployZipPath);
-          if (actualDeployHash !== entry.sha256) {
-            issues.push(
-              err(
-                'ERR_CHECKSUM_MISMATCH',
-                `Deployment ZIP sha256 mismatch for version "${this.version}": ` +
-                  `manifest has "${entry.sha256}", computed "${actualDeployHash}"`,
-              ),
-            );
-          }
-        }
-
-        if (fs.existsSync(srcZipPath)) {
-          const actualSrcHash = Checksum.sha256(srcZipPath);
-          if (actualSrcHash !== entry.srcSha256) {
-            issues.push(
-              err(
-                'ERR_CHECKSUM_MISMATCH',
-                `Source archive sha256 mismatch for version "${this.version}": ` +
-                  `manifest has "${entry.srcSha256}", computed "${actualSrcHash}"`,
-              ),
-            );
-          }
-        }
-      }
-    }
+    this.validateManifestAndChecksums(manifestPath, deployZipPath, srcZipPath, issues);
 
     // 6. Deep deployment ZIP scan
     if (fs.existsSync(deployZipPath)) {

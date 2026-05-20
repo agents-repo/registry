@@ -78,10 +78,13 @@ export class SchemaVersionsService {
 
   private validateVersionList(label: string, versions: string[]): void {
     if (!Array.isArray(versions)) {
-      throw new Error(`${label} must be an array`);
+      throw new TypeError(`${label} must be an array`);
     }
     for (const version of versions) {
-      if (typeof version !== 'string' || !semver.valid(version)) {
+      if (typeof version !== 'string') {
+        throw new TypeError(`${label} contains non-string version: ${JSON.stringify(version)}`);
+      }
+      if (!semver.valid(version)) {
         throw new Error(`${label} contains invalid semver: ${JSON.stringify(version)}`);
       }
     }
@@ -89,7 +92,7 @@ export class SchemaVersionsService {
 
   private validateFamilyConfig(family: SchemaFamily, config: SchemaFamilyConfig): void {
     if (!config || typeof config !== 'object') {
-      throw new Error(`Missing schema family config: ${family}`);
+      throw new TypeError(`Missing schema family config: ${family}`);
     }
     if (!semver.valid(config.current)) {
       throw new Error(`schemas.${family}.current must be a valid semver`);

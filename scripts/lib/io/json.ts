@@ -16,5 +16,5 @@ export function writeJsonFile(filePath: string, value: unknown): void {
 }
 
 export function cloneJson<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
+  return structuredClone(value);
 }

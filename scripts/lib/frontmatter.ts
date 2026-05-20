@@ -4,7 +4,7 @@ export function parseFrontmatterData(content: string): Record<string, unknown> {
   try {
     const parsed = matter(content);
     if (typeof parsed.data === 'object' && parsed.data !== null && !Array.isArray(parsed.data)) {
-      return parsed.data as Record<string, unknown>;
+      return parsed.data;
     }
   } catch {
     return {};

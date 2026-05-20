@@ -103,7 +103,7 @@ export const DISALLOWED_ZIP_EXTENSIONS = new Set([
 // --- Deployment ZIP entry pattern ---
 
 const escapeRegexLiteral = (value: string): string =>
-  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\\$&`);
 
 const getAnchoredPatternBody = (pattern: RegExp, patternName: string): string => {
   const { source } = pattern;

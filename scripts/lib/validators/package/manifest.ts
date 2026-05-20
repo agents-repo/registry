@@ -6,6 +6,105 @@ import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
 import { SHA256_PATTERN, SCHEMA_FAMILY_MANIFEST, SOURCE_ARCHIVE_SUFFIX } from '../../constants';
 
+function addVersionUniquenessIssue(versionSet: Set<string>, ver: string, issues: ValidationIssue[]): void {
+  if (versionSet.has(ver)) {
+    issues.push(err('ERR_VALIDATION_FAILED', `manifest.json duplicate version entry: ${ver}`));
+  }
+  versionSet.add(ver);
+}
+
+function validateVersionEntryFields(e: Record<string, unknown>, ver: string, issues: ValidationIssue[]): void {
+  if (e['artifact'] !== `${ver}.zip`) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: artifact must be "${ver}.zip"`,
+      ),
+    );
+  }
+
+  if (e['srcArtifact'] !== `${ver}${SOURCE_ARCHIVE_SUFFIX}`) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: srcArtifact must be "${ver}${SOURCE_ARCHIVE_SUFFIX}"`,
+      ),
+    );
+  }
+
+  if (typeof e['sha256'] !== 'string' || !SHA256_PATTERN.test(e['sha256'])) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: sha256 must be 64 lowercase hex characters`,
+      ),
+    );
+  }
+
+  if (typeof e['srcSha256'] !== 'string' || !SHA256_PATTERN.test(e['srcSha256'])) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: srcSha256 must be 64 lowercase hex characters`,
+      ),
+    );
+  }
+
+  if (typeof e['createdAt'] !== 'string' || !ValidationUtils.isRfc3339(e['createdAt'])) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: createdAt must be an RFC 3339 timestamp`,
+      ),
+    );
+  }
+}
+
+function validateVersionEntry(
+  entry: unknown,
+  issues: ValidationIssue[],
+  versionSet: Set<string>,
+): void {
+  if (typeof entry !== 'object' || entry === null) {
+    issues.push(err('ERR_VALIDATION_FAILED', 'manifest.json versions entries must be objects'));
+    return;
+  }
+
+  const e = entry as Record<string, unknown>;
+  const ver = e['version'];
+
+  if (typeof ver !== 'string' || !ValidationUtils.isReleaseVersion(ver)) {
+    issues.push(
+      err('ERR_VALIDATION_FAILED', 'manifest.json version entry "version" must be a MAJOR.MINOR.PATCH release version'),
+    );
+    return;
+  }
+
+  addVersionUniquenessIssue(versionSet, ver, issues);
+  validateVersionEntryFields(e, ver, issues);
+}
+
+function validateLatestMatchesMax(
+  latest: unknown,
+  versionSet: Set<string>,
+  issues: ValidationIssue[],
+): void {
+  if (typeof latest !== 'string' || !ValidationUtils.isReleaseVersion(latest) || versionSet.size === 0) {
+    return;
+  }
+
+  const versions = Array.from(versionSet);
+  const maxVer = semver.maxSatisfying(versions, '*');
+  if (maxVer !== latest) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json latest "${latest}" must equal the maximum version "${maxVer}"`,
+      ),
+    );
+  }
+}
+
 export function validateManifest(
   manifestPath: string,
   packageId: string,
@@ -37,7 +136,7 @@ export function validateManifest(
 
   if (typeof m['latest'] !== 'string') {
     issues.push(err('ERR_VALIDATION_FAILED', 'manifest.json latest must be a string'));
-  } else if (!ValidationUtils.isReleaseVersion(m['latest'] as string)) {
+  } else if (!ValidationUtils.isReleaseVersion(m['latest'])) {
     issues.push(
       err('ERR_VALIDATION_FAILED', 'manifest.json latest must be a MAJOR.MINOR.PATCH release version'),
     );
@@ -57,87 +156,10 @@ export function validateManifest(
 
   const versionSet = new Set<string>();
   for (const entry of m['versions'] as unknown[]) {
-    if (typeof entry !== 'object' || entry === null) {
-      issues.push(err('ERR_VALIDATION_FAILED', 'manifest.json versions entries must be objects'));
-      continue;
-    }
-
-    const e = entry as Record<string, unknown>;
-    const ver = e['version'] as string;
-
-    if (typeof ver !== 'string' || !ValidationUtils.isReleaseVersion(ver)) {
-      issues.push(
-        err('ERR_VALIDATION_FAILED', 'manifest.json version entry "version" must be a MAJOR.MINOR.PATCH release version'),
-      );
-    } else {
-      if (versionSet.has(ver)) {
-        issues.push(err('ERR_VALIDATION_FAILED', `manifest.json duplicate version entry: ${ver}`));
-      }
-      versionSet.add(ver);
-
-      if (e['artifact'] !== `${ver}.zip`) {
-        issues.push(
-          err(
-            'ERR_VALIDATION_FAILED',
-            `manifest.json version ${ver}: artifact must be "${ver}.zip"`,
-          ),
-        );
-      }
-
-      if (e['srcArtifact'] !== `${ver}${SOURCE_ARCHIVE_SUFFIX}`) {
-        issues.push(
-          err(
-            'ERR_VALIDATION_FAILED',
-            `manifest.json version ${ver}: srcArtifact must be "${ver}${SOURCE_ARCHIVE_SUFFIX}"`,
-          ),
-        );
-      }
-
-      if (typeof e['sha256'] !== 'string' || !SHA256_PATTERN.test(e['sha256'])) {
-        issues.push(
-          err(
-            'ERR_VALIDATION_FAILED',
-            `manifest.json version ${ver}: sha256 must be 64 lowercase hex characters`,
-          ),
-        );
-      }
-
-      if (typeof e['srcSha256'] !== 'string' || !SHA256_PATTERN.test(e['srcSha256'])) {
-        issues.push(
-          err(
-            'ERR_VALIDATION_FAILED',
-            `manifest.json version ${ver}: srcSha256 must be 64 lowercase hex characters`,
-          ),
-        );
-      }
-
-      if (typeof e['createdAt'] !== 'string' || !ValidationUtils.isRfc3339(e['createdAt'])) {
-        issues.push(
-          err(
-            'ERR_VALIDATION_FAILED',
-            `manifest.json version ${ver}: createdAt must be an RFC 3339 timestamp`,
-          ),
-        );
-      }
-    }
+    validateVersionEntry(entry, issues, versionSet);
   }
 
-  if (
-    typeof m['latest'] === 'string' &&
-    ValidationUtils.isReleaseVersion(m['latest']) &&
-    versionSet.size > 0
-  ) {
-    const versions = Array.from(versionSet);
-    const maxVer = semver.maxSatisfying(versions, '*');
-    if (maxVer !== m['latest']) {
-      issues.push(
-        err(
-          'ERR_VALIDATION_FAILED',
-          `manifest.json latest "${m['latest']}" must equal the maximum version "${maxVer}"`,
-        ),
-      );
-    }
-  }
+  validateLatestMatchesMax(m['latest'], versionSet, issues);
 
   return m as unknown as Manifest;
 }

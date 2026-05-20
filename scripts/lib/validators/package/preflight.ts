@@ -35,7 +35,7 @@ export function resolvePackageDir(
 export function loadPackageMetadata(
   packageDir: string,
   issues: ValidationIssue[],
-): unknown | null {
+): Record<string, unknown> | null {
   const metadataPath = path.join(packageDir, METADATA_FILENAME);
   if (!fs.existsSync(metadataPath)) {
     issues.push(err('ERR_METADATA_INVALID', `${METADATA_FILENAME} is missing from package root`));
@@ -48,7 +48,7 @@ export function loadPackageMetadata(
     return null;
   }
 
-  return data;
+  return data as Record<string, unknown>;
 }
 
 export function getManifestPath(packageDir: string): string {

@@ -172,45 +172,51 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
   }
 }
 
-function validateOptionalFields(m: Record<string, unknown>, issues: ValidationIssue[]): void {
-  if (m['maintainers'] !== undefined) {
-    if (!Array.isArray(m['maintainers'])) {
-      issues.push(
-        err('ERR_METADATA_INVALID', 'maintainers must be an array when provided'),
-      );
-    } else {
-      const maintainers = m['maintainers'] as unknown[];
+function validateMaintainersField(m: Record<string, unknown>, issues: ValidationIssue[]): void {
+  if (m['maintainers'] === undefined) {
+    return;
+  }
 
-      for (const maintainer of maintainers) {
-        if (
-          typeof maintainer !== 'string' ||
-          maintainer.trim().length === 0 ||
-          !GITHUB_USER_OR_TEAM_SLUG_PATTERN.test(maintainer)
-        ) {
-          issues.push(
-            err(
-              'ERR_METADATA_INVALID',
-              `maintainers entries must be GitHub usernames or team slugs, got: ${JSON.stringify(maintainer)}`,
-            ),
-          );
-        }
-      }
+  if (Array.isArray(m['maintainers'])) {
+    const maintainers = m['maintainers'] as unknown[];
 
-      const duplicateMaintainers = maintainers
-        .filter((value): value is string => typeof value === 'string')
-        .filter((maintainer, index, all) => all.indexOf(maintainer) !== index);
-
-      if (duplicateMaintainers.length > 0) {
+    for (const maintainer of maintainers) {
+      if (
+        typeof maintainer !== 'string' ||
+        maintainer.trim().length === 0 ||
+        !GITHUB_USER_OR_TEAM_SLUG_PATTERN.test(maintainer)
+      ) {
         issues.push(
           err(
             'ERR_METADATA_INVALID',
-            `Duplicate maintainers: ${duplicateMaintainers.join(', ')}`,
+            `maintainers entries must be GitHub usernames or team slugs, got: ${JSON.stringify(maintainer)}`,
           ),
         );
       }
     }
+
+    const duplicateMaintainers = maintainers
+      .filter((value): value is string => typeof value === 'string')
+      .filter((maintainer, index, all) => all.indexOf(maintainer) !== index);
+
+    if (duplicateMaintainers.length > 0) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `Duplicate maintainers: ${duplicateMaintainers.join(', ')}`,
+        ),
+      );
+    }
+
+    return;
   }
 
+  issues.push(
+    err('ERR_METADATA_INVALID', 'maintainers must be an array when provided'),
+  );
+}
+
+function validateCompatibilityField(m: Record<string, unknown>, issues: ValidationIssue[]): void {
   if (
     m['compatibility'] !== undefined &&
     (typeof m['compatibility'] !== 'object' ||
@@ -221,7 +227,9 @@ function validateOptionalFields(m: Record<string, unknown>, issues: ValidationIs
       err('ERR_METADATA_INVALID', 'compatibility must be an object when provided'),
     );
   }
+}
 
+function validateDocumentationField(m: Record<string, unknown>, issues: ValidationIssue[]): void {
   if (
     m['documentation'] !== undefined &&
     (typeof m['documentation'] !== 'string' || !ValidationUtils.isHttpsUrl(m['documentation']))
@@ -233,38 +241,46 @@ function validateOptionalFields(m: Record<string, unknown>, issues: ValidationIs
       ),
     );
   }
+}
 
-  if (m['keywords'] !== undefined) {
-    if (!Array.isArray(m['keywords'])) {
-      issues.push(err('ERR_METADATA_INVALID', 'keywords must be an array when provided'));
-    } else {
-      const keywords = m['keywords'] as unknown[];
-      for (const keyword of keywords) {
-        if (typeof keyword !== 'string' || keyword.trim().length === 0) {
-          issues.push(
-            err(
-              'ERR_METADATA_INVALID',
-              `keywords must contain only non-empty strings, got: ${JSON.stringify(keyword)}`,
-            ),
-          );
-        }
-      }
+function validateKeywordsField(m: Record<string, unknown>, issues: ValidationIssue[]): void {
+  if (m['keywords'] === undefined) {
+    return;
+  }
 
-      const duplicateKeywords = keywords
-        .filter((value): value is string => typeof value === 'string')
-        .filter((keyword, index, all) => all.indexOf(keyword) !== index);
-
-      if (duplicateKeywords.length > 0) {
+  if (Array.isArray(m['keywords'])) {
+    const keywords = m['keywords'] as unknown[];
+    for (const keyword of keywords) {
+      if (typeof keyword !== 'string' || keyword.trim().length === 0) {
         issues.push(
           err(
             'ERR_METADATA_INVALID',
-            `Duplicate keywords: ${duplicateKeywords.join(', ')}`,
+            `keywords must contain only non-empty strings, got: ${JSON.stringify(keyword)}`,
           ),
         );
       }
     }
+
+    const duplicateKeywords = keywords
+      .filter((value): value is string => typeof value === 'string')
+      .filter((keyword, index, all) => all.indexOf(keyword) !== index);
+
+    if (duplicateKeywords.length > 0) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `Duplicate keywords: ${duplicateKeywords.join(', ')}`,
+        ),
+      );
+    }
+
+    return;
   }
 
+  issues.push(err('ERR_METADATA_INVALID', 'keywords must be an array when provided'));
+}
+
+function validateQuickstartField(m: Record<string, unknown>, issues: ValidationIssue[]): void {
   if (
     m['quickstart'] !== undefined &&
     (typeof m['quickstart'] !== 'string' || !ValidationUtils.isHttpsUrl(m['quickstart']))
@@ -276,7 +292,9 @@ function validateOptionalFields(m: Record<string, unknown>, issues: ValidationIs
       ),
     );
   }
+}
 
+function validateCustomAttributesField(m: Record<string, unknown>, issues: ValidationIssue[]): void {
   if (
     m['customAttributes'] !== undefined &&
     (typeof m['customAttributes'] !== 'object' ||
@@ -287,6 +305,15 @@ function validateOptionalFields(m: Record<string, unknown>, issues: ValidationIs
       err('ERR_METADATA_INVALID', 'customAttributes must be an object when provided'),
     );
   }
+}
+
+function validateOptionalFields(m: Record<string, unknown>, issues: ValidationIssue[]): void {
+  validateMaintainersField(m, issues);
+  validateCompatibilityField(m, issues);
+  validateDocumentationField(m, issues);
+  validateKeywordsField(m, issues);
+  validateQuickstartField(m, issues);
+  validateCustomAttributesField(m, issues);
 }
 
 export function validateMetadata(
