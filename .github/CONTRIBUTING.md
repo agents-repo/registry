@@ -119,10 +119,10 @@ A package submission should include:
     `archived`, `yanked`), `category` (non-empty string), and
     `estimateOverallCost` (object with required `band` — one of
     `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` —
-    and optional `estimatedCost` on a 1–10 scale)
+    and optional integer `estimatedCost` on a 1–10 scale)
   - Agent and flow metadata: `status`, `category`, and `estimateCost`
     (object with required `band` — one of `minimal`, `low`, `moderate`,
-    `high`, `critical` — and required `estimatedCost` on a 1–10 scale)
+    `high`, `critical` — and required integer `estimatedCost` on a 1–10 scale)
 - `quickstart`, when present, should point to package root `README.md`
 - supported `schemaVersion` values in `metadata.json` and in every
   `.metadata.json` sidecar (agent and flow), per `specs/schema-versions.json`

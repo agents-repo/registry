@@ -158,13 +158,14 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
     cost['estimatedCost'] !== undefined &&
     (typeof cost['estimatedCost'] !== 'number' ||
       !Number.isFinite(cost['estimatedCost']) ||
+      !Number.isInteger(cost['estimatedCost']) ||
       cost['estimatedCost'] < ESTIMATED_COST_MIN ||
       cost['estimatedCost'] > ESTIMATED_COST_MAX)
   ) {
     issues.push(
       err(
         'ERR_METADATA_INVALID',
-        'estimateOverallCost.estimatedCost must be a finite number between 1 and 10 when provided',
+        'estimateOverallCost.estimatedCost must be an integer between 1 and 10 when provided',
       ),
     );
   }

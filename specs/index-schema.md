@@ -70,7 +70,7 @@ Each entry in `packages` MUST be an object with:
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
 | `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` |
-| `estimatedCost` | number | no | Relative effort on a 1–10 scale (inclusive) |
+| `estimatedCost` | integer | no | Relative effort as an integer on a 1–10 scale (inclusive) |
 
 ## Validation Rules
 
@@ -87,8 +87,8 @@ Each entry in `packages` MUST be an object with:
   Status Lifecycle Semantics.
 - `packages[].status` value MUST be one of `active`, `deprecated`,
   `archived`, or `yanked`.
-- `packages[].estimateOverallCost.estimatedCost`, when present, MUST be a
-  number in the range 1–10 inclusive.
+- `packages[].estimateOverallCost.estimatedCost`, when present, MUST be an
+  integer in the range 1–10 inclusive.
 - `packages[].quickstart`, when present, MUST reflect the current
   `packages/<id>/metadata.json` value.
 - Package detail-only metadata (for example `customAttributes`) MUST NOT

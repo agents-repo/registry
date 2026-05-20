@@ -117,14 +117,14 @@ Additional optional fields:
 
 | Field | Type | Constraints |
 | --- | --- | --- |
-| `estimateOverallCost.estimatedCost` | number | MAY be a number in the range 1–10 inclusive |
+| `estimateOverallCost.estimatedCost` | integer | MAY be an integer in the range 1–10 inclusive |
 
 ### EstimateOverallCost Object Schema
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
 | `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` |
-| `estimatedCost` | number | no | Aggregate relative effort on a 1–10 scale (not tokens or credits) |
+| `estimatedCost` | integer | no | Aggregate relative effort as an integer on a 1–10 scale (not tokens or credits) |
 
 ### Validation Rules
 
@@ -139,7 +139,7 @@ Additional optional fields:
 - `status`, `category`, and `estimateOverallCost.band` are required.
 - `estimateOverallCost.band` MUST be one of `minimal`, `low`, `moderate`,
   `high`, `critical`, or `mixed`.
-- `estimateOverallCost.estimatedCost`, when present, MUST be a number in the
+- `estimateOverallCost.estimatedCost`, when present, MUST be an integer in the
   range 1–10 inclusive.
 - `quickstart`, when present, MUST be an HTTPS URL.
 - `customAttributes`, when present, MUST be an object.
@@ -234,10 +234,10 @@ flow metadata `estimateCost`.
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
-| `estimatedCost` | number | yes | Relative effort on a 1–10 scale; see band ranges below |
+| `estimatedCost` | integer | yes | Relative effort as an integer on a 1–10 scale; see band ranges below |
 | `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, or `critical` |
 
-`estimatedCost` is a relative effort rating (1–10). It is not denominated
+`estimatedCost` is a relative effort rating (integer 1–10). It is not denominated
 in tokens or API credits.
 
 | Band | `estimatedCost` Range |
@@ -265,7 +265,7 @@ in tokens or API credits.
 - When `outputs` is present in both this file and
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
 - `status`, `category`, and `estimateCost` are required.
-- `estimateCost.estimatedCost` MUST be a number in the range 1–10 inclusive.
+- `estimateCost.estimatedCost` MUST be an integer in the range 1–10 inclusive.
 - `estimateCost.band` MUST be one of `minimal`, `low`, `moderate`, `high`,
   or `critical`.
 - `customAttributes`, when present, MUST be an object.
@@ -366,7 +366,7 @@ Additional required fields:
 - Each `agents[]` entry SHOULD reference an `<agent-id>`
   present in `agents/`.
 - `status`, `category`, and `estimateCost` are required.
-- `estimateCost.estimatedCost` MUST be a number in the range 1–10 inclusive.
+- `estimateCost.estimatedCost` MUST be an integer in the range 1–10 inclusive.
 - `estimateCost.band` MUST be one of `minimal`, `low`, `moderate`, `high`,
   or `critical`.
 - `customAttributes`, when present, MUST be an object.

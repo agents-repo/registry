@@ -84,10 +84,10 @@ function projectEstimatedCost(value: unknown, packageId: string): { estimatedCos
   if (value === undefined) {
     return {};
   }
-  if (typeof value !== 'number' || !Number.isFinite(value) || value < ESTIMATED_COST_MIN || value > ESTIMATED_COST_MAX) {
+  if (typeof value !== 'number' || !Number.isFinite(value) || !Number.isInteger(value) || value < ESTIMATED_COST_MIN || value > ESTIMATED_COST_MAX) {
     throw new PackageError(
       ErrorCode.ERR_METADATA_INVALID,
-      `metadata.json estimateOverallCost.estimatedCost for package "${packageId}" must be a finite number between 1 and 10 when provided`,
+      `metadata.json estimateOverallCost.estimatedCost for package "${packageId}" must be an integer between 1 and 10 when provided`,
     );
   }
   return { estimatedCost: value };

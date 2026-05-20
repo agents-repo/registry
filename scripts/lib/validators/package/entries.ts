@@ -74,13 +74,14 @@ function validateEntryMetadataRequiredFields(
     if (
       typeof cost['estimatedCost'] !== 'number' ||
       !Number.isFinite(cost['estimatedCost']) ||
+      !Number.isInteger(cost['estimatedCost']) ||
       cost['estimatedCost'] < ESTIMATED_COST_MIN ||
       cost['estimatedCost'] > ESTIMATED_COST_MAX
     ) {
       issues.push(
         err(
           'ERR_METADATA_INVALID',
-          `${context}: estimateCost.estimatedCost must be a finite number between 1 and 10`,
+          `${context}: estimateCost.estimatedCost must be an integer between 1 and 10`,
         ),
       );
     }
