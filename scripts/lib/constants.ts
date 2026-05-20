@@ -33,3 +33,71 @@ export const ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /** SHA-256 digest: 64 lowercase hex characters. */
 export const SHA256_PATTERN = /^[0-9a-f]{64}$/;
+
+// --- File system names ---
+
+export const AGENT_FILE_EXT = '.agent.md' as const;
+export const AGENT_METADATA_EXT = '.metadata.json' as const;
+
+export const AGENTS_DIR = 'agents' as const;
+export const FLOWS_DIR = 'flows' as const;
+export const VERSIONS_DIR = 'versions' as const;
+
+export const METADATA_FILENAME = 'metadata.json' as const;
+export const MANIFEST_FILENAME = 'manifest.json' as const;
+export const INDEX_FILENAME = 'index.json' as const;
+
+// --- Archive naming ---
+
+/** Suffix appended to the version string for source archive filenames (e.g. `1.0.0-src.zip`). */
+export const SOURCE_ARCHIVE_SUFFIX = '-src.zip' as const;
+
+// --- ZIP security constraints ---
+
+export const ZIP_MAX_ENTRY_NAME_LENGTH = 4096;
+/** Mask to extract the Unix file-type bits from a ZIP entry attribute. */
+export const ZIP_UNIX_MODE_MASK = 0xffff;
+/** Mask to isolate the file-type field within Unix mode bits. */
+export const ZIP_UNIX_TYPE_MASK = 0xf000;
+/** Unix file-type value for a symbolic link. */
+export const ZIP_SYMLINK_TYPE = 0xa000;
+
+/** File extensions disallowed inside source ZIPs. */
+export const DISALLOWED_ZIP_EXTENSIONS = new Set([
+  '.exe',
+  '.dll',
+  '.so',
+  '.dylib',
+  '.sh',
+  '.bash',
+  '.bat',
+  '.cmd',
+  '.ps1',
+  '.py',
+  '.rb',
+  '.pl',
+  '.php',
+  '.jar',
+  '.class',
+]);
+
+// --- Deployment ZIP entry pattern ---
+
+/**
+ * Valid entry path inside a deployment ZIP:
+ * `agents/<id>.agent.md` where `<id>` is a lowercase kebab-case identifier.
+ */
+export const DEPLOYMENT_ZIP_ENTRY_PATTERN =
+  /^agents\/[a-z0-9]+(?:-[a-z0-9]+)*\.agent\.md$/;
+
+// --- Git branch constraints ---
+
+/** Branch names that are always considered protected. */
+export const PROTECTED_BRANCH_NAMES = ['main', 'master'] as const;
+/** Pattern matching additional protected branch names (e.g. `release/1.0.0`). */
+export const PROTECTED_BRANCH_PATTERN = /^release\/.+/;
+
+// --- Scaffold defaults ---
+
+export const INITIAL_VERSION = '1.0.0' as const;
+export const DEFAULT_CATEGORY = 'general' as const;

@@ -5,6 +5,14 @@ import type { Manifest, ValidationIssue, ValidationReport } from './types';
 import { err, splitIssues } from './validators/common/issues';
 import { validateSchemaVersion } from './validators/snapshot/schema-version';
 import { scanSnapshotZip } from './validators/snapshot/zip-scan';
+import {
+  AGENTS_DIR,
+  FLOWS_DIR,
+  MANIFEST_FILENAME,
+  METADATA_FILENAME,
+  SOURCE_ARCHIVE_SUFFIX,
+  VERSIONS_DIR,
+} from './constants';
 
 export class SnapshotValidator {
   private readonly packageId: string;
@@ -20,8 +28,8 @@ export class SnapshotValidator {
   validate(): ValidationReport {
     const issues: ValidationIssue[] = [];
     const packageDir = path.join(this.packagesDir, this.packageId);
-    const versionDir = path.join(packageDir, 'versions', this.version);
-    const manifestPath = path.join(packageDir, 'versions', 'manifest.json');
+    const versionDir = path.join(packageDir, VERSIONS_DIR, this.version);
+    const manifestPath = path.join(packageDir, VERSIONS_DIR, MANIFEST_FILENAME);
 
     // 1. Version directory exists
     if (!fs.existsSync(versionDir)) {
@@ -39,34 +47,34 @@ export class SnapshotValidator {
     }
 
     const deployZipPath = path.join(versionDir, `${this.version}.zip`);
-    const srcZipPath = path.join(versionDir, `${this.version}-src.zip`);
-    const snapshotMetaPath = path.join(versionDir, 'metadata.json');
+    const srcZipPath = path.join(versionDir, `${this.version}${SOURCE_ARCHIVE_SUFFIX}`);
+    const snapshotMetaPath = path.join(versionDir, METADATA_FILENAME);
 
     // 2. Expected files present
     if (!fs.existsSync(deployZipPath)) {
       issues.push(err('ERR_VALIDATION_FAILED', `Missing deployment ZIP: ${this.version}.zip`));
     }
     if (!fs.existsSync(srcZipPath)) {
-      issues.push(err('ERR_VALIDATION_FAILED', `Missing source archive: ${this.version}-src.zip`));
+      issues.push(err('ERR_VALIDATION_FAILED', `Missing source archive: ${this.version}${SOURCE_ARCHIVE_SUFFIX}`));
     }
     if (!fs.existsSync(snapshotMetaPath)) {
-      issues.push(err('ERR_VALIDATION_FAILED', `Missing snapshot metadata.json`));
+      issues.push(err('ERR_VALIDATION_FAILED', `Missing snapshot ${METADATA_FILENAME}`));
     } else {
       try {
         const snapshotMeta = JSON.parse(fs.readFileSync(snapshotMetaPath, 'utf-8')) as Record<string, unknown>;
-        issues.push(...validateSchemaVersion(snapshotMeta['schemaVersion'], 'Snapshot metadata.json'));
+        issues.push(...validateSchemaVersion(snapshotMeta['schemaVersion'], `Snapshot ${METADATA_FILENAME}`));
       } catch {
-        issues.push(err('ERR_VALIDATION_FAILED', `Snapshot metadata.json is not valid JSON`));
+        issues.push(err('ERR_VALIDATION_FAILED', `Snapshot ${METADATA_FILENAME} is not valid JSON`));
       }
     }
 
     // 3. No unexpected files in the version snapshot directory
     const allowedTopLevelEntries = new Set([
-      'metadata.json',
+      METADATA_FILENAME,
       `${this.version}.zip`,
-      `${this.version}-src.zip`,
-      'agents',
-      'flows',
+      `${this.version}${SOURCE_ARCHIVE_SUFFIX}`,
+      AGENTS_DIR,
+      FLOWS_DIR,
     ]);
     for (const entry of fs.readdirSync(versionDir)) {
       if (!allowedTopLevelEntries.has(entry)) {

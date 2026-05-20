@@ -28,6 +28,7 @@ import { updateManifestAndIndexWithRollback } from './lib/build/registry-sync';
 import { prepareVersionSnapshot } from './lib/build/snapshot-writer';
 import { hasFlag, parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
 import { printValidationIssues } from './lib/cli/reporting';
+import { INDEX_FILENAME } from './lib/constants';
 import { ErrorCode, PackageError } from './lib/errors';
 import { GitContext } from './lib/git';
 import { Package } from './lib/package';
@@ -132,7 +133,7 @@ async function main(): Promise<void> {
 
     // Prepare manifest update with rollback support
     console.log(`[7/7] Updating versions/manifest.json and packages/index.json`);
-    const indexPath = path.join(repoRoot, 'packages', 'index.json');
+    const indexPath = path.join(repoRoot, 'packages', INDEX_FILENAME);
     updateManifestAndIndexWithRollback({
       packageId,
       manifestPath: pkg.manifestPath,
@@ -146,7 +147,7 @@ async function main(): Promise<void> {
     rollbackVersionDirectory(versionDir);
 
     // Attempt to restore old index.json if it was overwritten
-    const indexPath = path.join(repoRoot, 'packages', 'index.json');
+    const indexPath = path.join(repoRoot, 'packages', INDEX_FILENAME);
     warnIfIndexMayBeInconsistent(indexPath, packageId);
 
     if (error instanceof PackageError) {

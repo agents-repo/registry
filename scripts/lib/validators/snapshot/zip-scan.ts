@@ -2,24 +2,16 @@ import AdmZip from 'adm-zip';
 import { parseFrontmatter } from '../../frontmatter';
 import type { ValidationIssue } from '../../types';
 import { err } from '../common/issues';
-
-const DISALLOWED_SOURCE_EXTENSIONS = new Set([
-  '.exe',
-  '.dll',
-  '.so',
-  '.dylib',
-  '.sh',
-  '.bash',
-  '.bat',
-  '.cmd',
-  '.ps1',
-  '.py',
-  '.rb',
-  '.pl',
-  '.php',
-  '.jar',
-  '.class',
-]);
+import {
+  AGENT_FILE_EXT,
+  DEPLOYMENT_ZIP_ENTRY_PATTERN,
+  DISALLOWED_ZIP_EXTENSIONS,
+  ZIP_MAX_ENTRY_NAME_LENGTH,
+  ZIP_SYMLINK_TYPE,
+  ZIP_UNIX_MODE_MASK,
+  ZIP_UNIX_TYPE_MASK,
+  VERSIONS_DIR,
+} from '../../constants';
 
 export function scanSnapshotZip(
   zipPath: string,
@@ -45,7 +37,7 @@ export function scanSnapshotZip(
       continue;
     }
 
-    if (name.length === 0 || name.length > 4096) {
+    if (name.length === 0 || name.length > ZIP_MAX_ENTRY_NAME_LENGTH) {
       issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Malformed ZIP entry name length: "${name}"`));
       continue;
     }
@@ -60,8 +52,8 @@ export function scanSnapshotZip(
       continue;
     }
 
-    const unixMode = (entry.attr >>> 16) & 0xffff;
-    if (unixMode !== 0 && (unixMode & 0xf000) === 0xa000) {
+    const unixMode = (entry.attr >>> 16) & ZIP_UNIX_MODE_MASK;
+    if (unixMode !== 0 && (unixMode & ZIP_UNIX_TYPE_MASK) === ZIP_SYMLINK_TYPE) {
       issues.push(err('ERR_ZIP_SYMLINK', `Symlink entry detected in ZIP: "${name}"`));
       continue;
     }
@@ -86,7 +78,7 @@ export function scanSnapshotZip(
     }
 
     if (opts.type === 'deployment') {
-      if (!/^agents\/[a-z0-9]+(?:-[a-z0-9]+)*\.agent\.md$/.test(name)) {
+      if (!DEPLOYMENT_ZIP_ENTRY_PATTERN.test(name)) {
         issues.push(
           err(
             'ERR_ZIP_UNEXPECTED_ENTRY',
@@ -118,7 +110,7 @@ export function scanSnapshotZip(
     }
 
     if (opts.type === 'source') {
-      if (name.startsWith('versions/') || name === 'versions') {
+      if (name.startsWith(VERSIONS_DIR + '/') || name === VERSIONS_DIR) {
         issues.push(
           err(
             'ERR_ZIP_VERSIONS_INCLUDED',
@@ -129,7 +121,7 @@ export function scanSnapshotZip(
       }
 
       const ext = name.includes('.') ? name.slice(name.lastIndexOf('.')).toLowerCase() : '';
-      if (DISALLOWED_SOURCE_EXTENSIONS.has(ext)) {
+      if (DISALLOWED_ZIP_EXTENSIONS.has(ext)) {
         issues.push(
           err(
             'ERR_ZIP_DISALLOWED_PAYLOAD',
@@ -138,7 +130,7 @@ export function scanSnapshotZip(
         );
       }
 
-      if (name.endsWith('.agent.md')) {
+      if (name.endsWith(AGENT_FILE_EXT)) {
         try {
           const content = entry.getData().toString('utf-8');
           const frontmatter = parseFrontmatter(content);

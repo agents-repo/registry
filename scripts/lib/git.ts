@@ -1,10 +1,10 @@
 import { simpleGit } from 'simple-git';
+import { PROTECTED_BRANCH_NAMES, PROTECTED_BRANCH_PATTERN } from './constants';
 
 export class GitContext {
   private static readonly PROTECTED_BRANCHES: Array<string | RegExp> = [
-    'main',
-    'master',
-    /^release\/.+/,
+    ...PROTECTED_BRANCH_NAMES,
+    PROTECTED_BRANCH_PATTERN,
   ];
 
   /**
