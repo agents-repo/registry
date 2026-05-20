@@ -2,7 +2,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getSchemaCurrentVersion } from './schema-versions';
 import type { PackageMetadata } from './types';
-import { LICENSE, SCHEMA_FAMILY_PACKAGE, SCHEMA_FAMILY_AGENT, SCHEMA_FAMILY_FLOW, AGENTS_DIR, FLOWS_DIR, VERSIONS_DIR, METADATA_FILENAME, AGENT_FILE_EXT, AGENT_METADATA_EXT, INITIAL_VERSION, DEFAULT_CATEGORY } from './constants';
+import {
+  LICENSE,
+  SCHEMA_FAMILY_PACKAGE,
+  SCHEMA_FAMILY_AGENT,
+  SCHEMA_FAMILY_FLOW,
+  AGENTS_DIR,
+  FLOWS_DIR,
+  VERSIONS_DIR,
+  METADATA_FILENAME,
+  AGENT_FILE_EXT,
+  AGENT_METADATA_EXT,
+  INITIAL_VERSION,
+  DEFAULT_CATEGORY,
+} from './constants';
 
 export interface AgentDef {
   id: string;
