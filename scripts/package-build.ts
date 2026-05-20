@@ -160,8 +160,8 @@ async function main(): Promise<void> {
   }
 
   console.log(`\nBuild complete: ${packageId}@${version}`);
-  console.log(`  Deployment artifact : versions/${version}/${version}.zip`);
-  console.log(`  Source archive      : versions/${version}/${version}${SOURCE_ARCHIVE_SUFFIX}`);
+  console.log(`  Deployment artifact : ${VERSIONS_DIR}/${version}/${version}.zip`);
+  console.log(`  Source archive      : ${VERSIONS_DIR}/${version}/${version}${SOURCE_ARCHIVE_SUFFIX}`);
   console.log(`  Manifest updated    : ${VERSIONS_DIR}/${MANIFEST_FILENAME}`);
   console.log(`  Index updated       : packages/${INDEX_FILENAME}`);
 }
