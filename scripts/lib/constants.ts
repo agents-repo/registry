@@ -20,11 +20,11 @@ export const TAGS_MAX_COUNT = 20;
 export const LICENSE = 'MIT';
 
 // --- Schema family identifiers ---
-export const SCHEMA_FAMILY_PACKAGE = 'metadata.package' as const;
-export const SCHEMA_FAMILY_AGENT = 'metadata.agent' as const;
-export const SCHEMA_FAMILY_FLOW = 'metadata.flow' as const;
-export const SCHEMA_FAMILY_INDEX = 'index' as const;
-export const SCHEMA_FAMILY_MANIFEST = 'manifest' as const;
+export const SCHEMA_FAMILY_PACKAGE = 'metadata.package';
+export const SCHEMA_FAMILY_AGENT = 'metadata.agent';
+export const SCHEMA_FAMILY_FLOW = 'metadata.flow';
+export const SCHEMA_FAMILY_INDEX = 'index';
+export const SCHEMA_FAMILY_MANIFEST = 'manifest';
 
 // --- Validation regex patterns ---
 
@@ -36,21 +36,21 @@ export const SHA256_PATTERN = /^[0-9a-f]{64}$/;
 
 // --- File system names ---
 
-export const AGENT_FILE_EXT = '.agent.md' as const;
-export const AGENT_METADATA_EXT = '.metadata.json' as const;
+export const AGENT_FILE_EXT = '.agent.md';
+export const AGENT_METADATA_EXT = '.metadata.json';
 
-export const AGENTS_DIR = 'agents' as const;
-export const FLOWS_DIR = 'flows' as const;
-export const VERSIONS_DIR = 'versions' as const;
+export const AGENTS_DIR = 'agents';
+export const FLOWS_DIR = 'flows';
+export const VERSIONS_DIR = 'versions';
 
-export const METADATA_FILENAME = 'metadata.json' as const;
-export const MANIFEST_FILENAME = 'manifest.json' as const;
-export const INDEX_FILENAME = 'index.json' as const;
+export const METADATA_FILENAME = 'metadata.json';
+export const MANIFEST_FILENAME = 'manifest.json';
+export const INDEX_FILENAME = 'index.json';
 
 // --- Archive naming ---
 
 /** Suffix appended to the version string for source archive filenames (e.g. `1.0.0-src.zip`). */
-export const SOURCE_ARCHIVE_SUFFIX = '-src.zip' as const;
+export const SOURCE_ARCHIVE_SUFFIX = '-src.zip';
 
 // --- ZIP security constraints ---
 
@@ -99,5 +99,5 @@ export const PROTECTED_BRANCH_PATTERN = /^release\/.+/;
 
 // --- Scaffold defaults ---
 
-export const INITIAL_VERSION = '1.0.0' as const;
-export const DEFAULT_CATEGORY = 'general' as const;
+export const INITIAL_VERSION = '1.0.0';
+export const DEFAULT_CATEGORY = 'general';
