@@ -59,8 +59,18 @@ async function main(): Promise<void> {
   }
   console.log(`[1/7] Preflight passed`);
 
-  // Step 2: Read metadata to get target version
+  // Step 2: Read metadata to get target version, then re-validate the exact
+  // on-disk package state before proceeding with the build.
   const metadata = pkg.loadMetadata();
+  const postLoadReport = new PackageValidator(packageId, packagesDir).validate();
+  printValidationIssues(postLoadReport);
+  if (!postLoadReport.passed) {
+    throw new PackageError(
+      ErrorCode.ERR_VALIDATION_FAILED,
+      `Package changed after preflight validation for package: ${packageId} — ${postLoadReport.errors.length} error(s)`,
+    );
+  }
+
   const version = metadata.version;
   if (!ValidationUtils.isReleaseVersion(version)) {
     throw new PackageError(
