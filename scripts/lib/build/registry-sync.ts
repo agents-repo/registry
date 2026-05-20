@@ -3,6 +3,7 @@ import { cloneJson, readTextFileIfExists } from '../io/json';
 import { IndexManager } from '../index-manager';
 import { ManifestManager } from '../manifest-manager';
 import type { PackageMetadata } from '../types';
+import { SOURCE_ARCHIVE_SUFFIX } from '../constants';
 
 export function updateManifestAndIndexWithRollback(opts: {
   packageId: string;
@@ -31,7 +32,7 @@ export function updateManifestAndIndexWithRollback(opts: {
     version,
     artifact: `${version}.zip`,
     sha256: deployZipSha256,
-    srcArtifact: `${version}-src.zip`,
+    srcArtifact: `${version}${SOURCE_ARCHIVE_SUFFIX}`,
     srcSha256: srcZipSha256,
     createdAt: new Date().toISOString(),
   });

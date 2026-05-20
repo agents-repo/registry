@@ -2,7 +2,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { getSchemaCurrentVersion } from './schema-versions';
 import type { PackageMetadata } from './types';
-import { LICENSE, SCHEMA_FAMILY_PACKAGE, SCHEMA_FAMILY_AGENT, SCHEMA_FAMILY_FLOW } from './constants';
+import {
+  LICENSE,
+  SCHEMA_FAMILY_PACKAGE,
+  SCHEMA_FAMILY_AGENT,
+  SCHEMA_FAMILY_FLOW,
+  AGENTS_DIR,
+  FLOWS_DIR,
+  VERSIONS_DIR,
+  METADATA_FILENAME,
+  AGENT_FILE_EXT,
+  AGENT_METADATA_EXT,
+  INITIAL_VERSION,
+  DEFAULT_CATEGORY,
+} from './constants';
 
 export interface AgentDef {
   id: string;
@@ -40,9 +53,9 @@ export class PackageScaffolder {
     const { packageId, metadata, agents, flows } = this.request;
     const packageDir = path.join(this.repoRoot, 'packages', packageId);
 
-    fs.mkdirSync(path.join(packageDir, 'agents'), { recursive: true });
-    fs.mkdirSync(path.join(packageDir, 'flows'), { recursive: true });
-    fs.mkdirSync(path.join(packageDir, 'versions'), { recursive: true });
+    fs.mkdirSync(path.join(packageDir, AGENTS_DIR), { recursive: true });
+    fs.mkdirSync(path.join(packageDir, FLOWS_DIR), { recursive: true });
+    fs.mkdirSync(path.join(packageDir, VERSIONS_DIR), { recursive: true });
 
     const packageSchemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_PACKAGE);
     const agentMetadataSchemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_AGENT);
@@ -61,9 +74,9 @@ export class PackageScaffolder {
       tags: metadata.tags,
       createdAt: now,
       updatedAt: now,
-      version: '1.0.0',
+      version: INITIAL_VERSION,
       status: 'active',
-      category: 'general',
+      category: DEFAULT_CATEGORY,
       estimateOverallCost: {
         band: 'mixed',
       },
@@ -72,7 +85,7 @@ export class PackageScaffolder {
     };
 
     fs.writeFileSync(
-      path.join(packageDir, 'metadata.json'),
+      path.join(packageDir, METADATA_FILENAME),
       JSON.stringify(packageMetadata, null, 4) + '\n',
       'utf-8',
     );
@@ -85,12 +98,12 @@ export class PackageScaffolder {
 
     for (const agent of agents) {
       fs.writeFileSync(
-        path.join(packageDir, 'agents', `${agent.id}.agent.md`),
+        path.join(packageDir, AGENTS_DIR, `${agent.id}${AGENT_FILE_EXT}`),
         this.generateAgentMarkdown(agent.id, agent.description),
         'utf-8',
       );
       fs.writeFileSync(
-        path.join(packageDir, 'agents', `${agent.id}.metadata.json`),
+        path.join(packageDir, AGENTS_DIR, `${agent.id}${AGENT_METADATA_EXT}`),
         JSON.stringify(this.generateAgentMetadata(agent.id, agent.description, agentMetadataSchemaVersion), null, 4) + '\n',
         'utf-8',
       );
@@ -98,12 +111,12 @@ export class PackageScaffolder {
 
     for (const flow of flows) {
       fs.writeFileSync(
-        path.join(packageDir, 'flows', `${flow.id}.agent.md`),
+        path.join(packageDir, FLOWS_DIR, `${flow.id}${AGENT_FILE_EXT}`),
         this.generateAgentMarkdown(flow.id, flow.description),
         'utf-8',
       );
       fs.writeFileSync(
-        path.join(packageDir, 'flows', `${flow.id}.metadata.json`),
+        path.join(packageDir, FLOWS_DIR, `${flow.id}${AGENT_METADATA_EXT}`),
         JSON.stringify(this.generateAgentMetadata(flow.id, flow.description, flowMetadataSchemaVersion), null, 4) + '\n',
         'utf-8',
       );
@@ -114,8 +127,8 @@ export class PackageScaffolder {
     return `---
 name: ${id}
 description: ${description}
-version: 1.0.0
-license: MIT
+version: ${INITIAL_VERSION}
+license: ${LICENSE}
 ---
 
 # Overview
@@ -150,7 +163,7 @@ Use this package as a starting point for agents and flows in the registry.
 ## Package Contents
 
 - Agents and flows under this package root
-- Metadata contract in \`metadata.json\`
+- Metadata contract in \`${METADATA_FILENAME}\`
 
 ## Usage
 

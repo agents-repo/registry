@@ -6,15 +6,16 @@
  * Usage:
  *   npm run package:validate-artifacts -- --package <id> [--version <semver>]
  *
- * When --version is omitted, the version is read from packages/<id>/metadata.json.
+ * When --version is omitted, the version is read from the package metadata file.
  *
  * Checks performed:
- *   - Expected files present in versions/<version>/
+ *   - Expected files present in the target version directory
  *   - No unexpected extra files in the snapshot directory
  *   - Deep deployment ZIP inspection (path traversal, symlinks, collisions,
  *     allow-list, frontmatter version)
- *   - Deep source ZIP inspection (path traversal, symlinks, no versions/,
- *     disallowed binary extensions, frontmatter version for .agent.md)
+ *   - Deep source ZIP inspection (path traversal, symlinks, no version
+ *     snapshot subtree, disallowed binary extensions, frontmatter version
+ *     for agent definition files)
  *   - SHA-256 checksum recomputation and comparison against manifest
  *
  * Exits 0 on success, non-zero on any error.
@@ -22,6 +23,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { METADATA_FILENAME } from './lib/constants';
 import {
   parseOptionalFlagValue,
   parseReleaseVersion,
@@ -57,9 +59,9 @@ function main(): void {
 
   let version = versionArg;
   if (!version) {
-    const metadataPath = path.join(packagesDir, packageId, 'metadata.json');
+    const metadataPath = path.join(packagesDir, packageId, METADATA_FILENAME);
     if (!fs.existsSync(metadataPath)) {
-      console.error(`metadata.json not found for package: ${packageId}`);
+      console.error(`${METADATA_FILENAME} not found for package: ${packageId}`);
       process.exit(1);
     }
     const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8')) as {
@@ -67,7 +69,7 @@ function main(): void {
     };
     const parsedVersion = parseReleaseVersion(metadata.version);
     if (!parsedVersion) {
-      console.error(`Version in metadata.json must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(metadata.version)}`);
+      console.error(`Version in ${METADATA_FILENAME} must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(metadata.version)}`);
       process.exit(1);
     }
     version = parsedVersion;

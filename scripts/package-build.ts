@@ -5,18 +5,19 @@
  * Usage:
  *   npm run package:build -- --package <id> [--force-rebuild]
  *
- * This script is the SOLE authorized writer for versions/ artifacts.
+ * This script is the SOLE authorized writer for versioned snapshot artifacts.
  * Contributors and AI agents MUST NOT manually create or modify files
- * under versions/. See specs/package-format.md and specs/versioning-rules.md.
+ * under the versions directory. See specs/package-format.md and
+ * specs/versioning-rules.md.
  *
  * Workflow:
  *   1. Run preflight validation equivalent to package:validate.
  *   2. Read target version and enforce overwrite-protection rules.
  *   3. Build the deployment ZIP and source archive.
  *   4. Compute SHA-256 checksums.
- *   5. Write the version snapshot to versions/<version>/.
- *   6. Upsert the manifest at versions/manifest.json.
- *   7. Update packages/index.json.
+ *   5. Write the version snapshot to the target version directory.
+ *   6. Upsert the manifest in the versions directory.
+ *   7. Update the package index file.
  *
  * Exits 0 on success, non-zero on failure.
  */
@@ -28,6 +29,7 @@ import { updateManifestAndIndexWithRollback } from './lib/build/registry-sync';
 import { prepareVersionSnapshot } from './lib/build/snapshot-writer';
 import { hasFlag, parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
 import { printValidationIssues } from './lib/cli/reporting';
+import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR } from './lib/constants';
 import { ErrorCode, PackageError } from './lib/errors';
 import { GitContext } from './lib/git';
 import { Package } from './lib/package';
@@ -121,7 +123,7 @@ async function main(): Promise<void> {
     zipBuilder.buildDeploymentZip(deployZipPath);
 
     // Build source archive
-    console.log(`[6/7] Building source archive: ${version}-src.zip`);
+    console.log(`[6/7] Building source archive: ${version}${SOURCE_ARCHIVE_SUFFIX}`);
     zipBuilder.buildSourceZip(srcZipPath);
 
     // Step 7: Compute checksums and update registry state
@@ -131,8 +133,8 @@ async function main(): Promise<void> {
     console.log(`       src    sha256: ${srcZipSha256}`);
 
     // Prepare manifest update with rollback support
-    console.log(`[7/7] Updating versions/manifest.json and packages/index.json`);
-    const indexPath = path.join(repoRoot, 'packages', 'index.json');
+    console.log(`[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME} and packages/${INDEX_FILENAME}`);
+    const indexPath = path.join(repoRoot, 'packages', INDEX_FILENAME);
     updateManifestAndIndexWithRollback({
       packageId,
       manifestPath: pkg.manifestPath,
@@ -145,8 +147,8 @@ async function main(): Promise<void> {
   } catch (error) {
     rollbackVersionDirectory(versionDir);
 
-    // Attempt to restore old index.json if it was overwritten
-    const indexPath = path.join(repoRoot, 'packages', 'index.json');
+    // Attempt to restore the previous package index file if it was overwritten
+    const indexPath = path.join(repoRoot, 'packages', INDEX_FILENAME);
     warnIfIndexMayBeInconsistent(indexPath, packageId);
 
     if (error instanceof PackageError) {
@@ -158,10 +160,10 @@ async function main(): Promise<void> {
   }
 
   console.log(`\nBuild complete: ${packageId}@${version}`);
-  console.log(`  Deployment artifact : versions/${version}/${version}.zip`);
-  console.log(`  Source archive      : versions/${version}/${version}-src.zip`);
-  console.log(`  Manifest updated    : versions/manifest.json`);
-  console.log(`  Index updated       : packages/index.json`);
+  console.log(`  Deployment artifact : ${VERSIONS_DIR}/${version}/${version}.zip`);
+  console.log(`  Source archive      : ${VERSIONS_DIR}/${version}/${version}${SOURCE_ARCHIVE_SUFFIX}`);
+  console.log(`  Manifest updated    : ${VERSIONS_DIR}/${MANIFEST_FILENAME}`);
+  console.log(`  Index updated       : packages/${INDEX_FILENAME}`);
 }
 
 try {

@@ -16,6 +16,8 @@ import {
   LICENSE,
   SCHEMA_FAMILY_AGENT,
   SCHEMA_FAMILY_FLOW,
+  AGENT_FILE_EXT,
+  AGENT_METADATA_EXT,
 } from '../../constants';
 
 function validateEntryMetadataRequiredFields(
@@ -231,15 +233,17 @@ function validateSingleEntryFile(
   mdFile: string,
   issues: ValidationIssue[],
 ): EntryVersion {
-  const stem = mdFile.replace(/\.agent\.md$/, '');
+  const stem = mdFile.endsWith(AGENT_FILE_EXT)
+    ? mdFile.slice(0, -AGENT_FILE_EXT.length)
+    : mdFile;
   const mdPath = path.join(entryDir, mdFile);
-  const metaPath = path.join(entryDir, `${stem}.metadata.json`);
+  const metaPath = path.join(entryDir, `${stem}${AGENT_METADATA_EXT}`);
 
   if (!fs.existsSync(metaPath)) {
     issues.push(
       err(
         'ERR_VALIDATION_FAILED',
-        `${dirLabel}/${stem}.metadata.json is missing (required for ${mdFile})`,
+        `${dirLabel}/${stem}${AGENT_METADATA_EXT} is missing (required for ${mdFile})`,
       ),
     );
   }
@@ -256,13 +260,13 @@ function warnUnmatchedMetadataFiles(
   issues: ValidationIssue[],
 ): void {
   const metaFiles = files.filter(
-    (fileName) => fileName.endsWith('.metadata.json') && !fileName.startsWith('.'),
+    (fileName) => fileName.endsWith(AGENT_METADATA_EXT) && !fileName.startsWith('.'),
   );
 
   for (const metaFile of metaFiles) {
-    const stem = metaFile.replace(/\.metadata\.json$/, '');
-    if (!agentMdFiles.includes(`${stem}.agent.md`)) {
-      issues.push(warn(`${dirLabel}/${metaFile}: found .metadata.json with no matching .agent.md`));
+    const stem = metaFile.slice(0, -AGENT_METADATA_EXT.length);
+    if (!agentMdFiles.includes(`${stem}${AGENT_FILE_EXT}`)) {
+      issues.push(warn(`${dirLabel}/${metaFile}: found ${AGENT_METADATA_EXT} with no matching ${AGENT_FILE_EXT}`));
     }
   }
 }
@@ -279,7 +283,7 @@ export function validateEntryFiles(
   }
 
   const files = fs.readdirSync(entryDir);
-  const agentMdFiles = files.filter((fileName) => fileName.endsWith('.agent.md'));
+  const agentMdFiles = files.filter((fileName) => fileName.endsWith(AGENT_FILE_EXT));
 
   for (const mdFile of agentMdFiles) {
     entries.push(validateSingleEntryFile(entryDir, dirLabel, mdFile, issues));
