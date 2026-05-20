@@ -55,7 +55,7 @@ export const SOURCE_ARCHIVE_SUFFIX = '-src.zip';
 // --- ZIP security constraints ---
 
 export const ZIP_MAX_ENTRY_NAME_LENGTH = 4096;
-/** Mask to extract the Unix file-type bits from a ZIP entry attribute. */
+/** Mask to extract the full 16-bit Unix mode field from a ZIP entry attribute. */
 export const ZIP_UNIX_MODE_MASK = 0xffff;
 /** Mask to isolate the file-type field within Unix mode bits. */
 export const ZIP_UNIX_TYPE_MASK = 0xf000;
@@ -86,12 +86,20 @@ export const DISALLOWED_ZIP_EXTENSIONS = new Set([
 const escapeRegexLiteral = (value: string): string =>
   value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
+const getAnchoredPatternBody = (pattern: RegExp, patternName: string): string => {
+  const { source } = pattern;
+  if (!source.startsWith('^') || !source.endsWith('$')) {
+    throw new Error(`${patternName} must be anchored with ^ and $ to compose nested regex patterns.`);
+  }
+  return source.slice(1, -1);
+};
+
 /**
  * Valid entry path inside a deployment ZIP:
  * `agents/<id>.agent.md` where `<id>` is a lowercase kebab-case identifier.
  */
 export const DEPLOYMENT_ZIP_ENTRY_PATTERN = new RegExp(
-  `^${escapeRegexLiteral(AGENTS_DIR)}/${ID_PATTERN.source.slice(1, -1)}${escapeRegexLiteral(AGENT_FILE_EXT)}$`,
+  `^${escapeRegexLiteral(AGENTS_DIR)}/${getAnchoredPatternBody(ID_PATTERN, 'ID_PATTERN')}${escapeRegexLiteral(AGENT_FILE_EXT)}$`,
 );
 
 // --- Git branch constraints ---
