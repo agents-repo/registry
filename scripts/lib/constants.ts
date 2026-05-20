@@ -62,7 +62,7 @@ export const ZIP_UNIX_TYPE_MASK = 0xf000;
 /** Unix file-type value for a symbolic link. */
 export const ZIP_SYMLINK_TYPE = 0xa000;
 
-/** File extensions disallowed inside source ZIPs. */
+/** File extensions disallowed inside ZIP archives validated by this tooling. */
 export const DISALLOWED_ZIP_EXTENSIONS = new Set([
   '.exe',
   '.dll',
@@ -83,12 +83,16 @@ export const DISALLOWED_ZIP_EXTENSIONS = new Set([
 
 // --- Deployment ZIP entry pattern ---
 
+const escapeRegexLiteral = (value: string): string =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 /**
  * Valid entry path inside a deployment ZIP:
  * `agents/<id>.agent.md` where `<id>` is a lowercase kebab-case identifier.
  */
-export const DEPLOYMENT_ZIP_ENTRY_PATTERN =
-  /^agents\/[a-z0-9]+(?:-[a-z0-9]+)*\.agent\.md$/;
+export const DEPLOYMENT_ZIP_ENTRY_PATTERN = new RegExp(
+  `^${escapeRegexLiteral(AGENTS_DIR)}/${ID_PATTERN.source.slice(1, -1)}${escapeRegexLiteral(AGENT_FILE_EXT)}$`,
+);
 
 // --- Git branch constraints ---
 

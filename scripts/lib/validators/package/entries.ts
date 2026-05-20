@@ -233,7 +233,9 @@ function validateSingleEntryFile(
   mdFile: string,
   issues: ValidationIssue[],
 ): EntryVersion {
-  const stem = mdFile.replace(/\.agent\.md$/, '');
+  const stem = mdFile.endsWith(AGENT_FILE_EXT)
+    ? mdFile.slice(0, -AGENT_FILE_EXT.length)
+    : mdFile;
   const mdPath = path.join(entryDir, mdFile);
   const metaPath = path.join(entryDir, `${stem}${AGENT_METADATA_EXT}`);
 
