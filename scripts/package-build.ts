@@ -28,7 +28,7 @@ import { updateManifestAndIndexWithRollback } from './lib/build/registry-sync';
 import { prepareVersionSnapshot } from './lib/build/snapshot-writer';
 import { hasFlag, parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
 import { printValidationIssues } from './lib/cli/reporting';
-import { INDEX_FILENAME, SOURCE_ARCHIVE_SUFFIX } from './lib/constants';
+import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR } from './lib/constants';
 import { ErrorCode, PackageError } from './lib/errors';
 import { GitContext } from './lib/git';
 import { Package } from './lib/package';
@@ -132,7 +132,7 @@ async function main(): Promise<void> {
     console.log(`       src    sha256: ${srcZipSha256}`);
 
     // Prepare manifest update with rollback support
-    console.log(`[7/7] Updating versions/manifest.json and packages/index.json`);
+    console.log(`[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME} and packages/${INDEX_FILENAME}`);
     const indexPath = path.join(repoRoot, 'packages', INDEX_FILENAME);
     updateManifestAndIndexWithRollback({
       packageId,
@@ -161,8 +161,8 @@ async function main(): Promise<void> {
   console.log(`\nBuild complete: ${packageId}@${version}`);
   console.log(`  Deployment artifact : versions/${version}/${version}.zip`);
   console.log(`  Source archive      : versions/${version}/${version}${SOURCE_ARCHIVE_SUFFIX}`);
-  console.log(`  Manifest updated    : versions/manifest.json`);
-  console.log(`  Index updated       : packages/index.json`);
+  console.log(`  Manifest updated    : ${VERSIONS_DIR}/${MANIFEST_FILENAME}`);
+  console.log(`  Index updated       : packages/${INDEX_FILENAME}`);
 }
 
 try {
