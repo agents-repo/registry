@@ -36,7 +36,7 @@ export const LICENSE = 'MIT';
 // --- GitHub identity patterns ---
 
 export const GITHUB_USER_OR_TEAM_SLUG_PATTERN =
-  /^[A-Za-z0-9-]+(?:\/[A-Za-z0-9-]+)?$/;
+  /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*(?:\/[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*)?$/;
 
 // --- Schema family identifiers ---
 export const SCHEMA_FAMILY_PACKAGE = 'metadata.package';
