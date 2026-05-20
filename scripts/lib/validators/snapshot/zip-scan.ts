@@ -14,7 +14,12 @@ import {
 } from '../../constants';
 
 function hasTraversalPattern(name: string): boolean {
-  if (name.includes('\0') || name.startsWith('/') || name.includes('\\')) {
+  if (
+    name.includes('\0') ||
+    name.startsWith('/') ||
+    name.includes('\\') ||
+    /^[A-Za-z]:\//.test(name)
+  ) {
     return true;
   }
 
