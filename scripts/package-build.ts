@@ -28,7 +28,7 @@ import { updateManifestAndIndexWithRollback } from './lib/build/registry-sync';
 import { prepareVersionSnapshot } from './lib/build/snapshot-writer';
 import { hasFlag, parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
 import { printValidationIssues } from './lib/cli/reporting';
-import { INDEX_FILENAME } from './lib/constants';
+import { INDEX_FILENAME, SOURCE_ARCHIVE_SUFFIX } from './lib/constants';
 import { ErrorCode, PackageError } from './lib/errors';
 import { GitContext } from './lib/git';
 import { Package } from './lib/package';
@@ -122,7 +122,7 @@ async function main(): Promise<void> {
     zipBuilder.buildDeploymentZip(deployZipPath);
 
     // Build source archive
-    console.log(`[6/7] Building source archive: ${version}-src.zip`);
+    console.log(`[6/7] Building source archive: ${version}${SOURCE_ARCHIVE_SUFFIX}`);
     zipBuilder.buildSourceZip(srcZipPath);
 
     // Step 7: Compute checksums and update registry state
@@ -160,7 +160,7 @@ async function main(): Promise<void> {
 
   console.log(`\nBuild complete: ${packageId}@${version}`);
   console.log(`  Deployment artifact : versions/${version}/${version}.zip`);
-  console.log(`  Source archive      : versions/${version}/${version}-src.zip`);
+  console.log(`  Source archive      : versions/${version}/${version}${SOURCE_ARCHIVE_SUFFIX}`);
   console.log(`  Manifest updated    : versions/manifest.json`);
   console.log(`  Index updated       : packages/index.json`);
 }
