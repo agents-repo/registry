@@ -4,7 +4,7 @@ import type { Manifest, ValidationIssue } from '../../types';
 import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
-import { SHA256_PATTERN, SCHEMA_FAMILY_MANIFEST } from '../../constants';
+import { SHA256_PATTERN, SCHEMA_FAMILY_MANIFEST, SOURCE_ARCHIVE_SUFFIX } from '../../constants';
 
 export function validateManifest(
   manifestPath: string,
@@ -84,11 +84,11 @@ export function validateManifest(
         );
       }
 
-      if (e['srcArtifact'] !== `${ver}-src.zip`) {
+      if (e['srcArtifact'] !== `${ver}${SOURCE_ARCHIVE_SUFFIX}`) {
         issues.push(
           err(
             'ERR_VALIDATION_FAILED',
-            `manifest.json version ${ver}: srcArtifact must be "${ver}-src.zip"`,
+            `manifest.json version ${ver}: srcArtifact must be "${ver}${SOURCE_ARCHIVE_SUFFIX}"`,
           ),
         );
       }
