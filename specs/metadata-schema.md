@@ -102,6 +102,12 @@ Additional required fields:
 | `category` | string | Non-empty string |
 | `estimateOverallCost` | object | MUST follow `EstimateOverallCost` schema |
 
+`owner` semantics:
+
+- `owner` identifies the package authority responsible for release and
+  governance.
+- `owner` MUST NOT be treated as authorship attribution.
+
 ### Optional Fields
 
 | Field | Type | Constraints |
@@ -141,6 +147,12 @@ Additional optional fields:
   `high`, `critical`, or `mixed`.
 - `estimateOverallCost.estimatedCost`, when present, MUST be an integer in the
   range 1–10 inclusive.
+- `owner` MUST be a non-empty string.
+- `maintainers`, when present, MUST be an array of unique GitHub usernames or
+  team slugs.
+- `compatibility`, when present, MUST be an object.
+- `documentation`, when present, MUST be an HTTPS URL.
+- `keywords`, when present, MUST be an array of unique non-empty strings.
 - `quickstart`, when present, MUST be an HTTPS URL.
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix for extensions.
@@ -258,6 +270,7 @@ in tokens or API credits.
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
 - When `tools` is present in both this file and
   `<agent-id>.agent.md` frontmatter, the values MUST be identical.
+- `tools`, when present, MUST be an array of unique non-empty strings.
 - `inputs[]` and `outputs[]` items MUST conform to the `Contract`
   object schema defined in `agent-format.md`.
 - When `inputs` is present in both this file and
@@ -357,6 +370,7 @@ Additional required fields:
   `<flow-id>.agent.md` frontmatter, the values MUST be identical.
 - When `agents` is present in both this file and
   `<flow-id>.agent.md` frontmatter, the values MUST be identical.
+- `agents`, when present, MUST be an array of unique non-empty strings.
 - `inputs[]` and `outputs[]` items MUST conform to the `Contract`
   object schema defined in `flow-format.md`.
 - When `inputs` is present in both this file and

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { parseFrontmatter } from '../../frontmatter';
+import { parseFrontmatterData } from '../../frontmatter';
 import { ValidationUtils } from '../../validation-utils';
 import type { SchemaFamily } from '../../schema-versions';
 import type { ValidationIssue } from '../../types';
@@ -13,6 +13,11 @@ import {
   ESTIMATED_COST_MAX,
   DESCRIPTION_MIN_LENGTH,
   DESCRIPTION_MAX_LENGTH,
+  CONTRACT_NAME_MIN_LENGTH,
+  CONTRACT_NAME_MAX_LENGTH,
+  CONTRACT_NAME_PATTERN,
+  CONTRACT_ALLOWED_TYPES,
+  CONTRACT_REQUIRED_KEYS,
   LICENSE,
   SCHEMA_FAMILY_AGENT,
   SCHEMA_FAMILY_FLOW,
@@ -20,8 +25,224 @@ import {
   AGENT_METADATA_EXT,
 } from '../../constants';
 
+const CONTRACT_TYPES: ReadonlySet<string> = new Set(CONTRACT_ALLOWED_TYPES);
+
+function validateStringArrayField(
+  value: unknown,
+  fieldName: string,
+  context: string,
+  issues: ValidationIssue[],
+): value is string[] {
+  if (!Array.isArray(value)) {
+    issues.push(err('ERR_METADATA_INVALID', `${context}: ${fieldName} must be an array when provided`));
+    return false;
+  }
+
+  for (const item of value) {
+    if (typeof item !== 'string' || item.trim().length === 0) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: ${fieldName} must contain only non-empty strings`,
+        ),
+      );
+    }
+  }
+
+  const duplicateValues = value
+    .filter((item): item is string => typeof item === 'string')
+    .filter((item, index, all) => all.indexOf(item) !== index);
+  if (duplicateValues.length > 0) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `${context}: ${fieldName} must not contain duplicates: ${duplicateValues.join(', ')}`,
+      ),
+    );
+  }
+
+  return true;
+}
+
+function validateContractArray(
+  value: unknown,
+  fieldName: 'inputs' | 'outputs',
+  context: string,
+  issues: ValidationIssue[],
+): value is Array<Record<string, unknown>> {
+  if (!Array.isArray(value)) {
+    issues.push(err('ERR_METADATA_INVALID', `${context}: ${fieldName} must be an array when provided`));
+    return false;
+  }
+
+  const names: string[] = [];
+  for (const item of value) {
+    if (typeof item !== 'object' || item === null || Array.isArray(item)) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: ${fieldName} entries must be objects with name, type, and description`,
+        ),
+      );
+      continue;
+    }
+
+    const contract = item as Record<string, unknown>;
+    const keys = Object.keys(contract).sort();
+    if (keys.join(',') !== CONTRACT_REQUIRED_KEYS) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: ${fieldName} entries must contain exactly name, type, and description`,
+        ),
+      );
+    }
+
+    const name = contract['name'];
+    if (
+      typeof name !== 'string' ||
+      name.length < CONTRACT_NAME_MIN_LENGTH ||
+      name.length > CONTRACT_NAME_MAX_LENGTH ||
+      !CONTRACT_NAME_PATTERN.test(name)
+    ) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: ${fieldName}.name must match ^[a-z][a-z0-9_-]*$ and be 1 to 64 characters`,
+        ),
+      );
+    } else {
+      names.push(name);
+    }
+
+    const type = contract['type'];
+    if (typeof type !== 'string' || !CONTRACT_TYPES.has(type)) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: ${fieldName}.type must be one of string, number, boolean, object, array`,
+        ),
+      );
+    }
+
+    const description = contract['description'];
+    if (
+      typeof description !== 'string' ||
+      description.length < DESCRIPTION_MIN_LENGTH ||
+      description.length > DESCRIPTION_MAX_LENGTH
+    ) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: ${fieldName}.description must be a string of 1 to 300 characters`,
+        ),
+      );
+    }
+  }
+
+  const duplicateNames = names.filter((name, index, all) => all.indexOf(name) !== index);
+  if (duplicateNames.length > 0) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `${context}: ${fieldName} contract names must be unique: ${duplicateNames.join(', ')}`,
+      ),
+    );
+  }
+
+  return true;
+}
+
+function validateEntryMetadataOptionalFields(
+  md: Record<string, unknown>,
+  dirLabel: 'agents' | 'flows',
+  context: string,
+  issues: ValidationIssue[],
+): void {
+  if (md['tools'] !== undefined) {
+    if (dirLabel !== 'agents') {
+      issues.push(err('ERR_METADATA_INVALID', `${context}: tools is only valid for agent metadata`));
+    } else {
+      validateStringArrayField(md['tools'], 'tools', context, issues);
+    }
+  }
+
+  if (md['agents'] !== undefined) {
+    if (dirLabel !== 'flows') {
+      issues.push(err('ERR_METADATA_INVALID', `${context}: agents is only valid for flow metadata`));
+    } else {
+      validateStringArrayField(md['agents'], 'agents', context, issues);
+    }
+  }
+
+  if (md['inputs'] !== undefined) {
+    validateContractArray(md['inputs'], 'inputs', context, issues);
+  }
+
+  if (md['outputs'] !== undefined) {
+    validateContractArray(md['outputs'], 'outputs', context, issues);
+  }
+}
+
+function normalizeFrontmatterSyncValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeFrontmatterSyncValue(item));
+  }
+
+  if (value && typeof value === 'object') {
+    const record = value as Record<string, unknown>;
+    const normalized: Record<string, unknown> = {};
+
+    for (const key of Object.keys(record).sort()) {
+      normalized[key] = normalizeFrontmatterSyncValue(record[key]);
+    }
+
+    return normalized;
+  }
+
+  return value;
+}
+
+function valuesEqualForFrontmatterSync(left: unknown, right: unknown): boolean {
+  return (
+    JSON.stringify(normalizeFrontmatterSyncValue(left)) ===
+    JSON.stringify(normalizeFrontmatterSyncValue(right))
+  );
+}
+
+function validateFrontmatterParity(
+  frontmatter: Record<string, unknown>,
+  metadata: Record<string, unknown> | undefined,
+  dirLabel: 'agents' | 'flows',
+  stem: string,
+  issues: ValidationIssue[],
+): void {
+  if (!metadata) {
+    return;
+  }
+
+  const context = `${dirLabel}/${stem}.metadata.json`;
+  const sharedFields = dirLabel === 'agents'
+    ? ['description', 'tools', 'inputs', 'outputs']
+    : ['description', 'agents', 'inputs', 'outputs'];
+
+  for (const field of sharedFields) {
+    if (frontmatter[field] !== undefined && metadata[field] !== undefined) {
+      if (!valuesEqualForFrontmatterSync(frontmatter[field], metadata[field])) {
+        issues.push(
+          err(
+            'ERR_METADATA_INVALID',
+            `${context}: ${field} must match ${dirLabel}/${stem}.agent.md frontmatter when present in both`,
+          ),
+        );
+      }
+    }
+  }
+}
+
 function validateEntryMetadataRequiredFields(
   md: Record<string, unknown>,
+  dirLabel: 'agents' | 'flows',
   stem: string,
   context: string,
   issues: ValidationIssue[],
@@ -105,6 +326,8 @@ function validateEntryMetadataRequiredFields(
   ) {
     issues.push(err('ERR_METADATA_INVALID', `${context}: customAttributes must be an object when provided`));
   }
+
+  validateEntryMetadataOptionalFields(md, dirLabel, context, issues);
 }
 
 export interface EntryVersion {
@@ -150,15 +373,15 @@ function validateMetadataSidecar(
   dirLabel: 'agents' | 'flows',
   stem: string,
   issues: ValidationIssue[],
-): void {
+): Record<string, unknown> | undefined {
   if (!fs.existsSync(metaPath)) {
-    return;
+    return undefined;
   }
 
   const { data: metaData, error: metaError } = readJsonFile(metaPath);
   if (metaError) {
     issues.push(err('ERR_METADATA_INVALID', metaError));
-    return;
+    return undefined;
   }
 
   if (typeof metaData !== 'object' || metaData === null) {
@@ -168,7 +391,7 @@ function validateMetadataSidecar(
         `${dirLabel}/${stem}.metadata.json: metadata must be a JSON object`,
       ),
     );
-    return;
+    return undefined;
   }
 
   const md = metaData as Record<string, unknown>;
@@ -180,7 +403,15 @@ function validateMetadataSidecar(
     errorCode: 'ERR_METADATA_INVALID',
   });
 
-  validateEntryMetadataRequiredFields(md, stem, `${dirLabel}/${stem}.metadata.json`, issues);
+  validateEntryMetadataRequiredFields(
+    md,
+    dirLabel,
+    stem,
+    `${dirLabel}/${stem}.metadata.json`,
+    issues,
+  );
+
+  return md;
 }
 
 function validateFrontmatter(
@@ -189,11 +420,12 @@ function validateFrontmatter(
   mdFile: string,
   stem: string,
   issues: ValidationIssue[],
-): string {
+): Record<string, unknown> {
   const content = fs.readFileSync(mdPath, 'utf-8');
-  const frontmatter = parseFrontmatter(content);
+  const frontmatter = parseFrontmatterData(content);
+  const context = `${dirLabel}/${mdFile} frontmatter`;
 
-  if (!frontmatter['name'] || frontmatter['name'] !== stem) {
+  if (typeof frontmatter['name'] !== 'string' || frontmatter['name'] !== stem) {
     issues.push(
       err(
         'ERR_VALIDATION_FAILED',
@@ -202,7 +434,10 @@ function validateFrontmatter(
     );
   }
 
-  if (!frontmatter['version'] || !ValidationUtils.isReleaseVersion(frontmatter['version'])) {
+  if (
+    typeof frontmatter['version'] !== 'string' ||
+    !ValidationUtils.isReleaseVersion(frontmatter['version'])
+  ) {
     issues.push(
       err(
         'ERR_VALIDATION_FAILED',
@@ -211,7 +446,20 @@ function validateFrontmatter(
     );
   }
 
-  if (frontmatter['license'] && frontmatter['license'] !== LICENSE) {
+  if (
+    typeof frontmatter['description'] !== 'string' ||
+    frontmatter['description'].length < DESCRIPTION_MIN_LENGTH ||
+    frontmatter['description'].length > DESCRIPTION_MAX_LENGTH
+  ) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `${dirLabel}/${mdFile}: frontmatter description must be a string of 1 to 300 characters`,
+      ),
+    );
+  }
+
+  if (typeof frontmatter['license'] !== 'string' || frontmatter['license'] !== LICENSE) {
     issues.push(
       err(
         'ERR_VALIDATION_FAILED',
@@ -220,11 +468,9 @@ function validateFrontmatter(
     );
   }
 
-  if (frontmatter['description'] && frontmatter['description'].length > DESCRIPTION_MAX_LENGTH) {
-    issues.push(warn(`${dirLabel}/${mdFile}: frontmatter description exceeds 300 characters`));
-  }
+  validateEntryMetadataOptionalFields(frontmatter, dirLabel, context, issues);
 
-  return frontmatter['version'] ?? '';
+  return frontmatter;
 }
 
 function validateSingleEntryFile(
@@ -248,8 +494,12 @@ function validateSingleEntryFile(
     );
   }
 
-  validateMetadataSidecar(metaPath, dirLabel, stem, issues);
-  const frontmatterVersion = validateFrontmatter(mdPath, dirLabel, mdFile, stem, issues);
+  const metadata = validateMetadataSidecar(metaPath, dirLabel, stem, issues);
+  const frontmatter = validateFrontmatter(mdPath, dirLabel, mdFile, stem, issues);
+  validateFrontmatterParity(frontmatter, metadata, dirLabel, stem, issues);
+
+  const frontmatterVersion =
+    typeof frontmatter['version'] === 'string' ? frontmatter['version'] : '';
   return { id: stem, frontmatterVersion };
 }
 

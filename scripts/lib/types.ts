@@ -34,10 +34,14 @@ export interface PackageMetadata {
   name: string;
   description: string;
   owner: string;
+  maintainers?: string[];
   license: string;
   homepage: string;
   repository: string;
   tags: string[];
+  compatibility?: Record<string, unknown>;
+  documentation?: string;
+  keywords?: string[];
   createdAt: string;
   updatedAt: string;
   version: string;
