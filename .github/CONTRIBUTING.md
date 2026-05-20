@@ -149,9 +149,11 @@ submit and redistribute it under the MIT license.
 
 Before requesting review:
 
-1. Run markdown lint checks and fix warnings.
-2. Ensure references and paths are valid.
-3. Confirm no unrelated changes are included.
+1. Run markdown lint checks and fix warnings (`npm run lint:md`).
+2. Run Sonar lint checks for TypeScript files (`npm run lint:sonar`).
+3. Run type checks (`npm run typecheck`).
+4. Ensure references and paths are valid.
+5. Confirm no unrelated changes are included.
 
 ## Code Owners and Reviews
 
