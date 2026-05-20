@@ -13,11 +13,30 @@ export const ESTIMATED_COST_MAX = 10;
 export const DESCRIPTION_MIN_LENGTH = 1;
 export const DESCRIPTION_MAX_LENGTH = 300;
 
+// --- Contract constraints ---
+
+export const CONTRACT_NAME_MIN_LENGTH = 1;
+export const CONTRACT_NAME_MAX_LENGTH = 64;
+export const CONTRACT_NAME_PATTERN = /^[a-z][a-z0-9_-]*$/;
+export const CONTRACT_ALLOWED_TYPES = [
+  'string',
+  'number',
+  'boolean',
+  'object',
+  'array',
+] as const;
+export const CONTRACT_REQUIRED_KEYS = 'description,name,type';
+
 // --- Tags count constraint ---
 export const TAGS_MAX_COUNT = 20;
 
 // --- License ---
 export const LICENSE = 'MIT';
+
+// --- GitHub identity patterns ---
+
+export const GITHUB_USER_OR_TEAM_SLUG_PATTERN =
+  /^[A-Za-z0-9-]+(?:\/[A-Za-z0-9-]+)?$/;
 
 // --- Schema family identifiers ---
 export const SCHEMA_FAMILY_PACKAGE = 'metadata.package';

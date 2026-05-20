@@ -8,6 +8,7 @@ import {
   DESCRIPTION_MAX_LENGTH,
   TAGS_MAX_COUNT,
   LICENSE,
+  GITHUB_USER_OR_TEAM_SLUG_PATTERN,
   ESTIMATED_COST_MIN,
   ESTIMATED_COST_MAX,
   SCHEMA_FAMILY_PACKAGE,
@@ -172,6 +173,98 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
 }
 
 function validateOptionalFields(m: Record<string, unknown>, issues: ValidationIssue[]): void {
+  if (m['maintainers'] !== undefined) {
+    if (!Array.isArray(m['maintainers'])) {
+      issues.push(
+        err('ERR_METADATA_INVALID', 'maintainers must be an array when provided'),
+      );
+    } else {
+      const maintainers = m['maintainers'] as unknown[];
+
+      for (const maintainer of maintainers) {
+        if (
+          typeof maintainer !== 'string' ||
+          maintainer.trim().length === 0 ||
+          !GITHUB_USER_OR_TEAM_SLUG_PATTERN.test(maintainer)
+        ) {
+          issues.push(
+            err(
+              'ERR_METADATA_INVALID',
+              `maintainers entries must be GitHub usernames or team slugs, got: ${JSON.stringify(maintainer)}`,
+            ),
+          );
+        }
+      }
+
+      const duplicateMaintainers = maintainers
+        .filter((value): value is string => typeof value === 'string')
+        .filter((maintainer, index, all) => all.indexOf(maintainer) !== index);
+
+      if (duplicateMaintainers.length > 0) {
+        issues.push(
+          err(
+            'ERR_METADATA_INVALID',
+            `Duplicate maintainers: ${duplicateMaintainers.join(', ')}`,
+          ),
+        );
+      }
+    }
+  }
+
+  if (
+    m['compatibility'] !== undefined &&
+    (typeof m['compatibility'] !== 'object' ||
+      m['compatibility'] === null ||
+      Array.isArray(m['compatibility']))
+  ) {
+    issues.push(
+      err('ERR_METADATA_INVALID', 'compatibility must be an object when provided'),
+    );
+  }
+
+  if (
+    m['documentation'] !== undefined &&
+    (typeof m['documentation'] !== 'string' || !ValidationUtils.isHttpsUrl(m['documentation']))
+  ) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `documentation must be an HTTPS URL when provided, got: ${JSON.stringify(m['documentation'])}`,
+      ),
+    );
+  }
+
+  if (m['keywords'] !== undefined) {
+    if (!Array.isArray(m['keywords'])) {
+      issues.push(err('ERR_METADATA_INVALID', 'keywords must be an array when provided'));
+    } else {
+      const keywords = m['keywords'] as unknown[];
+      for (const keyword of keywords) {
+        if (typeof keyword !== 'string' || keyword.trim().length === 0) {
+          issues.push(
+            err(
+              'ERR_METADATA_INVALID',
+              `keywords must contain only non-empty strings, got: ${JSON.stringify(keyword)}`,
+            ),
+          );
+        }
+      }
+
+      const duplicateKeywords = keywords
+        .filter((value): value is string => typeof value === 'string')
+        .filter((keyword, index, all) => all.indexOf(keyword) !== index);
+
+      if (duplicateKeywords.length > 0) {
+        issues.push(
+          err(
+            'ERR_METADATA_INVALID',
+            `Duplicate keywords: ${duplicateKeywords.join(', ')}`,
+          ),
+        );
+      }
+    }
+  }
+
   if (
     m['quickstart'] !== undefined &&
     (typeof m['quickstart'] !== 'string' || !ValidationUtils.isHttpsUrl(m['quickstart']))
