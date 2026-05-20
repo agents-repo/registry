@@ -163,7 +163,7 @@ Use this package as a starting point for agents and flows in the registry.
 ## Package Contents
 
 - Agents and flows under this package root
-- Metadata contract in the package metadata file
+- Metadata contract in \`${METADATA_FILENAME}\`
 
 ## Usage
 
