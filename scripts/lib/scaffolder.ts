@@ -115,7 +115,7 @@ export class PackageScaffolder {
 name: ${id}
 description: ${description}
 version: ${INITIAL_VERSION}
-license: MIT
+license: ${LICENSE}
 ---
 
 # Overview

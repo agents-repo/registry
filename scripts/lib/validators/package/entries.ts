@@ -264,7 +264,7 @@ function warnUnmatchedMetadataFiles(
   );
 
   for (const metaFile of metaFiles) {
-    const stem = metaFile.replace(/\.metadata\.json$/, '');
+    const stem = metaFile.slice(0, -AGENT_METADATA_EXT.length);
     if (!agentMdFiles.includes(`${stem}${AGENT_FILE_EXT}`)) {
       issues.push(warn(`${dirLabel}/${metaFile}: found ${AGENT_METADATA_EXT} with no matching ${AGENT_FILE_EXT}`));
     }
