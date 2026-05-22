@@ -55,6 +55,7 @@ function requireTags(value: unknown, packageId: string): string[] {
     );
   }
 
+  const tags: string[] = [];
   for (const tag of value) {
     if (typeof tag !== 'string' || tag.trim().length === 0) {
       throw new PackageError(
@@ -62,9 +63,10 @@ function requireTags(value: unknown, packageId: string): string[] {
         `metadata.json tags for package "${packageId}" must contain only non-empty strings`,
       );
     }
+    tags.push(tag);
   }
 
-  return value;
+  return tags;
 }
 
 function projectQuickstart(value: unknown, packageId: string): { quickstart: string } | {} {
@@ -101,10 +103,11 @@ export class IndexManager {
   }
 
   update(packageId: string, metadata: PackageMetadata, manifestLatest: string): void {
+    const estimateOverallCost: unknown = metadata.estimateOverallCost;
     if (
-      typeof metadata.estimateOverallCost !== 'object' ||
-      metadata.estimateOverallCost === null ||
-      Array.isArray(metadata.estimateOverallCost)
+      typeof estimateOverallCost !== 'object' ||
+      estimateOverallCost === null ||
+      Array.isArray(estimateOverallCost)
     ) {
       throw new PackageError(
         ErrorCode.ERR_METADATA_INVALID,

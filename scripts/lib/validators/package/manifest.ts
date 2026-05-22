@@ -111,7 +111,7 @@ export function validateManifest(
   issues: ValidationIssue[],
 ): Manifest | null {
   const { data, error } = readJsonFile(manifestPath);
-  if (error) {
+  if (error !== undefined) {
     issues.push(err('ERR_VALIDATION_FAILED', error));
     return null;
   }

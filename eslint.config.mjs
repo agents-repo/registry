@@ -14,6 +14,9 @@ export default [
       parser: tsParser,
       sourceType: 'module',
       ecmaVersion: 'latest',
+      parserOptions: {
+        projectService: true,
+      },
       globals: {
         ...globals.node,
       },
@@ -30,6 +33,16 @@ export default [
       'no-unused-vars': 'off',
       '@typescript-eslint/no-redeclare': 'error',
       '@typescript-eslint/no-unused-vars': 'error',
+      '@typescript-eslint/explicit-module-boundary-types': 'error',
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      '@typescript-eslint/no-unsafe-assignment': 'error',
+      '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/no-unsafe-member-access': 'error',
+      '@typescript-eslint/no-unsafe-return': 'error',
+      '@typescript-eslint/strict-boolean-expressions': 'error',
     },
   },
 ];

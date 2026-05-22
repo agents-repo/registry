@@ -24,13 +24,13 @@ export function validateMetadataVersionAgainstManifestLatest(
   }
 
   const { data: manifestData } = readJsonFile(manifestPath);
-  if (!manifestData || typeof manifestData !== 'object') {
+  if (typeof manifestData !== 'object' || manifestData === null) {
     return;
   }
 
   const manifestLatest = (manifestData as Record<string, unknown>)['latest'];
   const metaVersion =
-    metadata && typeof metadata === 'object'
+    typeof metadata === 'object' && metadata !== null
       ? (metadata as Record<string, unknown>)['version']
       : undefined;
 
@@ -54,7 +54,9 @@ export function validateSharedFrontmatterVersion(
   entries: EntryVersion[],
   issues: ValidationIssue[],
 ): string | undefined {
-  const versions = entries.map((entry) => entry.frontmatterVersion).filter(Boolean);
+  const versions = entries
+    .map((entry) => entry.frontmatterVersion)
+    .filter((version): version is string => version.length > 0);
   if (versions.length === 0) {
     return undefined;
   }
@@ -78,7 +80,7 @@ export function validateFrontmatterVersionMatchesMetadata(
   sharedFrontmatterVersion: string | undefined,
   issues: ValidationIssue[],
 ): void {
-  if (!sharedFrontmatterVersion) {
+  if (sharedFrontmatterVersion === undefined) {
     return;
   }
 
@@ -88,7 +90,7 @@ export function validateFrontmatterVersionMatchesMetadata(
   }
 
   const { data: metadata } = readJsonFile(metadataPath);
-  if (!metadata || typeof metadata !== 'object') {
+  if (typeof metadata !== 'object' || metadata === null) {
     return;
   }
 

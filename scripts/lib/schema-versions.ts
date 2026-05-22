@@ -84,51 +84,61 @@ export class SchemaVersionsService {
       if (typeof version !== 'string') {
         throw new TypeError(`${label} contains non-string version: ${JSON.stringify(version)}`);
       }
-      if (!semver.valid(version)) {
+      if (semver.valid(version) === null) {
         throw new Error(`${label} contains invalid semver: ${JSON.stringify(version)}`);
       }
     }
   }
 
-  private validateFamilyConfig(family: SchemaFamily, config: SchemaFamilyConfig): void {
-    if (!config || typeof config !== 'object') {
+  private validateFamilyConfig(family: SchemaFamily, config: unknown): void {
+    if (typeof config !== 'object' || config === null) {
       throw new TypeError(`Missing schema family config: ${family}`);
     }
-    if (!semver.valid(config.current)) {
+
+    const typedConfig = config as SchemaFamilyConfig;
+    if (semver.valid(typedConfig.current) === null) {
       throw new Error(`schemas.${family}.current must be a valid semver`);
     }
 
-    this.validateVersionList(`schemas.${family}.supported`, config.supported);
-    this.validateVersionList(`schemas.${family}.deprecated`, config.deprecated);
-    this.validateVersionList(`schemas.${family}.eol`, config.eol);
+    this.validateVersionList(`schemas.${family}.supported`, typedConfig.supported);
+    this.validateVersionList(`schemas.${family}.deprecated`, typedConfig.deprecated);
+    this.validateVersionList(`schemas.${family}.eol`, typedConfig.eol);
 
-    if (!config.supported.includes(config.current)) {
+    if (!typedConfig.supported.includes(typedConfig.current)) {
       throw new Error(`schemas.${family}.current must be in schemas.${family}.supported`);
     }
   }
 
   private loadRegistry(): SchemaVersionsRegistry {
-    if (this.cachedRegistry) return this.cachedRegistry;
+    if (this.cachedRegistry !== null) return this.cachedRegistry;
 
     const raw = fs.readFileSync(this.registryFilePath, 'utf-8');
-    const parsed = JSON.parse(raw) as SchemaVersionsRegistry;
+    const parsed: unknown = JSON.parse(raw);
 
-    if (!parsed || typeof parsed !== 'object') {
+    if (typeof parsed !== 'object' || parsed === null) {
       throw new Error('schema-versions.json must be a JSON object');
     }
-    if (!semver.valid(parsed.schemaRegistryVersion)) {
+
+    const registryCandidate = parsed as {
+      schemaRegistryVersion?: unknown;
+      schemas?: unknown;
+    };
+
+    if (typeof registryCandidate.schemaRegistryVersion !== 'string' || semver.valid(registryCandidate.schemaRegistryVersion) === null) {
       throw new Error('schema-versions.json schemaRegistryVersion must be a valid semver');
     }
-    if (!parsed.schemas || typeof parsed.schemas !== 'object') {
+    if (typeof registryCandidate.schemas !== 'object' || registryCandidate.schemas === null) {
       throw new Error('schema-versions.json must contain schemas object');
     }
 
+    const registry = registryCandidate as SchemaVersionsRegistry;
+
     for (const family of schemaFamilies) {
-      this.validateFamilyConfig(family, parsed.schemas[family]);
+      this.validateFamilyConfig(family, registry.schemas[family]);
     }
 
-    this.cachedRegistry = parsed;
-    return parsed;
+    this.cachedRegistry = registry;
+    return registry;
   }
 }
 

@@ -26,7 +26,7 @@ function readRequiredNodeVersion(rootDir: string): string {
 
   const version = normalize(fs.readFileSync(nvmrcPath, "utf8"));
 
-  if (!version) {
+  if (version.length === 0) {
     fail(".nvmrc exists but does not contain a version.");
   }
 
@@ -45,12 +45,12 @@ function readRequiredNpmVersion(rootDir: string): string {
   };
 
   const packageManager = packageJson.packageManager?.trim();
-  if (!packageManager) {
+  if (packageManager === undefined || packageManager.length === 0) {
     fail("package.json is missing packageManager.");
   }
 
   const managerMatch = /^npm@(\d+\.\d+\.\d+)(?:\+[^\s]+)?$/.exec(packageManager);
-  if (!managerMatch?.[1]) {
+  if (managerMatch === null) {
     fail(
       `Unsupported packageManager format: ${packageManager}. Expected npm@x.y.z or npm@x.y.z+integrity.`,
     );
@@ -67,7 +67,7 @@ function validateNodeVersionMirror(rootDir: string, requiredNodeVersion: string)
   }
 
   const mirroredVersion = normalize(fs.readFileSync(nodeVersionPath, "utf8"));
-  if (!mirroredVersion) {
+  if (mirroredVersion.length === 0) {
     fail(".node-version exists but does not contain a version.");
   }
 
@@ -85,14 +85,16 @@ function main(): void {
 
   const nodeVersion = normalize(process.version);
   const userAgent = process.env.npm_config_user_agent;
-  const npmMatch = userAgent ? /npm\/(\d+\.\d+\.\d+)/.exec(userAgent) : null;
+  const npmMatch = userAgent !== undefined && userAgent.length > 0
+    ? /npm\/(\d+\.\d+\.\d+)/.exec(userAgent)
+    : null;
   const npmVersion = normalize(npmMatch?.[1] ?? "");
 
   if (nodeVersion !== requiredNodeVersion) {
     fail(`Node.js ${requiredNodeVersion} is required, found ${nodeVersion}.`);
   }
 
-  if (!npmVersion) {
+  if (npmVersion.length === 0) {
     fail(
       "Unable to detect npm version from npm_config_user_agent. Run this command via 'npm run env:check'.",
     );

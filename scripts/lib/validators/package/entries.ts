@@ -189,7 +189,7 @@ function normalizeFrontmatterSyncValue(value: unknown): unknown {
     return value.map((item) => normalizeFrontmatterSyncValue(item));
   }
 
-  if (value && typeof value === 'object') {
+  if (typeof value === 'object' && value !== null) {
     const record = value as Record<string, unknown>;
     const normalized: Record<string, unknown> = {};
 
@@ -379,7 +379,7 @@ function validateMetadataSidecar(
   }
 
   const { data: metaData, error: metaError } = readJsonFile(metaPath);
-  if (metaError) {
+  if (metaError !== undefined) {
     issues.push(err('ERR_METADATA_INVALID', metaError));
     return undefined;
   }

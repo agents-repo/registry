@@ -47,7 +47,7 @@ export function loadPackageMetadata(
   }
 
   const { data, error } = readJsonFile(metadataPath);
-  if (error) {
+  if (error !== undefined) {
     issues.push(err('ERR_METADATA_INVALID', error));
     return null;
   }
