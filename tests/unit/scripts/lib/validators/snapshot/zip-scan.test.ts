@@ -44,6 +44,28 @@ describe('scanSnapshotZip', (): void => {
     expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
   });
 
+  it('allows constrained source entries with spec-compliant extensions', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'agents/hello-agent.agent.md',
+        attr: 0,
+        getData: () => Buffer.from('---\nname: hello-agent\n---\n', 'utf-8'),
+      }),
+      toZipEntry({
+        entryName: 'flows/hello-agents.metadata.json',
+        attr: 0,
+        getData: () => Buffer.from('{"name":"hello-agents"}', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'source',
+      expectedVersion: '1.0.0',
+    });
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(false);
+  });
+
   it('allows spec-compliant top-level source files', (): void => {
     mockEntries = [
       toZipEntry({
