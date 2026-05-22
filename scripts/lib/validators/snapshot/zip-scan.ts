@@ -25,9 +25,10 @@ export function hasAllowedZipExtension(name: string): boolean {
 }
 
 function isConstrainedSourcePath(name: string): boolean {
+  const lowerName = name.toLowerCase();
   return (
-    name.startsWith(`${AGENTS_DIR}/`) ||
-    name.startsWith(`${FLOWS_DIR}/`)
+    lowerName.startsWith(`${AGENTS_DIR}/`) ||
+    lowerName.startsWith(`${FLOWS_DIR}/`)
   );
 }
 
