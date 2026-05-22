@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import type { ValidationIssue } from '../../types';
-import { validateMetadata } from './metadata';
+import type { ValidationIssue } from '../../../../../../scripts/lib/types';
+import { validateMetadata } from '../../../../../../scripts/lib/validators/package/metadata';
 
 function makeBaseMetadata(): Record<string, unknown> {
   return {

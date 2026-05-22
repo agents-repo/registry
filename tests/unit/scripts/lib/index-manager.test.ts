@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import type { PackageIndex, PackageMetadata } from './types';
-import { IndexManager } from './index-manager';
+import type { PackageIndex, PackageMetadata } from '../../../../scripts/lib/types';
+import { IndexManager } from '../../../../scripts/lib/index-manager';
 
 const createdDirs: string[] = [];
 
