@@ -16,12 +16,12 @@ export const ErrorCode = {
   ERR_METADATA_INVALID: 'ERR_METADATA_INVALID',
 } as const;
 
-export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
+export type ErrorCodeValue = (typeof ErrorCode)[keyof typeof ErrorCode];
 
 export class PackageError extends Error {
-  readonly code: ErrorCode;
+  readonly code: ErrorCodeValue;
 
-  constructor(code: ErrorCode, message: string) {
+  constructor(code: ErrorCodeValue, message: string) {
     super(message);
     this.name = 'PackageError';
     this.code = code;

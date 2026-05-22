@@ -28,6 +28,8 @@ export default [
       'sonarjs/cognitive-complexity': 'off',
       'no-redeclare': 'off',
       'no-unused-vars': 'off',
+      '@typescript-eslint/no-redeclare': 'error',
+      '@typescript-eslint/no-unused-vars': 'error',
     },
   },
 ];

@@ -88,7 +88,7 @@ function validateContractArray(
     }
 
     const contract = item as Record<string, unknown>;
-    const keys = Object.keys(contract).sort((left, right) => left.localeCompare(right));
+    const keys = Object.keys(contract).sort(ValidationUtils.compareCodeUnit);
     if (keys.join(',') !== CONTRACT_REQUIRED_KEYS) {
       issues.push(
         err(
@@ -193,7 +193,7 @@ function normalizeFrontmatterSyncValue(value: unknown): unknown {
     const record = value as Record<string, unknown>;
     const normalized: Record<string, unknown> = {};
 
-    for (const key of Object.keys(record).sort((left, right) => left.localeCompare(right))) {
+    for (const key of Object.keys(record).sort(ValidationUtils.compareCodeUnit)) {
       normalized[key] = normalizeFrontmatterSyncValue(record[key]);
     }
 

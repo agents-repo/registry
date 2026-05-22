@@ -18,7 +18,7 @@ function hasTraversalPattern(name: string): boolean {
     name.includes('\0') ||
     name.startsWith('/') ||
     name.includes('\\') ||
-    /^[A-Za-z]:\//.test(name)
+    /^[A-Za-z]:/.test(name)
   ) {
     return true;
   }
