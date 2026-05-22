@@ -43,10 +43,10 @@ export const TEMPLATES: Template[] = [
 export type FailFn = (message: string) => never;
 
 export function resolveTemplate(templateIdInput: string | undefined, fail: FailFn): Template {
-  const templateId = (templateIdInput || '').trim();
+  const templateId = (templateIdInput ?? '').trim();
   const template = TEMPLATES.find((candidate) => candidate.id === templateId);
   if (!template) {
-    fail(`Invalid --template value: ${templateId || '(empty)'}`);
+    fail(`Invalid --template value: ${templateId.length === 0 ? '(empty)' : templateId}`);
   }
   return template;
 }

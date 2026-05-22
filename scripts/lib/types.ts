@@ -8,15 +8,15 @@ export type PackageCostBand = typeof PACKAGE_COST_BANDS[number];
 
 // Type guards
 export function isStatus(value: unknown): value is StatusValue {
-  return STATUS_VALUES.includes(value as any);
+  return typeof value === 'string' && STATUS_VALUES.includes(value as StatusValue);
 }
 
 export function isCostBand(value: unknown): value is CostBand {
-  return COST_BANDS.includes(value as any);
+  return typeof value === 'string' && COST_BANDS.includes(value as CostBand);
 }
 
 export function isPackageCostBand(value: unknown): value is PackageCostBand {
-  return PACKAGE_COST_BANDS.includes(value as any);
+  return typeof value === 'string' && PACKAGE_COST_BANDS.includes(value as PackageCostBand);
 }
 
 export interface EstimateCost {

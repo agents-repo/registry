@@ -24,12 +24,12 @@ export class GitContext {
 
     // If in a PR, return the base branch (what would be committed to)
     // This is the more restrictive check for protected branches
-    if (baseRef) {
+    if (baseRef !== undefined && baseRef.length > 0) {
       return baseRef;
     }
 
     // Otherwise, return current ref if available
-    if (refName) {
+    if (refName !== undefined && refName.length > 0) {
       // Strip ref prefix if it's a full ref (e.g., "refs/tags/v1.0.0" -> "v1.0.0")
       // In most cases GITHUB_REF_NAME is already the short name, but be defensive
       return refName.replace(/^refs\/(heads|tags)\//, '');
@@ -58,7 +58,7 @@ export class GitContext {
 
       // Git returned "HEAD" or empty (detached HEAD state); try env vars
       const envBranch = this.getBranchFromEnv();
-      if (envBranch) {
+      if (envBranch !== null) {
         return envBranch;
       }
 
@@ -67,7 +67,7 @@ export class GitContext {
     } catch {
       // If git call throws, try env vars as fallback
       const envBranch = this.getBranchFromEnv();
-      if (envBranch) {
+      if (envBranch !== null) {
         return envBranch;
       }
 
@@ -92,7 +92,7 @@ export class GitContext {
 
       // Git returned "HEAD" or empty (detached HEAD state); try env vars
       const envBranch = this.getBranchFromEnv();
-      if (envBranch) {
+      if (envBranch !== null) {
         return { branch: envBranch, source: 'env' };
       }
 
@@ -101,7 +101,7 @@ export class GitContext {
     } catch {
       // If git call throws, try env vars as fallback
       const envBranch = this.getBranchFromEnv();
-      if (envBranch) {
+      if (envBranch !== null) {
         return { branch: envBranch, source: 'env' };
       }
 
@@ -115,7 +115,7 @@ export class GitContext {
    */
   isProtected(branch: string): boolean {
     // Fail-safe: treat empty string and "HEAD" as protected
-    if (!branch || branch === 'HEAD') {
+    if (branch.length === 0 || branch === 'HEAD') {
       return true;
     }
 

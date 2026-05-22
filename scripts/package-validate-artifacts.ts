@@ -58,7 +58,7 @@ function main(): void {
   const { packagesDir } = resolveScriptPaths(import.meta.url);
 
   let version = versionArg;
-  if (!version) {
+  if (version === undefined) {
     const metadataPath = path.join(packagesDir, packageId, METADATA_FILENAME);
     if (!fs.existsSync(metadataPath)) {
       console.error(`${METADATA_FILENAME} not found for package: ${packageId}`);
@@ -68,7 +68,7 @@ function main(): void {
       version?: string;
     };
     const parsedVersion = parseReleaseVersion(metadata.version);
-    if (!parsedVersion) {
+    if (parsedVersion === null) {
       console.error(`Version in ${METADATA_FILENAME} must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(metadata.version)}`);
       process.exit(1);
     }
@@ -76,7 +76,7 @@ function main(): void {
   }
 
   const normalizedVersion = parseReleaseVersion(version);
-  if (!normalizedVersion) {
+  if (normalizedVersion === null) {
     console.error(`--version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(version)}`);
     process.exit(1);
   }

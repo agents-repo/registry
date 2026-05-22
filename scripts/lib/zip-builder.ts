@@ -13,44 +13,40 @@ export class ZipBuilder {
     this.version = version;
   }
 
+  private addDeploymentEntriesFromDir(
+    zip: AdmZip,
+    seenEntries: Set<string>,
+    sourceDir: string,
+  ): void {
+    if (!fs.existsSync(sourceDir)) {
+      return;
+    }
+
+    for (const fileName of fs.readdirSync(sourceDir)) {
+      if (!fileName.endsWith(AGENT_FILE_EXT)) {
+        continue;
+      }
+
+      const entryName = `${AGENTS_DIR}/${fileName}`;
+      if (seenEntries.has(entryName)) {
+        throw new PackageError(
+          ErrorCode.ERR_ZIP_COLLISION,
+          `Collision building deployment ZIP: "${entryName}" already exists`,
+        );
+      }
+
+      seenEntries.add(entryName);
+      zip.addFile(entryName, fs.readFileSync(path.join(sourceDir, fileName)));
+    }
+  }
+
   buildDeploymentZip(outputPath: string): void {
     const zip = new AdmZip();
     const seenEntries = new Set<string>();
 
-    const agentsDir = path.join(this.packageDir, AGENTS_DIR);
-    if (fs.existsSync(agentsDir)) {
-      for (const f of fs.readdirSync(agentsDir)) {
-        if (f.endsWith(AGENT_FILE_EXT)) {
-          const entryName = `${AGENTS_DIR}/${f}`;
-          if (seenEntries.has(entryName)) {
-            throw new PackageError(
-              ErrorCode.ERR_ZIP_COLLISION,
-              `Collision building deployment ZIP: \"${entryName}\" already exists`,
-            );
-          }
-          seenEntries.add(entryName);
-          zip.addFile(entryName, fs.readFileSync(path.join(agentsDir, f)));
-        }
-      }
-    }
-
-    const flowsDir = path.join(this.packageDir, FLOWS_DIR);
-    if (fs.existsSync(flowsDir)) {
-      for (const f of fs.readdirSync(flowsDir)) {
-        if (f.endsWith(AGENT_FILE_EXT)) {
-          // Flows are merged into agents/ in the deployment ZIP
-          const entryName = `${AGENTS_DIR}/${f}`;
-          if (seenEntries.has(entryName)) {
-            throw new PackageError(
-              ErrorCode.ERR_ZIP_COLLISION,
-              `Collision building deployment ZIP: \"${entryName}\" already exists`,
-            );
-          }
-          seenEntries.add(entryName);
-          zip.addFile(entryName, fs.readFileSync(path.join(flowsDir, f)));
-        }
-      }
-    }
+    this.addDeploymentEntriesFromDir(zip, seenEntries, path.join(this.packageDir, AGENTS_DIR));
+    // Flows are merged into agents/ in the deployment ZIP.
+    this.addDeploymentEntriesFromDir(zip, seenEntries, path.join(this.packageDir, FLOWS_DIR));
 
     zip.writeZip(outputPath);
   }

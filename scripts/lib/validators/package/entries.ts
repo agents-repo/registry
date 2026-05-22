@@ -88,7 +88,7 @@ function validateContractArray(
     }
 
     const contract = item as Record<string, unknown>;
-    const keys = Object.keys(contract).sort();
+    const keys = Object.keys(contract).sort(ValidationUtils.compareCodeUnit);
     if (keys.join(',') !== CONTRACT_REQUIRED_KEYS) {
       issues.push(
         err(
@@ -160,18 +160,18 @@ function validateEntryMetadataOptionalFields(
   issues: ValidationIssue[],
 ): void {
   if (md['tools'] !== undefined) {
-    if (dirLabel !== 'agents') {
-      issues.push(err('ERR_METADATA_INVALID', `${context}: tools is only valid for agent metadata`));
-    } else {
+    if (dirLabel === 'agents') {
       validateStringArrayField(md['tools'], 'tools', context, issues);
+    } else {
+      issues.push(err('ERR_METADATA_INVALID', `${context}: tools is only valid for agent metadata`));
     }
   }
 
   if (md['agents'] !== undefined) {
-    if (dirLabel !== 'flows') {
-      issues.push(err('ERR_METADATA_INVALID', `${context}: agents is only valid for flow metadata`));
-    } else {
+    if (dirLabel === 'flows') {
       validateStringArrayField(md['agents'], 'agents', context, issues);
+    } else {
+      issues.push(err('ERR_METADATA_INVALID', `${context}: agents is only valid for flow metadata`));
     }
   }
 
@@ -189,11 +189,11 @@ function normalizeFrontmatterSyncValue(value: unknown): unknown {
     return value.map((item) => normalizeFrontmatterSyncValue(item));
   }
 
-  if (value && typeof value === 'object') {
+  if (typeof value === 'object' && value !== null) {
     const record = value as Record<string, unknown>;
     const normalized: Record<string, unknown> = {};
 
-    for (const key of Object.keys(record).sort()) {
+    for (const key of Object.keys(record).sort(ValidationUtils.compareCodeUnit)) {
       normalized[key] = normalizeFrontmatterSyncValue(record[key]);
     }
 
@@ -379,7 +379,7 @@ function validateMetadataSidecar(
   }
 
   const { data: metaData, error: metaError } = readJsonFile(metaPath);
-  if (metaError) {
+  if (metaError !== undefined) {
     issues.push(err('ERR_METADATA_INVALID', metaError));
     return undefined;
   }
@@ -509,15 +509,21 @@ function warnUnmatchedMetadataFiles(
   dirLabel: 'agents' | 'flows',
   issues: ValidationIssue[],
 ): void {
-  const metaFiles = files.filter(
-    (fileName) => fileName.endsWith(AGENT_METADATA_EXT) && !fileName.startsWith('.'),
-  );
+  const metaFiles = files.filter((fileName) => {
+    if (fileName.startsWith('.')) {
+      return false;
+    }
+    return fileName.endsWith(AGENT_METADATA_EXT);
+  });
 
   for (const metaFile of metaFiles) {
     const stem = metaFile.slice(0, -AGENT_METADATA_EXT.length);
-    if (!agentMdFiles.includes(`${stem}${AGENT_FILE_EXT}`)) {
-      issues.push(warn(`${dirLabel}/${metaFile}: found ${AGENT_METADATA_EXT} with no matching ${AGENT_FILE_EXT}`));
+    const expectedMdFile = `${stem}${AGENT_FILE_EXT}`;
+    if (agentMdFiles.includes(expectedMdFile)) {
+      continue;
     }
+
+    issues.push(warn(`${dirLabel}/${metaFile}: found ${AGENT_METADATA_EXT} with no matching ${AGENT_FILE_EXT}`));
   }
 }
 

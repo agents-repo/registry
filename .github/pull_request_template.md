@@ -42,6 +42,8 @@ If relevant, describe impact on:
 ## Validation Checklist
 
 - [ ] Markdown linting passes.
+- [ ] ESLint/Sonar linting passes (`npm run lint:sonar`).
+- [ ] Typecheck passes (`npm run typecheck`).
 - [ ] New or changed docs are deterministic and clear.
 - [ ] Matching issue template was used (or required sections were included
     manually when template application was not possible), and this PR follows

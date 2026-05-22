@@ -93,19 +93,29 @@ function buildMetadataNonInteractive(parsed: ParsedArgs, packageId: string, fail
   const description = requireArgValue('--description', parsed.description, fail);
   validateDescription(description, fail);
 
-  const owner = parsed.owner?.trim() || 'agents-repo';
-  const name = parsed.name?.trim() || packageIdToName(packageId);
+  const ownerInput = parsed.owner?.trim();
+  const owner = ownerInput === undefined || ownerInput.length === 0 ? 'agents-repo' : ownerInput;
+  const nameInput = parsed.name?.trim();
+  const name = nameInput === undefined || nameInput.length === 0 ? packageIdToName(packageId) : nameInput;
 
-  const tags = parsed.tags
-    ? parsed.tags.split(',').map((tag) => tag.trim().toLowerCase()).filter(Boolean)
+  const tagsInput = parsed.tags?.trim();
+  const tags = tagsInput !== undefined && tagsInput.length > 0
+    ? tagsInput.split(',').map((tag) => tag.trim().toLowerCase()).filter(Boolean)
     : ['agent', 'test'];
   validateTags(tags, fail);
 
-  const homepage = parsed.homepage?.trim() || `https://github.com/${owner}/${packageId}`;
-  const repository = parsed.repository?.trim() || `https://github.com/${owner}/${packageId}`;
+  const homepageInput = parsed.homepage?.trim();
+  const homepage = homepageInput === undefined || homepageInput.length === 0
+    ? `https://github.com/${owner}/${packageId}`
+    : homepageInput;
+  const repositoryInput = parsed.repository?.trim();
+  const repository = repositoryInput === undefined || repositoryInput.length === 0
+    ? `https://github.com/${owner}/${packageId}`
+    : repositoryInput;
 
-  const maintainers = parsed.maintainers
-    ? parsed.maintainers.split(',').map((maintainer) => maintainer.trim()).filter(Boolean)
+  const maintainersInput = parsed.maintainers?.trim();
+  const maintainers = maintainersInput !== undefined && maintainersInput.length > 0
+    ? maintainersInput.split(',').map((maintainer) => maintainer.trim()).filter(Boolean)
     : undefined;
 
   return {

@@ -23,7 +23,7 @@ export function parseCreateArgs(argv: string[], fail: FailFn): ParsedArgs {
     flows: [],
   };
 
-  const valueHandlers: Record<string, (value: string) => void> = {
+  const valueHandlers: Partial<Record<string, (value: string) => void>> = {
     '--package': (value) => {
       parsed.packageId = value;
     },
@@ -68,9 +68,9 @@ export function parseCreateArgs(argv: string[], fail: FailFn): ParsedArgs {
     }
 
     const handler = valueHandlers[arg];
-    if (handler) {
-      const next = args[i + 1];
-      if (!next || next.startsWith('--')) {
+    if (handler !== undefined) {
+      const next = args.at(i + 1);
+      if (next === undefined || next.startsWith('--')) {
         fail(`${arg} requires a value`);
       }
       handler(next);
@@ -85,7 +85,7 @@ export function parseCreateArgs(argv: string[], fail: FailFn): ParsedArgs {
 }
 
 export function requireArgValue(flag: string, value: string | undefined, fail: FailFn): string {
-  if (!value || value.startsWith('--')) {
+  if (value === undefined || value.startsWith('--') || value.trim().length === 0) {
     fail(`${flag} requires a value`);
   }
   return value.trim();

@@ -5,6 +5,10 @@ import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { MANIFEST_FILENAME, METADATA_FILENAME, VERSIONS_DIR } from '../../constants';
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
 export function resolvePackageDir(
   packageId: string,
   packagesDir: string,
@@ -35,7 +39,7 @@ export function resolvePackageDir(
 export function loadPackageMetadata(
   packageDir: string,
   issues: ValidationIssue[],
-): unknown | null {
+): Record<string, unknown> | null {
   const metadataPath = path.join(packageDir, METADATA_FILENAME);
   if (!fs.existsSync(metadataPath)) {
     issues.push(err('ERR_METADATA_INVALID', `${METADATA_FILENAME} is missing from package root`));
@@ -43,8 +47,13 @@ export function loadPackageMetadata(
   }
 
   const { data, error } = readJsonFile(metadataPath);
-  if (error) {
+  if (error !== undefined) {
     issues.push(err('ERR_METADATA_INVALID', error));
+    return null;
+  }
+
+  if (!isRecord(data)) {
+    issues.push(err('ERR_METADATA_INVALID', `${METADATA_FILENAME} must be a JSON object`));
     return null;
   }
 
