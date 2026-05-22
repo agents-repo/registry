@@ -11,5 +11,5 @@
     "skipLibCheck": true,
     "noEmit": true
   },
-  "include": ["scripts/**/*"]
+  "include": ["scripts/**/*", "vitest.config.ts"]
 }
