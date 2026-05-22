@@ -105,7 +105,7 @@ manually to check the working state before the package is ready to build.
 - PR baseline checks run markdown linting, Sonar linting, unit tests,
   and typecheck with pinned runtime.
 - Package PR checks run package validate/build/validate-artifacts for changed
-    package directories.
+  package directories.
 - Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
 
 ### Overwrite protection
