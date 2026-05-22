@@ -5,6 +5,10 @@ import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { MANIFEST_FILENAME, METADATA_FILENAME, VERSIONS_DIR } from '../../constants';
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
 export function resolvePackageDir(
   packageId: string,
   packagesDir: string,
@@ -48,7 +52,7 @@ export function loadPackageMetadata(
     return null;
   }
 
-  if (data === null || typeof data !== 'object' || Array.isArray(data)) {
+  if (!isRecord(data)) {
     issues.push(err('ERR_METADATA_INVALID', `${METADATA_FILENAME} must be a JSON object`));
     return null;
   }
