@@ -79,7 +79,8 @@ For review tasks, run:
 
 1. `npm run lint:md`
 2. `npm run lint:sonar`
-3. `npm run typecheck`
+3. `npm run test:run`
+4. `npm run typecheck`
 
 For package tasks, run in order:
 

@@ -151,9 +151,10 @@ Before requesting review:
 
 1. Run markdown lint checks and fix warnings (`npm run lint:md`).
 2. Run Sonar lint checks for TypeScript files (`npm run lint:sonar`).
-3. Run type checks (`npm run typecheck`).
-4. Ensure references and paths are valid.
-5. Confirm no unrelated changes are included.
+3. Run unit tests (`npm run test:run`).
+4. Run type checks (`npm run typecheck`).
+5. Ensure references and paths are valid.
+6. Confirm no unrelated changes are included.
 
 ## Code Owners and Reviews
 

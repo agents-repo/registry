@@ -67,10 +67,15 @@ registry/
         package-build.ts
         package-create.ts
         package-validate-artifacts.ts
+    tests/
+        unit/
+            ... (mirrors scripts/lib structure for unit tests)
     tsconfig.json
     README.md
     LICENSE
 ```
+
+For test layout conventions, see `tests/README.md`.
 
 ## Package Development Workflow
 
@@ -97,8 +102,8 @@ manually to check the working state before the package is ready to build.
 
 ### PR and Copilot checks
 
-- PR baseline checks run markdown linting, Sonar linting, and typecheck with
-    pinned runtime.
+- PR baseline checks run markdown linting, Sonar linting, unit tests,
+  and typecheck with pinned runtime.
 - Package PR checks run package validate/build/validate-artifacts for changed
     package directories.
 - Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
