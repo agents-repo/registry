@@ -2,17 +2,17 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import type { ValidationIssue } from '../lib/types';
+import type { ValidationIssue } from '../../types';
 import {
   validateHasEntries,
   validateUniqueIdsAcrossEntryTypes,
   type EntryVersion,
-} from '../lib/validators/package/entries';
+} from './entries';
 import {
   validateMetadataVersionAgainstManifestLatest,
   validateSharedFrontmatterVersion,
   validateFrontmatterVersionMatchesMetadata,
-} from '../lib/validators/package/version-consistency';
+} from './version-consistency';
 
 const createdDirs: string[] = [];
 

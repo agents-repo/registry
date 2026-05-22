@@ -1,6 +1,6 @@
 import type AdmZip from 'adm-zip';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { scanSnapshotZip } from '../lib/validators/snapshot/zip-scan';
+import { scanSnapshotZip } from './zip-scan';
 
 interface MockZipEntry {
   entryName: string;

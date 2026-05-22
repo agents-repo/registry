@@ -2,8 +2,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import type { Manifest } from '../lib/types';
-import { ManifestManager } from '../lib/manifest-manager';
+import type { Manifest } from './types';
+import { ManifestManager } from './manifest-manager';
 
 const createdDirs: string[] = [];
 
