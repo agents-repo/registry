@@ -67,7 +67,11 @@ export function collectPackageSnapshotTargets(packagesDir: string): PackageSnaps
     }
   }
 
-  return targets;
+  return targets.sort(
+    (left, right) =>
+      left.packageId.localeCompare(right.packageId) ||
+      left.version.localeCompare(right.version),
+  );
 }
 
 export function scanPackageSnapshotTargets(
@@ -103,7 +107,8 @@ function main(): void {
   const targets = collectPackageSnapshotTargets(packagesDir);
 
   if (targets.length === 0) {
-    console.log(`No package snapshots found under ${VERSIONS_DIR}/`);
+    const searchedPath = path.join(packagesDir, '*', VERSIONS_DIR, '<version>');
+    console.log(`No package snapshots found under ${searchedPath}`);
     process.exit(0);
   }
 
