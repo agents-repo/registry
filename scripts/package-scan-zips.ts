@@ -12,6 +12,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { parseReleaseVersion, resolveScriptPaths } from './lib/cli';
 import { SnapshotValidator } from './lib/snapshot-validator';
 import type { ValidationReport } from './lib/types';
@@ -130,4 +131,12 @@ function main(): void {
   console.log(`Package ZIP scan passed for ${results.length} version snapshot(s)`);
 }
 
-main();
+const invokedPath = process.argv.at(1);
+const isDirectExecution =
+  typeof invokedPath === 'string' &&
+  invokedPath.length > 0 &&
+  import.meta.url === pathToFileURL(invokedPath).href;
+
+if (isDirectExecution) {
+  main();
+}

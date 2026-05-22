@@ -27,10 +27,10 @@ beforeEach((): void => {
 });
 
 describe('scanSnapshotZip', (): void => {
-  it('blocks source payloads with blocked file extensions', (): void => {
+  it('flags disallowed file types inside constrained source paths', (): void => {
     mockEntries = [
       toZipEntry({
-        entryName: 'scripts/run.exe',
+        entryName: 'agents/run.exe',
         attr: 0,
         getData: () => Buffer.from('MZ', 'utf-8'),
       }),
@@ -42,6 +42,28 @@ describe('scanSnapshotZip', (): void => {
     });
 
     expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
+  });
+
+  it('allows spec-compliant top-level source files', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'LICENSE',
+        attr: 0,
+        getData: () => Buffer.from('MIT', 'utf-8'),
+      }),
+      toZipEntry({
+        entryName: 'docs/notes.txt',
+        attr: 0,
+        getData: () => Buffer.from('notes', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'source',
+      expectedVersion: '1.0.0',
+    });
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(false);
   });
 
   it('flags path traversal entries', (): void => {

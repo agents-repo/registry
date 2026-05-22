@@ -81,7 +81,7 @@ export const ZIP_UNIX_TYPE_MASK = 0xf000;
 /** Unix file-type value for a symbolic link. */
 export const ZIP_SYMLINK_TYPE = 0xa000;
 
-/** File suffixes allowed inside ZIP archives validated by this tooling. */
+/** File suffixes allowed for constrained source paths inside ZIP archives. */
 export const ALLOWED_ZIP_EXTENSIONS = new Set([
   '.agent.md',
   '.metadata.json',

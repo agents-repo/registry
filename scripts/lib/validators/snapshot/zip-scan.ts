@@ -4,7 +4,9 @@ import type { ValidationIssue } from '../../types';
 import { err } from '../common/issues';
 import {
   AGENT_FILE_EXT,
+  AGENTS_DIR,
   DEPLOYMENT_ZIP_ENTRY_PATTERN,
+  FLOWS_DIR,
   ALLOWED_ZIP_EXTENSIONS,
   ZIP_MAX_ENTRY_NAME_LENGTH,
   ZIP_SYMLINK_TYPE,
@@ -20,6 +22,13 @@ const ALLOWED_ZIP_EXTENSION_SUFFIXES = Array.from(ALLOWED_ZIP_EXTENSIONS).sort(
 export function hasAllowedZipExtension(name: string): boolean {
   const lowerName = name.toLowerCase();
   return ALLOWED_ZIP_EXTENSION_SUFFIXES.some((suffix) => lowerName.endsWith(suffix));
+}
+
+function isConstrainedSourcePath(name: string): boolean {
+  return (
+    name.startsWith(`${AGENTS_DIR}/`) ||
+    name.startsWith(`${FLOWS_DIR}/`)
+  );
 }
 
 function hasTraversalPattern(name: string): boolean {
@@ -158,7 +167,7 @@ function validateSourceEntry(
     return;
   }
 
-  if (!hasAllowedZipExtension(name)) {
+  if (isConstrainedSourcePath(name) && !hasAllowedZipExtension(name)) {
     issues.push(
       err(
         'ERR_ZIP_DISALLOWED_PAYLOAD',
