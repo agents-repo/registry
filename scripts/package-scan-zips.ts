@@ -60,7 +60,9 @@ export function collectPackageSnapshotTargets(packagesDir: string): PackageSnaps
       }
 
       const version = parseReleaseVersion(versionEntry.name);
-      if (version === null) {
+      // Snapshot directories MUST use canonical release names (e.g. 1.0.0).
+      // Reject names that only parse after normalization (e.g. v1.0.0).
+      if (version === null || version !== versionEntry.name) {
         continue;
       }
 

@@ -34,6 +34,7 @@ describe('collectPackageSnapshotTargets', (): void => {
   it('collects release version snapshots from the package tree', (): void => {
     writeSnapshot('alpha', '1.0.0');
     writeSnapshot('beta', '2.0.0');
+    fs.mkdirSync(path.join(tempDir, 'alpha', 'versions', 'v1.0.0'), { recursive: true });
     fs.mkdirSync(path.join(tempDir, 'alpha', 'versions', 'draft'), { recursive: true });
 
     const targets = collectPackageSnapshotTargets(tempDir);
