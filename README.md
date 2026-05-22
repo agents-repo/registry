@@ -70,12 +70,22 @@ registry/
     tests/
         unit/
             ... (mirrors scripts/lib structure for unit tests)
+        integration/
+            ... (multi-module integration scenarios)
+        e2e/
+            ... (workflow-level end-to-end checks)
+        fixtures/
+            ... (shared test inputs and snapshots)
+        helpers/
+            ... (shared test utilities)
     tsconfig.json
     README.md
     LICENSE
 ```
 
-For test layout conventions, see `tests/README.md`.
+Current testing baseline focuses on `tests/unit/`.
+For full test layout conventions, path mirroring, and scope guidance, see
+`tests/README.md`.
 
 ## Package Development Workflow
 

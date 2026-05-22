@@ -1,6 +1,7 @@
 # Tests
 
 This repository uses a hybrid test organization model.
+This document is the canonical guide for test layout and conventions.
 
 ## Layout
 

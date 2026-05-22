@@ -82,6 +82,9 @@ For review tasks, run:
 3. `npm run test:run`
 4. `npm run typecheck`
 
+When adding or updating tests, follow `tests/README.md` for test layout,
+path mirroring conventions, and scope guidance.
+
 For package tasks, run in order:
 
 1. `npm run package:validate -- --package <id>`

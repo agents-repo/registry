@@ -156,6 +156,10 @@ Before requesting review:
 5. Ensure references and paths are valid.
 6. Confirm no unrelated changes are included.
 
+When changes affect behavior under `scripts/lib/`, contributors SHOULD add or
+update unit tests under mirrored paths in `tests/unit/`.
+For full test layout conventions and scope guidance, see `tests/README.md`.
+
 ## Code Owners and Reviews
 
 Review routing is defined in CODEOWNERS.
