@@ -172,7 +172,7 @@ function validateSourceEntry(
     issues.push(
       err(
         'ERR_ZIP_DISALLOWED_PAYLOAD',
-        `Disallowed file type in source ZIP: "${name}"`,
+        `Disallowed file type in source ZIP: "${name}" — entries matching the constrained source-path rule must end with one of: ${ALLOWED_ZIP_EXTENSION_SUFFIXES.join(', ')}`,
       ),
     );
   }
