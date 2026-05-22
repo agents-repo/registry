@@ -27,6 +27,23 @@ beforeEach((): void => {
 });
 
 describe('scanSnapshotZip', (): void => {
+  it('blocks source payloads with blocked file extensions', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'scripts/run.exe',
+        attr: 0,
+        getData: () => Buffer.from('MZ', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'source',
+      expectedVersion: '1.0.0',
+    });
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
+  });
+
   it('flags path traversal entries', (): void => {
     mockEntries = [
       toZipEntry({

@@ -5,7 +5,7 @@ import { err } from '../common/issues';
 import {
   AGENT_FILE_EXT,
   DEPLOYMENT_ZIP_ENTRY_PATTERN,
-  DISALLOWED_ZIP_EXTENSIONS,
+  BLOCKED_ZIP_EXTENSIONS,
   ZIP_MAX_ENTRY_NAME_LENGTH,
   ZIP_SYMLINK_TYPE,
   ZIP_UNIX_MODE_MASK,
@@ -150,7 +150,7 @@ function validateSourceEntry(
   }
 
   const ext = name.includes('.') ? name.slice(name.lastIndexOf('.')).toLowerCase() : '';
-  if (DISALLOWED_ZIP_EXTENSIONS.has(ext)) {
+  if (BLOCKED_ZIP_EXTENSIONS.has(ext)) {
     issues.push(
       err(
         'ERR_ZIP_DISALLOWED_PAYLOAD',
