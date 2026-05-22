@@ -93,11 +93,19 @@ function validateFrontmatterVersion(
       return;
     }
 
+    const frontmatterVersion = Object.hasOwn(frontmatter, 'version')
+      ? frontmatter['version']
+      : undefined;
+    const frontmatterVersionDisplay =
+      frontmatterVersion === undefined
+        ? '(missing)'
+        : (JSON.stringify(frontmatterVersion) ?? String(frontmatterVersion));
+
     const prefix = scope === 'deployment' ? 'Deployment' : 'Source';
     issues.push(
       err(
         'ERR_FRONTMATTER_VERSION_MISMATCH',
-        `${prefix} ZIP entry "${name}": frontmatter version "${frontmatter['version']}" must be "${expectedVersion}"`,
+        `${prefix} ZIP entry "${name}": frontmatter version ${frontmatterVersionDisplay} must be "${expectedVersion}"`,
       ),
     );
   } catch {
