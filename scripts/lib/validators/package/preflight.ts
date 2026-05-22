@@ -48,7 +48,12 @@ export function loadPackageMetadata(
     return null;
   }
 
-  return data as Record<string, unknown>;
+  if (data === null || typeof data !== 'object' || Array.isArray(data)) {
+    issues.push(err('ERR_METADATA_INVALID', `${METADATA_FILENAME} must be a JSON object`));
+    return null;
+  }
+
+  return data;
 }
 
 export function getManifestPath(packageDir: string): string {
