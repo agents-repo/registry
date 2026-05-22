@@ -67,10 +67,25 @@ registry/
         package-build.ts
         package-create.ts
         package-validate-artifacts.ts
+    tests/
+        unit/
+            ... (mirrors scripts/lib structure for unit tests)
+        integration/
+            ... (multi-module integration scenarios)
+        e2e/
+            ... (workflow-level end-to-end checks)
+        fixtures/
+            ... (shared test inputs and snapshots)
+        helpers/
+            ... (shared test utilities)
     tsconfig.json
     README.md
     LICENSE
 ```
+
+Current testing baseline focuses on `tests/unit/`.
+For full test layout conventions, path mirroring, and scope guidance, see
+`tests/README.md`.
 
 ## Package Development Workflow
 
@@ -97,10 +112,10 @@ manually to check the working state before the package is ready to build.
 
 ### PR and Copilot checks
 
-- PR baseline checks run markdown linting, Sonar linting, and typecheck with
-    pinned runtime.
+- PR baseline checks run markdown linting, Sonar linting, unit tests,
+  and typecheck with pinned runtime.
 - Package PR checks run package validate/build/validate-artifacts for changed
-    package directories.
+  package directories.
 - Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
 
 ### Overwrite protection

@@ -43,6 +43,7 @@ If relevant, describe impact on:
 
 - [ ] Markdown linting passes.
 - [ ] ESLint/Sonar linting passes (`npm run lint:sonar`).
+- [ ] Unit tests pass (`npm run test:run`).
 - [ ] Typecheck passes (`npm run typecheck`).
 - [ ] New or changed docs are deterministic and clear.
 - [ ] Matching issue template was used (or required sections were included
