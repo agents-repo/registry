@@ -9,6 +9,7 @@
     "package:validate": "tsx scripts/package-validate.ts",
     "package:build": "tsx scripts/package-build.ts",
     "package:validate-artifacts": "tsx scripts/package-validate-artifacts.ts",
+    "package:scan-zips": "tsx scripts/package-scan-zips.ts",
     "package:create": "tsx scripts/package-create.ts",
     "test": "vitest",
     "test:run": "vitest run",

@@ -81,23 +81,12 @@ export const ZIP_UNIX_TYPE_MASK = 0xf000;
 /** Unix file-type value for a symbolic link. */
 export const ZIP_SYMLINK_TYPE = 0xa000;
 
-/** File extensions blocked inside ZIP archives validated by this tooling. */
-export const BLOCKED_ZIP_EXTENSIONS = new Set([
-  '.exe',
-  '.dll',
-  '.so',
-  '.dylib',
-  '.sh',
-  '.bash',
-  '.bat',
-  '.cmd',
-  '.ps1',
-  '.py',
-  '.rb',
-  '.pl',
-  '.php',
-  '.jar',
-  '.class',
+/** File suffixes allowed inside ZIP archives validated by this tooling. */
+export const ALLOWED_ZIP_EXTENSIONS = new Set([
+  '.agent.md',
+  '.metadata.json',
+  '.md',
+  '.json',
 ]);
 
 // --- Deployment ZIP entry pattern ---

@@ -5,13 +5,22 @@ import { err } from '../common/issues';
 import {
   AGENT_FILE_EXT,
   DEPLOYMENT_ZIP_ENTRY_PATTERN,
-  BLOCKED_ZIP_EXTENSIONS,
+  ALLOWED_ZIP_EXTENSIONS,
   ZIP_MAX_ENTRY_NAME_LENGTH,
   ZIP_SYMLINK_TYPE,
   ZIP_UNIX_MODE_MASK,
   ZIP_UNIX_TYPE_MASK,
   VERSIONS_DIR,
 } from '../../constants';
+
+const ALLOWED_ZIP_EXTENSION_SUFFIXES = Array.from(ALLOWED_ZIP_EXTENSIONS).sort(
+  (left, right) => right.length - left.length,
+);
+
+export function hasAllowedZipExtension(name: string): boolean {
+  const lowerName = name.toLowerCase();
+  return ALLOWED_ZIP_EXTENSION_SUFFIXES.some((suffix) => lowerName.endsWith(suffix));
+}
 
 function hasTraversalPattern(name: string): boolean {
   if (
@@ -149,12 +158,11 @@ function validateSourceEntry(
     return;
   }
 
-  const ext = name.includes('.') ? name.slice(name.lastIndexOf('.')).toLowerCase() : '';
-  if (BLOCKED_ZIP_EXTENSIONS.has(ext)) {
+  if (!hasAllowedZipExtension(name)) {
     issues.push(
       err(
         'ERR_ZIP_DISALLOWED_PAYLOAD',
-        `Disallowed file extension "${ext}" in source ZIP: "${name}"`,
+        `Disallowed file type in source ZIP: "${name}"`,
       ),
     );
   }
