@@ -153,8 +153,9 @@ Before requesting review:
 2. Run Sonar lint checks for TypeScript files (`npm run lint:sonar`).
 3. Run unit tests (`npm run test:run`).
 4. Run type checks (`npm run typecheck`).
-5. Ensure references and paths are valid.
-6. Confirm no unrelated changes are included.
+5. Run the repo-wide package ZIP scan (`npm run package:scan-zips`).
+6. Ensure references and paths are valid.
+7. Confirm no unrelated changes are included.
 
 When changes affect behavior under `scripts/lib/`, contributors SHOULD add or
 update unit tests under mirrored paths in `tests/unit/`.
