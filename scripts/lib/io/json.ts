@@ -12,7 +12,7 @@ export function readTextFileIfExists(filePath: string): string | null {
 }
 
 export function writeJsonFile(filePath: string, value: unknown): void {
-  fs.writeFileSync(filePath, JSON.stringify(value, null, 4) + '\n', 'utf-8');
+  fs.writeFileSync(filePath, JSON.stringify(value, null, 2) + '\n', 'utf-8');
 }
 
 export function cloneJson<T>(value: T): T {

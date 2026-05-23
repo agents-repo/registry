@@ -1,15 +1,15 @@
 {
-    "schemaVersion": "1.0.0",
-    "name": "hello-agent",
-    "latest": "1.0.0",
-    "versions": [
-        {
-            "version": "1.0.0",
-            "artifact": "1.0.0.zip",
-            "sha256": "52bd2f6d62bbe5cd30b93b380a47c1b651723af3dabad2e217772e8f0a7c95cc",
-            "srcArtifact": "1.0.0-src.zip",
-            "srcSha256": "bfcbdb9a604c7c1e2809c9e8117b8565a1f3c6eab251c163f2932b77f826a9f2",
-            "createdAt": "2026-05-20T05:19:47.976Z"
-        }
-    ]
+  "schemaVersion": "1.0.0",
+  "name": "hello-agent",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "artifact": "1.0.0.zip",
+      "sha256": "e1543d138d576c03c8ad214e1a500e90434c8fc6967ec39fcc9c96238ab51736",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "70605d5a4dd4e06aaaff1b0283dbf471b7279ff1180e3518a4b02978949ddfed",
+      "createdAt": "2026-05-23T10:48:55.261Z"
+    }
+  ]
 }

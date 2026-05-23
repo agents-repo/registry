@@ -2,6 +2,8 @@ import js from '@eslint/js';
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import sonarjs from 'eslint-plugin-sonarjs';
+import jsonc from 'eslint-plugin-jsonc';
+import * as jsoncParser from 'jsonc-eslint-parser';
 import globals from 'globals';
 
 export default [
@@ -28,6 +30,7 @@ export default [
     rules: {
       ...js.configs.recommended.rules,
       ...sonarjs.configs.recommended.rules,
+      indent: ['error', 2, { SwitchCase: 1 }],
       'sonarjs/cognitive-complexity': 'off',
       'no-redeclare': 'off',
       'no-unused-vars': 'off',
@@ -43,6 +46,18 @@ export default [
       '@typescript-eslint/no-unsafe-member-access': 'error',
       '@typescript-eslint/no-unsafe-return': 'error',
       '@typescript-eslint/strict-boolean-expressions': 'error',
+    },
+  },
+  {
+    files: ['**/*.{json,jsonc}'],
+    languageOptions: {
+      parser: jsoncParser,
+    },
+    plugins: {
+      jsonc,
+    },
+    rules: {
+      'jsonc/indent': ['error', 2],
     },
   },
 ];

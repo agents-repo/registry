@@ -150,7 +150,8 @@ submit and redistribute it under the MIT license.
 Before requesting review:
 
 1. Run markdown lint checks and fix warnings (`npm run lint:md`).
-2. Run Sonar lint checks for TypeScript files (`npm run lint:sonar`).
+2. Run Sonar lint checks for TypeScript and JSON/JSONC files
+  (`npm run lint:sonar`).
 3. Run unit tests (`npm run test:run`).
 4. Run type checks (`npm run typecheck`).
 5. Run the repo-wide package ZIP scan (`npm run package:scan-zips`).

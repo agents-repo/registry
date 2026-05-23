@@ -37,8 +37,12 @@ Do not add personal preferences to workspace settings.
 Formatting and lint behavior is defined by repository tooling:
 
 - TypeScript lint: `eslint.config.mjs`
+- JSON and JSONC lint (including indentation): `eslint.config.mjs`
 - Markdown lint: `.markdownlint-cli2.yaml`
 - Commands: `npm run lint:sonar` and `npm run lint:md`
+
+The shared workspace default uses 2-space indentation, and JSON/JSONC
+indentation is enforced by `npm run lint:sonar`.
 
 Avoid forcing a global default formatter in workspace settings unless a
 repository-wide decision is made and documented.
