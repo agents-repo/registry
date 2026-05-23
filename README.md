@@ -152,12 +152,24 @@ single-responsibility, and orchestration is still performed externally
 During development, you MAY run `npm run package:validate -- --package <id>`
 manually to check the working state before the package is ready to build.
 
+For package-script changes, use the separate smoke command:
+
+```bash
+npm run package:create:smoke -- --package <id>
+```
+
+That smoke flow creates a temporary package workspace and runs the full script
+chain end to end: `package:create`, `package:validate`, `package:build`, and
+`package:validate-artifacts`.
+
 ### PR and Copilot checks
 
 - PR baseline checks run markdown linting, Sonar linting, unit tests,
   typecheck, and the repo-wide package ZIP scan with pinned runtime.
 - Package PR checks run package validate/build/validate-artifacts for changed
   package directories.
+- Package script changes also run the dedicated smoke workflow, which calls
+    `npm run package:create:smoke -- --package <id>`.
 - Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
 
 ### Overwrite protection

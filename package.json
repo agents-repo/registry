@@ -11,6 +11,7 @@
     "package:validate-artifacts": "tsx scripts/package-validate-artifacts.ts",
     "package:scan-zips": "tsx scripts/package-scan-zips.ts",
     "package:create": "tsx scripts/package-create.ts",
+    "package:create:smoke": "tsx scripts/package-create-smoke.ts",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",

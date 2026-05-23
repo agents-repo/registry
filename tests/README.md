@@ -12,6 +12,11 @@ This document is the canonical guide for test layout and conventions.
 - `tests/helpers/`: shared test utilities
 
 Current baseline focuses on `tests/unit/`.
+Package-create smoke flows belong in `tests/integration/` and should reuse
+`tests/helpers/` for shared temp package setup when appropriate.
+These smoke flows should exercise the real package scripts in a temp workspace,
+not call the lower-level build helpers directly, so they match the CI smoke
+workflow and the AI-driven verification path.
 
 ## Unit Test Path Convention
 

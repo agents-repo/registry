@@ -31,7 +31,10 @@ export function resolveScriptPaths(importMetaUrl: string): {
   packagesDir: string;
 } {
   const scriptDir = fileURLToPath(new URL('.', importMetaUrl));
-  const repoRoot = path.resolve(scriptDir, '..');
+  const repoRootOverride = process.env.REGISTRY_REPO_ROOT?.trim();
+  const repoRoot = repoRootOverride === undefined || repoRootOverride.length === 0
+    ? path.resolve(scriptDir, '..')
+    : path.resolve(repoRootOverride);
   const packagesDir = path.join(repoRoot, 'packages');
   return { scriptDir, repoRoot, packagesDir };
 }
