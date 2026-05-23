@@ -3,6 +3,7 @@ description: Request a change to one or more files in specs/.
 title: "spec: "
 labels:
   - specs
+type: Task
 body:
   - type: markdown
     attributes:
@@ -12,6 +13,9 @@ body:
         **Branch name:** `spec/<issue-number>-<short-slug>`
         **Example:** `spec/7-add-contract-schema`
         Create this issue first to get the issue number, then open the branch.
+
+        If you open a PR for this issue, include
+        `Closes #<issue-number>` in `## Related Issues`.
 
   - type: dropdown
     id: spec-file
@@ -78,9 +82,15 @@ body:
     attributes:
       label: Checklist
       options:
+        - label: I searched for existing similar issues.
+          required: true
         - label: I used deterministic language (MUST, SHOULD, MAY).
           required: true
         - label: I included at least one concrete example.
           required: true
         - label: I considered versioning implications.
+          required: true
+        - label: >-
+            If I open a PR for this issue, I will include
+            `Closes #<issue-number>` in `## Related Issues`.
           required: true

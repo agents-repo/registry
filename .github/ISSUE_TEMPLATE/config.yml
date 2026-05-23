@@ -3,3 +3,8 @@ contact_links:
   - name: Registry usage question
     url: https://github.com/agents-repo/registry/discussions
     about: Ask usage questions and open-ended discussions here.
+  - name: Security vulnerability report
+    url: https://github.com/agents-repo/registry/security/advisories/new
+    about: >-
+      Report security vulnerabilities privately through GitHub Security
+      Advisories.

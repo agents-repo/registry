@@ -3,6 +3,7 @@ description: Track maintenance and operational work.
 title: "chore: "
 labels:
   - chore
+type: Task
 body:
   - type: markdown
     attributes:
@@ -10,6 +11,9 @@ body:
         **Branch name:** `chore/<issue-number>-<short-slug>`
         **Example:** `chore/31-update-dependencies`
         Create this issue first to get the issue number, then open the branch.
+
+        If you open a PR for this issue, include
+        `Closes #<issue-number>` in `## Related Issues`.
 
   - type: textarea
     id: objective
@@ -38,3 +42,15 @@ body:
       description: How will completion be verified?
     validations:
       required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched for existing similar issues.
+          required: true
+        - label: >-
+            If I open a PR for this issue, I will include
+            `Closes #<issue-number>` in `## Related Issues`.
+          required: true
