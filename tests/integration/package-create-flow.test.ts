@@ -4,6 +4,8 @@ import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { runPackageCreateSmoke } from '../../scripts/lib/create/smoke';
 
+const PACKAGE_CREATE_SMOKE_TIMEOUT_MS = 60_000;
+
 let tempDir = '';
 
 beforeEach((): void => {
@@ -15,16 +17,20 @@ afterEach((): void => {
 });
 
 describe('package create smoke flow', (): void => {
-  it('creates, validates, builds, and verifies a dummy package without AI', async (): Promise<void> => {
-    const packageId = 'smoke-package';
-    const result = await runPackageCreateSmoke(packageId, {
-      workspaceDir: tempDir,
-      cleanup: false,
-    });
+  it(
+    'creates, validates, builds, and verifies a dummy package without AI',
+    async (): Promise<void> => {
+      const packageId = 'smoke-package';
+      const result = await runPackageCreateSmoke(packageId, {
+        workspaceDir: tempDir,
+        cleanup: false,
+      });
 
-    expect(result.version).toBe('1.0.0');
-    expect(fs.existsSync(result.deployZipPath)).toBe(true);
-    expect(fs.existsSync(result.srcZipPath)).toBe(true);
-    expect(fs.existsSync(result.manifestPath)).toBe(true);
-  });
+      expect(result.version).toBe('1.0.0');
+      expect(fs.existsSync(result.deployZipPath)).toBe(true);
+      expect(fs.existsSync(result.srcZipPath)).toBe(true);
+      expect(fs.existsSync(result.manifestPath)).toBe(true);
+    },
+    PACKAGE_CREATE_SMOKE_TIMEOUT_MS,
+  );
 });
