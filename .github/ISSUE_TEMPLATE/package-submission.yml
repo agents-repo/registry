@@ -15,6 +15,9 @@ body:
         **Example:** `package/56-my-package-name`
         Create this issue first to get the issue number, then open the branch.
 
+        If you open a PR for this issue, include
+        `Closes #<issue-number>` in `## Related Issues`.
+
   - type: dropdown
     id: package-type
     attributes:
@@ -226,4 +229,8 @@ body:
           required: true
         - label: >-
             `npm run package:validate-artifacts` passed for this version.
+          required: true
+        - label: >-
+            If I open a PR for this issue, I will include
+            `Closes #<issue-number>` in `## Related Issues`.
           required: true

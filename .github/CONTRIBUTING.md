@@ -53,10 +53,13 @@ Create the issue first to obtain the issue number, then open the branch.
 ## Pull Request Expectations
 
 1. Keep PRs focused and easy to review.
-2. Link related issues in the PR body.
-3. Use deterministic language for normative rules.
-4. Include examples when changing specification behavior.
-5. Use `.github/pull_request_template.md` for every PR, or if it cannot be
+2. If a PR is linked to a tracking issue, it MUST include
+  `Closes #<issue-number>` in the `## Related Issues` section.
+3. If a PR is not tied to a tracking issue, it MAY omit `Closes`, but SHOULD
+  include a short rationale in the PR body.
+4. Use deterministic language for normative rules.
+5. Include examples when changing specification behavior.
+6. Use `.github/pull_request_template.md` for every PR, or if it cannot be
    applied programmatically, include its required sections manually in the PR
    body.
 

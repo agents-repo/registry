@@ -65,6 +65,8 @@ If relevant, describe impact on:
   has been reviewed.
 - [ ] If a package version was published: no files under `versions/` were
   manually authored or modified outside of `package-build` script output.
+- [ ] If this PR is linked to a tracking issue, `## Related Issues` includes
+  `Closes #<issue-number>`.
 
 ## Risk and Rollback
 
@@ -72,6 +74,9 @@ If relevant, describe impact on:
 - Rollback plan:
 
 ## Related Issues
+
+- If this PR is linked to an issue, include `Closes #<issue-number>`.
+- If this PR is not tied to a tracking issue, state a short rationale.
 
 Closes #
 Related #

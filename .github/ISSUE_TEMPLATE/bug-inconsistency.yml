@@ -11,6 +11,9 @@ body:
         **Example:** `fix/42-correct-manifest-artifact-rule`
         Create this issue first to get the issue number, then open the branch.
 
+        If you open a PR for this issue, include
+        `Closes #<issue-number>` in `## Related Issues`.
+
   - type: textarea
     id: summary
     attributes:
@@ -60,4 +63,8 @@ body:
         - label: I confirmed this issue is still reproducible.
           required: true
         - label: I searched for existing similar issues.
+          required: true
+        - label: >-
+            If I open a PR for this issue, I will include
+            `Closes #<issue-number>` in `## Related Issues`.
           required: true

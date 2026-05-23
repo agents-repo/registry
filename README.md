@@ -66,6 +66,9 @@ gh pr create --repo agents-repo/registry \
   --body-file <file>
 ```
 
+For issue-linked PRs, include `Closes #<issue-number>` in
+`## Related Issues`. See `.github/CONTRIBUTING.md` for the canonical policy.
+
 ## VS Code Workspace Settings
 
 Shared workspace editor defaults are managed in `.vscode/settings.json`.

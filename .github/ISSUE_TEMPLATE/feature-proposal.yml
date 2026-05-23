@@ -17,6 +17,9 @@ body:
         **Example:** `feat/15-search-index`
         Create this issue first to get the issue number, then open the branch.
 
+        If you open a PR for this issue, include
+        `Closes #<issue-number>` in `## Related Issues`.
+
   - type: textarea
     id: summary
     attributes:
@@ -67,6 +70,10 @@ body:
         - label: I reviewed existing issues and this is not duplicated.
           required: true
         - label: I described measurable acceptance criteria.
+          required: true
+        - label: >-
+            If I open a PR for this issue, I will include
+            `Closes #<issue-number>` in `## Related Issues`.
           required: true
         - label: I can help test or review this feature.
           required: false
