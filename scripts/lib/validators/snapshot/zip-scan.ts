@@ -3,15 +3,38 @@ import { parseFrontmatter } from '../../frontmatter';
 import type { ValidationIssue } from '../../types';
 import { err } from '../common/issues';
 import {
+  AGENTS_DIR,
   AGENT_FILE_EXT,
   DEPLOYMENT_ZIP_ENTRY_PATTERN,
-  DISALLOWED_ZIP_EXTENSIONS,
+  FLOWS_DIR,
+  ALLOWED_ZIP_EXTENSIONS,
   ZIP_MAX_ENTRY_NAME_LENGTH,
   ZIP_SYMLINK_TYPE,
   ZIP_UNIX_MODE_MASK,
   ZIP_UNIX_TYPE_MASK,
   VERSIONS_DIR,
 } from '../../constants';
+
+const ALLOWED_ZIP_EXTENSION_SUFFIXES = Array.from(ALLOWED_ZIP_EXTENSIONS).sort(
+  (left, right) => right.length - left.length,
+);
+
+export function hasAllowedZipExtension(name: string): boolean {
+  return ALLOWED_ZIP_EXTENSION_SUFFIXES.some((suffix) => name.endsWith(suffix));
+}
+
+function getConstrainedSourceRoot(name: string): string | undefined {
+  const lowerName = name.toLowerCase();
+  if (lowerName.startsWith(`${AGENTS_DIR}/`)) {
+    return AGENTS_DIR;
+  }
+
+  if (lowerName.startsWith(`${FLOWS_DIR}/`)) {
+    return FLOWS_DIR;
+  }
+
+  return undefined;
+}
 
 function hasTraversalPattern(name: string): boolean {
   if (
@@ -139,6 +162,8 @@ function validateSourceEntry(
   expectedVersion: string,
   issues: ValidationIssue[],
 ): void {
+  const constrainedRoot = getConstrainedSourceRoot(name);
+
   if (name.startsWith(VERSIONS_DIR + '/') || name === VERSIONS_DIR) {
     issues.push(
       err(
@@ -149,12 +174,20 @@ function validateSourceEntry(
     return;
   }
 
-  const ext = name.includes('.') ? name.slice(name.lastIndexOf('.')).toLowerCase() : '';
-  if (DISALLOWED_ZIP_EXTENSIONS.has(ext)) {
+  if (constrainedRoot !== undefined && !name.startsWith(`${constrainedRoot}/`)) {
+    issues.push(
+      err(
+        'ERR_ZIP_UNEXPECTED_ENTRY',
+        `Non-canonical case for constrained source path: "${name}" — entries must use exact directory casing "${constrainedRoot}/"`,
+      ),
+    );
+  }
+
+  if (constrainedRoot !== undefined && !hasAllowedZipExtension(name)) {
     issues.push(
       err(
         'ERR_ZIP_DISALLOWED_PAYLOAD',
-        `Disallowed file extension "${ext}" in source ZIP: "${name}"`,
+        `Disallowed file type in source ZIP constrained paths: "${name}" — entries under agents/ and flows/ must end with one of: ${ALLOWED_ZIP_EXTENSION_SUFFIXES.join(', ')}`,
       ),
     );
   }

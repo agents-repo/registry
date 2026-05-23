@@ -47,3 +47,6 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Scan package ZIPs
+        run: npm run package:scan-zips
