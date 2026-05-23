@@ -50,7 +50,8 @@ These defaults are designed to remain stable across Linux, macOS, and Windows,
 while lint and formatting rules stay defined by repository tooling.
 
 The shared workspace indentation default is 2 spaces, and JSON/JSONC
-indentation is enforced by `npm run lint:sonar`.
+indentation is enforced by `npm run lint:sonar` for repo files outside
+`packages/**/versions/**`.
 
 ## Repository Structure
 

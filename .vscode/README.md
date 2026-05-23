@@ -42,7 +42,8 @@ Formatting and lint behavior is defined by repository tooling:
 - Commands: `npm run lint:sonar` and `npm run lint:md`
 
 The shared workspace default uses 2-space indentation, and JSON/JSONC
-indentation is enforced by `npm run lint:sonar`.
+indentation is enforced by `npm run lint:sonar` for repo files outside
+`packages/**/versions/**`.
 
 Avoid forcing a global default formatter in workspace settings unless a
 repository-wide decision is made and documented.
