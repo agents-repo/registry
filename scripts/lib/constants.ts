@@ -83,10 +83,8 @@ export const ZIP_SYMLINK_TYPE = 0xa000;
 
 /** File suffixes allowed for constrained source paths inside ZIP archives. */
 export const ALLOWED_ZIP_EXTENSIONS = new Set([
-  '.agent.md',
-  '.metadata.json',
-  '.md',
-  '.json',
+  AGENT_FILE_EXT,
+  AGENT_METADATA_EXT,
 ]);
 
 // --- Deployment ZIP entry pattern ---

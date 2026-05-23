@@ -20,12 +20,20 @@ const ALLOWED_ZIP_EXTENSION_SUFFIXES = Array.from(ALLOWED_ZIP_EXTENSIONS).sort(
 );
 
 export function hasAllowedZipExtension(name: string): boolean {
-  const lowerName = name.toLowerCase();
-  return ALLOWED_ZIP_EXTENSION_SUFFIXES.some((suffix) => lowerName.endsWith(suffix));
+  return ALLOWED_ZIP_EXTENSION_SUFFIXES.some((suffix) => name.endsWith(suffix));
 }
 
-function isConstrainedSourcePath(name: string): boolean {
-  return name.startsWith(`${AGENTS_DIR}/`) || name.startsWith(`${FLOWS_DIR}/`);
+function getConstrainedSourceRoot(name: string): string | undefined {
+  const lowerName = name.toLowerCase();
+  if (lowerName.startsWith(`${AGENTS_DIR}/`)) {
+    return AGENTS_DIR;
+  }
+
+  if (lowerName.startsWith(`${FLOWS_DIR}/`)) {
+    return FLOWS_DIR;
+  }
+
+  return undefined;
 }
 
 function hasTraversalPattern(name: string): boolean {
@@ -154,6 +162,8 @@ function validateSourceEntry(
   expectedVersion: string,
   issues: ValidationIssue[],
 ): void {
+  const constrainedRoot = getConstrainedSourceRoot(name);
+
   if (name.startsWith(VERSIONS_DIR + '/') || name === VERSIONS_DIR) {
     issues.push(
       err(
@@ -164,7 +174,16 @@ function validateSourceEntry(
     return;
   }
 
-  if (isConstrainedSourcePath(name) && !hasAllowedZipExtension(name)) {
+  if (constrainedRoot !== undefined && !name.startsWith(`${constrainedRoot}/`)) {
+    issues.push(
+      err(
+        'ERR_ZIP_UNEXPECTED_ENTRY',
+        `Non-canonical case for constrained source path: "${name}" — entries must use exact directory casing "${constrainedRoot}/"`,
+      ),
+    );
+  }
+
+  if (constrainedRoot !== undefined && !hasAllowedZipExtension(name)) {
     issues.push(
       err(
         'ERR_ZIP_DISALLOWED_PAYLOAD',

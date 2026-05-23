@@ -44,6 +44,41 @@ describe('scanSnapshotZip', (): void => {
     expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
   });
 
+  it('flags non-canonical case for constrained source root directories', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'Agents/hello-agent.agent.md',
+        attr: 0,
+        getData: () => Buffer.from('---\nname: hello-agent\n---\n', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'source',
+      expectedVersion: '1.0.0',
+    });
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
+  });
+
+  it('flags wrong-case constrained roots and disallowed payloads together', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'Agents/run.exe',
+        attr: 0,
+        getData: () => Buffer.from('MZ', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'source',
+      expectedVersion: '1.0.0',
+    });
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
+  });
+
   it('allows constrained source entries with spec-compliant extensions', (): void => {
     mockEntries = [
       toZipEntry({
@@ -86,6 +121,40 @@ describe('scanSnapshotZip', (): void => {
     });
 
     expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(false);
+  });
+
+  it('flags loose .md entries in constrained source paths', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'agents/readme.md',
+        attr: 0,
+        getData: () => Buffer.from('# Notes', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'source',
+      expectedVersion: '1.0.0',
+    });
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
+  });
+
+  it('flags loose .json entries in constrained source paths', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'flows/config.json',
+        attr: 0,
+        getData: () => Buffer.from('{"name":"config"}', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'source',
+      expectedVersion: '1.0.0',
+    });
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
   });
 
   it('flags versions directory entries in source ZIPs', (): void => {
