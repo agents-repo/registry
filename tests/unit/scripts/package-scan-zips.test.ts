@@ -44,6 +44,18 @@ describe('collectPackageSnapshotTargets', (): void => {
       { packageId: 'beta', version: '2.0.0' },
     ]);
   });
+
+  it('sorts versions using semver ordering within a package', (): void => {
+    writeSnapshot('alpha', '2.0.0');
+    writeSnapshot('alpha', '10.0.0');
+
+    const targets = collectPackageSnapshotTargets(tempDir);
+
+    expect(targets).toEqual<PackageSnapshotTarget[]>([
+      { packageId: 'alpha', version: '2.0.0' },
+      { packageId: 'alpha', version: '10.0.0' },
+    ]);
+  });
 });
 
 describe('scanPackageSnapshotTargets', (): void => {

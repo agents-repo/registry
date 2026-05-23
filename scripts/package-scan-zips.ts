@@ -13,6 +13,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import semver from 'semver';
 import { parseReleaseVersion, resolveScriptPaths } from './lib/cli';
 import { SnapshotValidator } from './lib/snapshot-validator';
 import type { ValidationReport } from './lib/types';
@@ -73,7 +74,7 @@ export function collectPackageSnapshotTargets(packagesDir: string): PackageSnaps
   return targets.sort(
     (left, right) =>
       left.packageId.localeCompare(right.packageId) ||
-      left.version.localeCompare(right.version),
+      semver.compare(left.version, right.version),
   );
 }
 
