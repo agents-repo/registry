@@ -24,11 +24,15 @@ export interface SmokeRunOptions {
 
 function runScript(repoRoot: string, scriptName: string, args: string[], workspaceDir: string): void {
   const npmExecPath = process.env.npm_execpath?.trim();
-  const npmCommand = npmExecPath !== undefined && npmExecPath.length > 0
-    ? process.execPath
-    : os.platform() === 'win32'
-      ? 'npm.cmd'
-      : 'npm';
+  let npmCommand = 'npm';
+  if (os.platform() === 'win32') {
+    npmCommand = 'npm.cmd';
+  }
+
+  if (npmExecPath !== undefined && npmExecPath.length > 0) {
+    npmCommand = process.execPath;
+  }
+
   const npmArgs = npmExecPath !== undefined && npmExecPath.length > 0
     ? [npmExecPath, 'run', scriptName, '--', ...args]
     : ['run', scriptName, '--', ...args];
