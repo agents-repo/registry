@@ -137,7 +137,7 @@ const invokedPath = process.argv.at(1);
 const isDirectExecution =
   typeof invokedPath === 'string' &&
   invokedPath.length > 0 &&
-  import.meta.url === pathToFileURL(invokedPath).href;
+  import.meta.url === pathToFileURL(path.resolve(invokedPath)).href;
 
 if (isDirectExecution) {
   main();

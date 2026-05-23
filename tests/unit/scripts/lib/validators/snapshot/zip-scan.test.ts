@@ -66,7 +66,7 @@ describe('scanSnapshotZip', (): void => {
     expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(false);
   });
 
-  it('allows spec-compliant top-level source files', (): void => {
+  it('flags disallowed file types outside constrained source paths', (): void => {
     mockEntries = [
       toZipEntry({
         entryName: 'LICENSE',
@@ -85,7 +85,7 @@ describe('scanSnapshotZip', (): void => {
       expectedVersion: '1.0.0',
     });
 
-    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(false);
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
   });
 
   it('flags path traversal entries', (): void => {
