@@ -24,11 +24,16 @@ export interface SmokeRunOptions {
 
 function runScript(repoRoot: string, scriptName: string, args: string[], workspaceDir: string): void {
   const npmExecPath = process.env.npm_execpath?.trim();
-  if (npmExecPath === undefined || npmExecPath.length === 0) {
-    throw new Error('npm_execpath is not available for the smoke flow');
-  }
+  const npmCommand = npmExecPath !== undefined && npmExecPath.length > 0
+    ? process.execPath
+    : os.platform() === 'win32'
+      ? 'npm.cmd'
+      : 'npm';
+  const npmArgs = npmExecPath !== undefined && npmExecPath.length > 0
+    ? [npmExecPath, 'run', scriptName, '--', ...args]
+    : ['run', scriptName, '--', ...args];
 
-  const result = spawnSync(process.execPath, [npmExecPath, 'run', scriptName, '--', ...args], {
+  const result = spawnSync(npmCommand, npmArgs, {
     cwd: repoRoot,
     env: {
       ...process.env,

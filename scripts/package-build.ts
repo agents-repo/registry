@@ -55,10 +55,10 @@ async function main(): Promise<void> {
   }
 
   console.log(`\nBuild complete: ${packageId}@${buildResult.version}`);
-  console.log(`  Deployment artifact : versions/${buildResult.version}/${buildResult.version}.zip`);
-  console.log(`  Source archive      : versions/${buildResult.version}/${buildResult.version}-src.zip`);
-  console.log(`  Manifest updated    : versions/manifest.json`);
-  console.log(`  Index updated       : packages/index.json`);
+  console.log(`  Deployment artifact : ${buildResult.version}.zip`);
+  console.log(`  Source archive      : ${buildResult.version} source archive`);
+  console.log('  Manifest updated');
+  console.log('  Index updated');
 }
 
 try {
