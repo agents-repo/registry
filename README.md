@@ -40,6 +40,15 @@ npm run env:check
 If you do not use `nvm`, install Node `24.15.0` manually and then run the
 same Corepack and npm commands.
 
+## VS Code Workspace Settings
+
+Shared workspace editor defaults are managed in `.vscode/settings.json`.
+Policy for shared versus personal settings is documented in
+`.vscode/README.md`.
+
+These defaults are designed to remain stable across Linux, macOS, and Windows,
+while lint and formatting rules stay defined by repository tooling.
+
 ## Repository Structure
 
 ```text
