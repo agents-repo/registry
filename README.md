@@ -27,6 +27,20 @@ Use the pinned runtime to keep local development, Copilot tasks, and CI aligned.
 - Node.js: `24.15.0` (see `.nvmrc` and `.node-version`)
 - npm: `11.12.1` (see `packageManager` in `package.json`)
 
+### GitHub CLI
+
+This repository prefers GitHub communication through `gh` CLI for issue and
+pull request operations.
+
+Verify availability and authentication:
+
+```bash
+gh --version
+gh auth status
+```
+
+If `gh auth status` reports no login, run `gh auth login`.
+
 ### Setup
 
 ```bash
@@ -39,6 +53,18 @@ npm run env:check
 
 If you do not use `nvm`, install Node `24.15.0` manually and then run the
 same Corepack and npm commands.
+
+Common `gh` commands used in this workflow:
+
+```bash
+# inspect issue scope
+gh issue view <number> --repo agents-repo/registry
+
+# open a draft PR with template-aligned body content
+gh pr create --repo agents-repo/registry \
+  --draft --title "..." \
+  --body-file <file>
+```
 
 ## VS Code Workspace Settings
 

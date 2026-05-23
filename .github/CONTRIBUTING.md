@@ -18,6 +18,23 @@ matching form in `.github/ISSUE_TEMPLATE/` when tooling can apply it directly;
 otherwise, they MUST manually include the intended template's sections in the
 issue body.
 
+## GitHub Communication Method (Preferred)
+
+Contributors and agents SHOULD use `gh` CLI as the preferred method to
+communicate with GitHub for issues and pull requests.
+
+Recommended flow:
+
+1. Inspect and confirm issue scope:
+  `gh issue view <number> --repo agents-repo/registry`
+2. Create a branch using the naming rule in this guide.
+3. Open a draft pull request with the required template sections:
+  `gh pr create --repo agents-repo/registry --draft --title "..." \
+  --body-file <file>`
+
+For long issue/PR descriptions, use `--body-file` to avoid shell escaping and
+truncation issues.
+
 ## Branch Naming
 
 Branch names MUST follow the pattern `<prefix>/<issue-number>-<slug>`,
