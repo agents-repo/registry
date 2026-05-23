@@ -3,6 +3,7 @@ description: Track maintenance and operational work.
 title: "chore: "
 labels:
   - chore
+type: Task
 body:
   - type: markdown
     attributes:
@@ -47,6 +48,8 @@ body:
     attributes:
       label: Checklist
       options:
+        - label: I searched for existing similar issues.
+          required: true
         - label: >-
             If I open a PR for this issue, I will include
             `Closes #<issue-number>` in `## Related Issues`.

@@ -3,6 +3,7 @@ description: Propose a new capability for the registry platform.
 title: "feat: "
 labels:
   - enhancement
+type: Feature
 body:
   - type: markdown
     attributes:

@@ -35,6 +35,10 @@ Recommended flow:
 For long issue/PR descriptions, use `--body-file` to avoid shell escaping and
 truncation issues.
 
+Security vulnerabilities MUST NOT be reported in public issues. Use
+`https://github.com/agents-repo/registry/security/advisories/new` for private
+disclosure.
+
 ## Branch Naming
 
 Branch names MUST follow the pattern `<prefix>/<issue-number>-<slug>`,

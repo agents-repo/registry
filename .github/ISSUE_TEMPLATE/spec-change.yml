@@ -3,6 +3,7 @@ description: Request a change to one or more files in specs/.
 title: "spec: "
 labels:
   - specs
+type: Task
 body:
   - type: markdown
     attributes:
@@ -81,6 +82,8 @@ body:
     attributes:
       label: Checklist
       options:
+        - label: I searched for existing similar issues.
+          required: true
         - label: I used deterministic language (MUST, SHOULD, MAY).
           required: true
         - label: I included at least one concrete example.

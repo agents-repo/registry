@@ -3,6 +3,7 @@ description: Report a broken rule, mismatch, or validation problem.
 title: "fix: "
 labels:
   - bug
+type: Bug
 body:
   - type: markdown
     attributes:
@@ -28,6 +29,17 @@ body:
       label: Affected file
       description: Provide a path if known.
       placeholder: specs/manifest-schema.md
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment and command context
+      description: Include OS, Node/npm versions, and command(s) used.
+      placeholder: |
+        - OS:
+        - Node:
+        - npm:
+        - Command(s):
 
   - type: textarea
     id: reproduce
@@ -61,6 +73,10 @@ body:
       label: Checklist
       options:
         - label: I confirmed this issue is still reproducible.
+          required: true
+        - label: >-
+            I checked that this is still reproducible on the latest main
+            branch state.
           required: true
         - label: I searched for existing similar issues.
           required: true

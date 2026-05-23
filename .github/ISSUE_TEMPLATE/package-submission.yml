@@ -3,6 +3,7 @@ description: Submit a new agent or flow package to the registry.
 title: "package: "
 labels:
   - package
+type: Task
 body:
   - type: markdown
     attributes:
@@ -172,6 +173,8 @@ body:
     attributes:
       label: Checklist
       options:
+        - label: I searched for existing similar issues and package submissions.
+          required: true
         - label: I followed specs/package-format.md.
           required: true
         - label: >-
