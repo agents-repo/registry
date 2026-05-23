@@ -22,21 +22,9 @@
  * Exits 0 on success, non-zero on failure.
  */
 
-import fs from 'node:fs';
-import path from 'node:path';
-import { rollbackVersionDirectory, warnIfIndexMayBeInconsistent } from './lib/build/rollback';
-import { updateManifestAndIndexWithRollback } from './lib/build/registry-sync';
-import { prepareVersionSnapshot } from './lib/build/snapshot-writer';
+import { buildPackageSnapshot } from './lib/build/package-build-flow';
 import { hasFlag, parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
-import { printValidationIssues } from './lib/cli/reporting';
-import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR } from './lib/constants';
-import { ErrorCode, PackageError } from './lib/errors';
-import { GitContext } from './lib/git';
-import { Package } from './lib/package';
-import { PackageValidator } from './lib/validate-package';
-import { ValidationUtils } from './lib/validation-utils';
-import { ZipBuilder } from './lib/zip-builder';
-import { Checksum } from './lib/checksum';
+import { PackageError } from './lib/errors';
 
 // ---------------------------------------------------------------------------
 // Entry point
@@ -47,123 +35,30 @@ async function main(): Promise<void> {
   const forceRebuild = hasFlag(process.argv, '--force-rebuild');
 
   const { repoRoot, packagesDir } = resolveScriptPaths(import.meta.url);
-  const pkg = new Package(packageId, packagesDir);
-
-  // Step 1: Run preflight validation
-  console.log(`[1/7] Running preflight validation`);
-  const report = new PackageValidator(packageId, packagesDir).validate();
-  printValidationIssues(report);
-  if (!report.passed) {
-    throw new PackageError(
-      ErrorCode.ERR_VALIDATION_FAILED,
-      `Preflight validation failed for package: ${packageId} — ${report.errors.length} error(s)`,
-    );
-  }
-  console.log(`[1/7] Preflight passed`);
-
-  // Step 2: Read metadata to get target version, then re-validate the exact
-  // on-disk package state before proceeding with the build.
-  const metadata = pkg.loadMetadata();
-  const postLoadReport = new PackageValidator(packageId, packagesDir).validate();
-  printValidationIssues(postLoadReport);
-  if (!postLoadReport.passed) {
-    throw new PackageError(
-      ErrorCode.ERR_VALIDATION_FAILED,
-      `Package changed after preflight validation for package: ${packageId} — ${postLoadReport.errors.length} error(s)`,
-    );
-  }
-
-  const version = metadata.version;
-  if (!ValidationUtils.isReleaseVersion(version)) {
-    throw new PackageError(
-      ErrorCode.ERR_VALIDATION_FAILED,
-      `metadata.json version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(version)}`,
-    );
-  }
-  console.log(`[2/7] Target version: ${version}`);
-
-  // Step 3: Overwrite-protection checks
-  const versionDir = pkg.versionDir(version);
-  const versionExists = fs.existsSync(versionDir);
-  const git = new GitContext();
-
-  if (versionExists) {
-    const { branch, source } = await git.getBranchWithSource();
-    if (forceRebuild) {
-      if (git.isProtected(branch)) {
-        throw new PackageError(
-          ErrorCode.ERR_OVERWRITE_PROTECTED_BRANCH,
-          `Cannot overwrite version "${version}" on protected branch "${branch}". ` +
-            `--force-rebuild is not allowed on protected branches (main, master, release/*).`,
-        );
-      }
-      console.log(
-        `[3/7] --force-rebuild on branch "${branch}" (detected from ${source}): overwriting existing version "${version}"`,
-      );
-      fs.rmSync(versionDir, { recursive: true, force: true });
-    } else {
-      throw new PackageError(
-        ErrorCode.ERR_VERSION_EXISTS,
-        `Version "${version}" already exists at ${versionDir}. ` +
-          `Use --force-rebuild on a non-protected branch to overwrite.`,
-      );
-    }
-  } else {
-    console.log(`[3/7] Overwrite check passed (new version)`);
-  }
-
-  // Step 4: Create version snapshot directory structure
-  console.log(`[4/7] Building version snapshot for ${version}`);
-  const { deployZipPath, srcZipPath } = prepareVersionSnapshot(pkg, versionDir, version);
+  let buildResult: Awaited<ReturnType<typeof buildPackageSnapshot>>;
 
   try {
-    // Step 5: Build deployment ZIP
-    console.log(`[5/7] Building deployment ZIP: ${version}.zip`);
-    const zipBuilder = new ZipBuilder(pkg.packageDir, version);
-    zipBuilder.buildDeploymentZip(deployZipPath);
-
-    // Build source archive
-    console.log(`[6/7] Building source archive: ${version}${SOURCE_ARCHIVE_SUFFIX}`);
-    zipBuilder.buildSourceZip(srcZipPath);
-
-    // Step 7: Compute checksums and update registry state
-    const deployZipSha256 = Checksum.sha256(deployZipPath);
-    const srcZipSha256 = Checksum.sha256(srcZipPath);
-    console.log(`       deploy sha256: ${deployZipSha256}`);
-    console.log(`       src    sha256: ${srcZipSha256}`);
-
-    // Prepare manifest update with rollback support
-    console.log(`[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME} and packages/${INDEX_FILENAME}`);
-    const indexPath = path.join(repoRoot, 'packages', INDEX_FILENAME);
-    updateManifestAndIndexWithRollback({
+    buildResult = await buildPackageSnapshot({
       packageId,
-      manifestPath: pkg.manifestPath,
-      indexPath,
-      metadata,
-      version,
-      deployZipSha256,
-      srcZipSha256,
+      repoRoot,
+      packagesDir,
+      forceRebuild,
+      log: console.log,
     });
   } catch (error) {
-    rollbackVersionDirectory(versionDir);
-
-    // Attempt to restore the previous package index file if it was overwritten
-    const indexPath = path.join(repoRoot, 'packages', INDEX_FILENAME);
-    warnIfIndexMayBeInconsistent(indexPath, packageId);
-
     if (error instanceof PackageError) {
       console.error(`[${error.code}] ${error.message}`);
     } else {
-      console.error(`Unexpected error during build:`, error);
+      console.error('Unexpected error during build:', error);
     }
     process.exit(1);
   }
 
-  console.log(`\nBuild complete: ${packageId}@${version}`);
-  console.log(`  Deployment artifact : ${VERSIONS_DIR}/${version}/${version}.zip`);
-  console.log(`  Source archive      : ${VERSIONS_DIR}/${version}/${version}${SOURCE_ARCHIVE_SUFFIX}`);
-  console.log(`  Manifest updated    : ${VERSIONS_DIR}/${MANIFEST_FILENAME}`);
-  console.log(`  Index updated       : packages/${INDEX_FILENAME}`);
+  console.log(`\nBuild complete: ${packageId}@${buildResult.version}`);
+  console.log(`  Deployment artifact : ${buildResult.deployZipPath}`);
+  console.log(`  Source archive      : ${buildResult.srcZipPath}`);
+  console.log(`  Manifest updated    : ${buildResult.manifestPath}`);
+  console.log(`  Index updated       : ${buildResult.indexPath}`);
 }
 
 try {
