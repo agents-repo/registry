@@ -76,7 +76,4 @@ If relevant, describe impact on:
 ## Related Issues
 
 - If this PR is linked to an issue, include `Closes #<issue-number>`.
-- If this PR is not tied to a tracking issue, state a short rationale.
-
-Closes #
-Related #
+- If this PR is not tied to a tracking issue, state a short rationale here.

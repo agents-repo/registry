@@ -12,6 +12,10 @@ body:
         **Example:** `fix/42-correct-manifest-artifact-rule`
         Create this issue first to get the issue number, then open the branch.
 
+        Security vulnerabilities MUST NOT be reported in public issues.
+        Use https://github.com/agents-repo/registry/security/advisories/new
+        for private disclosure instead.
+
         If you open a PR for this issue, include
         `Closes #<issue-number>` in `## Related Issues`.
 
