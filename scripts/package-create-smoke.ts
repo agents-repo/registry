@@ -16,7 +16,7 @@ async function main(): Promise<void> {
   console.log(`Running package create smoke flow for: ${packageId}`);
 
   try {
-    const result = await runPackageCreateSmoke(packageId, { log: console.log });
+    const result = await runPackageCreateSmoke(packageId, { log: console.log, cleanup: true });
 
     console.log(`\nSmoke flow complete for ${packageId}@${result.version}`);
     console.log(`Temporary workspace: ${result.workspaceDir} (removed after run)`);

@@ -113,7 +113,7 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
 
   logMessage(log, `[4/7] Building version snapshot for ${version}`);
   const { deployZipPath, srcZipPath } = prepareVersionSnapshot(pkg, versionDir, version);
-  const indexPath = path.join(repoRoot, 'packages', INDEX_FILENAME);
+  const indexPath = path.join(packagesDir, INDEX_FILENAME);
 
   try {
     logMessage(log, `[5/7] Building deployment ZIP: ${version}.zip`);

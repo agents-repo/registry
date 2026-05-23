@@ -56,7 +56,7 @@ export async function runPackageCreateSmoke(
 ): Promise<SmokeRunResult> {
   const repoRoot = options.repoRoot ?? process.cwd();
   const workspaceDir = options.workspaceDir ?? fs.mkdtempSync(path.join(os.tmpdir(), 'registry-package-create-smoke-'));
-  const cleanup = options.cleanup ?? options.workspaceDir === undefined;
+  const cleanup = options.cleanup ?? false;
   const packagesDir = path.join(workspaceDir, 'packages');
   const packageDir = path.join(packagesDir, packageId);
   const metadataPath = path.join(packageDir, METADATA_FILENAME);
