@@ -51,7 +51,9 @@ function runScript(repoRoot: string, scriptName: string, args: string[], workspa
   }
 
   if (result.status !== 0) {
-    throw new Error(`Command failed: npm run ${scriptName} -- ${args.join(' ')}`);
+    throw new Error(
+      `Command failed (status: ${result.status}, signal: ${result.signal}): npm run ${scriptName} -- ${args.join(' ')}`,
+    );
   }
 }
 
