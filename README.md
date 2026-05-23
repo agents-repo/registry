@@ -61,7 +61,9 @@ Common `gh` commands used in this workflow:
 gh issue view <number> --repo agents-repo/registry
 
 # open a draft PR with template-aligned body content
-gh pr create --repo agents-repo/registry --draft --title "..." --body-file <file>
+gh pr create --repo agents-repo/registry \
+  --draft --title "..." \
+  --body-file <file>
 ```
 
 ## VS Code Workspace Settings
