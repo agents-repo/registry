@@ -86,7 +86,7 @@ export class PackageScaffolder {
 
     fs.writeFileSync(
       path.join(packageDir, METADATA_FILENAME),
-      JSON.stringify(packageMetadata, null, 4) + '\n',
+      JSON.stringify(packageMetadata, null, 2) + '\n',
       'utf-8',
     );
 
@@ -104,7 +104,7 @@ export class PackageScaffolder {
       );
       fs.writeFileSync(
         path.join(packageDir, AGENTS_DIR, `${agent.id}${AGENT_METADATA_EXT}`),
-        JSON.stringify(this.generateAgentMetadata(agent.id, agent.description, agentMetadataSchemaVersion), null, 4) + '\n',
+        JSON.stringify(this.generateAgentMetadata(agent.id, agent.description, agentMetadataSchemaVersion), null, 2) + '\n',
         'utf-8',
       );
     }
@@ -117,7 +117,7 @@ export class PackageScaffolder {
       );
       fs.writeFileSync(
         path.join(packageDir, FLOWS_DIR, `${flow.id}${AGENT_METADATA_EXT}`),
-        JSON.stringify(this.generateAgentMetadata(flow.id, flow.description, flowMetadataSchemaVersion), null, 4) + '\n',
+        JSON.stringify(this.generateAgentMetadata(flow.id, flow.description, flowMetadataSchemaVersion), null, 2) + '\n',
         'utf-8',
       );
     }

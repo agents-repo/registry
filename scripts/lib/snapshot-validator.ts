@@ -31,7 +31,7 @@ export class SnapshotValidator {
     deployZipPath: string;
     srcZipPath: string;
     snapshotMetaPath: string;
-  } {
+    } {
     const packageDir = path.join(this.packagesDir, this.packageId);
     const versionDir = path.join(packageDir, VERSIONS_DIR, this.version);
 

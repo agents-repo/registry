@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "davidanson.vscode-markdownlint",
+    "github.copilot",
+    "github.copilot-chat",
+    "redhat.vscode-yaml"
+  ],
+  "unwantedRecommendations": []
+}

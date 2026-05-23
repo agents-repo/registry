@@ -1,35 +1,35 @@
 {
-    "schemaRegistryVersion": "1.0.0",
-    "schemas": {
-        "metadata.package": {
-            "current": "1.0.0",
-            "supported": ["1.0.0"],
-            "deprecated": [],
-            "eol": []
-        },
-        "metadata.agent": {
-            "current": "1.0.0",
-            "supported": ["1.0.0"],
-            "deprecated": [],
-            "eol": []
-        },
-        "metadata.flow": {
-            "current": "1.0.0",
-            "supported": ["1.0.0"],
-            "deprecated": [],
-            "eol": []
-        },
-        "manifest": {
-            "current": "1.0.0",
-            "supported": ["1.0.0"],
-            "deprecated": [],
-            "eol": []
-        },
-        "index": {
-            "current": "1.0.0",
-            "supported": ["1.0.0"],
-            "deprecated": [],
-            "eol": []
-        }
+  "schemaRegistryVersion": "1.0.0",
+  "schemas": {
+    "metadata.package": {
+      "current": "1.0.0",
+      "supported": ["1.0.0"],
+      "deprecated": [],
+      "eol": []
+    },
+    "metadata.agent": {
+      "current": "1.0.0",
+      "supported": ["1.0.0"],
+      "deprecated": [],
+      "eol": []
+    },
+    "metadata.flow": {
+      "current": "1.0.0",
+      "supported": ["1.0.0"],
+      "deprecated": [],
+      "eol": []
+    },
+    "manifest": {
+      "current": "1.0.0",
+      "supported": ["1.0.0"],
+      "deprecated": [],
+      "eol": []
+    },
+    "index": {
+      "current": "1.0.0",
+      "supported": ["1.0.0"],
+      "deprecated": [],
+      "eol": []
     }
+  }
 }

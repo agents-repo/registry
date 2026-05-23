@@ -1,23 +1,23 @@
 {
-    "schemaVersion": "1.0.0",
-    "updatedAt": "2026-05-20T05:19:47.976Z",
-    "packages": [
-        {
-            "id": "hello-agent",
-            "name": "hello-agent",
-            "description": "Hello Agent package scaffolded by package-create",
-            "latest": "1.0.0",
-            "tags": [
-                "agent",
-                "hello"
-            ],
-            "status": "active",
-            "category": "assistant",
-            "estimateOverallCost": {
-                "estimatedCost": 1,
-                "band": "low"
-            },
-            "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md"
-        }
-    ]
+  "schemaVersion": "1.0.0",
+  "updatedAt": "2026-05-23T10:48:55.261Z",
+  "packages": [
+    {
+      "id": "hello-agent",
+      "name": "hello-agent",
+      "description": "Hello Agent package scaffolded by package-create",
+      "latest": "1.0.0",
+      "tags": [
+        "agent",
+        "hello"
+      ],
+      "status": "active",
+      "category": "assistant",
+      "estimateOverallCost": {
+        "estimatedCost": 1,
+        "band": "low"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md"
+    }
+  ]
 }

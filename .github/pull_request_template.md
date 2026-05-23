@@ -55,6 +55,8 @@ If relevant, describe impact on:
 - [ ] Root `agents/` and `flows/` `.agent.md` frontmatter `version` values
     follow `versioning-rules.md` relative to `versions/manifest.json` `latest`.
 - [ ] Any JSON examples are valid and consistent with specs.
+- [ ] Indentation and formatting policy remains consistent with workspace and
+  lint tooling defaults.
 - [ ] Any package or artifact references are accurate.
 - [ ] `packages/index.json` updated if a package was added, changed,
   or published.
