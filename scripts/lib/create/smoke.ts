@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
+import { parseReleaseVersion } from '../cli';
 import { METADATA_FILENAME } from '../constants';
 
 export interface SmokeRunResult {
@@ -61,6 +62,17 @@ function readJsonValue(filePath: string): Record<string, unknown> {
   return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as Record<string, unknown>;
 }
 
+function readRequiredReleaseVersion(sourceLabel: string, value: unknown): string {
+  const version = parseReleaseVersion(value);
+  if (version === null) {
+    throw new Error(
+      `Smoke flow expected ${sourceLabel} to contain a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(value)}`,
+    );
+  }
+
+  return version;
+}
+
 export async function runPackageCreateSmoke(
   packageId: string,
   options: SmokeRunOptions = {},
@@ -82,20 +94,14 @@ export async function runPackageCreateSmoke(
       '--description', `Smoke test package for ${packageId}`,
     ], workspaceDir);
 
-    const metadata = readJsonValue(metadataPath) as { version?: string };
-    const version = metadata.version;
-    if (typeof version !== 'string' || version.length === 0) {
-      throw new Error(`Smoke flow could not read a release version from ${METADATA_FILENAME}`);
-    }
+    const metadata = readJsonValue(metadataPath) as { version?: unknown };
+    const version = readRequiredReleaseVersion(`${METADATA_FILENAME} version`, metadata.version);
 
     runScript(repoRoot, 'package:validate', ['--package', packageId], workspaceDir);
     runScript(repoRoot, 'package:build', ['--package', packageId], workspaceDir);
 
-    const manifest = readJsonValue(manifestPath) as { latest?: string };
-    const latest = manifest.latest;
-    if (typeof latest !== 'string' || latest.length === 0) {
-      throw new Error(`Smoke flow could not read a release version from versions/manifest.json`);
-    }
+    const manifest = readJsonValue(manifestPath) as { latest?: unknown };
+    const latest = readRequiredReleaseVersion('versions/manifest.json latest', manifest.latest);
 
     if (latest !== version) {
       throw new Error(`Smoke flow version mismatch: metadata.json has ${version}, manifest latest is ${latest}`);
