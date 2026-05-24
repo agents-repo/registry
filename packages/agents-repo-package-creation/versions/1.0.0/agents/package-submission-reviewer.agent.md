@@ -15,7 +15,7 @@ outputs:
 
 # Overview
 
-Evaluate the drafted package as a human-facing and maintainer-facing deliverable. The reviewer focuses on whether the package is coherent, well-described, and ready for submission to the registry — not on strict structural rule compliance, which is owned by `package-registry-validator`.
+Evaluate the drafted package as a human-facing and maintainer-facing deliverable. The reviewer focuses on whether the package is coherent, well-described, and ready for submission to the registry. Deterministic rule checks and artifact gates are executed by script orchestration agents.
 
 ## Responsibilities
 
@@ -30,7 +30,7 @@ Evaluate the drafted package as a human-facing and maintainer-facing deliverable
 
 ## Constraints
 
-- Do not validate against registry structural rules or spec compliance; those are owned by `package-registry-validator`.
+- Do not validate against registry structural rules or artifact integrity checks; those are owned by project scripts executed through `package-script-runner` and `package-release-gate`.
 - Do not create, modify, or delete files; output only the review report.
 - Do not request cosmetic changes that do not materially improve clarity or usability.
 - Limit revision requests to issues that would affect the user experience or maintainability of the package.

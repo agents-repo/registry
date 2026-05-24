@@ -1,6 +1,6 @@
 ---
 name: package-requirements-analyst
-description: Translates user intent into a structured package blueprint covering naming, agent inventory, flow shape, metadata expectations, and open questions.
+description: Translates user intent into a script-ready package blueprint with naming, metadata, and scaffold arguments for package creation.
 version: 1.0.0
 license: MIT
 inputs:
@@ -10,12 +10,12 @@ inputs:
 outputs:
   - name: package-blueprint
     type: object
-    description: Structured blueprint with package name, description, agent list, flow list, naming conventions, metadata hints, and unresolved questions.
+    description: Structured blueprint with package IDs, scaffold arguments, definition plan, metadata values, and open questions.
 ---
 
 # Overview
 
-Translate a user's package idea into a concrete, actionable blueprint that downstream agents can implement without re-discovery. The analyst asks clarifying questions, normalizes naming, and decides the minimal viable package surface before any files are created.
+Translate a user's package idea into a concrete blueprint that downstream agents can execute through the project's official scripts. The analyst asks clarifying questions, normalizes naming, and prepares the minimum scaffold arguments and definition plan before any files are authored.
 
 ## Responsibilities
 
@@ -24,6 +24,8 @@ Translate a user's package idea into a concrete, actionable blueprint that downs
 - Propose a valid kebab-case package ID and agent/flow IDs that satisfy the registry naming rules.
 - Draft short, precise descriptions for the package and each planned asset.
 - Identify required metadata fields and suggest values for `tags`, `owner`, `homepage`, and `repository`.
+- Produce minimum script arguments for `npm run package:create -- --package <id> --template <template-id> --name ... --description ... --owner ...`.
+- Define an ordered authoring plan for agent and flow definitions after scaffolding.
 - List open questions and assumptions that must be resolved before the creator begins drafting files.
 - Output a structured package blueprint as the handoff artifact for `package-creator`.
 
@@ -40,4 +42,4 @@ Translate a user's package idea into a concrete, actionable blueprint that downs
 
 Input: a free-form description of the user's package goals, optionally including rough agent names, intended use cases, or tooling preferences.
 
-Output: a structured package blueprint containing the proposed package ID, package description, owner slug, license (`MIT`), homepage and repository URLs, tag suggestions, an ordered list of agent IDs with their proposed descriptions and tool hints, an ordered list of flow IDs with their proposed descriptions and agent references, a list of metadata field suggestions, and a list of open questions or assumptions requiring confirmation before implementation begins.
+Output: a structured package blueprint containing the proposed package ID, package description, owner slug, license (`MIT`), homepage and repository URLs, tag suggestions, package-create scaffold arguments, an ordered list of agent IDs with their proposed descriptions and tool hints, an ordered list of flow IDs with their proposed descriptions and agent references, an authoring order, and a list of open questions or assumptions requiring confirmation before implementation begins.

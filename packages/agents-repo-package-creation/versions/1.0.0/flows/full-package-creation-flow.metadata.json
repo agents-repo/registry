@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "full-package-creation-flow",
-  "description": "Orchestrates iterative package authoring and validation by coordinating requirements analysis, source drafting, submission review, and registry compliance checks.",
+  "description": "Orchestrates package creation through script-driven scaffold, authoring, validation, build, and artifact gate stages.",
   "license": "MIT",
   "status": "active",
   "category": "assistant",
@@ -13,7 +13,8 @@
     "package-requirements-analyst",
     "package-creator",
     "package-submission-reviewer",
-    "package-registry-validator"
+    "package-script-runner",
+    "package-release-gate"
   ],
   "inputs": [
     {
@@ -24,9 +25,9 @@
   ],
   "outputs": [
     {
-      "name": "validated-package-source",
+      "name": "release-gated-package-source",
       "type": "object",
-      "description": "The fully authored, reviewed, and registry-valid package source tree ready for release preparation."
+      "description": "The fully authored, reviewed, validated, built, and artifact-gated package source tree."
     }
   ]
 }
