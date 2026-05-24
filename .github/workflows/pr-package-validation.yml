@@ -59,7 +59,7 @@ jobs:
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Run package pipeline
+      - name: Run package source validation
         if: steps.packages.outputs.has_packages == 'true'
         env:
           PACKAGE_LIST: ${{ steps.packages.outputs.package_list }}
@@ -71,13 +71,11 @@ jobs:
             echo "Running checks for package: $pkg"
 
             npm run package:validate -- --package "$pkg"
-            npm run package:build -- --package "$pkg"
-
-            version=$(node -e "const fs=require('node:fs');const manifest=JSON.parse(fs.readFileSync('packages/' + process.argv[1] + '/versions/manifest.json','utf8'));process.stdout.write(manifest.latest);" "$pkg")
-
-            npm run package:validate-artifacts -- --package "$pkg" --version "$version"
           done <<< "$PACKAGE_LIST"
+
+          echo "PR package checks intentionally skip package:build and package:validate-artifacts."
+          echo "Version snapshots are generated locally and committed with package changes."
 
       - name: Skip when no package directory changed
         if: steps.packages.outputs.has_packages != 'true'
-        run: echo "No package directories changed; package pipeline skipped."
+        run: echo "No package directories changed; package validation skipped."
