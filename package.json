@@ -18,6 +18,7 @@
     "lint:md": "markdownlint-cli2 \"**/*.md\" \"**/.*/**/*.md\"",
     "lint:sonar": "eslint \"**/*.{ts,json,jsonc}\"",
     "lint:sonar:fix": "eslint \"**/*.{ts,json,jsonc}\" --fix",
+    "lint:all": "npm run lint:md && npm run lint:sonar",
     "prepare": "husky",
     "typecheck": "tsc --noEmit"
   },
