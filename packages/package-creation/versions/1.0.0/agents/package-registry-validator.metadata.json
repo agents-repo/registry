@@ -1,7 +1,14 @@
 {
+    "schemaVersion": "1.0.0",
     "name": "package-registry-validator",
     "description": "Performs strict spec-compliance validation of a package source tree against all registry rules, producing a pass/fail report with exact rule violations and required corrections.",
     "license": "MIT",
+    "status": "active",
+    "category": "assistant",
+    "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+    },
     "inputs": [
         {
             "name": "package-source-tree",

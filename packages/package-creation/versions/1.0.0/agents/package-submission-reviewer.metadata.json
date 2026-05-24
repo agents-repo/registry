@@ -1,7 +1,14 @@
 {
+    "schemaVersion": "1.0.0",
     "name": "package-submission-reviewer",
     "description": "Reviews a drafted package for human-facing quality, usability, and submission readiness, producing structured feedback and a readiness verdict.",
     "license": "MIT",
+    "status": "active",
+    "category": "assistant",
+    "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+    },
     "inputs": [
         {
             "name": "package-source-tree",

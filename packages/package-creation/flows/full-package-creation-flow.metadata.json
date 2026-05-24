@@ -1,25 +1,32 @@
 {
-    "name": "full-package-creation-flow",
-    "description": "Orchestrates iterative package authoring and validation by coordinating requirements analysis, source drafting, submission review, and registry compliance checks.",
-    "license": "MIT",
-    "agents": [
-        "package-requirements-analyst",
-        "package-creator",
-        "package-submission-reviewer",
-        "package-registry-validator"
-    ],
-    "inputs": [
-        {
-            "name": "user-intent",
-            "type": "string",
-            "description": "A free-form description of what the user wants the package to do or contain."
-        }
-    ],
-    "outputs": [
-        {
-            "name": "validated-package-source",
-            "type": "object",
-            "description": "The fully authored, reviewed, and registry-valid package source tree ready for release preparation."
-        }
-    ]
+  "schemaVersion": "1.0.0",
+  "name": "full-package-creation-flow",
+  "description": "Orchestrates iterative package authoring and validation by coordinating requirements analysis, source drafting, submission review, and registry compliance checks.",
+  "license": "MIT",
+  "status": "active",
+  "category": "assistant",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "agents": [
+    "package-requirements-analyst",
+    "package-creator",
+    "package-submission-reviewer",
+    "package-registry-validator"
+  ],
+  "inputs": [
+    {
+      "name": "user-intent",
+      "type": "string",
+      "description": "A free-form description of what the user wants the package to do or contain."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "validated-package-source",
+      "type": "object",
+      "description": "The fully authored, reviewed, and registry-valid package source tree ready for release preparation."
+    }
+  ]
 }

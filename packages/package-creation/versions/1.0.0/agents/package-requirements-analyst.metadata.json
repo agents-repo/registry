@@ -1,7 +1,14 @@
 {
+    "schemaVersion": "1.0.0",
     "name": "package-requirements-analyst",
     "description": "Translates user intent into a structured package blueprint covering naming, agent inventory, flow shape, metadata expectations, and open questions.",
     "license": "MIT",
+    "status": "active",
+    "category": "assistant",
+    "estimateCost": {
+        "estimatedCost": 3,
+        "band": "low"
+    },
     "inputs": [
         {
             "name": "user-intent",

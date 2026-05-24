@@ -1,7 +1,14 @@
 {
+    "schemaVersion": "1.0.0",
     "name": "package-creator",
     "description": "Drafts and revises registry package source files from an approved blueprint, producing all required agent definitions, flow definitions, and metadata sidecars.",
     "license": "MIT",
+    "status": "active",
+    "category": "assistant",
+    "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+    },
     "inputs": [
         {
             "name": "package-blueprint",
