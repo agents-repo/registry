@@ -166,8 +166,9 @@ chain end to end: `package:create`, `package:validate`, `package:build`, and
 
 - PR baseline checks run markdown linting, Sonar linting, unit tests,
   typecheck, and the repo-wide package ZIP scan with pinned runtime.
-- Package PR checks run package validate/build/validate-artifacts for changed
-  package directories.
+- Package PR checks run package validate for changed package directories.
+- Package build and artifact validation are run locally before committing
+    version snapshots.
 - Package script changes also run the dedicated smoke workflow, which calls
   `npm run package:create:smoke -- --package <id>`.
 - Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
