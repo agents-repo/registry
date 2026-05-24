@@ -7,7 +7,8 @@ license: MIT
 
 # Overview
 
-Coordinates a two-step greeting flow by invoking `hello-agent` first and `hello-again` second.
+Coordinates a two-step greeting flow by invoking
+`hello-agent` first and `hello-again` second.
 
 ## Responsibilities
 

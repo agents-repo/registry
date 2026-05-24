@@ -7,7 +7,8 @@ license: MIT
 
 # Overview
 
-Provides a second greeting step after `hello-agent` to validate multi-agent package behavior.
+Provides a second greeting step after `hello-agent`
+to validate multi-agent package behavior.
 
 ## Responsibilities
 
