@@ -97,6 +97,38 @@ For package tasks, run in order:
 Open an issue using `.github/ISSUE_TEMPLATE/` forms before any change.
 See `.github/CONTRIBUTING.md` for the full workflow.
 
+## Commit Message Convention
+
+Before creating a commit, the agent MUST inspect staged changes and determine
+the dominant change intent.
+
+The agent MUST use a commit category prefix that matches that intent from this
+set: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`,
+`ci`, `chore`, `revert`.
+
+Commit messages MUST follow this format:
+
+- `category(subset): summary`
+
+Where `subset` is optional and SHOULD be used when it improves clarity (for
+example, `docs(specs): clarify manifest checksum wording`).
+
+Breaking changes are not limited to `feat`; any category in the allowed set MAY
+be breaking when the staged changes introduce incompatible behavior.
+
+For breaking commits, `!` MUST appear immediately after `category` or
+`category(subset)` in the header (for example, `fix!: ...` or
+`refactor(parser)!: ...`). Breaking commits SHOULD include a `BREAKING CHANGE:`
+footer that describes migration impact.
+
+The agent MUST NOT use a category that does not match the dominant intent of
+the staged changes.
+
+If staged changes contain mixed intents, the agent SHOULD split them into
+separate commits by intent. If splitting is not practical, the agent MUST use
+the primary intent category and explicitly explain that choice in the handoff
+or PR summary.
+
 ## GitHub Communication Method (gh CLI Preferred)
 
 For GitHub communication in this repository, agents and contributors SHOULD use
