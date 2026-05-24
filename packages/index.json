@@ -3,23 +3,6 @@
   "updatedAt": "2026-05-24T00:48:20.511Z",
   "packages": [
     {
-      "id": "hello-agent",
-      "name": "hello-agent",
-      "description": "Hello Agent package scaffolded by package-create",
-      "latest": "1.0.0",
-      "tags": [
-        "agent",
-        "hello"
-      ],
-      "status": "active",
-      "category": "assistant",
-      "estimateOverallCost": {
-        "estimatedCost": 1,
-        "band": "low"
-      },
-      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md"
-    },
-    {
       "id": "agents-repo-package-creation",
       "name": "agents-repo-package-creation",
       "description": "Agents and flow for creating, reviewing, and validating new registry packages for agents-repo from requirements to submission-ready source.",
@@ -37,6 +20,23 @@
         "estimatedCost": 6,
         "band": "moderate"
       }
+    },
+    {
+      "id": "hello-agent",
+      "name": "hello-agent",
+      "description": "Hello Agent package scaffolded by package-create",
+      "latest": "1.0.0",
+      "tags": [
+        "agent",
+        "hello"
+      ],
+      "status": "active",
+      "category": "assistant",
+      "estimateOverallCost": {
+        "estimatedCost": 1,
+        "band": "low"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md"
     }
   ]
 }

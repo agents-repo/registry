@@ -28,7 +28,7 @@ Run the project's official package scripts for scaffold creation, source validat
 ## Constraints
 
 - Do not manually create or modify package files to bypass script execution.
-- Do not run scripts outside the allowed stage set (`package:create`, `package:validate`, `package:build`).
+- Do not run scripts outside the allowed stage set (`create`, `validate`, `build`).
 - Do not claim success when a command exits non-zero.
 - Do not generate qualitative review feedback; report execution results and actionable script errors.
 
