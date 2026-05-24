@@ -41,6 +41,8 @@ jobs:
       - name: Determine changed packages
         id: packages
         run: |
+          set -euo pipefail
+
           base_ref="${{ github.base_ref }}"
           git fetch --no-tags origin "$base_ref" --depth=1
 
