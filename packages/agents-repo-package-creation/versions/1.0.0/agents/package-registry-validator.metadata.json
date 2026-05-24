@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "package-registry-validator",
+  "description": "Performs strict spec-compliance validation of a package source tree against all registry rules, producing a pass/fail report with exact rule violations and required corrections.",
+  "license": "MIT",
+  "status": "active",
+  "category": "assistant",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "inputs": [
+    {
+      "name": "package-source-tree",
+      "type": "object",
+      "description": "The set of package source files to validate, including metadata.json, agent definitions, flow definitions, and sidecar metadata."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "validation-report",
+      "type": "object",
+      "description": "Pass/fail validation report listing every rule violation with the affected file, the violated rule reference, and the required correction."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-05-24T00:08:02.106Z",
+  "updatedAt": "2026-05-24T00:28:59.453Z",
   "packages": [
     {
       "id": "hello-agent",
@@ -20,12 +20,12 @@
       "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md"
     },
     {
-      "id": "package-creation",
-      "name": "package-creation",
-      "description": "Agents and flow for creating, reviewing, and validating new registry packages from requirements to submission-ready source.",
+      "id": "agents-repo-package-creation",
+      "name": "agents-repo-package-creation",
+      "description": "Agents and flow for creating, reviewing, and validating new registry packages for agents-repo from requirements to submission-ready source.",
       "latest": "1.0.0",
       "tags": [
-        "package-creation",
+        "agents-repo-package-creation",
         "authoring",
         "validation",
         "review",

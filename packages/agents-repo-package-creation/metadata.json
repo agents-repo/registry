@@ -1,13 +1,13 @@
 {
   "schemaVersion": "1.0.0",
-  "name": "package-creation",
-  "description": "Agents and flow for creating, reviewing, and validating new registry packages from requirements to submission-ready source.",
+  "name": "agents-repo-package-creation",
+  "description": "Agents and flow for creating, reviewing, and validating new registry packages for agents-repo from requirements to submission-ready source.",
   "owner": "agents-repo",
   "license": "MIT",
-  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/package-creation",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/agents-repo-package-creation",
   "repository": "https://github.com/agents-repo/registry",
   "tags": [
-    "package-creation",
+    "agents-repo-package-creation",
     "authoring",
     "validation",
     "review",
