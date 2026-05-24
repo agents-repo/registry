@@ -78,4 +78,4 @@ jobs:
 
       - name: Skip when no package directory changed
         if: steps.packages.outputs.has_packages != 'true'
-        run: echo "No package directories changed; package pipeline skipped."
+        run: echo "No package directories changed; package validation skipped."
