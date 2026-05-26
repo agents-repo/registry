@@ -59,7 +59,8 @@ are executed by script orchestration agents.
   project scripts executed through `package-script-runner`
   and `package-release-gate`.
 - Do not create, modify, or delete files; output only the review report.
-- Do not request cosmetic changes that do not materially improve clarity or usability.
+- Do not request cosmetic changes that do not materially
+  improve clarity or usability.
 - Limit revision requests to issues that would affect
   the user experience or maintainability of the package.
 

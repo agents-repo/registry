@@ -27,8 +27,10 @@ arguments and definition plan before any files are authored.
 
 ## Responsibilities
 
-- Elicit or infer the package purpose, target audience, and intended usage context.
-- Decide whether the package should contain agents only, flows only, or both.
+- Elicit or infer the package purpose, target audience, and intended usage
+  context.
+- Decide whether the package should contain agents only, flows only,
+  or both.
 - Propose a valid kebab-case package ID and agent/flow IDs
   that satisfy the registry naming rules.
 - Draft short, precise descriptions for the package and each planned asset.
@@ -40,7 +42,8 @@ arguments and definition plan before any files are authored.
 - Define an ordered authoring plan for agent and flow definitions after scaffolding.
 - List open questions and assumptions that must be resolved
   before the creator begins drafting files.
-- Output a structured package blueprint as the handoff artifact for `package-creator`.
+- Output a structured package blueprint as the handoff artifact
+  for `package-creator`.
 
 ## Constraints
 

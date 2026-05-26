@@ -40,7 +40,8 @@ arguments and definition plan before any files are authored.
 - Define an ordered authoring plan for agent and flow definitions after scaffolding.
 - List open questions and assumptions that must be resolved
   before the creator begins drafting files.
-- Output a structured package blueprint as the handoff artifact for `package-creator`.
+- Output a structured package blueprint as the handoff artifact
+  for `package-creator`.
 
 ## Constraints
 
