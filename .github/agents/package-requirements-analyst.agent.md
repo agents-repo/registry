@@ -27,17 +27,21 @@ arguments and definition plan before any files are authored.
 
 ## Responsibilities
 
-- Elicit or infer the package purpose, target audience, and intended usage context.
-- Decide whether the package should contain agents only, flows only, or both.
+- Elicit or infer the package purpose, target audience,
+  and intended usage context.
+- Decide whether the package should contain agents only,
+  flows only, or both.
 - Propose a valid kebab-case package ID and agent/flow IDs
   that satisfy the registry naming rules.
-- Draft short, precise descriptions for the package and each planned asset.
+- Draft short, precise descriptions for the package
+  and each planned asset.
 - Identify required metadata fields and suggest values for `tags`,
   `owner`, `homepage`, and `repository`.
 - Produce minimum script arguments for
   `npm run package:create`, including required `--package`,
   `--template`, `--name`, `--description`, and `--owner` values.
-- Define an ordered authoring plan for agent and flow definitions after scaffolding.
+- Define an ordered authoring plan for agent and flow
+  definitions after scaffolding.
 - List open questions and assumptions that must be resolved
   before the creator begins drafting files.
 - Output a structured package blueprint as the handoff artifact
@@ -45,7 +49,8 @@ arguments and definition plan before any files are authored.
 
 ## Constraints
 
-- Do not create, modify, or delete any files; output only the blueprint.
+- Do not create, modify, or delete any files;
+  output only the blueprint.
 - IDs MUST conform to `^[a-z0-9]+(?:-[a-z0-9]+)*$`.
 - Agent IDs and flow IDs MUST be unique across both `agents/`
   and `flows/` within the planned package.
