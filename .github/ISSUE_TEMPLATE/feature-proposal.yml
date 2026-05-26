@@ -60,7 +60,6 @@ body:
       placeholder: |
         - specs/
         - packages/
-        - examples/
         - scripts/
 
   - type: checkboxes

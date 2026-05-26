@@ -24,7 +24,6 @@ List affected paths:
 - [ ] README.md
 - [ ] specs/
 - [ ] packages/
-- [ ] examples/
 - [ ] scripts/
 - [ ] .github/
 - [ ] .vscode/

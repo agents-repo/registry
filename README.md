@@ -97,11 +97,6 @@ registry/
         flow-format.md
         versioning-rules.md
         index-schema.md
-    examples/
-        sample-agent/
-            README.md
-        sample-flow/
-            README.md
     scripts/
         lib/
             ... (modular helpers, validators, and build/create utilities)
@@ -124,6 +119,9 @@ registry/
     README.md
     LICENSE
 ```
+
+For a minimal working example package, start with
+`packages/hello-agent/README.md`.
 
 Current testing baseline focuses on `tests/unit/`.
 For full test layout conventions, path mirroring, and scope guidance, see
