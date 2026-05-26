@@ -15,7 +15,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "lint:md": "markdownlint-cli2 \"**/*.md\" \"**/.*/**/*.md\"",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \"**/.*/**/*.md\" \"!packages/**/versions/**\"",
     "lint:sonar": "eslint \"**/*.{ts,json,jsonc}\"",
     "lint:sonar:fix": "eslint \"**/*.{ts,json,jsonc}\" --fix",
     "lint:all": "npm run lint:md && npm run lint:sonar",
