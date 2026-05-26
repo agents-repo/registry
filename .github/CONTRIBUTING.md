@@ -54,6 +54,33 @@ where `<slug>` is a short lowercase kebab-case description.
 
 Create the issue first to obtain the issue number, then open the branch.
 
+## Commit Message Convention
+
+Before committing, contributors SHOULD classify the dominant intent of the
+staged changes.
+
+Commit category prefixes SHOULD match that intent and use this set:
+`feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`,
+`chore`, `revert`.
+
+Commit messages SHOULD follow this format:
+
+- `category(subset): summary`
+
+`subset` is optional and recommended when it improves clarity.
+
+Breaking changes are not limited to `feat`; any category in the allowed set may
+be breaking when the commit introduces incompatible behavior.
+
+For breaking commits, contributors SHOULD use `!` immediately after `category`
+or `category(subset)` in the header (for example, `fix!: ...` or
+`refactor(parser)!: ...`). Breaking commits SHOULD include a `BREAKING CHANGE:`
+footer describing migration impact.
+
+For mixed-intent changes, contributors SHOULD split commits by intent. If not
+split, use the primary intent category and describe the broader scope in the
+pull request summary.
+
 ## Pull Request Expectations
 
 1. Keep PRs focused and easy to review.

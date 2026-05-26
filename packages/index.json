@@ -1,7 +1,26 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-05-23T10:48:55.261Z",
+  "updatedAt": "2026-05-26T17:05:22.666Z",
   "packages": [
+    {
+      "id": "agents-repo-package-creation",
+      "name": "agents-repo-package-creation",
+      "description": "Agents and flow for creating, reviewing, and validating new registry packages for agents-repo from requirements to submission-ready source.",
+      "latest": "1.0.0",
+      "tags": [
+        "agents-repo-package-creation",
+        "authoring",
+        "validation",
+        "review",
+        "registry"
+      ],
+      "status": "active",
+      "category": "assistant",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      }
+    },
     {
       "id": "hello-agent",
       "name": "hello-agent",

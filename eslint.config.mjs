@@ -8,7 +8,7 @@ import globals from 'globals';
 
 export default [
   {
-    ignores: ['node_modules/**', 'packages/**/versions/**'],
+    ignores: ['node_modules/**'],
   },
   {
     files: ['**/*.ts'],

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "package-script-runner",
+  "description": "Executes package creation, source validation, and build scripts, returning structured command results and next actions.",
+  "license": "MIT",
+  "status": "active",
+  "category": "assistant",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "inputs": [
+    {
+      "name": "script-stage-request",
+      "type": "object",
+      "description": "Script stage request containing package ID, stage name, command arguments, and execution context."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "script-stage-report",
+      "type": "object",
+      "description": "Structured report with command executed, exit status, key output, and recommended next step."
+    }
+  ]
+}

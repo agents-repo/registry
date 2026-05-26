@@ -36,11 +36,8 @@ jobs:
       - name: Validate runtime
         run: npm run env:check
 
-      - name: Lint markdown
-        run: npm run lint:md
-
-      - name: Lint Sonar rules
-        run: npm run lint:sonar
+      - name: Run all lints
+        run: npm run lint:all
 
       - name: Run unit tests
         run: npm run test:run

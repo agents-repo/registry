@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "agents-repo-package-creation",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "artifact": "1.0.0.zip",
+      "sha256": "60892cef17f6553504792bd361bfcbffe5ad51a443567fc0ef996ea4631b68de",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "2751e594334bffd35acf6f987ff257168309c548e7797c6ba129b438417cd81e",
+      "createdAt": "2026-05-26T17:05:22.226Z"
+    }
+  ]
+}

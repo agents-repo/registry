@@ -6,10 +6,10 @@
     {
       "version": "1.0.0",
       "artifact": "1.0.0.zip",
-      "sha256": "e1543d138d576c03c8ad214e1a500e90434c8fc6967ec39fcc9c96238ab51736",
+      "sha256": "680404cef21c8119aec5834da1483c7dab1b2b62ffb3e5643a329809967a5f6d",
       "srcArtifact": "1.0.0-src.zip",
-      "srcSha256": "70605d5a4dd4e06aaaff1b0283dbf471b7279ff1180e3518a4b02978949ddfed",
-      "createdAt": "2026-05-23T10:48:55.261Z"
+      "srcSha256": "4df6d8384d984099263545b1f8e21f8c688e8ae9026042edec62913466e78198",
+      "createdAt": "2026-05-24T10:32:36.906Z"
     }
   ]
 }

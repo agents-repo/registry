@@ -38,14 +38,22 @@ jobs:
       - name: Validate runtime
         run: npm run env:check
 
+      - name: Run all lints
+        run: npm run lint:all
+
       - name: Determine changed packages
         id: packages
         run: |
+          set -euo pipefail
+
           base_ref="${{ github.base_ref }}"
           git fetch --no-tags origin "$base_ref" --depth=1
 
           changed_files=$(git diff --name-only "origin/$base_ref"...HEAD)
-          changed_packages=$(printf '%s\n' "$changed_files" | awk -F/ '/^packages\// {print $2}' | grep -v '^$' | sort -u)
+          candidate_packages=$(printf '%s\n' "$changed_files" | awk -F/ '$1=="packages" && NF>2 {print $2}' | sort -u)
+          changed_packages=$(printf '%s\n' "$candidate_packages" | while IFS= read -r pkg; do
+            [ -f "packages/$pkg/metadata.json" ] && printf '%s\n' "$pkg"
+          done | sort -u)
 
           if [ -z "$changed_packages" ]; then
             echo "has_packages=false" >> "$GITHUB_OUTPUT"
