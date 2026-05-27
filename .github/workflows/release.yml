@@ -101,13 +101,13 @@ jobs:
         run: npm ci
 
       - name: Run semantic-release (dry run)
-        if: github.event_name == 'workflow_dispatch' && inputs.dry_run == 'true'
+        if: inputs.dry_run == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release --dry-run
 
       - name: Run semantic-release
-        if: github.event_name == 'workflow_dispatch' && inputs.dry_run != 'true'
+        if: inputs.dry_run != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
