@@ -39,18 +39,18 @@ Security vulnerabilities MUST NOT be reported in public issues. Use
 `https://github.com/agents-repo/registry/security/advisories/new` for private
 disclosure.
 
-## Release Workflow (In Progress)
-
-Issue `#45` tracks the first repository release workflow implementation.
+## Release Workflow
 
 - Release versions use Semantic Versioning `MAJOR.MINOR.PATCH` sourced from
   <https://semver.org>.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
-- Pushes to `main` run release validation checks only and never publish.
-- Production publishing runs manually and only via `workflow_dispatch` on
-  `.github/workflows/release.yml`.
+- Pushes to `main` run release validation checks and then execute
+  `semantic-release`.
+- A release is published only when commit history includes releasable changes
+  per the commit-to-version mapping below.
+- `workflow_dispatch` remains available for operational checks.
 - The `dry_run` input defaults to `true`; use `dry_run=false` only when an
-  intentional production release is approved.
+  intentional manual publish is run from `main`.
 
 The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. Release tags may
 use the common `v<MAJOR>.<MINOR>.<PATCH>` convention without changing the
@@ -63,9 +63,6 @@ Commit-to-version mapping for automated releases:
 - `fix:`, `perf:`, and `revert:` => `PATCH`
 
 Commit types not listed above do not trigger an automated release.
-
-Until issue `#45` is complete, consider release automation draft-level and
-continue using existing validation and packaging scripts as the source of truth.
 
 ## Branch Naming
 

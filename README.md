@@ -69,18 +69,18 @@ gh pr create --repo agents-repo/registry \
 For issue-linked PRs, include `Closes #<issue-number>` in
 `## Related Issues`. See `.github/CONTRIBUTING.md` for the canonical policy.
 
-## Release Workflow (Planned)
-
-Issue `#45` tracks the first repository release workflow.
+## Release Workflow
 
 - Release versions follow Semantic Versioning `MAJOR.MINOR.PATCH` sourced from
     <https://semver.org>.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
-- Pushes to `main` run release validation checks only and never publish.
-- Publishing is manual and runs only via `workflow_dispatch` on
-    `.github/workflows/release.yml`.
-- `dry_run` defaults to `true`; set `dry_run=false` only for intentional
-    production publishing.
+- Pushes to `main` run the release validation checks and then execute
+    `semantic-release`.
+- A release is published only when commit history includes releasable changes
+    per the commit-to-version mapping below.
+- `workflow_dispatch` remains available for operational checks.
+- `dry_run` defaults to `true`; set `dry_run=false` only when intentionally
+    running a manual publish from `main`.
 - Git tags use `v<MAJOR>.<MINOR>.<PATCH>` format.
 
 The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. The leading
@@ -101,9 +101,6 @@ Examples:
 - `feat!: remove legacy manifest field` => major bump
 - `feat: add release dashboard metadata` => minor bump
 - `fix: adjust lint config` => patch bump
-
-Until issue `#45` is complete, treat release automation as in-progress and
-follow the existing validation and package workflow documented below.
 
 ## VS Code Workspace Settings
 
