@@ -35,6 +35,10 @@ supported spec document version in this table.
 ## Package Versioning
 
 - Package versions MUST use semantic versioning: `MAJOR.MINOR.PATCH`.
+- A package version value MUST be the bare semantic version string (for example
+  `1.2.3`), not a Git tag name.
+- Git tags MAY use a leading `v` as a repository convention (for example
+  `v1.2.3`) when the underlying version value remains `1.2.3`.
 - Pre-release and build metadata MUST NOT be used.
 - Each released version MUST have a snapshot folder at
   `versions/<version>/` containing the deployment artifact

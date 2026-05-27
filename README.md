@@ -79,6 +79,9 @@ Issue `#45` tracks the first repository release workflow.
 - Releases are automated with `semantic-release` on `main`.
 - Git tags use `v<MAJOR>.<MINOR>.<PATCH>` format.
 
+The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. The leading
+`v` is only the Git tag naming convention used for release tags.
+
 ### Commit-To-Version Mapping
 
 The release workflow uses Conventional Commit semantics:

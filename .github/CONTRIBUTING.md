@@ -48,6 +48,10 @@ Issue `#45` tracks the first repository release workflow implementation.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
 - Releases are driven by `semantic-release` from commit history on `main`.
 
+The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. Release tags may
+use the common `v<MAJOR>.<MINOR>.<PATCH>` convention without changing the
+underlying version value.
+
 Commit-to-version mapping for automated releases:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
