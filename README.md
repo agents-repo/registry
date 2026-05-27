@@ -92,14 +92,15 @@ The release workflow uses Conventional Commit semantics:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
 - `feat:` => `MINOR`
-- `fix:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`, `build:`,
-    `ci:`, `chore:`, and `revert:` => `PATCH`
+- `fix:`, `perf:`, and `revert:` => `PATCH`
+
+Commit types not listed above do not trigger an automated release.
 
 Examples:
 
 - `feat!: remove legacy manifest field` => major bump
 - `feat: add release dashboard metadata` => minor bump
-- `chore: adjust lint config` => patch bump
+- `fix: adjust lint config` => patch bump
 
 Until issue `#45` is complete, treat release automation as in-progress and
 follow the existing validation and package workflow documented below.

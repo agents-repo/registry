@@ -60,8 +60,9 @@ Commit-to-version mapping for automated releases:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
 - `feat:` => `MINOR`
-- `fix:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`, `build:`,
-  `ci:`, `chore:`, and `revert:` => `PATCH`
+- `fix:`, `perf:`, and `revert:` => `PATCH`
+
+Commit types not listed above do not trigger an automated release.
 
 Until issue `#45` is complete, consider release automation draft-level and
 continue using existing validation and packaging scripts as the source of truth.
