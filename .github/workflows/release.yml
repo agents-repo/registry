@@ -62,9 +62,50 @@ jobs:
       - name: Scan package ZIPs
         run: npm run package:scan-zips
 
-  release:
+  release-dry-run:
+    name: Release Dry Run
+    if: github.event_name == 'workflow_dispatch' && inputs.dry_run == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs:
+      - validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Setup npm via Corepack
+        run: |
+          corepack enable
+          PACKAGE_MANAGER="$(node -p "require('./package.json').packageManager")"
+          case "$PACKAGE_MANAGER" in
+            npm@*) ;;
+            *)
+              echo "Expected package.json packageManager to start with 'npm@', got: $PACKAGE_MANAGER" >&2
+              exit 1
+              ;;
+          esac
+          corepack prepare "$PACKAGE_MANAGER" --activate
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run semantic-release (dry run)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release --dry-run
+
+  release-publish:
     name: Publish GitHub Release
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' && inputs.dry_run != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -100,14 +141,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run semantic-release (dry run)
-        if: inputs.dry_run == 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release --dry-run
-
       - name: Run semantic-release
-        if: inputs.dry_run != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release

@@ -76,8 +76,8 @@ Issue `#45` tracks the first repository release workflow.
 - Release versions follow Semantic Versioning `MAJOR.MINOR.PATCH` sourced from
     <https://semver.org>.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
-- Pushes to `main` run release validation checks.
-- Publishing a release is manual via `workflow_dispatch` on
+- Pushes to `main` run release validation checks only and never publish.
+- Publishing is manual and runs only via `workflow_dispatch` on
     `.github/workflows/release.yml`.
 - `dry_run` defaults to `true`; set `dry_run=false` only for intentional
     production publishing.
