@@ -69,6 +69,18 @@ gh pr create --repo agents-repo/registry \
 For issue-linked PRs, include `Closes #<issue-number>` in
 `## Related Issues`. See `.github/CONTRIBUTING.md` for the canonical policy.
 
+## Release Workflow (Planned)
+
+Issue `#45` tracks the first repository release workflow.
+
+- Release versions follow Semantic Versioning `MAJOR.MINOR.PATCH` sourced from
+    <https://semver.org>.
+- `PATCH` is the canonical term for backward-compatible bugfix releases.
+- The initial workflow scaffold lives in `.github/workflows/release.yml`.
+
+Until issue `#45` is complete, treat release automation as in-progress and
+follow the existing validation and package workflow documented below.
+
 ## VS Code Workspace Settings
 
 Shared workspace editor defaults are managed in `.vscode/settings.json`.
