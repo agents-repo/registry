@@ -1,0 +1,29 @@
+name: Setup Node and pinned npm
+description: Setup Node from .nvmrc, activate pinned npm via Corepack, and install dependencies.
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+
+    - name: Activate pinned npm
+      shell: bash
+      run: |
+        corepack enable
+        PACKAGE_MANAGER="$(node -p "require('./package.json').packageManager")"
+        case "$PACKAGE_MANAGER" in
+          npm@*) ;;
+          *)
+            echo "Expected package.json packageManager to start with 'npm@', got: $PACKAGE_MANAGER" >&2
+            exit 1
+            ;;
+        esac
+        corepack prepare "$PACKAGE_MANAGER" --activate
+
+    - name: Install dependencies
+      shell: bash
+      run: npm ci
