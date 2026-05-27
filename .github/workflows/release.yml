@@ -12,9 +12,7 @@ on:
         default: "true"
 
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
+  contents: read
 
 jobs:
   validate:
@@ -59,6 +57,10 @@ jobs:
   release:
     name: Publish GitHub Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
     needs:
       - validate
     steps:
