@@ -11,32 +11,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-
-      - name: Activate pinned npm
-        run: |
-          corepack enable
-          PACKAGE_MANAGER="$(node -p "require('./package.json').packageManager")"
-          case "$PACKAGE_MANAGER" in
-            npm@*) ;;
-            *)
-              echo "Expected package.json packageManager to be an npm@... value, got: $PACKAGE_MANAGER"
-              exit 1
-              ;;
-          esac
-          corepack prepare "$PACKAGE_MANAGER" --activate
+      - name: Setup Node and pinned npm
+        uses: ./.github/actions/setup-node-pinned-npm
 
       - name: Show runtime versions
         run: |
           node --version
           npm --version
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Validate runtime
         run: npm run env:check

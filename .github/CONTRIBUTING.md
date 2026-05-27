@@ -39,6 +39,31 @@ Security vulnerabilities MUST NOT be reported in public issues. Use
 `https://github.com/agents-repo/registry/security/advisories/new` for private
 disclosure.
 
+## Release Workflow
+
+- Release versions use Semantic Versioning `MAJOR.MINOR.PATCH` sourced from
+  <https://semver.org>.
+- `PATCH` is the canonical term for backward-compatible bugfix releases.
+- Pushes to `main` run release validation checks and then execute
+  `semantic-release`.
+- A release is published only when commit history includes releasable changes
+  per the commit-to-version mapping below.
+- `workflow_dispatch` remains available for operational checks.
+- The `dry_run` input defaults to `true`; use `dry_run=false` only when an
+  intentional manual publish is run from `main`.
+
+The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. Release tags may
+use the common `v<MAJOR>.<MINOR>.<PATCH>` convention without changing the
+underlying version value.
+
+Commit-to-version mapping for automated releases:
+
+- `type!:` or `BREAKING CHANGE:` => `MAJOR`
+- `feat:` => `MINOR`
+- `fix:`, `perf:`, and `revert:` => `PATCH`
+
+Commit types not listed above do not trigger an automated release.
+
 ## Branch Naming
 
 Branch names MUST follow the pattern `<prefix>/<issue-number>-<slug>`,
