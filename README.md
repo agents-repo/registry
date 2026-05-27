@@ -76,7 +76,23 @@ Issue `#45` tracks the first repository release workflow.
 - Release versions follow Semantic Versioning `MAJOR.MINOR.PATCH` sourced from
     <https://semver.org>.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
-- The initial workflow scaffold lives in `.github/workflows/release.yml`.
+- Releases are automated with `semantic-release` on `main`.
+- Git tags use `v<MAJOR>.<MINOR>.<PATCH>` format.
+
+### Commit-To-Version Mapping
+
+The release workflow uses Conventional Commit semantics:
+
+- `type!:` or `BREAKING CHANGE:` => `MAJOR`
+- `feat:` => `MINOR`
+- `fix:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`, `build:`,
+    `ci:`, `chore:`, and `revert:` => `PATCH`
+
+Examples:
+
+- `feat!: remove legacy manifest field` => major bump
+- `feat: add release dashboard metadata` => minor bump
+- `chore: adjust lint config` => patch bump
 
 Until issue `#45` is complete, treat release automation as in-progress and
 follow the existing validation and package workflow documented below.

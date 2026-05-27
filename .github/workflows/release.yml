@@ -2,12 +2,19 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run semantic-release in dry-run mode"
+        required: false
+        default: "true"
 
 permissions:
-  contents: read
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
   validate:
@@ -25,31 +32,63 @@ jobs:
       - name: Setup npm via Corepack
         run: |
           corepack enable
-          corepack prepare npm@11.12.1 --activate
+          PACKAGE_MANAGER="$(node -p \"require('./package.json').packageManager\")"
+          corepack prepare "$PACKAGE_MANAGER" --activate
 
-      # TODO(issue-45): wire full validation commands:
-      # npm run env:check
-      # npm run lint:md
-      # npm run lint:sonar
-      # npm run typecheck
-      # npm run test:run
-      # npm run package:scan-zips
-      - name: Validation Placeholder
-        run: |
-          echo "Release workflow skeleton is in place."
-          echo "Full validation chain will be wired in follow-up commits."
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate runtime
+        run: npm run env:check
+
+      - name: Run markdown lint
+        run: npm run lint:md
+
+      - name: Run Sonar lint
+        run: npm run lint:sonar
+
+      - name: Run typecheck
+        run: npm run typecheck
+
+      - name: Run unit tests
+        run: npm run test:run
+
+      - name: Scan package ZIPs
+        run: npm run package:scan-zips
 
   release:
-    name: Publish GitHub Release (Placeholder)
+    name: Publish GitHub Release
     runs-on: ubuntu-latest
     needs:
       - validate
-    if: startsWith(github.ref, 'refs/tags/v')
-    permissions:
-      contents: write
     steps:
-      # TODO(issue-45): add dry-run gate and release publication steps.
-      - name: Release Placeholder
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Setup npm via Corepack
         run: |
-          echo "Tag detected: ${GITHUB_REF_NAME}"
-          echo "Release publication will be implemented in follow-up commits."
+          corepack enable
+          PACKAGE_MANAGER="$(node -p \"require('./package.json').packageManager\")"
+          corepack prepare "$PACKAGE_MANAGER" --activate
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run semantic-release (dry run)
+        if: github.event_name == 'workflow_dispatch' && inputs.dry_run == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release --dry-run
+
+      - name: Run semantic-release
+        if: github.event_name != 'workflow_dispatch' || inputs.dry_run != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
