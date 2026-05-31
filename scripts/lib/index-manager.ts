@@ -3,7 +3,12 @@ import { ErrorCode, PackageError } from './errors';
 import { readJsonFile, writeJsonFile } from './io/json';
 import { getSchemaCurrentVersion } from './schema-versions';
 import { ValidationUtils } from './validation-utils';
-import { ESTIMATED_COST_MIN, ESTIMATED_COST_MAX, SCHEMA_FAMILY_INDEX } from './constants';
+import {
+  ESTIMATED_COST_MIN,
+  ESTIMATED_COST_MAX,
+  GITHUB_USER_OR_TEAM_SLUG_PATTERN,
+  SCHEMA_FAMILY_INDEX,
+} from './constants';
 import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 import { isStatus, isPackageCostBand, STATUS_VALUES, PACKAGE_COST_BANDS } from './types';
 
@@ -45,6 +50,17 @@ function requireNonEmptyString(value: unknown, field: string, packageId: string)
     ErrorCode.ERR_METADATA_INVALID,
     `metadata.json ${field} for package "${packageId}" must be a non-empty string`,
   );
+}
+
+function requireOwner(value: unknown, packageId: string): string {
+  const owner = requireNonEmptyString(value, 'owner', packageId);
+  if (!GITHUB_USER_OR_TEAM_SLUG_PATTERN.test(owner)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `metadata.json owner for package "${packageId}" must be a GitHub owner or organization slug`,
+    );
+  }
+  return owner;
 }
 
 function requireTags(value: unknown, packageId: string): string[] {
@@ -95,6 +111,19 @@ function projectEstimatedCost(value: unknown, packageId: string): { estimatedCos
   return { estimatedCost: value };
 }
 
+function assertNoEntriesMissingOwner(index: PackageIndex): void {
+  const hasEntryMissingOwner = index.packages.some(
+    (entry) => typeof entry.owner !== 'string' || entry.owner.trim().length === 0,
+  );
+
+  if (hasEntryMissingOwner) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      'packages/index.json contains entries without required owner; run "npm run package:index:rebuild" before package updates',
+    );
+  }
+}
+
 export class IndexManager {
   private readonly indexPath: string;
 
@@ -122,10 +151,15 @@ export class IndexManager {
       index = { schemaVersion: getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX), updatedAt: '', packages: [] };
     }
 
+    assertNoEntriesMissingOwner(index);
+
+    index.schemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX);
+
     const entry: PackageIndexEntry = {
       id: packageId,
       name: requireNonEmptyString(metadata.name, 'name', packageId),
       description: requireNonEmptyString(metadata.description, 'description', packageId),
+      owner: requireOwner(metadata.owner, packageId),
       latest: manifestLatest,
       tags: requireTags(metadata.tags, packageId),
       status: requireStatus(metadata.status, packageId),

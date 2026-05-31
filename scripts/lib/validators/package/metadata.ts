@@ -40,8 +40,15 @@ function validateBasicFields(m: Record<string, unknown>, issues: ValidationIssue
     );
   }
 
-  if (typeof m['owner'] !== 'string' || m['owner'].length === 0) {
+  if (typeof m['owner'] !== 'string' || m['owner'].trim().length === 0) {
     issues.push(err('ERR_METADATA_INVALID', 'owner must be a non-empty string'));
+  } else if (!GITHUB_USER_OR_TEAM_SLUG_PATTERN.test(m['owner'])) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `owner must be a GitHub owner or organization slug, got: ${JSON.stringify(m['owner'])}`,
+      ),
+    );
   }
 
   if (m['license'] !== LICENSE) {

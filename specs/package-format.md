@@ -208,7 +208,8 @@ its version snapshot folder at `versions/<version>/`.
 - When a package is added, updated, or a new version is published,
   `packages/index.json` MUST be updated accordingly.
 - For package metadata, index entries MUST
-  project package `status`, `category`, and `estimateOverallCost.band`.
+  project package `owner`, `status`, `category`, and
+  `estimateOverallCost.band`.
 - For package metadata, index entries MAY
   project `estimateOverallCost.estimatedCost` and `quickstart`.
 - Package detail-only fields (for example `customAttributes`) MUST NOT

@@ -260,7 +260,7 @@ Package format:
 Registry index:
 
 - `packages/index.json` lists all packages with summary fields for
-  webapp consumption.
+    webapp consumption, including package owner.
 - See `specs/index-schema.md` for the schema.
 
 Package rules:

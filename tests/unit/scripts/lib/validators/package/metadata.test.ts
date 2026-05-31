@@ -71,6 +71,18 @@ describe('validateMetadata', (): void => {
     expect(issues.some((issue) => issue.message.includes('maintainers entries'))).toBe(true);
   });
 
+  it('rejects invalid owner slug', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['owner'] = 'not valid';
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(false);
+    expect(hasErrorCode(issues, 'ERR_METADATA_INVALID')).toBe(true);
+    expect(issues.some((issue) => issue.message.includes('owner must be a GitHub owner or organization slug'))).toBe(true);
+  });
+
   it('rejects updatedAt older than createdAt', (): void => {
     const issues: ValidationIssue[] = [];
     const metadata = makeBaseMetadata();
