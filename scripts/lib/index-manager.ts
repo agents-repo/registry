@@ -111,6 +111,19 @@ function projectEstimatedCost(value: unknown, packageId: string): { estimatedCos
   return { estimatedCost: value };
 }
 
+function assertNoEntriesMissingOwner(index: PackageIndex): void {
+  const hasEntryMissingOwner = index.packages.some(
+    (entry) => typeof entry.owner !== 'string' || entry.owner.trim().length === 0,
+  );
+
+  if (hasEntryMissingOwner) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      'packages/index.json contains entries without required owner; run "npm run package:index:rebuild" before package updates',
+    );
+  }
+}
+
 export class IndexManager {
   private readonly indexPath: string;
 
@@ -137,6 +150,8 @@ export class IndexManager {
     } else {
       index = { schemaVersion: getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX), updatedAt: '', packages: [] };
     }
+
+    assertNoEntriesMissingOwner(index);
 
     index.schemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX);
 

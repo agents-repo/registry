@@ -76,6 +76,40 @@ describe('IndexManager', (): void => {
     expect(index.schemaVersion).toBe(getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX));
   });
 
+  it('throws when existing index has entries without owner', (): void => {
+    const tempDir = makeTempDir();
+    const indexPath = path.join(tempDir, 'index.json');
+    const manager = new IndexManager(indexPath);
+
+    fs.writeFileSync(
+      indexPath,
+      JSON.stringify({
+        schemaVersion: '1.0.0',
+        updatedAt: '',
+        packages: [
+          {
+            id: 'legacy-package',
+            name: 'legacy-package',
+            description: 'legacy entry without owner',
+            latest: '1.0.0',
+            tags: ['agent'],
+            status: 'active',
+            category: 'assistant',
+            estimateOverallCost: {
+              band: 'low',
+              estimatedCost: 2,
+            },
+          },
+        ],
+      }),
+      'utf-8',
+    );
+
+    expect(() => {
+      manager.update('hello-agent', makeMetadata(), '1.0.0');
+    }).toThrow('package:index:rebuild');
+  });
+
   it('throws when estimateOverallCost.band is invalid', (): void => {
     const tempDir = makeTempDir();
     const indexPath = path.join(tempDir, 'index.json');
