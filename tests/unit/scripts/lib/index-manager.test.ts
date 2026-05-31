@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
+import { SCHEMA_FAMILY_INDEX } from '../../../../scripts/lib/constants';
+import { getSchemaCurrentVersion } from '../../../../scripts/lib/schema-versions';
 import type { PackageIndex, PackageMetadata } from '../../../../scripts/lib/types';
 import { IndexManager } from '../../../../scripts/lib/index-manager';
 
@@ -57,6 +59,21 @@ describe('IndexManager', (): void => {
 
     const index = readIndex(indexPath);
     expect(index.packages.map((pkg) => pkg.id)).toEqual(['alpha-package', 'zeta-package']);
+    expect(index.packages[0].owner).toBe('agents-repo');
+    expect(index.schemaVersion).toBe(getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX));
+  });
+
+  it('normalizes an existing index schemaVersion to current on update', (): void => {
+    const tempDir = makeTempDir();
+    const indexPath = path.join(tempDir, 'index.json');
+    const manager = new IndexManager(indexPath);
+
+    fs.writeFileSync(indexPath, JSON.stringify({ schemaVersion: '1.0.0', updatedAt: '', packages: [] }), 'utf-8');
+
+    manager.update('hello-agent', makeMetadata(), '1.0.0');
+
+    const index = readIndex(indexPath);
+    expect(index.schemaVersion).toBe(getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX));
   });
 
   it('throws when estimateOverallCost.band is invalid', (): void => {

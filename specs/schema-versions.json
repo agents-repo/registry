@@ -26,9 +26,9 @@
       "eol": []
     },
     "index": {
-      "current": "1.0.0",
-      "supported": ["1.0.0"],
-      "deprecated": [],
+      "current": "1.1.0",
+      "supported": ["1.0.0", "1.1.0"],
+      "deprecated": ["1.0.0"],
       "eol": []
     }
   }
