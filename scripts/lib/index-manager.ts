@@ -3,7 +3,12 @@ import { ErrorCode, PackageError } from './errors';
 import { readJsonFile, writeJsonFile } from './io/json';
 import { getSchemaCurrentVersion } from './schema-versions';
 import { ValidationUtils } from './validation-utils';
-import { ESTIMATED_COST_MIN, ESTIMATED_COST_MAX, SCHEMA_FAMILY_INDEX } from './constants';
+import {
+  ESTIMATED_COST_MIN,
+  ESTIMATED_COST_MAX,
+  GITHUB_USER_OR_TEAM_SLUG_PATTERN,
+  SCHEMA_FAMILY_INDEX,
+} from './constants';
 import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 import { isStatus, isPackageCostBand, STATUS_VALUES, PACKAGE_COST_BANDS } from './types';
 
@@ -45,6 +50,17 @@ function requireNonEmptyString(value: unknown, field: string, packageId: string)
     ErrorCode.ERR_METADATA_INVALID,
     `metadata.json ${field} for package "${packageId}" must be a non-empty string`,
   );
+}
+
+function requireOwner(value: unknown, packageId: string): string {
+  const owner = requireNonEmptyString(value, 'owner', packageId);
+  if (!GITHUB_USER_OR_TEAM_SLUG_PATTERN.test(owner)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `metadata.json owner for package "${packageId}" must be a GitHub owner or organization slug`,
+    );
+  }
+  return owner;
 }
 
 function requireTags(value: unknown, packageId: string): string[] {
@@ -128,7 +144,7 @@ export class IndexManager {
       id: packageId,
       name: requireNonEmptyString(metadata.name, 'name', packageId),
       description: requireNonEmptyString(metadata.description, 'description', packageId),
-      owner: requireNonEmptyString(metadata.owner, 'owner', packageId),
+      owner: requireOwner(metadata.owner, packageId),
       latest: manifestLatest,
       tags: requireTags(metadata.tags, packageId),
       status: requireStatus(metadata.status, packageId),

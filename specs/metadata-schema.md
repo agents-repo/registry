@@ -147,7 +147,7 @@ Additional optional fields:
   `high`, `critical`, or `mixed`.
 - `estimateOverallCost.estimatedCost`, when present, MUST be an integer in the
   range 1–10 inclusive.
-- `owner` MUST be a non-empty string.
+- `owner` MUST be a non-empty GitHub owner or organization slug.
 - `maintainers`, when present, MUST be an array of unique GitHub usernames or
   team slugs.
 - `compatibility`, when present, MUST be an object.
