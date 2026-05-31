@@ -10,6 +10,7 @@
     "package:build": "tsx scripts/package-build.ts",
     "package:validate-artifacts": "tsx scripts/package-validate-artifacts.ts",
     "package:scan-zips": "tsx scripts/package-scan-zips.ts",
+    "package:index:rebuild": "tsx scripts/package-index-rebuild.ts",
     "package:create": "tsx scripts/package-create.ts",
     "package:create:smoke": "tsx scripts/package-create-smoke.ts",
     "test": "vitest",

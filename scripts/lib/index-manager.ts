@@ -122,10 +122,13 @@ export class IndexManager {
       index = { schemaVersion: getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX), updatedAt: '', packages: [] };
     }
 
+    index.schemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX);
+
     const entry: PackageIndexEntry = {
       id: packageId,
       name: requireNonEmptyString(metadata.name, 'name', packageId),
       description: requireNonEmptyString(metadata.description, 'description', packageId),
+      owner: requireNonEmptyString(metadata.owner, 'owner', packageId),
       latest: manifestLatest,
       tags: requireTags(metadata.tags, packageId),
       status: requireStatus(metadata.status, packageId),

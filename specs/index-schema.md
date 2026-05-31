@@ -1,4 +1,4 @@
-# Index Schema Specification (1.0.0)
+# Index Schema Specification (1.1.0)
 
 This document defines the deterministic `index.json` format
 for the registry-level package index.
@@ -11,11 +11,12 @@ are to be interpreted as described in RFC 2119.
 ## Schema Version Lifecycle
 
 `schemaVersion` identifies the index **format** version, not the package
-release version and not the spec document version (`1.0.0`).
+release version and not the spec document version (`1.1.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | index schemaVersion | current | Includes WebApp listing projection |
+| `1.1.0` | index schemaVersion | current | Adds required `owner` field |
+| `1.0.0` | index schemaVersion | deprecated | Missing required `owner` field |
 
 Tooling MUST reject index files whose `schemaVersion` is not in the table above
 unless it explicitly supports a newer schema version.
@@ -58,6 +59,7 @@ Each entry in `packages` MUST be an object with:
 | `id` | string | yes | Package directory name; kebab-case |
 | `name` | string | yes | MUST match `metadata.json` `name` |
 | `description` | string | yes | MUST match `metadata.json` `description` |
+| `owner` | string | yes | MUST match `metadata.json` `owner` |
 | `latest` | string | yes | MUST equal `manifest.json` `latest` |
 | `tags` | array of string | yes | MUST match `metadata.json` `tags` |
 | `status` | string | yes | MUST match `metadata.json` `status` enum |
@@ -78,8 +80,9 @@ Each entry in `packages` MUST be an object with:
 - `packages[].id` MUST satisfy `^[a-z0-9]+(?:-[a-z0-9]+)*$`.
 - `packages[].latest` MUST equal the `latest` field in the
   corresponding `packages/<id>/versions/manifest.json`.
-- `packages[].name`, `packages[].description`, and `packages[].tags`
-  MUST reflect the current `packages/<id>/metadata.json` values.
+- `packages[].name`, `packages[].description`, `packages[].owner`, and
+  `packages[].tags` MUST reflect the current
+  `packages/<id>/metadata.json` values.
 - `packages[].status`, `packages[].category`, and
   `packages[].estimateOverallCost` MUST reflect the current
   `packages/<id>/metadata.json` values.
@@ -115,13 +118,14 @@ Each entry in `packages` MUST be an object with:
 
 ```json
 {
-    "schemaVersion": "1.0.0",
+    "schemaVersion": "1.1.0",
     "updatedAt": "2026-05-05T00:00:00Z",
     "packages": [
         {
             "id": "my-package",
             "name": "my-package",
             "description": "Multi-agent package for PR review automation.",
+            "owner": "agents-repo",
             "latest": "1.1.0",
             "tags": ["productivity", "review", "automation"],
             "status": "active",

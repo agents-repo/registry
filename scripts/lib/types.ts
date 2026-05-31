@@ -73,6 +73,7 @@ export interface PackageIndexEntry {
   id: string;
   name: string;
   description: string;
+  owner: string;
   latest: string;
   tags: string[];
   status: StatusValue;

@@ -18,8 +18,8 @@ export function warnIfIndexMayBeInconsistent(indexPath: string, packageId: strin
   }
 
   try {
-    const currentIndex = readJsonFile<Record<string, unknown>>(indexPath);
-    if (currentIndex[packageId] !== undefined) {
+    const currentIndex = readJsonFile<{ packages?: Array<{ id?: unknown }> }>(indexPath);
+    if (currentIndex.packages?.some((entry) => entry.id === packageId) === true) {
       console.error(
         `  [CRITICAL] packages/index.json may be inconsistent. ` +
           `Review the index for package "${packageId}" and ensure it matches versions/manifest.json.`,
