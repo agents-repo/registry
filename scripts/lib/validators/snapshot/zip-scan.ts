@@ -14,6 +14,8 @@ import {
   ZIP_UNIX_TYPE_MASK,
   VERSIONS_DIR,
 } from '../../constants';
+import type { InstallTargetId } from '../../types';
+import { parseFrontmatterData } from '../../frontmatter';
 
 const ALLOWED_ZIP_EXTENSION_SUFFIXES = Array.from(ALLOWED_ZIP_EXTENSIONS).sort(
   (left, right) => right.length - left.length,
@@ -197,6 +199,101 @@ function validateSourceEntry(
   }
 
   validateFrontmatterVersion(entry, name, expectedVersion, issues, 'source');
+}
+
+const CLAUDE_AGENT_ENTRY_PATTERN = /^\.claude\/agents\/[a-z0-9]+(?:-[a-z0-9]+)*\.md$/;
+const SKILL_ENTRY_PATTERN = /^(?:\.cursor\/skills|\.agents\/skills)\/[a-z0-9]+(?:-[a-z0-9]+)*\/SKILL\.md$/;
+
+function validateSkillEntry(entry: AdmZip.IZipEntry, name: string, issues: ValidationIssue[]): void {
+  if (!SKILL_ENTRY_PATTERN.test(name)) {
+    issues.push(
+      err(
+        'ERR_ZIP_UNEXPECTED_ENTRY',
+        `Unexpected entry in skill target ZIP: "${name}"`,
+      ),
+    );
+    return;
+  }
+
+  try {
+    const content = entry.getData().toString('utf-8');
+    const frontmatter = parseFrontmatterData(content);
+    if (typeof frontmatter.name !== 'string' || frontmatter.name.trim().length === 0) {
+      issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Skill ZIP entry "${name}" must include frontmatter name`));
+    }
+    if (typeof frontmatter.description !== 'string' || frontmatter.description.trim().length === 0) {
+      issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Skill ZIP entry "${name}" must include frontmatter description`));
+    }
+  } catch {
+    issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of skill ZIP entry: "${name}"`));
+  }
+}
+
+function validateClaudeEntry(
+  entry: AdmZip.IZipEntry,
+  name: string,
+  expectedVersion: string,
+  issues: ValidationIssue[],
+): void {
+  if (!CLAUDE_AGENT_ENTRY_PATTERN.test(name)) {
+    issues.push(
+      err(
+        'ERR_ZIP_UNEXPECTED_ENTRY',
+        `Unexpected entry in Claude target ZIP: "${name}"`,
+      ),
+    );
+    return;
+  }
+
+  validateFrontmatterVersion(entry, name, expectedVersion, issues, 'deployment');
+}
+
+export function scanTargetArtifactZip(
+  zipPath: string,
+  targetId: InstallTargetId,
+  expectedVersion: string,
+): ValidationIssue[] {
+  if (targetId === 'github-copilot') {
+    return scanSnapshotZip(zipPath, { type: 'deployment', expectedVersion });
+  }
+
+  const issues: ValidationIssue[] = [];
+  let zip: AdmZip;
+  try {
+    zip = new AdmZip(zipPath);
+  } catch (error) {
+    return [err('ERR_ZIP_MALFORMED_ENTRY', `Cannot open ZIP: ${zipPath} — ${error}`)];
+  }
+
+  const entries = zip.getEntries();
+  const seenExact = new Set<string>();
+  const seenLower = new Map<string, string>();
+
+  for (const entry of entries) {
+    const name = entry.entryName;
+    if (name.endsWith('/')) {
+      continue;
+    }
+
+    if (!validateEntryPath(name, issues)) {
+      continue;
+    }
+
+    if (!validateNotSymlink(entry, name, issues)) {
+      continue;
+    }
+
+    trackEntryCollisions(name, issues, seenExact, seenLower);
+
+    if (targetId === 'claude-code') {
+      validateClaudeEntry(entry, name, expectedVersion, issues);
+      continue;
+    }
+
+    validateSkillEntry(entry, name, issues);
+  }
+
+  return issues;
 }
 
 export function scanSnapshotZip(

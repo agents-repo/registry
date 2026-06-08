@@ -2,10 +2,17 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { SCHEMA_FAMILY_INDEX } from '../../../../scripts/lib/constants';
+import { INSTALL_TARGET_IDS, SCHEMA_FAMILY_INDEX } from '../../../../scripts/lib/constants';
 import { getSchemaCurrentVersion } from '../../../../scripts/lib/schema-versions';
-import type { PackageIndex, PackageMetadata } from '../../../../scripts/lib/types';
+import type { ManifestArtifactEntry, PackageIndex, PackageMetadata } from '../../../../scripts/lib/types';
 import { IndexManager } from '../../../../scripts/lib/index-manager';
+
+const DEFAULT_ARTIFACTS: ManifestArtifactEntry[] = [
+  { target: 'github-copilot', file: '1.0.0-github-copilot.zip', sha256: 'a'.repeat(64) },
+  { target: 'claude-code', file: '1.0.0-claude-code.zip', sha256: 'b'.repeat(64) },
+  { target: 'cursor', file: '1.0.0-cursor.zip', sha256: 'c'.repeat(64) },
+  { target: 'openai-codex', file: '1.0.0-openai-codex.zip', sha256: 'd'.repeat(64) },
+];
 
 const createdDirs: string[] = [];
 
@@ -54,8 +61,8 @@ describe('IndexManager', (): void => {
     const indexPath = path.join(tempDir, 'index.json');
     const manager = new IndexManager(indexPath);
 
-    manager.update('zeta-package', makeMetadata({ name: 'zeta-package' }), '1.0.0');
-    manager.update('alpha-package', makeMetadata({ name: 'alpha-package' }), '1.0.0');
+    manager.update('zeta-package', makeMetadata({ name: 'zeta-package' }), '1.0.0', DEFAULT_ARTIFACTS);
+    manager.update('alpha-package', makeMetadata({ name: 'alpha-package' }), '1.0.0', DEFAULT_ARTIFACTS);
 
     const index = readIndex(indexPath);
     expect(index.packages.map((pkg) => pkg.id)).toEqual(['alpha-package', 'zeta-package']);
@@ -70,7 +77,7 @@ describe('IndexManager', (): void => {
 
     fs.writeFileSync(indexPath, JSON.stringify({ schemaVersion: '1.0.0', updatedAt: '', packages: [] }), 'utf-8');
 
-    manager.update('hello-agent', makeMetadata(), '1.0.0');
+    manager.update('hello-agent', makeMetadata(), '1.0.0', DEFAULT_ARTIFACTS);
 
     const index = readIndex(indexPath);
     expect(index.schemaVersion).toBe(getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX));
@@ -106,8 +113,23 @@ describe('IndexManager', (): void => {
     );
 
     expect(() => {
-      manager.update('hello-agent', makeMetadata(), '1.0.0');
+      manager.update('hello-agent', makeMetadata(), '1.0.0', DEFAULT_ARTIFACTS);
     }).toThrow('package:index:rebuild');
+  });
+
+  it('writes installTargets projected from manifest artifacts', (): void => {
+    const tempDir = makeTempDir();
+    const indexPath = path.join(tempDir, 'index.json');
+    const manager = new IndexManager(indexPath);
+
+    manager.update('hello-agent', makeMetadata(), '1.0.0', DEFAULT_ARTIFACTS);
+
+    const entry = readIndex(indexPath).packages.find((pkg) => pkg.id === 'hello-agent');
+    expect(entry?.installTargets).toHaveLength(INSTALL_TARGET_IDS.length);
+    expect(entry?.installTargets?.map((target) => target.id)).toEqual(
+      expect.arrayContaining([...INSTALL_TARGET_IDS]),
+    );
+    expect(entry?.installTargets?.every((target) => target.status === 'supported')).toBe(true);
   });
 
   it('throws when estimateOverallCost.band is invalid', (): void => {
@@ -123,7 +145,7 @@ describe('IndexManager', (): void => {
     });
 
     expect(() => {
-      manager.update('hello-agent', metadata, '1.0.0');
+      manager.update('hello-agent', metadata, '1.0.0', DEFAULT_ARTIFACTS);
     }).toThrow('estimateOverallCost.band');
   });
 });

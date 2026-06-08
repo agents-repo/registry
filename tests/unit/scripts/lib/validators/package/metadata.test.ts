@@ -83,6 +83,42 @@ describe('validateMetadata', (): void => {
     expect(issues.some((issue) => issue.message.includes('owner must be a GitHub owner or organization slug'))).toBe(true);
   });
 
+  it('rejects compatibility with only planned targets', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['compatibility'] = {
+      targets: [
+        { id: 'github-copilot', status: 'planned' },
+        { id: 'cursor', status: 'planned' },
+      ],
+    };
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(false);
+    expect(
+      issues.some((issue) =>
+        issue.message.includes('at least one supported or experimental install target'),
+      ),
+    ).toBe(true);
+  });
+
+  it('rejects duplicate compatibility target ids', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['compatibility'] = {
+      targets: [
+        { id: 'cursor', status: 'supported' },
+        { id: 'cursor', status: 'experimental' },
+      ],
+    };
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(false);
+    expect(issues.some((issue) => issue.message.includes('duplicate id'))).toBe(true);
+  });
+
   it('rejects updatedAt older than createdAt', (): void => {
     const issues: ValidationIssue[] = [];
     const metadata = makeBaseMetadata();

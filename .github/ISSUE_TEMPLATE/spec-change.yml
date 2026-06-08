@@ -29,6 +29,7 @@ body:
         - specs/flow-format.md
         - specs/versioning-rules.md
         - specs/index-schema.md
+        - specs/install-targets.md
         - specs/schema-versions.json
     validations:
       required: true

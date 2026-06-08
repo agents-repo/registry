@@ -10,7 +10,7 @@ export interface SmokeRunResult {
   packagesDir: string;
   packageDir: string;
   version: string;
-  deployZipPath: string;
+  targetArtifactPaths: string[];
   srcZipPath: string;
   manifestPath: string;
   indexPath: string;
@@ -109,13 +109,16 @@ export async function runPackageCreateSmoke(
 
     runScript(repoRoot, 'package:validate-artifacts', ['--package', packageId, '--version', latest], workspaceDir);
 
+    const versionDir = path.join(packageDir, 'versions', latest);
+    const targetArtifactPaths = fs.readdirSync(versionDir).filter((entry) => entry.endsWith('.zip') && !entry.endsWith('-src.zip'));
+
     return {
       workspaceDir,
       packagesDir,
       packageDir,
       version: latest,
-      deployZipPath: path.join(packageDir, 'versions', latest, `${latest}.zip`),
-      srcZipPath: path.join(packageDir, 'versions', latest, `${latest}-src.zip`),
+      targetArtifactPaths: targetArtifactPaths.map((entry) => path.join(versionDir, entry)),
+      srcZipPath: path.join(versionDir, `${latest}-src.zip`),
       manifestPath,
       indexPath: path.join(workspaceDir, 'packages', 'index.json'),
     };

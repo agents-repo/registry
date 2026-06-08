@@ -5,7 +5,6 @@ import { AGENTS_DIR, FLOWS_DIR, METADATA_FILENAME, SOURCE_ARCHIVE_SUFFIX } from 
 
 export interface SnapshotPaths {
   snapshotMetaPath: string;
-  deployZipPath: string;
   srcZipPath: string;
 }
 
@@ -17,7 +16,6 @@ export function prepareVersionSnapshot(
   fs.mkdirSync(versionDir, { recursive: true });
 
   const snapshotMetaPath = path.join(versionDir, METADATA_FILENAME);
-  const deployZipPath = path.join(versionDir, `${version}.zip`);
   const srcZipPath = path.join(versionDir, `${version}${SOURCE_ARCHIVE_SUFFIX}`);
 
   fs.copyFileSync(pkg.metadataPath, snapshotMetaPath);
@@ -38,5 +36,5 @@ export function prepareVersionSnapshot(
     }
   }
 
-  return { snapshotMetaPath, deployZipPath, srcZipPath };
+  return { snapshotMetaPath, srcZipPath };
 }

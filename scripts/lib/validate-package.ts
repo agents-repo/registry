@@ -1,10 +1,11 @@
-import type { ValidationIssue, ValidationReport } from './types';
+import type { PackageMetadata, ValidationIssue, ValidationReport } from './types';
 import { splitIssues } from './validators/common/issues';
 import {
   validateHasEntries,
   validateUniqueIdsAcrossEntryTypes,
 } from './validators/package/entries';
 import { loadPackageEntries } from './validators/package/entry-loading';
+import { validateCompatibilityManifestAlignment } from './validators/package/compatibility-consistency';
 import { validateManifest } from './validators/package/manifest';
 import { validateMetadata } from './validators/package/metadata';
 import {
@@ -53,8 +54,11 @@ export function validatePackage(
 
   // 2. Package metadata
   const metadata = loadPackageMetadata(packageDir, issues);
+  let validatedMetadata: PackageMetadata | null = null;
   if (metadata !== null) {
-    validateMetadata(metadata, packageId, issues);
+    if (validateMetadata(metadata, packageId, issues)) {
+      validatedMetadata = metadata;
+    }
     validateMetadataVersionAgainstManifestLatest(packageDir, metadata, issues);
   }
 
@@ -71,8 +75,11 @@ export function validatePackage(
 
   // 8. Manifest validation (if present)
   const manifestPath = getManifestPath(packageDir);
-  if (hasManifest(packageDir)) {
-    validateManifest(manifestPath, packageId, issues);
+  if (hasManifest(packageDir) && validatedMetadata !== null) {
+    const manifest = validateManifest(manifestPath, packageId, issues);
+    if (manifest !== null) {
+      validateCompatibilityManifestAlignment(validatedMetadata, manifest, issues);
+    }
   }
 
   const { errors, warnings } = splitIssues(issues);

@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "1.1.0",
-  "updatedAt": "2026-05-31T12:44:33.845Z",
+  "schemaVersion": "1.2.0",
+  "updatedAt": "2026-06-08T02:09:56.645Z",
   "packages": [
     {
       "id": "agents-repo-package-creation",
@@ -20,7 +20,25 @@
       "estimateOverallCost": {
         "estimatedCost": 6,
         "band": "moderate"
-      }
+      },
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
     },
     {
       "id": "hello-agent",
@@ -38,7 +56,25 @@
         "estimatedCost": 1,
         "band": "low"
       },
-      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md"
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
     }
   ]
 }

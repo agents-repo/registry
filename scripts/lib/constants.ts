@@ -71,6 +71,26 @@ export const INDEX_FILENAME = 'index.json';
 /** Suffix appended to the version string for source archive filenames (e.g. `1.0.0-src.zip`). */
 export const SOURCE_ARCHIVE_SUFFIX = '-src.zip';
 
+// --- Install targets ---
+
+export const INSTALL_TARGET_IDS = [
+  'github-copilot',
+  'claude-code',
+  'cursor',
+  'openai-codex',
+] as const;
+
+export const INSTALL_TARGET_STATUSES = ['supported', 'experimental', 'planned'] as const;
+
+export const INDEX_INSTALL_TARGET_STATUSES = ['supported', 'experimental'] as const;
+
+export function buildTargetArtifactFileName(version: string, targetId: string): string {
+  return `${version}-${targetId}.zip`;
+}
+
+/** Deployment artifact filename pattern: `<semver>-<target-id>.zip`. */
+export const TARGET_ARTIFACT_FILE_PATTERN = /^\d+\.\d+\.\d+-[a-z0-9-]+\.zip$/;
+
 // --- ZIP security constraints ---
 
 export const ZIP_MAX_ENTRY_NAME_LENGTH = 4096;

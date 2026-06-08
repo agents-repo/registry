@@ -1,6 +1,6 @@
 import { ValidationUtils } from '../../validation-utils';
 import type { PackageMetadata, ValidationIssue } from '../../types';
-import { isStatus, isPackageCostBand } from '../../types';
+import { isInstallTargetId, isInstallTargetStatus, isPackageCostBand, isStatus } from '../../types';
 import { err } from '../common/issues';
 import { validateSchemaVersion } from './schema-version';
 import {
@@ -11,6 +11,7 @@ import {
   GITHUB_USER_OR_TEAM_SLUG_PATTERN,
   ESTIMATED_COST_MIN,
   ESTIMATED_COST_MAX,
+  INSTALL_TARGET_IDS,
   SCHEMA_FAMILY_PACKAGE,
 } from '../../constants';
 
@@ -224,14 +225,77 @@ function validateMaintainersField(m: Record<string, unknown>, issues: Validation
 }
 
 function validateCompatibilityField(m: Record<string, unknown>, issues: ValidationIssue[]): void {
+  if (m['compatibility'] === undefined) {
+    return;
+  }
+
+  const compatibility = m['compatibility'];
+  if (typeof compatibility !== 'object' || compatibility === null || Array.isArray(compatibility)) {
+    issues.push(err('ERR_METADATA_INVALID', 'compatibility must be an object when provided'));
+    return;
+  }
+
+  const record = compatibility as Record<string, unknown>;
   if (
-    m['compatibility'] !== undefined &&
-    (typeof m['compatibility'] !== 'object' ||
-      m['compatibility'] === null ||
-      Array.isArray(m['compatibility']))
+    record['canonicalFormat'] !== undefined &&
+    (typeof record['canonicalFormat'] !== 'string' || record['canonicalFormat'].trim().length === 0)
   ) {
     issues.push(
-      err('ERR_METADATA_INVALID', 'compatibility must be an object when provided'),
+      err('ERR_METADATA_INVALID', 'compatibility.canonicalFormat must be a non-empty string when provided'),
+    );
+  }
+
+  if (!Array.isArray(record['targets']) || record['targets'].length === 0) {
+    issues.push(
+      err('ERR_METADATA_INVALID', 'compatibility.targets must be a non-empty array when compatibility is provided'),
+    );
+    return;
+  }
+
+  const seen = new Set<string>();
+  let hasBuildableTarget = false;
+  for (const entry of record['targets']) {
+    if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+      issues.push(
+        err('ERR_METADATA_INVALID', 'compatibility.targets entries must be objects'),
+      );
+      continue;
+    }
+
+    const target = entry as Record<string, unknown>;
+    if (!isInstallTargetId(target['id'])) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `compatibility.targets id must be one of: ${INSTALL_TARGET_IDS.join(', ')}`,
+        ),
+      );
+    } else if (seen.has(target['id'])) {
+      issues.push(
+        err('ERR_METADATA_INVALID', `compatibility.targets contains duplicate id: ${target['id']}`),
+      );
+    } else {
+      seen.add(target['id']);
+    }
+
+    if (!isInstallTargetStatus(target['status'])) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          'compatibility.targets status must be supported, experimental, or planned',
+        ),
+      );
+    } else if (target['status'] === 'supported' || target['status'] === 'experimental') {
+      hasBuildableTarget = true;
+    }
+  }
+
+  if (!hasBuildableTarget) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        'compatibility.targets must include at least one supported or experimental install target',
+      ),
     );
   }
 }

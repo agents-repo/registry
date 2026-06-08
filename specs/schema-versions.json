@@ -20,14 +20,14 @@
       "eol": []
     },
     "manifest": {
-      "current": "1.0.0",
-      "supported": ["1.0.0"],
+      "current": "1.1.0",
+      "supported": ["1.1.0"],
       "deprecated": [],
-      "eol": []
+      "eol": ["1.0.0"]
     },
     "index": {
-      "current": "1.1.0",
-      "supported": ["1.0.0", "1.1.0"],
+      "current": "1.2.0",
+      "supported": ["1.0.0", "1.1.0", "1.2.0"],
       "deprecated": ["1.0.0"],
       "eol": []
     }

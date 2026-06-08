@@ -1,6 +1,9 @@
 import type AdmZip from 'adm-zip';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { scanSnapshotZip } from '../../../../../../scripts/lib/validators/snapshot/zip-scan';
+import {
+  scanSnapshotZip,
+  scanTargetArtifactZip,
+} from '../../../../../../scripts/lib/validators/snapshot/zip-scan';
 
 interface MockZipEntry {
   entryName: string;
@@ -255,5 +258,49 @@ describe('scanSnapshotZip', (): void => {
     expect(
       issues.some((issue) => issue.code === 'ERR_FRONTMATTER_VERSION_MISMATCH'),
     ).toBe(true);
+  });
+});
+
+describe('scanTargetArtifactZip', (): void => {
+  it('accepts Claude Code agent entries with matching frontmatter version', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: '.claude/agents/hello-agent.md',
+        attr: 0,
+        getData: () => Buffer.from('---\nname: hello-agent\nversion: 1.0.0\n---\n', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'claude-code', '1.0.0');
+
+    expect(issues).toHaveLength(0);
+  });
+
+  it('flags unexpected entries in Cursor skill ZIPs', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'agents/hello-agent.agent.md',
+        attr: 0,
+        getData: () => Buffer.from('---\nname: hello-agent\ndescription: hello\n---\n', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'cursor', '1.0.0');
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
+  });
+
+  it('accepts OpenAI Codex skill entries with required frontmatter', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: '.agents/skills/hello-agent/SKILL.md',
+        attr: 0,
+        getData: () => Buffer.from('---\nname: hello-agent\ndescription: hello\n---\n', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'openai-codex', '1.0.0');
+
+    expect(issues).toHaveLength(0);
   });
 });
