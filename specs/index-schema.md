@@ -133,7 +133,7 @@ targets MUST NOT appear in the index.
 
 ```json
 {
-    "schemaVersion": "1.1.0",
+    "schemaVersion": "1.2.0",
     "updatedAt": "2026-05-05T00:00:00Z",
     "packages": [
         {

@@ -12,7 +12,7 @@ interpreted as described in RFC 2119.
 
 | ID | Consumer | ZIP layout root |
 | --- | --- | --- |
-| `github-copilot` | GitHub Copilot | `.github/agents/*.agent.md` (flows flattened) |
+| `github-copilot` | GitHub Copilot | `agents/<id>.agent.md` in ZIP (extract under `.github/`; flows flattened) |
 | `claude-code` | Claude Code | `.claude/agents/<id>.md` |
 | `cursor` | Cursor | `.cursor/skills/<id>/SKILL.md` |
 | `openai-codex` | OpenAI Codex | `.agents/skills/<id>/SKILL.md` |

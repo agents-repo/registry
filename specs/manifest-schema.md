@@ -16,7 +16,7 @@ release version and not the spec document version (`1.1.0`).
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
 | `1.1.0` | manifest schemaVersion | current | Multi-target `artifacts[]` |
-| `1.0.0` | manifest schemaVersion | deprecated | Single `artifact` / `sha256` |
+| `1.0.0` | manifest schemaVersion | eol | Legacy single `artifact` / `sha256`; migrate with `package:build` |
 
 Tooling MUST reject manifests whose `schemaVersion` is not in the table above
 unless it explicitly supports a newer schema version.
@@ -28,8 +28,9 @@ Lifecycle enforcement:
 
 - `schemaVersion` values marked `deprecated` SHOULD produce a warning.
 - `schemaVersion` values marked `eol` MUST be rejected.
-- New packages SHOULD use the current schema version.
-- Existing packages MAY continue using older supported versions.
+- New packages MUST use the current schema version.
+- Manifest `1.0.0` is end-of-life; packages MUST migrate by running
+  `npm run package:build -- --package <id>`.
 
 ## File Location
 

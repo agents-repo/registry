@@ -55,7 +55,7 @@ export interface CompatibilityTarget {
 }
 
 export interface PackageCompatibility {
-  canonicalFormat: string;
+  canonicalFormat?: string;
   targets: CompatibilityTarget[];
 }
 

@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { Checksum } from './checksum';
-import type { Manifest, ValidationIssue, ValidationReport } from './types';
+import type { Manifest, PackageMetadata, ValidationIssue, ValidationReport } from './types';
+import { validateCompatibilityManifestAlignment } from './validators/package/compatibility-consistency';
 import { err, splitIssues } from './validators/common/issues';
 import { validateSchemaVersion } from './validators/snapshot/schema-version';
 import { scanSnapshotZip, scanTargetArtifactZip } from './validators/snapshot/zip-scan';
@@ -97,6 +98,16 @@ export class SnapshotValidator {
     srcZipPath: string,
     issues: ValidationIssue[],
   ): void {
+    if (!Array.isArray(entry.artifacts) || entry.artifacts.length === 0) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `manifest.json version ${this.version}: artifacts must be a non-empty array`,
+        ),
+      );
+      return;
+    }
+
     for (const artifact of entry.artifacts) {
       const artifactPath = path.join(versionDir, artifact.file);
       if (!fs.existsSync(artifactPath)) {
@@ -141,6 +152,7 @@ export class SnapshotValidator {
     manifestPath: string,
     versionDir: string,
     srcZipPath: string,
+    snapshotMetaPath: string,
     issues: ValidationIssue[],
   ): void {
     if (!fs.existsSync(manifestPath)) {
@@ -177,6 +189,17 @@ export class SnapshotValidator {
     }
 
     this.verifyManifestChecksums(entry, versionDir, srcZipPath, issues);
+
+    if (fs.existsSync(snapshotMetaPath)) {
+      try {
+        const snapshotMeta = JSON.parse(fs.readFileSync(snapshotMetaPath, 'utf-8')) as PackageMetadata;
+        validateCompatibilityManifestAlignment(snapshotMeta, manifest, issues, {
+          version: this.version,
+        });
+      } catch {
+        issues.push(err('ERR_VALIDATION_FAILED', `Snapshot ${METADATA_FILENAME} is not valid JSON`));
+      }
+    }
   }
 
   validate(): ValidationReport {
@@ -199,7 +222,7 @@ export class SnapshotValidator {
 
     this.validateRequiredSnapshotFiles(srcZipPath, snapshotMetaPath, issues);
     this.validateVersionDirEntries(versionDir, issues);
-    this.validateManifestAndChecksums(manifestPath, versionDir, srcZipPath, issues);
+    this.validateManifestAndChecksums(manifestPath, versionDir, srcZipPath, snapshotMetaPath, issues);
 
     if (fs.existsSync(srcZipPath)) {
       issues.push(...scanSnapshotZip(srcZipPath, { type: 'source', expectedVersion: this.version }));

@@ -253,6 +253,7 @@ function validateCompatibilityField(m: Record<string, unknown>, issues: Validati
   }
 
   const seen = new Set<string>();
+  let hasBuildableTarget = false;
   for (const entry of record['targets']) {
     if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
       issues.push(
@@ -284,7 +285,18 @@ function validateCompatibilityField(m: Record<string, unknown>, issues: Validati
           'compatibility.targets status must be supported, experimental, or planned',
         ),
       );
+    } else if (target['status'] === 'supported' || target['status'] === 'experimental') {
+      hasBuildableTarget = true;
     }
+  }
+
+  if (!hasBuildableTarget) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        'compatibility.targets must include at least one supported or experimental install target',
+      ),
+    );
   }
 }
 

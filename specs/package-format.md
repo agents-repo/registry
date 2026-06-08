@@ -36,9 +36,9 @@ Contributors and AI agents MUST follow this pipeline to produce a release:
   directly.
 2. Run `npm run package:build -- --package <id>` to generate the version
   snapshot. This command automatically runs preflight validation equivalent to
-  `package:validate`, builds both ZIP artifacts, computes SHA-256 checksums,
-  writes `versions/<version>/`, updates `versions/manifest.json`, and updates
-  `packages/index.json`.
+  `package:validate`, builds per-install-target deployment ZIPs plus the source
+  archive, computes SHA-256 checksums, writes `versions/<version>/`, updates
+  `versions/manifest.json`, and updates `packages/index.json`.
 3. Run `npm run package:validate-artifacts -- --package <id>` to validate
    generated artifacts for structural and security issues.
 
@@ -119,7 +119,8 @@ Each released version MUST have a corresponding snapshot folder at
   `agents/` at release time, if the package contains agents.
 - MUST contain `flows/` with the same contents as the package root
   `flows/` at release time, if the package contains flows.
-- MUST contain `<version>.zip` — the deployment artifact.
+- MUST contain one deployment ZIP per built install target named
+  `<version>-<target-id>.zip` (see `specs/install-targets.md`).
 - MUST contain `<version>-src.zip` — the source archive.
 - MUST be treated as immutable once published. No file inside a
   released version folder MUST be modified or removed.
@@ -156,24 +157,21 @@ For every flow `<flow-id>`:
 
 ## Artifact Rules
 
-Each released version MUST produce two ZIP artifacts stored inside
-its version snapshot folder at `versions/<version>/`.
+Each released version MUST produce one deployment ZIP per declared install
+target that is not `planned`, plus a source archive, stored inside its version
+snapshot folder at `versions/<version>/`.
 
-### Deployment Artifact (`<version>.zip`)
+Install target identifiers, artifact naming, ZIP layouts, and
+`metadata.json` compatibility rules are defined in
+`specs/install-targets.md`.
 
-- `<version>.zip` is the deployment artifact intended to be
-  extracted into a project's `.github/` folder.
-- A deployment ZIP MUST contain a single `agents/` directory.
-- The `agents/` directory MUST include the `.agent.md` file for
-  every agent and every flow present in the package at that version.
-- Agent files are placed as `agents/<agent-id>.agent.md`.
-- Flow files are also placed as `agents/<flow-id>.agent.md`
-  because Copilot reads flows as agent instructions.
-- Within `<version>.zip`, every bundled `agents/*.agent.md`
-  frontmatter `version` MUST equal `<version>`.
-- `.metadata.json` sidecars MUST NOT be included in the
-  deployment ZIP.
-- `metadata.json` MUST NOT be included in the deployment ZIP.
+### Deployment Artifacts (`<version>-<target-id>.zip`)
+
+- Each deployment ZIP is intended for a specific install target consumer
+  (for example GitHub Copilot, Cursor, Claude Code, or OpenAI Codex).
+- There MUST NOT be a legacy `<version>.zip` deployment artifact.
+- Layout and frontmatter rules per target are defined in
+  `specs/install-targets.md`.
 
 ### Source Archive (`<version>-src.zip`)
 
@@ -190,12 +188,12 @@ its version snapshot folder at `versions/<version>/`.
 
 ### General Artifact Rules
 
-- Deployment ZIP file names MUST follow `<semver>.zip`
+- Deployment ZIP file names MUST follow `<semver>-<target-id>.zip`
   with no `v` prefix.
 - Source archive file names MUST follow `<semver>-src.zip`
   with no `v` prefix.
-- `versions/manifest.json` MUST list both artifacts for every
-  released version.
+- `versions/manifest.json` MUST list every built deployment artifact
+  and the source archive for every released version.
 
 ## Registry Index
 
@@ -237,7 +235,10 @@ packages/my-package/
             agents/
                 my-agent.agent.md
                 my-agent.metadata.json
-            1.0.0.zip
+            1.0.0-github-copilot.zip
+            1.0.0-cursor.zip
+            1.0.0-claude-code.zip
+            1.0.0-openai-codex.zip
             1.0.0-src.zip
         manifest.json
 ```
@@ -267,7 +268,10 @@ packages/my-package/
             flows/
                 triage.agent.md
                 triage.metadata.json
-            1.0.0.zip
+            1.0.0-github-copilot.zip
+            1.0.0-cursor.zip
+            1.0.0-claude-code.zip
+            1.0.0-openai-codex.zip
             1.0.0-src.zip
         1.1.0/
             metadata.json
@@ -279,7 +283,10 @@ packages/my-package/
             flows/
                 triage.agent.md
                 triage.metadata.json
-            1.1.0.zip
+            1.1.0-github-copilot.zip
+            1.1.0-cursor.zip
+            1.1.0-claude-code.zip
+            1.1.0-openai-codex.zip
             1.1.0-src.zip
         manifest.json
 ```

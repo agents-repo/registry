@@ -21,9 +21,9 @@
     },
     "manifest": {
       "current": "1.1.0",
-      "supported": ["1.0.0", "1.1.0"],
-      "deprecated": ["1.0.0"],
-      "eol": []
+      "supported": ["1.1.0"],
+      "deprecated": [],
+      "eol": ["1.0.0"]
     },
     "index": {
       "current": "1.2.0",
