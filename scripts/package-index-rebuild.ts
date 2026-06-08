@@ -72,7 +72,15 @@ function main(): void {
       );
     }
 
-    manager.update(packageId, metadata, latest);
+    const latestEntry = manifest.versions.find((entry) => entry.version === latest);
+    if (latestEntry === undefined) {
+      throw new PackageError(
+        ErrorCode.ERR_VALIDATION_FAILED,
+        `versions/${MANIFEST_FILENAME} for package "${packageId}" is missing entry for latest version "${latest}"`,
+      );
+    }
+
+    manager.update(packageId, metadata, latest, latestEntry.artifacts);
   }
 
   console.log(`Rebuilt packages/index.json with ${packageIds.length} package entries`);

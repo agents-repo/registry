@@ -1,15 +1,35 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "name": "agents-repo-package-creation",
   "latest": "1.0.0",
   "versions": [
     {
       "version": "1.0.0",
-      "artifact": "1.0.0.zip",
-      "sha256": "60892cef17f6553504792bd361bfcbffe5ad51a443567fc0ef996ea4631b68de",
       "srcArtifact": "1.0.0-src.zip",
-      "srcSha256": "2751e594334bffd35acf6f987ff257168309c548e7797c6ba129b438417cd81e",
-      "createdAt": "2026-05-26T17:05:22.226Z"
+      "srcSha256": "6d87d843961d75050405d7ad48fbc73643b026c2deef60de95be3ba932e458fb",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "157c7760a1a65490b69a59eb95f19879647664a48efb93320d5e0e9a535caf9e"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "3d020fcbd8e71f60c18e9ac11c1cd419ae858f51dba39055bbdb4917d173e010"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "79fa969c04c8524b8dfc3556cbacac40f0f0f9cbf03dd2487b841dd9a7a46c9a"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "97131f02fb857ba7a55afeea802743c3852638d6856b4fe33405d62ff0017f84"
+        }
+      ],
+      "createdAt": "2026-06-08T02:09:56.643Z"
     }
   ]
 }

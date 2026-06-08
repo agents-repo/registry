@@ -9,7 +9,8 @@ import {
   GITHUB_USER_OR_TEAM_SLUG_PATTERN,
   SCHEMA_FAMILY_INDEX,
 } from './constants';
-import type { PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
+import { projectInstallTargetsForIndex } from './compatibility';
+import type { ManifestArtifactEntry, PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 import { isStatus, isPackageCostBand, STATUS_VALUES, PACKAGE_COST_BANDS } from './types';
 
 function requirePackageBand(value: unknown, packageId: string): 'minimal' | 'low' | 'moderate' | 'high' | 'critical' | 'mixed' {
@@ -131,7 +132,12 @@ export class IndexManager {
     this.indexPath = indexPath;
   }
 
-  update(packageId: string, metadata: PackageMetadata, manifestLatest: string): void {
+  update(
+    packageId: string,
+    metadata: PackageMetadata,
+    manifestLatest: string,
+    artifacts: ManifestArtifactEntry[],
+  ): void {
     const estimateOverallCost: unknown = metadata.estimateOverallCost;
     if (
       typeof estimateOverallCost !== 'object' ||
@@ -169,6 +175,7 @@ export class IndexManager {
         band: requirePackageBand(metadata.estimateOverallCost?.band, packageId),
       },
       ...projectQuickstart(metadata.quickstart, packageId),
+      installTargets: projectInstallTargetsForIndex(metadata, artifacts),
     };
 
     const existing = index.packages.findIndex((p) => p.id === packageId);

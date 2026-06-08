@@ -1,4 +1,4 @@
-# Index Schema Specification (1.1.0)
+# Index Schema Specification (1.2.0)
 
 This document defines the deterministic `index.json` format
 for the registry-level package index.
@@ -11,11 +11,12 @@ are to be interpreted as described in RFC 2119.
 ## Schema Version Lifecycle
 
 `schemaVersion` identifies the index **format** version, not the package
-release version and not the spec document version (`1.1.0`).
+release version and not the spec document version (`1.2.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.1.0` | index schemaVersion | current | Adds required `owner` field |
+| `1.2.0` | index schemaVersion | current | Adds optional `installTargets` |
+| `1.1.0` | index schemaVersion | supported | Adds required `owner` field |
 | `1.0.0` | index schemaVersion | deprecated | Missing required `owner` field |
 
 Tooling MUST reject index files whose `schemaVersion` is not in the table above
@@ -66,6 +67,7 @@ Each entry in `packages` MUST be an object with:
 | `category` | string | yes | MUST match package `metadata.json` |
 | `estimateOverallCost` | object | yes | Includes required `band` |
 | `quickstart` | string | no | HTTPS URL |
+| `installTargets` | array | no | Projected install targets; see [Install Targets](#install-targets) |
 
 `estimateOverallCost` object schema:
 
@@ -73,6 +75,19 @@ Each entry in `packages` MUST be an object with:
 | --- | --- | --- | --- |
 | `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` |
 | `estimatedCost` | integer | no | Relative effort as an integer on a 1–10 scale (inclusive) |
+
+## Install Targets
+
+When present, `installTargets` MUST be an array of objects:
+
+| Field | Type | Required | Constraints |
+| --- | --- | --- | --- |
+| `id` | string | yes | Install target id per `install-targets.md` |
+| `status` | string | yes | `supported` or `experimental` |
+
+`installTargets` is projected at build time from `metadata.json`
+`compatibility.targets` and the built manifest artifacts. `planned`
+targets MUST NOT appear in the index.
 
 ## Validation Rules
 

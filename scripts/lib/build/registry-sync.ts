@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import { cloneJson, readTextFileIfExists } from '../io/json';
 import { IndexManager } from '../index-manager';
 import { ManifestManager } from '../manifest-manager';
+import { toManifestArtifactEntry, type BuiltTargetArtifact } from '../emitters/target-zip-builder';
 import type { PackageMetadata } from '../types';
 import { SOURCE_ARCHIVE_SUFFIX } from '../constants';
 
@@ -11,7 +12,7 @@ export function updateManifestAndIndexWithRollback(opts: {
   indexPath: string;
   metadata: PackageMetadata;
   version: string;
-  deployZipSha256: string;
+  artifacts: BuiltTargetArtifact[];
   srcZipSha256: string;
 }): void {
   const {
@@ -20,9 +21,11 @@ export function updateManifestAndIndexWithRollback(opts: {
     indexPath,
     metadata,
     version,
-    deployZipSha256,
+    artifacts,
     srcZipSha256,
   } = opts;
+
+  const manifestArtifacts = artifacts.map(toManifestArtifactEntry);
 
   const manifestManager = new ManifestManager(manifestPath, packageId);
   const manifest = manifestManager.load();
@@ -30,10 +33,9 @@ export function updateManifestAndIndexWithRollback(opts: {
 
   const updatedManifest = manifestManager.upsert(manifest, {
     version,
-    artifact: `${version}.zip`,
-    sha256: deployZipSha256,
     srcArtifact: `${version}${SOURCE_ARCHIVE_SUFFIX}`,
     srcSha256: srcZipSha256,
+    artifacts: manifestArtifacts,
     createdAt: new Date().toISOString(),
   });
   manifestManager.save(updatedManifest);
@@ -41,7 +43,7 @@ export function updateManifestAndIndexWithRollback(opts: {
   const oldIndexContent = readTextFileIfExists(indexPath);
 
   try {
-    new IndexManager(indexPath).update(packageId, metadata, updatedManifest.latest);
+    new IndexManager(indexPath).update(packageId, metadata, updatedManifest.latest, manifestArtifacts);
   } catch (indexError) {
     try {
       manifestManager.save(oldManifest);

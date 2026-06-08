@@ -1,10 +1,17 @@
 import semver from 'semver';
 import { ValidationUtils } from '../../validation-utils';
 import type { Manifest, ValidationIssue } from '../../types';
+import { isInstallTargetId } from '../../types';
 import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
-import { SHA256_PATTERN, SCHEMA_FAMILY_MANIFEST, SOURCE_ARCHIVE_SUFFIX } from '../../constants';
+import {
+  SHA256_PATTERN,
+  SCHEMA_FAMILY_MANIFEST,
+  SOURCE_ARCHIVE_SUFFIX,
+  TARGET_ARTIFACT_FILE_PATTERN,
+  buildTargetArtifactFileName,
+} from '../../constants';
 
 function addVersionUniquenessIssue(versionSet: Set<string>, ver: string, issues: ValidationIssue[]): void {
   if (versionSet.has(ver)) {
@@ -13,30 +20,85 @@ function addVersionUniquenessIssue(versionSet: Set<string>, ver: string, issues:
   versionSet.add(ver);
 }
 
-function validateVersionEntryFields(e: Record<string, unknown>, ver: string, issues: ValidationIssue[]): void {
-  if (e['artifact'] !== `${ver}.zip`) {
+function validateArtifactEntry(
+  artifact: unknown,
+  ver: string,
+  issues: ValidationIssue[],
+  seenTargets: Set<string>,
+): void {
+  if (typeof artifact !== 'object' || artifact === null || Array.isArray(artifact)) {
+    issues.push(err('ERR_VALIDATION_FAILED', `manifest.json version ${ver}: artifacts entries must be objects`));
+    return;
+  }
+
+  const record = artifact as Record<string, unknown>;
+  const allowedKeys = new Set(['target', 'file', 'sha256']);
+  for (const key of Object.keys(record)) {
+    if (!allowedKeys.has(key)) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `manifest.json version ${ver}: artifact entry contains unknown field "${key}"`,
+        ),
+      );
+    }
+  }
+
+  const target = record['target'];
+  const file = record['file'];
+  const sha256 = record['sha256'];
+
+  if (!isInstallTargetId(target)) {
     issues.push(
       err(
         'ERR_VALIDATION_FAILED',
-        `manifest.json version ${ver}: artifact must be "${ver}.zip"`,
+        `manifest.json version ${ver}: artifact target must be a supported install target id`,
+      ),
+    );
+  } else if (seenTargets.has(target)) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: duplicate artifact target "${target}"`,
+      ),
+    );
+  } else {
+    seenTargets.add(target);
+  }
+
+  const expectedFile = isInstallTargetId(target) ? buildTargetArtifactFileName(ver, target) : null;
+  if (typeof file !== 'string' || !TARGET_ARTIFACT_FILE_PATTERN.test(file)) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: artifact file must match <version>-<target-id>.zip`,
+      ),
+    );
+  } else if (expectedFile !== null && file !== expectedFile) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: artifact file must be "${expectedFile}", got: ${JSON.stringify(file)}`,
       ),
     );
   }
 
+  if (typeof sha256 !== 'string' || !SHA256_PATTERN.test(sha256)) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: artifact sha256 must be 64 lowercase hex characters`,
+      ),
+    );
+  }
+}
+
+function validateVersionEntryFields(e: Record<string, unknown>, ver: string, issues: ValidationIssue[]): void {
   if (e['srcArtifact'] !== `${ver}${SOURCE_ARCHIVE_SUFFIX}`) {
     issues.push(
       err(
         'ERR_VALIDATION_FAILED',
         `manifest.json version ${ver}: srcArtifact must be "${ver}${SOURCE_ARCHIVE_SUFFIX}"`,
-      ),
-    );
-  }
-
-  if (typeof e['sha256'] !== 'string' || !SHA256_PATTERN.test(e['sha256'])) {
-    issues.push(
-      err(
-        'ERR_VALIDATION_FAILED',
-        `manifest.json version ${ver}: sha256 must be 64 lowercase hex characters`,
       ),
     );
   }
@@ -48,6 +110,21 @@ function validateVersionEntryFields(e: Record<string, unknown>, ver: string, iss
         `manifest.json version ${ver}: srcSha256 must be 64 lowercase hex characters`,
       ),
     );
+  }
+
+  if (!Array.isArray(e['artifacts']) || e['artifacts'].length === 0) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: artifacts must be a non-empty array`,
+      ),
+    );
+    return;
+  }
+
+  const seenTargets = new Set<string>();
+  for (const artifact of e['artifacts'] as unknown[]) {
+    validateArtifactEntry(artifact, ver, issues, seenTargets);
   }
 
   if (typeof e['createdAt'] !== 'string' || !ValidationUtils.isRfc3339(e['createdAt'])) {

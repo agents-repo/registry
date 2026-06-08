@@ -21,5 +21,14 @@
   "estimateOverallCost": {
     "estimatedCost": 6,
     "band": "moderate"
+  },
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ]
   }
 }

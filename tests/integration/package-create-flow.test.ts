@@ -29,7 +29,10 @@ describe('package create smoke flow', (): void => {
       });
 
       expect(result.version).toBe('1.0.0');
-      expect(fs.existsSync(result.deployZipPath)).toBe(true);
+      expect(result.targetArtifactPaths.length).toBeGreaterThan(0);
+      for (const artifactPath of result.targetArtifactPaths) {
+        expect(fs.existsSync(artifactPath)).toBe(true);
+      }
       expect(fs.existsSync(result.srcZipPath)).toBe(true);
       expect(fs.existsSync(result.manifestPath)).toBe(true);
 

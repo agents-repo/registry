@@ -12,12 +12,13 @@ import { Checksum } from '../checksum';
 import { PackageValidator } from '../validate-package';
 import { ValidationUtils } from '../validation-utils';
 import { ZipBuilder } from '../zip-builder';
+import { buildTargetArtifacts, type BuiltTargetArtifact } from '../emitters/target-zip-builder';
 
 export interface BuildPackageResult {
   packageId: string;
   version: string;
   versionDir: string;
-  deployZipPath: string;
+  artifacts: BuiltTargetArtifact[];
   srcZipPath: string;
   manifestPath: string;
   indexPath: string;
@@ -112,21 +113,23 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
   }
 
   logMessage(log, `[4/7] Building version snapshot for ${version}`);
-  const { deployZipPath, srcZipPath } = prepareVersionSnapshot(pkg, versionDir, version);
+  const { srcZipPath } = prepareVersionSnapshot(pkg, versionDir, version);
   const indexPath = path.join(packagesDir, INDEX_FILENAME);
+  let artifacts: BuiltTargetArtifact[];
 
   try {
-    logMessage(log, `[5/7] Building deployment ZIP: ${version}.zip`);
-    const zipBuilder = new ZipBuilder(pkg.packageDir, version);
-    zipBuilder.buildDeploymentZip(deployZipPath);
+    logMessage(log, '[5/7] Building install-target deployment ZIPs');
+    artifacts = buildTargetArtifacts(pkg.packageDir, versionDir, version, metadata);
+    for (const artifact of artifacts) {
+      logMessage(log, `       ${artifact.file} sha256: ${artifact.sha256}`);
+    }
 
     logMessage(log, `[6/7] Building source archive: ${version}${SOURCE_ARCHIVE_SUFFIX}`);
+    const zipBuilder = new ZipBuilder(pkg.packageDir, version);
     zipBuilder.buildSourceZip(srcZipPath);
 
-    const deployZipSha256 = Checksum.sha256(deployZipPath);
     const srcZipSha256 = Checksum.sha256(srcZipPath);
-    logMessage(log, `       deploy sha256: ${deployZipSha256}`);
-    logMessage(log, `       src    sha256: ${srcZipSha256}`);
+    logMessage(log, `       src sha256: ${srcZipSha256}`);
 
     logMessage(log, `[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME} and packages/${INDEX_FILENAME}`);
     updateManifestAndIndexWithRollback({
@@ -135,7 +138,7 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
       indexPath,
       metadata,
       version,
-      deployZipSha256,
+      artifacts,
       srcZipSha256,
     });
   } catch (error) {
@@ -148,7 +151,7 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
     packageId,
     version,
     versionDir,
-    deployZipPath,
+    artifacts,
     srcZipPath,
     manifestPath: pkg.manifestPath,
     indexPath,

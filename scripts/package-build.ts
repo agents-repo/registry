@@ -55,7 +55,9 @@ async function main(): Promise<void> {
   }
 
   console.log(`\nBuild complete: ${packageId}@${buildResult.version}`);
-  console.log(`  Deployment artifact : ${buildResult.deployZipPath}`);
+  for (const artifact of buildResult.artifacts) {
+    console.log(`  Target artifact     : ${artifact.absoluteFilePath}`);
+  }
   console.log(`  Source archive      : ${buildResult.srcZipPath}`);
   console.log(`  Manifest updated    : ${buildResult.manifestPath}`);
   console.log(`  Index updated       : ${buildResult.indexPath}`);
