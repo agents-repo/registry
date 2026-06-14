@@ -51,7 +51,7 @@
     "semantic-release": "^25.0.3",
     "semver": "^7.6.3",
     "simple-git": "^3.36.0",
-    "tsx": "^4.19.1",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.0",
     "vitest": "^4.1.7"
   }
