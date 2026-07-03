@@ -158,10 +158,10 @@ A package submission MUST use the following pipeline before opening a PR:
 
 ```bash
 # 1. Build and publish a version snapshot
-npm run package:build -- --package <id>
+npm run package:build -- --package <namespace>/<package-id>
 
 # 2. Deep artifact verification
-npm run package:validate-artifacts -- --package <id>
+npm run package:validate-artifacts -- --package <namespace>/<package-id>
 ```
 
 The `package-build` script automatically runs preflight validation equivalent
@@ -170,15 +170,15 @@ single-responsibility, and orchestration is handled externally
 (for example CI or AI agents).
 
 During development, contributors MAY run
-`npm run package:validate -- --package <id>` manually to check the working
-state before the package is ready to build.
+`npm run package:validate -- --package <namespace>/<package-id>` manually
+to check the working state before the package is ready to build.
 
 The only files contributors and AI agents author directly are:
 
-- `packages/<id>/metadata.json`
-- `packages/<id>/README.md` (optional)
-- `packages/<id>/agents/`
-- `packages/<id>/flows/`
+- `packages/<namespace>/<package-id>/metadata.json`
+- `packages/<namespace>/<package-id>/README.md` (optional)
+- `packages/<namespace>/<package-id>/agents/`
+- `packages/<namespace>/<package-id>/flows/`
 
 All `versions/` artifacts are produced by step 2.
 

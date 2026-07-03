@@ -57,7 +57,7 @@ describe('package create smoke flow', (): void => {
         packages: Array<{ id: string; owner?: string; installTargets?: Array<{ id: string }> }>;
       };
       expect(index.schemaVersion).toBe(getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX));
-      const packageEntry = index.packages.find((entry) => entry.id === packageId);
+      const packageEntry = index.packages.find((entry) => entry.id === `agents-repo/${packageId}`);
       expect(packageEntry?.owner).toBe('agents-repo');
       expect(packageEntry?.installTargets).toHaveLength(INSTALL_TARGET_IDS.length);
     },

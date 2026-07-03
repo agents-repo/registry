@@ -10,8 +10,17 @@ import {
   SCHEMA_FAMILY_INDEX,
 } from './constants';
 import { projectInstallTargetsForIndex } from './compatibility';
+import {
+  buildAliasesFromPackages,
+  buildPackagePath,
+  listDiscoveredPackages,
+  validateNamespaceEqualsOwner,
+  type PackageRef,
+} from './namespace';
+import { writePackageTree } from './tree-manager';
 import type { ManifestArtifactEntry, PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 import { isStatus, isPackageCostBand, STATUS_VALUES, PACKAGE_COST_BANDS } from './types';
+import path from 'node:path';
 
 function requirePackageBand(value: unknown, packageId: string): 'minimal' | 'low' | 'moderate' | 'high' | 'critical' | 'mixed' {
   if (isPackageCostBand(value)) {
@@ -125,19 +134,31 @@ function assertNoEntriesMissingOwner(index: PackageIndex): void {
   }
 }
 
+function refreshAliasesAndTree(index: PackageIndex, packagesDir: string): void {
+  const discovered = listDiscoveredPackages(packagesDir);
+  index.aliases = buildAliasesFromPackages(discovered);
+  writePackageTree(
+    packagesDir,
+    discovered.map((entry) => entry.ref),
+  );
+}
+
 export class IndexManager {
   private readonly indexPath: string;
+  private readonly packagesDir: string;
 
-  constructor(indexPath: string) {
+  constructor(indexPath: string, packagesDir?: string) {
     this.indexPath = indexPath;
+    this.packagesDir = packagesDir ?? path.dirname(indexPath);
   }
 
   update(
-    packageId: string,
+    ref: PackageRef,
     metadata: PackageMetadata,
     manifestLatest: string,
     artifacts: ManifestArtifactEntry[],
   ): void {
+    const { namespace, packageId, qualifiedId } = ref;
     const estimateOverallCost: unknown = metadata.estimateOverallCost;
     if (
       typeof estimateOverallCost !== 'object' ||
@@ -146,9 +167,12 @@ export class IndexManager {
     ) {
       throw new PackageError(
         ErrorCode.ERR_METADATA_INVALID,
-        `metadata.json estimateOverallCost for package "${packageId}" must be an object`,
+        `metadata.json estimateOverallCost for package "${qualifiedId}" must be an object`,
       );
     }
+
+    const owner = requireOwner(metadata.owner, qualifiedId);
+    validateNamespaceEqualsOwner(namespace, owner, qualifiedId);
 
     let index: PackageIndex;
     if (fs.existsSync(this.indexPath)) {
@@ -162,23 +186,26 @@ export class IndexManager {
     index.schemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX);
 
     const entry: PackageIndexEntry = {
-      id: packageId,
-      name: requireNonEmptyString(metadata.name, 'name', packageId),
-      description: requireNonEmptyString(metadata.description, 'description', packageId),
-      owner: requireOwner(metadata.owner, packageId),
+      id: qualifiedId,
+      namespace,
+      package: packageId,
+      path: buildPackagePath(namespace, packageId),
+      name: requireNonEmptyString(metadata.name, 'name', qualifiedId),
+      description: requireNonEmptyString(metadata.description, 'description', qualifiedId),
+      owner,
       latest: manifestLatest,
-      tags: requireTags(metadata.tags, packageId),
-      status: requireStatus(metadata.status, packageId),
-      category: requireCategory(metadata.category, packageId),
+      tags: requireTags(metadata.tags, qualifiedId),
+      status: requireStatus(metadata.status, qualifiedId),
+      category: requireCategory(metadata.category, qualifiedId),
       estimateOverallCost: {
-        ...projectEstimatedCost(metadata.estimateOverallCost?.estimatedCost, packageId),
-        band: requirePackageBand(metadata.estimateOverallCost?.band, packageId),
+        ...projectEstimatedCost(metadata.estimateOverallCost?.estimatedCost, qualifiedId),
+        band: requirePackageBand(metadata.estimateOverallCost?.band, qualifiedId),
       },
-      ...projectQuickstart(metadata.quickstart, packageId),
+      ...projectQuickstart(metadata.quickstart, qualifiedId),
       installTargets: projectInstallTargetsForIndex(metadata, artifacts),
     };
 
-    const existing = index.packages.findIndex((p) => p.id === packageId);
+    const existing = index.packages.findIndex((p) => p.id === qualifiedId);
     if (existing >= 0) {
       index.packages[existing] = entry;
     } else {
@@ -187,6 +214,7 @@ export class IndexManager {
     }
 
     index.updatedAt = new Date().toISOString();
+    refreshAliasesAndTree(index, this.packagesDir);
     writeJsonFile(this.indexPath, index);
   }
 }

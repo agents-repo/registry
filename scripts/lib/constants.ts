@@ -65,6 +65,11 @@ export const VERSIONS_DIR = 'versions';
 export const METADATA_FILENAME = 'metadata.json';
 export const MANIFEST_FILENAME = 'manifest.json';
 export const INDEX_FILENAME = 'index.json';
+export const TREE_FILENAME = 'tree.json';
+export const OWNERS_FILENAME = 'owners.json';
+
+/** Qualified package ref: namespace/package-id */
+export const QUALIFIED_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 // --- Archive naming ---
 

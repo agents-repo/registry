@@ -25,11 +25,11 @@ output, and returns a deterministic report for flow branching.
 
 ## Responsibilities
 
-- Execute `npm run package:create -- --package <id> ...`
+- Execute `npm run package:create -- --namespace <ns> --package <id> ...`
   when the requested stage is scaffold creation.
-- Execute `npm run package:validate -- --package <id>`
+- Execute `npm run package:validate -- --package <namespace>/<id>`
   when the requested stage is source validation.
-- Execute `npm run package:build -- --package <id>`
+- Execute `npm run package:build -- --package <namespace>/<id>`
   when the requested stage is build.
 - Return a structured stage report including command string, exit code,
   key output summary, and next action recommendation.

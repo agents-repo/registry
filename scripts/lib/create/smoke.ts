@@ -77,11 +77,13 @@ export async function runPackageCreateSmoke(
   packageId: string,
   options: SmokeRunOptions = {},
 ): Promise<SmokeRunResult> {
+  const namespace = 'agents-repo';
+  const qualifiedRef = `${namespace}/${packageId}`;
   const repoRoot = options.repoRoot ?? process.cwd();
   const workspaceDir = options.workspaceDir ?? fs.mkdtempSync(path.join(os.tmpdir(), 'registry-package-create-smoke-'));
   const cleanup = options.cleanup ?? false;
   const packagesDir = path.join(workspaceDir, 'packages');
-  const packageDir = path.join(packagesDir, packageId);
+  const packageDir = path.join(packagesDir, namespace, packageId);
   const metadataPath = path.join(packageDir, METADATA_FILENAME);
   const manifestPath = path.join(packageDir, 'versions', 'manifest.json');
 
@@ -89,6 +91,7 @@ export async function runPackageCreateSmoke(
     options.log?.(`[smoke] workspace: ${workspaceDir}`);
 
     runScript(repoRoot, 'package:create', [
+      '--namespace', namespace,
       '--package', packageId,
       '--template', 'single-agent',
       '--description', `Smoke test package for ${packageId}`,
@@ -97,8 +100,8 @@ export async function runPackageCreateSmoke(
     const metadata = readJsonValue(metadataPath) as { version?: unknown };
     const version = readRequiredReleaseVersion(`${METADATA_FILENAME} version`, metadata.version);
 
-    runScript(repoRoot, 'package:validate', ['--package', packageId], workspaceDir);
-    runScript(repoRoot, 'package:build', ['--package', packageId], workspaceDir);
+    runScript(repoRoot, 'package:validate', ['--package', qualifiedRef], workspaceDir);
+    runScript(repoRoot, 'package:build', ['--package', qualifiedRef], workspaceDir);
 
     const manifest = readJsonValue(manifestPath) as { latest?: unknown };
     const latest = readRequiredReleaseVersion('versions/manifest.json latest', manifest.latest);
@@ -107,7 +110,7 @@ export async function runPackageCreateSmoke(
       throw new Error(`Smoke flow version mismatch: metadata.json has ${version}, manifest latest is ${latest}`);
     }
 
-    runScript(repoRoot, 'package:validate-artifacts', ['--package', packageId, '--version', latest], workspaceDir);
+    runScript(repoRoot, 'package:validate-artifacts', ['--package', qualifiedRef, '--version', latest], workspaceDir);
 
     const versionDir = path.join(packageDir, 'versions', latest);
     const targetArtifactPaths = fs.readdirSync(versionDir).filter((entry) => entry.endsWith('.zip') && !entry.endsWith('-src.zip'));

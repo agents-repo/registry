@@ -51,25 +51,26 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
   } = options;
 
   const pkg = new Package(packageId, packagesDir);
+  const qualifiedId = pkg.qualifiedId;
 
   logMessage(log, '[1/7] Running preflight validation');
-  const report = new PackageValidator(packageId, packagesDir).validate();
+  const report = new PackageValidator(qualifiedId, packagesDir).validate();
   printValidationIssues(report);
   if (!report.passed) {
     throw new PackageError(
       ErrorCode.ERR_VALIDATION_FAILED,
-      `Preflight validation failed for package: ${packageId} — ${report.errors.length} error(s)`,
+      `Preflight validation failed for package: ${qualifiedId} — ${report.errors.length} error(s)`,
     );
   }
   logMessage(log, '[1/7] Preflight passed');
 
   const metadata = pkg.loadMetadata();
-  const postLoadReport = new PackageValidator(packageId, packagesDir).validate();
+  const postLoadReport = new PackageValidator(qualifiedId, packagesDir).validate();
   printValidationIssues(postLoadReport);
   if (!postLoadReport.passed) {
     throw new PackageError(
       ErrorCode.ERR_VALIDATION_FAILED,
-      `Package changed after preflight validation for package: ${packageId} — ${postLoadReport.errors.length} error(s)`,
+      `Package changed after preflight validation for package: ${qualifiedId} — ${postLoadReport.errors.length} error(s)`,
     );
   }
 
@@ -133,9 +134,10 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
 
     logMessage(log, `[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME} and packages/${INDEX_FILENAME}`);
     updateManifestAndIndexWithRollback({
-      packageId,
+      ref: pkg.ref,
       manifestPath: pkg.manifestPath,
       indexPath,
+      packagesDir,
       metadata,
       version,
       artifacts,
@@ -143,12 +145,12 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
     });
   } catch (error) {
     rollbackVersionDirectory(versionDir);
-    warnIfIndexMayBeInconsistent(indexPath, packageId);
+    warnIfIndexMayBeInconsistent(indexPath, qualifiedId);
     throw error;
   }
 
   return {
-    packageId,
+    packageId: qualifiedId,
     version,
     versionDir,
     artifacts,

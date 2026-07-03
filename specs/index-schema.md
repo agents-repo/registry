@@ -1,4 +1,4 @@
-# Index Schema Specification (1.2.0)
+# Index Schema Specification (1.3.0)
 
 This document defines the deterministic `index.json` format
 for the registry-level package index.
@@ -11,11 +11,12 @@ are to be interpreted as described in RFC 2119.
 ## Schema Version Lifecycle
 
 `schemaVersion` identifies the index **format** version, not the package
-release version and not the spec document version (`1.2.0`).
+release version and not the spec document version (`1.3.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.2.0` | index schemaVersion | current | Adds optional `installTargets` |
+| `1.3.0` | index schemaVersion | current | Adds `namespace`, `package`, `path`, `aliases`; qualified `id` |
+| `1.2.0` | index schemaVersion | supported | Adds optional `installTargets` |
 | `1.1.0` | index schemaVersion | supported | Adds required `owner` field |
 | `1.0.0` | index schemaVersion | deprecated | Missing required `owner` field |
 
@@ -49,6 +50,7 @@ needing to enumerate the `packages/` directory.
 | --- | --- | --- | --- |
 | `schemaVersion` | string | yes | MUST be a supported `index` schema version from `specs/schema-versions.json`; see [Schema Version Lifecycle](#schema-version-lifecycle) |
 | `updatedAt` | string | yes | RFC 3339; MUST be updated when index changes |
+| `aliases` | object | no (1.3.0+) | Map of leaf package-id → qualified id; see [Aliases](#aliases) |
 | `packages` | array | yes | MAY be empty; one entry per package |
 
 ## Package Entry Schema
@@ -57,8 +59,11 @@ Each entry in `packages` MUST be an object with:
 
 | Field | Type | Required | Constraints |
 | --- | --- | --- | --- |
-| `id` | string | yes | Package directory name; kebab-case |
-| `name` | string | yes | MUST match `metadata.json` `name` |
+| `id` | string | yes | Qualified id: `namespace/package-id` |
+| `namespace` | string | yes (1.3.0+) | Namespace directory segment |
+| `package` | string | yes (1.3.0+) | Leaf package directory name |
+| `path` | string | yes (1.3.0+) | Repo-relative path (e.g. `packages/agents-repo/hello-agent`) |
+| `name` | string | yes | MUST match `metadata.json` `name` (leaf id) |
 | `description` | string | yes | MUST match `metadata.json` `description` |
 | `owner` | string | yes | MUST match `metadata.json` `owner` |
 | `latest` | string | yes | MUST equal `manifest.json` `latest` |
@@ -76,6 +81,13 @@ Each entry in `packages` MUST be an object with:
 | `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` |
 | `estimatedCost` | integer | no | Relative effort as an integer on a 1–10 scale (inclusive) |
 
+## Aliases
+
+When present (schema 1.3.0+), `aliases` MUST be an object mapping leaf package-id
+to qualified id. Each key MUST be a leaf package-id; each value MUST be the
+corresponding `packages[].id` qualified id. Aliases enable search and lookup by
+leaf name without requiring consumers to parse qualified ids.
+
 ## Install Targets
 
 When present, `installTargets` MUST be an array of objects:
@@ -92,12 +104,15 @@ targets MUST NOT appear in the index.
 ## Validation Rules
 
 - `packages[].id` values MUST be unique within the index.
-- `packages[].id` MUST satisfy `^[a-z0-9]+(?:-[a-z0-9]+)*$`.
+- `packages[].id` MUST satisfy
+  `^[a-z0-9]+(?:-[a-z0-9]+)*\/[a-z0-9]+(?:-[a-z0-9]+)*$` (1.3.0+).
+- `packages[].namespace` and `packages[].package` MUST match the directory
+  layout under `packages/<namespace>/<package>/`.
 - `packages[].latest` MUST equal the `latest` field in the
-  corresponding `packages/<id>/versions/manifest.json`.
+  corresponding `packages/<namespace>/<package>/versions/manifest.json`.
 - `packages[].name`, `packages[].description`, `packages[].owner`, and
   `packages[].tags` MUST reflect the current
-  `packages/<id>/metadata.json` values.
+  `packages/<namespace>/<package>/metadata.json` values.
 - `packages[].status`, `packages[].category`, and
   `packages[].estimateOverallCost` MUST reflect the current
   `packages/<id>/metadata.json` values.
@@ -114,7 +129,7 @@ targets MUST NOT appear in the index.
 - `updatedAt` MUST be updated whenever a package entry is added,
   modified, or removed.
 - The index MUST contain one entry for every package directory under
-  `packages/` that contains a `metadata.json`.
+  `packages/<namespace>/<package-id>/` that contains a `metadata.json`.
 - The index MUST NOT contain entries for package IDs that do not
   exist as directories under `packages/`.
 - `packages` SHOULD be sorted in ascending alphabetical order by `id`.
@@ -133,12 +148,18 @@ targets MUST NOT appear in the index.
 
 ```json
 {
-    "schemaVersion": "1.2.0",
-    "updatedAt": "2026-05-05T00:00:00Z",
+    "schemaVersion": "1.3.0",
+    "updatedAt": "2026-07-03T00:00:00Z",
+    "aliases": {
+        "hello-agent": "agents-repo/hello-agent"
+    },
     "packages": [
         {
-            "id": "my-package",
-            "name": "my-package",
+            "id": "agents-repo/hello-agent",
+            "namespace": "agents-repo",
+            "package": "hello-agent",
+            "path": "packages/agents-repo/hello-agent",
+            "name": "hello-agent",
             "description": "Multi-agent package for PR review automation.",
             "owner": "agents-repo",
             "latest": "1.1.0",
@@ -148,7 +169,7 @@ targets MUST NOT appear in the index.
             "estimateOverallCost": {
                 "band": "mixed"
             },
-            "quickstart": "https://github.com/agents-repo/my-package#quickstart"
+            "quickstart": "https://github.com/agents-repo/hello-agent#quickstart"
         }
     ]
 }

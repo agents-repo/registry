@@ -31,6 +31,7 @@ import {
   resolveScriptPaths,
 } from './lib/cli';
 import { exitWithValidationResult } from './lib/cli/reporting';
+import { resolvePackageDir } from './lib/namespace';
 import { SnapshotValidator } from './lib/snapshot-validator';
 
 // ---------------------------------------------------------------------------
@@ -59,7 +60,8 @@ function main(): void {
 
   let version = versionArg;
   if (version === undefined) {
-    const metadataPath = path.join(packagesDir, packageId, METADATA_FILENAME);
+    const { packageDir } = resolvePackageDir(packageId, packagesDir);
+    const metadataPath = path.join(packageDir, METADATA_FILENAME);
     if (!fs.existsSync(metadataPath)) {
       console.error(`${METADATA_FILENAME} not found for package: ${packageId}`);
       process.exit(1);

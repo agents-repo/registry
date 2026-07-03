@@ -67,6 +67,16 @@ When `compatibility` is omitted, tooling MUST assume all four targets are
 
 `planned` targets MUST NOT receive build artifacts.
 
+## Artifact paths
+
+Published artifacts are stored under namespaced package directories:
+
+```text
+packages/<namespace>/<package-id>/versions/<version>/<version>-<target-id>.zip
+```
+
+Example: `packages/agents-repo/hello-agent/versions/1.0.0/1.0.0-cursor.zip`
+
 ## manifest.json artifacts
 
 Each `versions[]` entry MUST include `artifacts[]` instead of legacy

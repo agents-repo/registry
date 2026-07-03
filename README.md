@@ -154,7 +154,10 @@ registry/
 ```
 
 For a minimal working example package, start with
-`packages/hello-agent/README.md`.
+`packages/agents-repo/hello-agent/README.md`.
+
+See [NAMESPACE_RULES.md](./NAMESPACE_RULES.md) and [MIGRATION.md](./MIGRATION.md)
+for namespaced package layout.
 
 Current testing baseline focuses on `tests/unit/`.
 For full test layout conventions, path mirroring, and scope guidance, see
@@ -169,10 +172,10 @@ The scripts manage all versioned artifacts.
 
 ```bash
 # 1. Build and publish a version snapshot
-npm run package:build -- --package <id>
+npm run package:build -- --package <namespace>/<package-id>
 
 # 2. Deep artifact verification
-npm run package:validate-artifacts -- --package <id>
+npm run package:validate-artifacts -- --package <namespace>/<package-id>
 ```
 
 The `package-build` script automatically runs preflight validation equivalent
@@ -180,17 +183,18 @@ to `package:validate` before building artifacts. Scripts are intentionally
 single-responsibility, and orchestration is still performed externally
 (for example by CI or AI agents).
 
-During development, you MAY run `npm run package:validate -- --package <id>`
+During development, you MAY run `npm run package:validate -- --package <namespace>/<package-id>`
 manually to check the working state before the package is ready to build.
 
 For package-script changes, use the separate smoke command:
 
 ```bash
-npm run package:create:smoke -- --package <id>
+npm run package:create:smoke -- --package <package-id>
 ```
 
-That smoke flow creates a temporary package workspace and runs the full script
-chain end to end: `package:create`, `package:validate`, `package:build`, and
+That smoke flow creates a temporary package workspace under
+`packages/agents-repo/<package-id>/` and runs the full script chain end to end:
+`package:create`, `package:validate`, `package:build`, and
 `package:validate-artifacts`.
 
 ### PR and Copilot checks
@@ -202,7 +206,7 @@ chain end to end: `package:create`, `package:validate`, `package:build`, and
 - Package build and artifact validation are run locally before committing
   version snapshots.
 - Package script changes also run the dedicated smoke workflow, which calls
-  `npm run package:create:smoke -- --package <id>`.
+  `npm run package:create:smoke -- --package <package-id>`.
 - Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
 
 Package artifacts are designed for reuse in external projects, and downstream

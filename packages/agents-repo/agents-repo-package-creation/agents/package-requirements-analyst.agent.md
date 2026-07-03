@@ -37,8 +37,9 @@ arguments and definition plan before any files are authored.
 - Identify required metadata fields and suggest values for `tags`,
   `owner`, `homepage`, and `repository`.
 - Produce minimum script arguments for
-  `npm run package:create`, including required `--package`,
+  `npm run package:create`, including required `--namespace`, `--package`,
   `--template`, `--name`, `--description`, and `--owner` values.
+  In phase 1, `--namespace` MUST match `--owner`.
 - Define an ordered authoring plan for agent and flow definitions after scaffolding.
 - List open questions and assumptions that must be resolved
   before the creator begins drafting files.

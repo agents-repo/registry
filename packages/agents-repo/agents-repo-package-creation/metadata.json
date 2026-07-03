@@ -4,7 +4,7 @@
   "description": "Agents and flow for creating, reviewing, and validating new registry packages for agents-repo from requirements to submission-ready source.",
   "owner": "agents-repo",
   "license": "MIT",
-  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/agents-repo-package-creation",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/agents-repo/agents-repo-package-creation",
   "repository": "https://github.com/agents-repo/registry",
   "tags": [
     "agents-repo-package-creation",

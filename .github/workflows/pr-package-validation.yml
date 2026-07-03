@@ -38,7 +38,7 @@ jobs:
           git fetch --no-tags origin "$base_ref" --depth=1
 
           changed_files=$(git diff --name-only "origin/$base_ref"...HEAD)
-          candidate_packages=$(printf '%s\n' "$changed_files" | awk -F/ '$1=="packages" && NF>2 {print $2}' | sort -u)
+          candidate_packages=$(printf '%s\n' "$changed_files" | awk -F/ '$1=="packages" && NF>=4 {print $2"/"$3}' | sort -u)
           changed_packages=$(printf '%s\n' "$candidate_packages" | while IFS= read -r pkg; do
             if [ -n "$pkg" ] && [ -f "packages/$pkg/metadata.json" ]; then
               printf '%s\n' "$pkg"

@@ -1,15 +1,39 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import semver from 'semver';
+import { QUALIFIED_ID_PATTERN } from '../constants';
+import { parseQualifiedPackageRef } from '../namespace';
 
 export function parseRequiredPackageId(argv: string[]): string {
   const args = argv.slice(2);
   const idx = args.indexOf('--package');
   if (idx === -1 || !args[idx + 1]) {
-    console.error('Error: --package <id> is required');
+    console.error('Error: --package <namespace/package-id> is required');
     process.exit(1);
   }
-  return args[idx + 1];
+
+  const value = args[idx + 1];
+  if (!QUALIFIED_ID_PATTERN.test(value.trim())) {
+    console.error(`Error: --package must be a qualified ref (namespace/package-id), got: ${value}`);
+    process.exit(1);
+  }
+
+  try {
+    return parseQualifiedPackageRef(value).qualifiedId;
+  } catch (error) {
+    console.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(1);
+  }
+}
+
+export function parseRequiredNamespace(argv: string[]): string {
+  const args = argv.slice(2);
+  const idx = args.indexOf('--namespace');
+  if (idx === -1 || !args[idx + 1]) {
+    console.error('Error: --namespace <ns> is required');
+    process.exit(1);
+  }
+  return args[idx + 1].trim();
 }
 
 export function parseOptionalFlagValue(argv: string[], flag: string): string | undefined {

@@ -53,11 +53,17 @@ function main(): void {
     const request = buildCreationRequest(parsed, repoRoot, fail);
 
     new PackageScaffolder(
-      { packageId: request.packageId, metadata: request.metadata, agents: request.agents, flows: request.flows },
+      {
+        namespace: request.namespace,
+        packageId: request.packageId,
+        metadata: request.metadata,
+        agents: request.agents,
+        flows: request.flows,
+      },
       repoRoot,
     ).scaffold();
 
-    printCreateSuccess(request.packageId);
+    printCreateSuccess(request.namespace, request.packageId);
   } catch (error) {
     console.error('Error:', error);
     process.exit(1);

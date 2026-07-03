@@ -26,10 +26,10 @@ and reports gate status with explicit blocking issues.
 ## Responsibilities
 
 - Execute
-  `npm run package:validate-artifacts -- --package <id>`
+  `npm run package:validate-artifacts -- --package <namespace>/<id>`
   for default artifact gate checks.
 - Execute
-  `npm run package:validate-artifacts -- --package <id> --version <semver>`
+  `npm run package:validate-artifacts -- --package <namespace>/<id> --version <semver>`
   when an explicit version is requested.
 - Return a structured release gate report with command, exit code,
   blocker summary, and recommended routing.

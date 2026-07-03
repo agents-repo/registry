@@ -8,6 +8,7 @@ import { resolveTemplate } from './templates';
 import { DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH, TAGS_MAX_COUNT, ID_PATTERN } from '../constants';
 
 export interface CreationRequest {
+  namespace: string;
   packageId: string;
   template: Template;
   metadata: UserMetadata;
@@ -40,10 +41,10 @@ function validateTags(tags: string[], fail: FailFn): void {
   }
 }
 
-function ensurePackageDoesNotExist(packageId: string, repoRoot: string, fail: FailFn): void {
-  const packageDir = path.join(repoRoot, 'packages', packageId);
+function ensurePackageDoesNotExist(namespace: string, packageId: string, repoRoot: string, fail: FailFn): void {
+  const packageDir = path.join(repoRoot, 'packages', namespace, packageId);
   if (fs.existsSync(packageDir)) {
-    fail(`Package "${packageId}" already exists at ${packageDir}`);
+    fail(`Package "${namespace}/${packageId}" already exists at ${packageDir}`);
   }
 }
 
@@ -153,14 +154,23 @@ export function buildCreationRequest(
   repoRoot: string,
   fail: FailFn,
 ): CreationRequest {
+  const namespace = requireArgValue('--namespace', parsed.namespace, fail);
+  if (!isValidPackageId(namespace)) {
+    fail(`Invalid namespace: ${namespace}`);
+  }
+
   const packageId = requireArgValue('--package', parsed.packageId, fail);
   if (!isValidPackageId(packageId)) {
     fail(`Invalid package ID: ${packageId}`);
   }
-  ensurePackageDoesNotExist(packageId, repoRoot, fail);
+  ensurePackageDoesNotExist(namespace, packageId, repoRoot, fail);
 
   const template = resolveTemplate(requireArgValue('--template', parsed.templateId, fail), fail);
   const metadata = buildMetadataNonInteractive(parsed, packageId, fail);
+
+  if (metadata.owner !== namespace) {
+    fail(`--namespace "${namespace}" must match --owner "${metadata.owner}" in phase 1`);
+  }
 
   const customAgents = parsed.agents.map((agent) => parseEntitySpec('agent', agent, fail));
   const agents = mergeTemplateAndCustomAgents(template, customAgents);
@@ -176,6 +186,7 @@ export function buildCreationRequest(
   ensureUniqueEntityIds(agents, flows, fail);
 
   return {
+    namespace,
     packageId,
     template,
     metadata,

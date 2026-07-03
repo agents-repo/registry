@@ -41,8 +41,9 @@ structural validation, build, and artifact validation.
   and an authoring plan.
 
 2. **Scaffold creation** — Invoke `package-script-runner` to execute
-  `npm run package:create -- --package <id> ...` using the approved
-  blueprint arguments. If scaffold execution fails,
+  `npm run package:create -- --namespace <ns> --package <id> ...` using the approved
+  blueprint arguments. Namespace MUST match `metadata.owner` in phase 1.
+  If scaffold execution fails,
   surface command errors to the user, revise the blueprint in step 1,
   and retry this step.
 
@@ -55,19 +56,19 @@ structural validation, build, and artifact validation.
   Proceed only when reviewer verdict is `ready`.
 
 4. **Source validation** — Invoke `package-script-runner` to execute
-  `npm run package:validate -- --package <id>`.
+  `npm run package:validate -- --package <namespace>/<id>`.
   If validation fails, route findings to `package-creator` for fixes,
   optionally re-run step 3 for quality checks,
   then repeat this step until it passes or user stops.
 
 5. **Build snapshot** — Invoke `package-script-runner` to execute
-  `npm run package:build -- --package <id>`. If build fails,
+  `npm run package:build -- --package <namespace>/<id>`. If build fails,
   send command errors to `package-creator`
   (and step 1 if argument-level issues are found),
   then re-run step 4 before retrying build.
 
 6. **Artifact release gate** — Invoke `package-release-gate` to execute
-  `npm run package:validate-artifacts -- --package <id>`
+  `npm run package:validate-artifacts -- --package <namespace>/<id>`
   (optionally with `--version`). If gate fails,
   route findings to `package-creator`, then re-run steps 4 through 6.
   On pass, present the release-gated package result to the user.

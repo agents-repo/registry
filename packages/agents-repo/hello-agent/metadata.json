@@ -19,7 +19,7 @@
     "estimatedCost": 1,
     "band": "low"
   },
-  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md",
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/hello-agent/README.md",
   "compatibility": {
     "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
     "targets": [

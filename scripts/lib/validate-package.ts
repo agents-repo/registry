@@ -1,4 +1,5 @@
 import type { PackageMetadata, ValidationIssue, ValidationReport } from './types';
+import { parseQualifiedPackageRef, validateNamespaceEqualsOwner } from './namespace';
 import { splitIssues } from './validators/common/issues';
 import {
   validateHasEntries,
@@ -43,11 +44,13 @@ export class PackageValidator {
 // ---------------------------------------------------------------------------
 
 export function validatePackage(
-  packageId: string,
+  qualifiedRef: string,
   packagesDir: string,
 ): ValidationReport {
+  const ref = parseQualifiedPackageRef(qualifiedRef);
+  const leafPackageId = ref.packageId;
   const issues: ValidationIssue[] = [];
-  const { packageDir, report } = resolvePackageDir(packageId, packagesDir);
+  const { packageDir, report } = resolvePackageDir(qualifiedRef, packagesDir);
   if (report) {
     return report;
   }
@@ -56,7 +59,18 @@ export function validatePackage(
   const metadata = loadPackageMetadata(packageDir, issues);
   let validatedMetadata: PackageMetadata | null = null;
   if (metadata !== null) {
-    if (validateMetadata(metadata, packageId, issues)) {
+    if (typeof metadata.owner === 'string') {
+      try {
+        validateNamespaceEqualsOwner(ref.namespace, metadata.owner, ref.qualifiedId);
+      } catch (error) {
+        issues.push({
+          code: 'ERR_METADATA_INVALID',
+          severity: 'error',
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+    if (validateMetadata(metadata, leafPackageId, issues)) {
       validatedMetadata = metadata;
     }
     validateMetadataVersionAgainstManifestLatest(packageDir, metadata, issues);
@@ -76,7 +90,7 @@ export function validatePackage(
   // 8. Manifest validation (if present)
   const manifestPath = getManifestPath(packageDir);
   if (hasManifest(packageDir) && validatedMetadata !== null) {
-    const manifest = validateManifest(manifestPath, packageId, issues);
+    const manifest = validateManifest(manifestPath, leafPackageId, issues);
     if (manifest !== null) {
       validateCompatibilityManifestAlignment(validatedMetadata, manifest, issues);
     }
@@ -85,7 +99,7 @@ export function validatePackage(
   const { errors, warnings } = splitIssues(issues);
 
   return {
-    packageId,
+    packageId: ref.qualifiedId,
     errors,
     warnings,
     passed: errors.length === 0,

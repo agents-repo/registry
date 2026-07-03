@@ -34,13 +34,14 @@ Contributors and AI agents MUST follow this pipeline to produce a release:
   (`metadata.json`, `README.md` (optional), `agents/`, `flows/`).
   These are the only files contributors and AI agents are authorized to write
   directly.
-2. Run `npm run package:build -- --package <id>` to generate the version
-  snapshot. This command automatically runs preflight validation equivalent to
-  `package:validate`, builds per-install-target deployment ZIPs plus the source
-  archive, computes SHA-256 checksums, writes `versions/<version>/`, updates
-  `versions/manifest.json`, and updates `packages/index.json`.
-3. Run `npm run package:validate-artifacts -- --package <id>` to validate
-   generated artifacts for structural and security issues.
+2. Run `npm run package:build -- --package <namespace>/<package-id>` to
+  generate the version snapshot. This command automatically runs preflight
+  validation equivalent to `package:validate`, builds per-install-target
+  deployment ZIPs plus the source archive, computes SHA-256 checksums, writes
+  `versions/<version>/`, updates `versions/manifest.json`, and updates
+  `packages/index.json`.
+3. Run `npm run package:validate-artifacts -- --package <namespace>/<package-id>`
+  to validate generated artifacts for structural and security issues.
 
 The scripts in this pipeline SHOULD remain single-responsibility.
 They MUST NOT invoke another pipeline script implicitly.
@@ -52,9 +53,12 @@ content under `versions/`.
 
 ## Naming Rules
 
-- Package directory name MUST be lowercase kebab-case.
+- Package directory name (leaf package-id) MUST be lowercase kebab-case.
 - Package directory name MUST match `^[a-z0-9]+(?:-[a-z0-9]+)*$`.
-- Package names MUST be unique within `packages/`.
+- Leaf package names MUST be unique within a namespace.
+- Qualified ids (`namespace/package-id`) MUST be unique across the registry.
+- Namespace MUST match `^[a-z0-9]+(?:-[a-z0-9]+)*$`. In phase 1, namespace
+  MUST equal `metadata.owner`.
 - Agent IDs and flow IDs MUST follow the same naming rules.
 - Agent IDs MUST be unique within `agents/`.
 - Flow IDs MUST be unique within `flows/`.
@@ -66,7 +70,8 @@ content under `versions/`.
 
 ```text
 packages/
-    <package-id>/
+    <namespace>/
+        <package-id>/
         metadata.json
         README.md (optional)
         agents/

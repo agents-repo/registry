@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "updatedAt": "2026-07-03T04:41:42.180Z",
+  "namespaces": {
+    "agents-repo": {
+      "packages": [
+        "agents-repo-package-creation",
+        "hello-agent"
+      ]
+    }
+  }
+}
