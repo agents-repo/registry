@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { INSTALL_TARGET_IDS, SCHEMA_FAMILY_INDEX } from '../../../../scripts/lib/constants';
 import { getSchemaCurrentVersion } from '../../../../scripts/lib/schema-versions';
 import type { ManifestArtifactEntry, PackageIndex, PackageMetadata, PackageRef } from '../../../../scripts/lib/types';
 import { IndexManager } from '../../../../scripts/lib/index-manager';
+import * as jsonIo from '../../../../scripts/lib/io/json';
+import * as treeManager from '../../../../scripts/lib/tree-manager';
 
 const DEFAULT_ARTIFACTS: ManifestArtifactEntry[] = [
   { target: 'github-copilot', file: '1.0.0-github-copilot.zip', sha256: 'a'.repeat(64) },
@@ -186,5 +188,34 @@ describe('IndexManager', (): void => {
       'alpha-package': 'agents-repo/alpha-package',
       'beta-package': 'agents-repo/beta-package',
     });
+  });
+
+  it('does not write tree.json when index.json write fails', (): void => {
+    const tempDir = makeTempDir();
+    const indexPath = path.join(tempDir, 'index.json');
+    const treePath = path.join(tempDir, 'tree.json');
+    const manager = new IndexManager(indexPath, tempDir);
+
+    manager.update(makeRef('alpha-package'), makeMetadata({ name: 'alpha-package' }), '1.0.0', DEFAULT_ARTIFACTS);
+    const originalTree = fs.readFileSync(treePath, 'utf-8');
+    const originalIndex = fs.readFileSync(indexPath, 'utf-8');
+
+    const writeTreeSpy = vi.spyOn(treeManager, 'writePackageTree');
+    vi.spyOn(jsonIo, 'writeJsonFile').mockImplementation((filePath: string, value: unknown): void => {
+      if (filePath === indexPath) {
+        throw new Error('disk full');
+      }
+      jsonIo.writeJsonFile(filePath, value);
+    });
+
+    expect(() => {
+      manager.update(makeRef('beta-package'), makeMetadata({ name: 'beta-package' }), '1.0.0', DEFAULT_ARTIFACTS);
+    }).toThrow('disk full');
+
+    expect(writeTreeSpy).not.toHaveBeenCalled();
+    expect(fs.readFileSync(treePath, 'utf-8')).toBe(originalTree);
+    expect(fs.readFileSync(indexPath, 'utf-8')).toBe(originalIndex);
+
+    vi.restoreAllMocks();
   });
 });

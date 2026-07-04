@@ -135,17 +135,14 @@ function assertNoEntriesMissingOwner(index: PackageIndex): void {
   }
 }
 
-function refreshAliasesAndTree(
+function refreshAliases(
   index: PackageIndex,
   packagesDir: string,
   discovered?: DiscoveredPackage[],
-): void {
+): PackageRef[] {
   const packages = discovered ?? listDiscoveredPackages(packagesDir);
   index.aliases = buildAliasesFromPackages(packages);
-  writePackageTree(
-    packagesDir,
-    packages.map((entry) => entry.ref),
-  );
+  return packages.map((entry) => entry.ref);
 }
 
 export interface IndexUpdateOptions {
@@ -224,15 +221,18 @@ export class IndexManager {
     }
 
     index.updatedAt = new Date().toISOString();
-    if (options.deferDerivedRefresh !== true) {
-      refreshAliasesAndTree(index, this.packagesDir);
-    }
+    const packageRefs =
+      options.deferDerivedRefresh !== true ? refreshAliases(index, this.packagesDir) : undefined;
     writeJsonFile(this.indexPath, index);
+    if (packageRefs !== undefined) {
+      writePackageTree(this.packagesDir, packageRefs);
+    }
   }
 
   refreshDerivedState(discovered?: DiscoveredPackage[]): void {
     const index = readJsonFile<PackageIndex>(this.indexPath);
-    refreshAliasesAndTree(index, this.packagesDir, discovered);
+    const packageRefs = refreshAliases(index, this.packagesDir, discovered);
     writeJsonFile(this.indexPath, index);
+    writePackageTree(this.packagesDir, packageRefs);
   }
 }
