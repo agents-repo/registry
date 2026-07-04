@@ -88,9 +88,10 @@ path mirroring conventions, and scope guidance.
 
 For package tasks, run in order:
 
-1. `npm run package:validate -- --package <id>`
-2. `npm run package:build -- --package <id>`
-3. `npm run package:validate-artifacts -- --package <id> --version <version>`
+1. `npm run package:validate -- --package <namespace>/<package-id>`
+2. `npm run package:build -- --package <namespace>/<package-id>`
+3. `npm run package:validate-artifacts -- --package <namespace>/<package-id>`
+   `--version <version>`
 
 ## Contribution
 

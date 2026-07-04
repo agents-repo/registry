@@ -3,9 +3,9 @@
  * package-validate — Preflight validation for a registry package.
  *
  * Usage:
- *   npm run package:validate -- --package <id>
+ *   npm run package:validate -- --package <namespace>/<package-id>
  *
- * Validates the working-state package root under packages/<id>/ against the
+ * Validates the working-state package root under packages/<namespace>/<package-id>/ against the
  * normative rules in specs/package-format.md, specs/metadata-schema.md,
  * specs/manifest-schema.md, and specs/versioning-rules.md.
  *

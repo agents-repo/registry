@@ -3,9 +3,10 @@
  * package-create - Args-only scaffolding for new registry packages.
  *
  * Usage:
- *   npm run package:create -- --package <id> --template <template-id> --description "..."
+ *   npm run package:create -- --namespace <ns> --package <id> --template <template-id> --description "..."
  *
  * Flags:
+ *   --namespace <ns>
  *   --package <id>
  *   --template <single-agent|single-agent-flows|multi-agent|blank>
  *   --name <value>

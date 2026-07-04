@@ -23,4 +23,4 @@ jobs:
         run: npm run env:check
 
       - name: Run package-create smoke test
-        run: npm run package:create:smoke -- --package smoke-package
+        run: npm run package:create:smoke -- --package agents-repo/smoke-package

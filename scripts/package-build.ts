@@ -3,7 +3,7 @@
  * package-build — Builds and publishes a versioned release for a registry package.
  *
  * Usage:
- *   npm run package:build -- --package <id> [--force-rebuild]
+ *   npm run package:build -- --package <namespace>/<package-id> [--force-rebuild]
  *
  * This script is the SOLE authorized writer for versioned snapshot artifacts.
  * Contributors and AI agents MUST NOT manually create or modify files

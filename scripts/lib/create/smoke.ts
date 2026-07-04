@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { parseReleaseVersion } from '../cli';
 import { METADATA_FILENAME } from '../constants';
+import { parseQualifiedPackageRef } from '../namespace';
 
 export interface SmokeRunResult {
   workspaceDir: string;
@@ -74,16 +75,15 @@ function readRequiredReleaseVersion(sourceLabel: string, value: unknown): string
 }
 
 export async function runPackageCreateSmoke(
-  packageId: string,
+  qualifiedRef: string,
   options: SmokeRunOptions = {},
 ): Promise<SmokeRunResult> {
-  const namespace = 'agents-repo';
-  const qualifiedRef = `${namespace}/${packageId}`;
+  const ref = parseQualifiedPackageRef(qualifiedRef);
   const repoRoot = options.repoRoot ?? process.cwd();
   const workspaceDir = options.workspaceDir ?? fs.mkdtempSync(path.join(os.tmpdir(), 'registry-package-create-smoke-'));
   const cleanup = options.cleanup ?? false;
   const packagesDir = path.join(workspaceDir, 'packages');
-  const packageDir = path.join(packagesDir, namespace, packageId);
+  const packageDir = path.join(packagesDir, ref.namespace, ref.packageId);
   const metadataPath = path.join(packageDir, METADATA_FILENAME);
   const manifestPath = path.join(packageDir, 'versions', 'manifest.json');
 
@@ -91,17 +91,18 @@ export async function runPackageCreateSmoke(
     options.log?.(`[smoke] workspace: ${workspaceDir}`);
 
     runScript(repoRoot, 'package:create', [
-      '--namespace', namespace,
-      '--package', packageId,
+      '--namespace', ref.namespace,
+      '--owner', ref.namespace,
+      '--package', ref.packageId,
       '--template', 'single-agent',
-      '--description', `Smoke test package for ${packageId}`,
+      '--description', `Smoke test package for ${ref.qualifiedId}`,
     ], workspaceDir);
 
     const metadata = readJsonValue(metadataPath) as { version?: unknown };
     const version = readRequiredReleaseVersion(`${METADATA_FILENAME} version`, metadata.version);
 
-    runScript(repoRoot, 'package:validate', ['--package', qualifiedRef], workspaceDir);
-    runScript(repoRoot, 'package:build', ['--package', qualifiedRef], workspaceDir);
+    runScript(repoRoot, 'package:validate', ['--package', ref.qualifiedId], workspaceDir);
+    runScript(repoRoot, 'package:build', ['--package', ref.qualifiedId], workspaceDir);
 
     const manifest = readJsonValue(manifestPath) as { latest?: unknown };
     const latest = readRequiredReleaseVersion('versions/manifest.json latest', manifest.latest);
@@ -110,7 +111,7 @@ export async function runPackageCreateSmoke(
       throw new Error(`Smoke flow version mismatch: metadata.json has ${version}, manifest latest is ${latest}`);
     }
 
-    runScript(repoRoot, 'package:validate-artifacts', ['--package', qualifiedRef, '--version', latest], workspaceDir);
+    runScript(repoRoot, 'package:validate-artifacts', ['--package', ref.qualifiedId, '--version', latest], workspaceDir);
 
     const versionDir = path.join(packageDir, 'versions', latest);
     const targetArtifactPaths = fs.readdirSync(versionDir).filter((entry) => entry.endsWith('.zip') && !entry.endsWith('-src.zip'));

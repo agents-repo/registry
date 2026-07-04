@@ -189,7 +189,8 @@ manually to check the working state before the package is ready to build.
 For package-script changes, use the separate smoke command:
 
 ```bash
-npm run package:create:smoke -- --package <package-id>
+npm run package:create:smoke -- --package <namespace>/<package-id>
+# example: agents-repo/smoke-package
 ```
 
 That smoke flow creates a temporary package workspace under
@@ -206,7 +207,7 @@ That smoke flow creates a temporary package workspace under
 - Package build and artifact validation are run locally before committing
   version snapshots.
 - Package script changes also run the dedicated smoke workflow, which calls
-  `npm run package:create:smoke -- --package <package-id>`.
+  `npm run package:create:smoke -- --package agents-repo/smoke-package`.
 - Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
 
 Package artifacts are designed for reuse in external projects, and downstream
@@ -238,13 +239,14 @@ under `versions/`. See `specs/package-format.md` and `specs/versioning-rules.md`
 Package format:
 
 ```text
-<package-id>/
-    metadata.json
-    README.md (optional)
-    agents/
-        <agent-id>.agent.md
-        <agent-id>.metadata.json
-    flows/
+<namespace>/
+    <package-id>/
+        metadata.json
+        README.md (optional)
+        agents/
+            <agent-id>.agent.md
+            <agent-id>.metadata.json
+        flows/
         <flow-id>.agent.md
         <flow-id>.metadata.json
     versions/

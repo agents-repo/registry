@@ -4,7 +4,7 @@
  * built package version snapshot.
  *
  * Usage:
- *   npm run package:validate-artifacts -- --package <id> [--version <semver>]
+ *   npm run package:validate-artifacts -- --package <namespace>/<package-id> [--version <semver>]
  *
  * When --version is omitted, the version is read from the package metadata file.
  *
