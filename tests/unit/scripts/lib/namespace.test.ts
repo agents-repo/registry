@@ -4,6 +4,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { PackageError } from '../../../../scripts/lib/errors';
 import {
+  buildAliasesFromPackages,
   buildQualifiedId,
   listDiscoveredPackages,
   parseQualifiedPackageRef,
@@ -72,5 +73,30 @@ describe('namespace', (): void => {
 
     const resolved = resolvePackageDir('agents-repo/hello-agent', packagesDir);
     expect(resolved.packageDir).toBe(packageDir);
+  });
+
+  it('builds aliases for uniquely named leaf package ids', (): void => {
+    const aliases = buildAliasesFromPackages([
+      { ref: { namespace: 'agents-repo', packageId: 'alpha-package', qualifiedId: 'agents-repo/alpha-package' } },
+      { ref: { namespace: 'agents-repo', packageId: 'beta-package', qualifiedId: 'agents-repo/beta-package' } },
+    ]);
+
+    expect(aliases).toEqual({
+      'alpha-package': 'agents-repo/alpha-package',
+      'beta-package': 'agents-repo/beta-package',
+    });
+  });
+
+  it('omits ambiguous leaf package ids shared across namespaces', (): void => {
+    const aliases = buildAliasesFromPackages([
+      { ref: { namespace: 'ns-a', packageId: 'hello-agent', qualifiedId: 'ns-a/hello-agent' } },
+      { ref: { namespace: 'ns-b', packageId: 'hello-agent', qualifiedId: 'ns-b/hello-agent' } },
+      { ref: { namespace: 'ns-a', packageId: 'unique-tool', qualifiedId: 'ns-a/unique-tool' } },
+    ]);
+
+    expect(aliases).toEqual({
+      'unique-tool': 'ns-a/unique-tool',
+    });
+    expect(aliases).not.toHaveProperty('hello-agent');
   });
 });

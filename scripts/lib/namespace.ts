@@ -164,16 +164,18 @@ export function buildPackagePath(namespace: string, packageId: string): string {
 }
 
 export function buildAliasesFromPackages(packages: Array<{ ref: PackageRef }>): Record<string, string> {
+  const leafIdCounts = new Map<string, number>();
+
+  for (const { ref } of packages) {
+    leafIdCounts.set(ref.packageId, (leafIdCounts.get(ref.packageId) ?? 0) + 1);
+  }
+
   const aliases: Record<string, string> = {};
 
   for (const { ref } of packages) {
-    if (ref.packageId in aliases && aliases[ref.packageId] !== ref.qualifiedId) {
-      throw new PackageError(
-        ErrorCode.ERR_METADATA_INVALID,
-        `Cannot build aliases: duplicate leaf package id "${ref.packageId}" maps to both "${aliases[ref.packageId]}" and "${ref.qualifiedId}"`,
-      );
+    if (leafIdCounts.get(ref.packageId) === 1) {
+      aliases[ref.packageId] = ref.qualifiedId;
     }
-    aliases[ref.packageId] = ref.qualifiedId;
   }
 
   return aliases;
