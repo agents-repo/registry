@@ -184,6 +184,24 @@ function findStaleGithubAgentFiles(repoRoot: string, keepFileNames: Set<string>)
   return stalePaths;
 }
 
+function findStaleCursorRuleFiles(repoRoot: string, keepFileNames: Set<string>): string[] {
+  const rulesDir = path.join(repoRoot, path.dirname(CURSOR_RULES_REL));
+  if (!fs.existsSync(rulesDir)) {
+    return [];
+  }
+
+  const stalePaths: string[] = [];
+  for (const entry of fs.readdirSync(rulesDir)) {
+    if (!entry.endsWith('.mdc') || keepFileNames.has(entry)) {
+      continue;
+    }
+
+    stalePaths.push(path.join(path.dirname(CURSOR_RULES_REL), entry));
+  }
+
+  return stalePaths;
+}
+
 function findStaleSkillDirs(repoRoot: string, keepIds: Set<string>): string[] {
   const skillsRoot = path.join(repoRoot, CURSOR_SKILLS_REL);
   if (!fs.existsSync(skillsRoot)) {
@@ -231,7 +249,17 @@ function checkCursorSkills(repoRoot: string, pkg: Package): IdeSyncDriftIssue[] 
 }
 
 function checkCursorRules(repoRoot: string): IdeSyncDriftIssue[] {
-  return compareExpectedFiles(repoRoot, expectedCursorRules(repoRoot));
+  const expected = expectedCursorRules(repoRoot);
+  const issues = compareExpectedFiles(repoRoot, expected);
+  const keepFileNames = new Set(
+    [...expected.keys()].map((relativePath) => path.basename(relativePath)),
+  );
+
+  for (const stalePath of findStaleCursorRuleFiles(repoRoot, keepFileNames)) {
+    issues.push({ kind: 'stale', path: stalePath });
+  }
+
+  return issues;
 }
 
 export function checkIdeTargets(
@@ -338,6 +366,11 @@ export function syncCursorRules(repoRoot: string): string {
   const [relativePath, content] = [...expected.entries()][0];
   const targetPath = path.join(repoRoot, relativePath);
   writeFileEnsuringDir(targetPath, content);
+  removeStaleFiles(
+    path.dirname(targetPath),
+    new Set([path.basename(relativePath)]),
+    '.mdc',
+  );
   return path.relative(repoRoot, targetPath);
 }
 

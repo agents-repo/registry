@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import AdmZip from 'adm-zip';
-import { AGENTS_DIR, VERSIONS_DIR } from './constants';
+import { AGENT_FILE_EXT, AGENTS_DIR, VERSIONS_DIR } from './constants';
 import { listDeploymentAgentFiles } from './deployment-agents';
 
 export class ZipBuilder {
@@ -19,7 +19,7 @@ export class ZipBuilder {
     // listDeploymentAgentFiles returns ids sorted for deterministic ZIP bytes.
     for (const file of listDeploymentAgentFiles(this.packageDir)) {
       zip.addFile(
-        `${AGENTS_DIR}/${file.id}.agent.md`,
+        `${AGENTS_DIR}/${file.id}${AGENT_FILE_EXT}`,
         Buffer.from(file.content, 'utf-8'),
       );
     }

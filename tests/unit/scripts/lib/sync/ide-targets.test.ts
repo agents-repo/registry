@@ -85,7 +85,7 @@ describe('transformCopilotInstructionsToCursorRules', (): void => {
 describe('syncGithubCopilotAgents', (): void => {
   it('writes agent files and removes stale outputs', (): void => {
     const repoRoot = makeRepoRoot();
-    const packageDir = createDummyPackage(repoRoot, 'gh-sync', {
+    createDummyPackage(repoRoot, 'gh-sync', {
       agents: [{ id: 'keep-me', name: 'keep-me', description: 'Kept agent for github sync.' }],
       flows: [],
     });
@@ -98,7 +98,7 @@ describe('syncGithubCopilotAgents', (): void => {
     const written = syncGithubCopilotAgents(repoRoot, pkg);
 
     expect(written).toEqual(['.github/agents/keep-me.agent.md']);
-    expect(fs.existsSync(path.join(packageDir, 'agents', 'keep-me.agent.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'keep-me.agent.md'))).toBe(true);
     expect(fs.existsSync(stalePath)).toBe(false);
   });
 });
