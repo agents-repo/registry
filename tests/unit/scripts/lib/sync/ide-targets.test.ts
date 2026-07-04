@@ -68,6 +68,17 @@ describe('transformCopilotInstructionsToCursorRules', (): void => {
     expect(output).toContain('## Runtime Environment');
     expect(output).toContain('Agent tasks in this repository MUST use the pinned runtime.');
   });
+
+  it('transforms every repeated phrase occurrence', (): void => {
+    const source = [
+      'Copilot tasks in this repository do one thing.',
+      'Copilot tasks in this repository do another.',
+    ].join('\n');
+
+    const output = transformCopilotInstructionsToCursorRules(source);
+    expect(output).not.toContain('Copilot tasks in this repository');
+    expect(output.match(/Agent tasks in this repository/g)?.length).toBe(2);
+  });
 });
 
 describe('syncGithubCopilotAgents', (): void => {

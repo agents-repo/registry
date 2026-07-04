@@ -88,7 +88,7 @@ function removeStaleSkillDirs(skillsRoot: string, keepIds: Set<string>): void {
 export function transformCopilotInstructionsToCursorRules(source: string): string {
   let body = source;
   for (const [from, to] of CURSOR_RULES_TRANSFORMS) {
-    body = body.replace(from, to);
+    body = body.replaceAll(from, to);
   }
 
   return [
