@@ -201,11 +201,12 @@ describe('IndexManager', (): void => {
     const originalIndex = fs.readFileSync(indexPath, 'utf-8');
 
     const writeTreeSpy = vi.spyOn(treeManager, 'writePackageTree');
+    const originalWriteJsonFile = jsonIo.writeJsonFile;
     vi.spyOn(jsonIo, 'writeJsonFile').mockImplementation((filePath: string, value: unknown): void => {
       if (filePath === indexPath) {
         throw new Error('disk full');
       }
-      jsonIo.writeJsonFile(filePath, value);
+      originalWriteJsonFile(filePath, value);
     });
 
     expect(() => {
