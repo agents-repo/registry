@@ -13,6 +13,7 @@
     "package:index:rebuild": "tsx scripts/package-index-rebuild.ts",
     "package:create": "tsx scripts/package-create.ts",
     "package:create:smoke": "tsx scripts/package-create-smoke.ts",
+    "package:sync-ide-targets": "tsx scripts/package-sync-ide-targets.ts",
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",

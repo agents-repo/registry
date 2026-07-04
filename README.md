@@ -69,6 +69,32 @@ gh pr create --repo agents-repo/registry \
 For issue-linked PRs, include `Closes #<issue-number>` in
 `## Related Issues`. See `.github/CONTRIBUTING.md` for the canonical policy.
 
+## IDE Setup
+
+This repository commits IDE deployment mirrors so contributors get agent
+instructions on clone without manual install steps.
+
+| IDE | Agents / skills | Project guidelines |
+| --- | --- | --- |
+| GitHub Copilot | `.github/agents/*.agent.md` | `.github/copilot-instructions.md` |
+| Cursor | `.cursor/skills/<id>/SKILL.md` | `.cursor/rules/agents-registry.mdc` |
+
+Canonical sources for repo workflow agents:
+
+- `packages/agents-repo/agents-repo-package-creation/agents/` and `flows/`
+- `.github/copilot-instructions.md` (for Cursor rules)
+
+Regenerate mirrors after editing canonical sources:
+
+```bash
+npm run package:sync-ide-targets -- \
+  --package agents-repo/agents-repo-package-creation \
+  --target all
+```
+
+Do not edit `.github/agents/`, `.cursor/skills/`, or `.cursor/rules/` directly.
+See `.github/CONTRIBUTING.md` for the full edit workflow.
+
 ## Release Workflow
 
 - Release versions follow Semantic Versioning `MAJOR.MINOR.PATCH` sourced from

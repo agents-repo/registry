@@ -182,6 +182,33 @@ The only files contributors and AI agents author directly are:
 
 All `versions/` artifacts are produced by step 2.
 
+### IDE deployment mirrors (repo dogfooding)
+
+Committed IDE paths are generated from canonical sources:
+
+| Path | Source |
+| --- | --- |
+| `.github/agents/*.agent.md` | `packages/agents-repo/agents-repo-package-creation/` `agents/` + `flows/` |
+| `.cursor/skills/<id>/SKILL.md` | same package source |
+| `.cursor/rules/agents-registry.mdc` | `.github/copilot-instructions.md` |
+
+Regenerate after source edits:
+
+```bash
+npm run package:sync-ide-targets -- \
+  --package agents-repo/agents-repo-package-creation \
+  --target all
+```
+
+When only `copilot-instructions.md` changes:
+
+```bash
+npm run package:sync-ide-targets -- --target cursor-rules
+```
+
+Do not edit deployment mirrors directly. `package:sync-ide-targets` updates
+repo IDE files only; it does not replace `package:build` for `versions/` snapshots.
+
 ### Submitted package checklist
 
 A package submission should include:

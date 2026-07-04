@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import AdmZip from 'adm-zip';
-import { PackageError, ErrorCode } from './errors';
-import { AGENT_FILE_EXT, AGENTS_DIR, FLOWS_DIR, VERSIONS_DIR } from './constants';
+import { AGENTS_DIR, VERSIONS_DIR } from './constants';
+import { listDeploymentAgentFiles } from './deployment-agents';
 
 export class ZipBuilder {
   private readonly packageDir: string;
@@ -13,40 +13,15 @@ export class ZipBuilder {
     this.version = version;
   }
 
-  private addDeploymentEntriesFromDir(
-    zip: AdmZip,
-    seenEntries: Set<string>,
-    sourceDir: string,
-  ): void {
-    if (!fs.existsSync(sourceDir)) {
-      return;
-    }
-
-    for (const fileName of fs.readdirSync(sourceDir)) {
-      if (!fileName.endsWith(AGENT_FILE_EXT)) {
-        continue;
-      }
-
-      const entryName = `${AGENTS_DIR}/${fileName}`;
-      if (seenEntries.has(entryName)) {
-        throw new PackageError(
-          ErrorCode.ERR_ZIP_COLLISION,
-          `Collision building deployment ZIP: "${entryName}" already exists`,
-        );
-      }
-
-      seenEntries.add(entryName);
-      zip.addFile(entryName, fs.readFileSync(path.join(sourceDir, fileName)));
-    }
-  }
-
   buildDeploymentZip(outputPath: string): void {
     const zip = new AdmZip();
-    const seenEntries = new Set<string>();
 
-    this.addDeploymentEntriesFromDir(zip, seenEntries, path.join(this.packageDir, AGENTS_DIR));
-    // Flows are merged into agents/ in the deployment ZIP.
-    this.addDeploymentEntriesFromDir(zip, seenEntries, path.join(this.packageDir, FLOWS_DIR));
+    for (const file of listDeploymentAgentFiles(this.packageDir)) {
+      zip.addFile(
+        `${AGENTS_DIR}/${file.id}.agent.md`,
+        Buffer.from(file.content, 'utf-8'),
+      );
+    }
 
     zip.writeZip(outputPath);
   }
