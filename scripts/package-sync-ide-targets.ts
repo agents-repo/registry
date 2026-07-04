@@ -4,6 +4,7 @@
  *
  * Usage:
  *   npm run package:sync-ide-targets -- --package <namespace>/<package-id> --target <target>
+ *   npm run package:sync-ide-targets -- --target cursor-rules
  *
  * Options:
  *   --check         Compare committed mirrors to canonical sources without writing
@@ -23,15 +24,16 @@ import { PackageError } from './lib/errors';
 function printHelp(): void {
   console.log(`Usage:
   npm run package:sync-ide-targets -- --package <namespace>/<package-id> --target <target>
+  npm run package:sync-ide-targets -- --target cursor-rules
 
 Options:
   --check         Compare committed mirrors to canonical sources without writing
 
 Targets:
-  github-copilot  Sync .github/agents/ from package source
-  cursor          Sync .cursor/skills/ from package source
+  github-copilot  Sync .github/agents/ from package source (requires --package)
+  cursor          Sync .cursor/skills/ from package source (requires --package)
   cursor-rules    Sync .cursor/rules/agents-registry.mdc from copilot-instructions.md
-  all             Run github-copilot, cursor, and cursor-rules
+  all             Run github-copilot, cursor, and cursor-rules (requires --package)
 
 Canonical sources:
   Package agents/flows  -> .github/agents/ and .cursor/skills/

@@ -33,9 +33,9 @@ describe('agentMdToSkillMd', (): void => {
     expect(output).toContain('### Tools');
     expect(output).toContain('- read');
     expect(output).toContain('### Inputs');
-    expect(output).toContain('- `topic` ()');
+    expect(output).toContain('- `topic`');
     expect(output).toContain('### Outputs');
-    expect(output).toContain('- `greeting` ()');
+    expect(output).toContain('- `greeting`');
     expect(output).toContain('<!-- agents-repo package version: 1.0.0 -->');
     expect(/^version:/m.exec(output)).toBeNull();
   });

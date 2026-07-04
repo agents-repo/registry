@@ -68,7 +68,8 @@ export function agentMdToSkillMd(content: string, packageVersion: string): strin
       return `- ${JSON.stringify(value)}`;
     }
 
-    const summary = `\`${contractName}\` (${contractType})`;
+    const summary =
+      contractType.length > 0 ? `\`${contractName}\` (${contractType})` : `\`${contractName}\``;
     if (contractDescription.length === 0) {
       return `- ${summary}`;
     }
