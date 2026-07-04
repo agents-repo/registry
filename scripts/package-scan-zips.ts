@@ -5,22 +5,23 @@
  * Usage:
  *   npm run package:scan-zips
  *
- * Scans every generated version snapshot under packages/<id>/versions/<version> and
- * validates both deployment and source ZIP artifacts using the existing
+ * Scans every generated version snapshot under packages/<namespace>/<id>/versions/<version>
+ * and validates both deployment and source ZIP artifacts using the existing
  * snapshot validation flow.
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import semver from 'semver';
 import { parseReleaseVersion, resolveScriptPaths } from './lib/cli';
 import { SnapshotValidator } from './lib/snapshot-validator';
+import { listDiscoveredPackages } from './lib/namespace';
 import type { ValidationReport } from './lib/types';
 import { VERSIONS_DIR } from './lib/constants';
 
 export interface PackageSnapshotTarget {
-  packageId: string;
+  qualifiedRef: string;
   version: string;
 }
 
@@ -30,7 +31,7 @@ export interface PackageSnapshotScanResult {
 }
 
 export type SnapshotValidatorFactory = (
-  packageId: string,
+  qualifiedRef: string,
   version: string,
   packagesDir: string,
 ) => {
@@ -44,13 +45,8 @@ export function collectPackageSnapshotTargets(packagesDir: string): PackageSnaps
     return targets;
   }
 
-  for (const packageEntry of fs.readdirSync(packagesDir, { withFileTypes: true })) {
-    if (!packageEntry.isDirectory()) {
-      continue;
-    }
-
-    const packageId = packageEntry.name;
-    const versionsDir = path.join(packagesDir, packageId, VERSIONS_DIR);
+  for (const { ref, packageDir } of listDiscoveredPackages(packagesDir)) {
+    const versionsDir = path.join(packageDir, VERSIONS_DIR);
     if (!fs.existsSync(versionsDir)) {
       continue;
     }
@@ -61,19 +57,17 @@ export function collectPackageSnapshotTargets(packagesDir: string): PackageSnaps
       }
 
       const version = parseReleaseVersion(versionEntry.name);
-      // Snapshot directories MUST use canonical release names (e.g. 1.0.0).
-      // Reject names that only parse after normalization (e.g. v1.0.0).
       if (version === null || version !== versionEntry.name) {
         continue;
       }
 
-      targets.push({ packageId, version });
+      targets.push({ qualifiedRef: ref.qualifiedId, version });
     }
   }
 
   return targets.sort(
     (left, right) =>
-      left.packageId.localeCompare(right.packageId) ||
+      left.qualifiedRef.localeCompare(right.qualifiedRef) ||
       semver.compare(left.version, right.version),
   );
 }
@@ -82,19 +76,19 @@ export function scanPackageSnapshotTargets(
   packagesDir: string,
   targets: PackageSnapshotTarget[],
   validatorFactory: SnapshotValidatorFactory = (
-    packageId: string,
+    qualifiedRef: string,
     version: string,
     rootPackagesDir: string,
-  ) => new SnapshotValidator(packageId, version, rootPackagesDir),
+  ) => new SnapshotValidator(qualifiedRef, version, rootPackagesDir),
 ): PackageSnapshotScanResult[] {
   return targets.map((target) => ({
     target,
-    report: validatorFactory(target.packageId, target.version, packagesDir).validate(),
+    report: validatorFactory(target.qualifiedRef, target.version, packagesDir).validate(),
   }));
 }
 
 function printReport(result: PackageSnapshotScanResult): void {
-  const label = `${result.target.packageId}@${result.target.version}`;
+  const label = `${result.target.qualifiedRef}@${result.target.version}`;
   console.log(`Validating ${label}`);
 
   for (const warning of result.report.warnings) {
@@ -111,7 +105,7 @@ function main(): void {
   const targets = collectPackageSnapshotTargets(packagesDir);
 
   if (targets.length === 0) {
-    const searchedPath = path.join(packagesDir, '*', VERSIONS_DIR, '<version>');
+    const searchedPath = path.join(packagesDir, '<namespace>', '<package-id>', VERSIONS_DIR, '<version>');
     console.log(`No package snapshots found under ${searchedPath}`);
     process.exit(0);
   }
@@ -127,19 +121,14 @@ function main(): void {
   }
 
   if (hasErrors) {
-    console.error(`Package ZIP scan failed for ${results.length} version snapshot(s)`);
+    console.error('\nPackage snapshot scan failed.');
     process.exit(1);
   }
 
-  console.log(`Package ZIP scan passed for ${results.length} version snapshot(s)`);
+  console.log(`\nPackage snapshot scan passed (${results.length} snapshot(s)).`);
 }
 
-const invokedPath = process.argv.at(1);
-const isDirectExecution =
-  typeof invokedPath === 'string' &&
-  invokedPath.length > 0 &&
-  import.meta.url === pathToFileURL(path.resolve(invokedPath)).href;
-
-if (isDirectExecution) {
+const entryScript = process.argv[1];
+if (entryScript && fileURLToPath(import.meta.url) === path.resolve(entryScript)) {
   main();
 }

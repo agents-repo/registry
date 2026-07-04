@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "hello-agent",
+  "description": "Hello Agent package scaffolded by package-create",
+  "owner": "agents-repo",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "agent",
+    "hello"
+  ],
+  "createdAt": "2026-05-06T03:32:09.636Z",
+  "updatedAt": "2026-05-17T08:00:00.000Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "assistant",
+  "estimateOverallCost": {
+    "estimatedCost": 1,
+    "band": "low"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/hello-agent/README.md",
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ]
+  }
+}

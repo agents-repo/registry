@@ -3,9 +3,10 @@
  * package-create - Args-only scaffolding for new registry packages.
  *
  * Usage:
- *   npm run package:create -- --package <id> --template <template-id> --description "..."
+ *   npm run package:create -- --namespace <ns> --package <id> --template <template-id> --description "..."
  *
  * Flags:
+ *   --namespace <ns>
  *   --package <id>
  *   --template <single-agent|single-agent-flows|multi-agent|blank>
  *   --name <value>
@@ -53,11 +54,17 @@ function main(): void {
     const request = buildCreationRequest(parsed, repoRoot, fail);
 
     new PackageScaffolder(
-      { packageId: request.packageId, metadata: request.metadata, agents: request.agents, flows: request.flows },
+      {
+        namespace: request.namespace,
+        packageId: request.packageId,
+        metadata: request.metadata,
+        agents: request.agents,
+        flows: request.flows,
+      },
       repoRoot,
     ).scaffold();
 
-    printCreateSuccess(request.packageId);
+    printCreateSuccess(request.namespace, request.packageId);
   } catch (error) {
     console.error('Error:', error);
     process.exit(1);

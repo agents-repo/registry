@@ -15,14 +15,20 @@ import {
   TARGET_ARTIFACT_FILE_PATTERN,
   VERSIONS_DIR,
 } from './constants';
+import { resolvePackageDir } from './namespace';
 
 export class SnapshotValidator {
-  private readonly packageId: string;
+  private readonly qualifiedRef: string;
+  private readonly leafPackageId: string;
   private readonly version: string;
   private readonly packagesDir: string;
+  private readonly packageDir: string;
 
-  constructor(packageId: string, version: string, packagesDir: string) {
-    this.packageId = packageId;
+  constructor(qualifiedRef: string, version: string, packagesDir: string) {
+    this.qualifiedRef = qualifiedRef;
+    const resolved = resolvePackageDir(qualifiedRef, packagesDir);
+    this.leafPackageId = resolved.ref.packageId;
+    this.packageDir = resolved.packageDir;
     this.version = version;
     this.packagesDir = packagesDir;
   }
@@ -33,12 +39,11 @@ export class SnapshotValidator {
     srcZipPath: string;
     snapshotMetaPath: string;
     } {
-    const packageDir = path.join(this.packagesDir, this.packageId);
-    const versionDir = path.join(packageDir, VERSIONS_DIR, this.version);
+    const versionDir = path.join(this.packageDir, VERSIONS_DIR, this.version);
 
     return {
       versionDir,
-      manifestPath: path.join(packageDir, VERSIONS_DIR, MANIFEST_FILENAME),
+      manifestPath: path.join(this.packageDir, VERSIONS_DIR, MANIFEST_FILENAME),
       srcZipPath: path.join(versionDir, `${this.version}${SOURCE_ARCHIVE_SUFFIX}`),
       snapshotMetaPath: path.join(versionDir, METADATA_FILENAME),
     };
@@ -208,7 +213,7 @@ export class SnapshotValidator {
 
     if (!fs.existsSync(versionDir)) {
       return {
-        packageId: this.packageId,
+        packageId: this.qualifiedRef,
         errors: [
           err(
             'ERR_PACKAGE_NOT_FOUND',
@@ -229,6 +234,6 @@ export class SnapshotValidator {
     }
 
     const { errors, warnings } = splitIssues(issues);
-    return { packageId: this.packageId, errors, warnings, passed: errors.length === 0 };
+    return { packageId: this.qualifiedRef, errors, warnings, passed: errors.length === 0 };
   }
 }

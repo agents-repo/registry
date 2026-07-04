@@ -34,15 +34,15 @@ Lifecycle enforcement:
 
 ### File Location
 
-- Package metadata MUST be stored as `packages/<package-id>/metadata.json`.
+- Package metadata MUST be stored as `packages/<namespace>/<package-id>/metadata.json`.
 - A verbatim snapshot MUST also be stored at
-  `packages/<package-id>/versions/<version>/metadata.json` for every
+  `packages/<namespace>/<package-id>/versions/<version>/metadata.json` for every
   released version.
 - The package root `metadata.json` MUST reflect the package's current working
   state. It MAY include unreleased changes prior to publication. The package
   root `metadata.json` is not the authoritative historical source for any
   specific released version. The released copy for each version is preserved
-  at `packages/<package-id>/versions/<version>/metadata.json`.
+  at `packages/<namespace>/<package-id>/versions/<version>/metadata.json`.
 - The authoritative metadata for a specific version is
   `versions/<version>/metadata.json` inside the version snapshot folder.
   See `specs/package-format.md` for the full working-state invariants.

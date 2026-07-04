@@ -34,6 +34,7 @@ export interface UserMetadata {
 }
 
 export interface ScaffoldRequest {
+  namespace: string;
   packageId: string;
   metadata: UserMetadata;
   agents: AgentDef[];
@@ -50,8 +51,8 @@ export class PackageScaffolder {
   }
 
   scaffold(): void {
-    const { packageId, metadata, agents, flows } = this.request;
-    const packageDir = path.join(this.repoRoot, 'packages', packageId);
+    const { namespace, packageId, metadata, agents, flows } = this.request;
+    const packageDir = path.join(this.repoRoot, 'packages', namespace, packageId);
 
     fs.mkdirSync(path.join(packageDir, AGENTS_DIR), { recursive: true });
     fs.mkdirSync(path.join(packageDir, FLOWS_DIR), { recursive: true });
@@ -62,7 +63,7 @@ export class PackageScaffolder {
     const flowMetadataSchemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_FLOW);
 
     const now = new Date().toISOString();
-    const packageReadmeUrl = `https://github.com/agents-repo/registry/blob/main/packages/${packageId}/README.md`;
+    const packageReadmeUrl = `https://github.com/agents-repo/registry/blob/main/packages/${namespace}/${packageId}/README.md`;
     const packageMetadata: PackageMetadata = {
       schemaVersion: packageSchemaVersion,
       name: packageId,

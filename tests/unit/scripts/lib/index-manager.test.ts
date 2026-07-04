@@ -1,11 +1,13 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { INSTALL_TARGET_IDS, SCHEMA_FAMILY_INDEX } from '../../../../scripts/lib/constants';
 import { getSchemaCurrentVersion } from '../../../../scripts/lib/schema-versions';
-import type { ManifestArtifactEntry, PackageIndex, PackageMetadata } from '../../../../scripts/lib/types';
+import type { ManifestArtifactEntry, PackageIndex, PackageMetadata, PackageRef } from '../../../../scripts/lib/types';
 import { IndexManager } from '../../../../scripts/lib/index-manager';
+import * as jsonIo from '../../../../scripts/lib/io/json';
+import * as treeManager from '../../../../scripts/lib/tree-manager';
 
 const DEFAULT_ARTIFACTS: ManifestArtifactEntry[] = [
   { target: 'github-copilot', file: '1.0.0-github-copilot.zip', sha256: 'a'.repeat(64) },
@@ -20,6 +22,10 @@ function makeTempDir(): string {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'registry-index-test-'));
   createdDirs.push(tempDir);
   return tempDir;
+}
+
+function makeRef(packageId: string, namespace = 'agents-repo'): PackageRef {
+  return { namespace, packageId, qualifiedId: `${namespace}/${packageId}` };
 }
 
 function makeMetadata(overrides?: Partial<PackageMetadata>): PackageMetadata {
@@ -59,13 +65,17 @@ describe('IndexManager', (): void => {
   it('writes and sorts package entries by id', (): void => {
     const tempDir = makeTempDir();
     const indexPath = path.join(tempDir, 'index.json');
-    const manager = new IndexManager(indexPath);
+    const manager = new IndexManager(indexPath, tempDir);
 
-    manager.update('zeta-package', makeMetadata({ name: 'zeta-package' }), '1.0.0', DEFAULT_ARTIFACTS);
-    manager.update('alpha-package', makeMetadata({ name: 'alpha-package' }), '1.0.0', DEFAULT_ARTIFACTS);
+    manager.update(makeRef('zeta-package'), makeMetadata({ name: 'zeta-package' }), '1.0.0', DEFAULT_ARTIFACTS);
+    manager.update(makeRef('alpha-package'), makeMetadata({ name: 'alpha-package' }), '1.0.0', DEFAULT_ARTIFACTS);
 
     const index = readIndex(indexPath);
-    expect(index.packages.map((pkg) => pkg.id)).toEqual(['alpha-package', 'zeta-package']);
+    expect(index.packages.map((pkg) => pkg.id)).toEqual([
+      'agents-repo/alpha-package',
+      'agents-repo/zeta-package',
+    ]);
+    expect(index.packages[0].namespace).toBe('agents-repo');
     expect(index.packages[0].owner).toBe('agents-repo');
     expect(index.schemaVersion).toBe(getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX));
   });
@@ -73,11 +83,11 @@ describe('IndexManager', (): void => {
   it('normalizes an existing index schemaVersion to current on update', (): void => {
     const tempDir = makeTempDir();
     const indexPath = path.join(tempDir, 'index.json');
-    const manager = new IndexManager(indexPath);
+    const manager = new IndexManager(indexPath, tempDir);
 
     fs.writeFileSync(indexPath, JSON.stringify({ schemaVersion: '1.0.0', updatedAt: '', packages: [] }), 'utf-8');
 
-    manager.update('hello-agent', makeMetadata(), '1.0.0', DEFAULT_ARTIFACTS);
+    manager.update(makeRef('hello-agent'), makeMetadata(), '1.0.0', DEFAULT_ARTIFACTS);
 
     const index = readIndex(indexPath);
     expect(index.schemaVersion).toBe(getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX));
@@ -86,7 +96,7 @@ describe('IndexManager', (): void => {
   it('throws when existing index has entries without owner', (): void => {
     const tempDir = makeTempDir();
     const indexPath = path.join(tempDir, 'index.json');
-    const manager = new IndexManager(indexPath);
+    const manager = new IndexManager(indexPath, tempDir);
 
     fs.writeFileSync(
       indexPath,
@@ -95,7 +105,10 @@ describe('IndexManager', (): void => {
         updatedAt: '',
         packages: [
           {
-            id: 'legacy-package',
+            id: 'agents-repo/legacy-package',
+            namespace: 'agents-repo',
+            package: 'legacy-package',
+            path: 'packages/agents-repo/legacy-package',
             name: 'legacy-package',
             description: 'legacy entry without owner',
             latest: '1.0.0',
@@ -113,18 +126,18 @@ describe('IndexManager', (): void => {
     );
 
     expect(() => {
-      manager.update('hello-agent', makeMetadata(), '1.0.0', DEFAULT_ARTIFACTS);
+      manager.update(makeRef('hello-agent'), makeMetadata(), '1.0.0', DEFAULT_ARTIFACTS);
     }).toThrow('package:index:rebuild');
   });
 
   it('writes installTargets projected from manifest artifacts', (): void => {
     const tempDir = makeTempDir();
     const indexPath = path.join(tempDir, 'index.json');
-    const manager = new IndexManager(indexPath);
+    const manager = new IndexManager(indexPath, tempDir);
 
-    manager.update('hello-agent', makeMetadata(), '1.0.0', DEFAULT_ARTIFACTS);
+    manager.update(makeRef('hello-agent'), makeMetadata(), '1.0.0', DEFAULT_ARTIFACTS);
 
-    const entry = readIndex(indexPath).packages.find((pkg) => pkg.id === 'hello-agent');
+    const entry = readIndex(indexPath).packages.find((pkg) => pkg.id === 'agents-repo/hello-agent');
     expect(entry?.installTargets).toHaveLength(INSTALL_TARGET_IDS.length);
     expect(entry?.installTargets?.map((target) => target.id)).toEqual(
       expect.arrayContaining([...INSTALL_TARGET_IDS]),
@@ -135,7 +148,7 @@ describe('IndexManager', (): void => {
   it('throws when estimateOverallCost.band is invalid', (): void => {
     const tempDir = makeTempDir();
     const indexPath = path.join(tempDir, 'index.json');
-    const manager = new IndexManager(indexPath);
+    const manager = new IndexManager(indexPath, tempDir);
 
     const metadata = makeMetadata({
       estimateOverallCost: {
@@ -145,7 +158,65 @@ describe('IndexManager', (): void => {
     });
 
     expect(() => {
-      manager.update('hello-agent', metadata, '1.0.0', DEFAULT_ARTIFACTS);
+      manager.update(makeRef('hello-agent'), metadata, '1.0.0', DEFAULT_ARTIFACTS);
     }).toThrow('estimateOverallCost.band');
+  });
+
+  it('refreshes aliases and tree once from a pre-discovered package list', (): void => {
+    const tempDir = makeTempDir();
+    const indexPath = path.join(tempDir, 'index.json');
+    const manager = new IndexManager(indexPath, tempDir);
+    const alphaRef = makeRef('alpha-package');
+    const betaRef = makeRef('beta-package');
+
+    manager.update(alphaRef, makeMetadata({ name: 'alpha-package' }), '1.0.0', DEFAULT_ARTIFACTS, {
+      deferDerivedRefresh: true,
+    });
+    manager.update(betaRef, makeMetadata({ name: 'beta-package' }), '1.0.0', DEFAULT_ARTIFACTS, {
+      deferDerivedRefresh: true,
+    });
+
+    const discovered = [
+      { ref: alphaRef, packageDir: path.join(tempDir, 'agents-repo', 'alpha-package'), namespaceDir: path.join(tempDir, 'agents-repo') },
+      { ref: betaRef, packageDir: path.join(tempDir, 'agents-repo', 'beta-package'), namespaceDir: path.join(tempDir, 'agents-repo') },
+    ];
+
+    manager.refreshDerivedState(discovered);
+
+    const index = readIndex(indexPath);
+    expect(index.aliases).toEqual({
+      'alpha-package': 'agents-repo/alpha-package',
+      'beta-package': 'agents-repo/beta-package',
+    });
+  });
+
+  it('does not write tree.json when index.json write fails', (): void => {
+    const tempDir = makeTempDir();
+    const indexPath = path.join(tempDir, 'index.json');
+    const treePath = path.join(tempDir, 'tree.json');
+    const manager = new IndexManager(indexPath, tempDir);
+
+    manager.update(makeRef('alpha-package'), makeMetadata({ name: 'alpha-package' }), '1.0.0', DEFAULT_ARTIFACTS);
+    const originalTree = fs.readFileSync(treePath, 'utf-8');
+    const originalIndex = fs.readFileSync(indexPath, 'utf-8');
+
+    const writeTreeSpy = vi.spyOn(treeManager, 'writePackageTree');
+    const originalWriteJsonFile = jsonIo.writeJsonFile;
+    vi.spyOn(jsonIo, 'writeJsonFile').mockImplementation((filePath: string, value: unknown): void => {
+      if (filePath === indexPath) {
+        throw new Error('disk full');
+      }
+      originalWriteJsonFile(filePath, value);
+    });
+
+    expect(() => {
+      manager.update(makeRef('beta-package'), makeMetadata({ name: 'beta-package' }), '1.0.0', DEFAULT_ARTIFACTS);
+    }).toThrow('disk full');
+
+    expect(writeTreeSpy).not.toHaveBeenCalled();
+    expect(fs.readFileSync(treePath, 'utf-8')).toBe(originalTree);
+    expect(fs.readFileSync(indexPath, 'utf-8')).toBe(originalIndex);
+
+    vi.restoreAllMocks();
   });
 });

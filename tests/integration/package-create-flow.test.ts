@@ -22,8 +22,8 @@ describe('package create smoke flow', (): void => {
   it(
     'creates, validates, builds, and verifies a dummy package without AI',
     async (): Promise<void> => {
-      const packageId = 'smoke-package';
-      const result = await runPackageCreateSmoke(packageId, {
+      const qualifiedRef = 'agents-repo/smoke-package';
+      const result = await runPackageCreateSmoke(qualifiedRef, {
         workspaceDir: tempDir,
         cleanup: false,
       });
@@ -57,7 +57,7 @@ describe('package create smoke flow', (): void => {
         packages: Array<{ id: string; owner?: string; installTargets?: Array<{ id: string }> }>;
       };
       expect(index.schemaVersion).toBe(getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX));
-      const packageEntry = index.packages.find((entry) => entry.id === packageId);
+      const packageEntry = index.packages.find((entry) => entry.id === qualifiedRef);
       expect(packageEntry?.owner).toBe('agents-repo');
       expect(packageEntry?.installTargets).toHaveLength(INSTALL_TARGET_IDS.length);
     },

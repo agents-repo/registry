@@ -30,7 +30,7 @@ Lifecycle enforcement:
 - `schemaVersion` values marked `eol` MUST be rejected.
 - New packages MUST use the current schema version.
 - Manifest `1.0.0` is end-of-life; packages MUST migrate by running
-  `npm run package:build -- --package <id>`.
+  `npm run package:build -- --package <namespace>/<package-id>`.
 
 ## File Location
 

@@ -1,5 +1,6 @@
 export interface ParsedArgs {
   help: boolean;
+  namespace?: string;
   packageId?: string;
   templateId?: string;
   name?: string;
@@ -24,6 +25,9 @@ export function parseCreateArgs(argv: string[], fail: FailFn): ParsedArgs {
   };
 
   const valueHandlers: Partial<Record<string, (value: string) => void>> = {
+    '--namespace': (value) => {
+      parsed.namespace = value;
+    },
     '--package': (value) => {
       parsed.packageId = value;
     },

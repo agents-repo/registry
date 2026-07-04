@@ -4,36 +4,18 @@ import type { ValidationIssue, ValidationReport } from '../../types';
 import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { MANIFEST_FILENAME, METADATA_FILENAME, VERSIONS_DIR } from '../../constants';
+import { resolvePackageDir as resolveNamespacedPackageDir } from '../../namespace';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 export function resolvePackageDir(
-  packageId: string,
+  qualifiedRef: string,
   packagesDir: string,
 ): { packageDir: string; report?: ValidationReport } {
-  const packageDir = path.join(packagesDir, packageId);
-
-  if (!fs.existsSync(packageDir)) {
-    return {
-      packageDir,
-      report: {
-        packageId,
-        errors: [
-          {
-            code: 'ERR_PACKAGE_NOT_FOUND',
-            severity: 'error',
-            message: `Package directory not found: ${packageDir}`,
-          },
-        ],
-        warnings: [],
-        passed: false,
-      },
-    };
-  }
-
-  return { packageDir };
+  const resolved = resolveNamespacedPackageDir(qualifiedRef, packagesDir);
+  return { packageDir: resolved.packageDir, report: resolved.report };
 }
 
 export function loadPackageMetadata(

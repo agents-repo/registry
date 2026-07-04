@@ -1,9 +1,12 @@
 {
-  "schemaVersion": "1.2.0",
-  "updatedAt": "2026-06-08T02:09:56.645Z",
+  "schemaVersion": "1.3.0",
+  "updatedAt": "2026-07-04T02:42:33.330Z",
   "packages": [
     {
-      "id": "agents-repo-package-creation",
+      "id": "agents-repo/agents-repo-package-creation",
+      "namespace": "agents-repo",
+      "package": "agents-repo-package-creation",
+      "path": "packages/agents-repo/agents-repo-package-creation",
       "name": "agents-repo-package-creation",
       "description": "Agents and flow for creating, reviewing, and validating new registry packages for agents-repo from requirements to submission-ready source.",
       "owner": "agents-repo",
@@ -41,7 +44,10 @@
       ]
     },
     {
-      "id": "hello-agent",
+      "id": "agents-repo/hello-agent",
+      "namespace": "agents-repo",
+      "package": "hello-agent",
+      "path": "packages/agents-repo/hello-agent",
       "name": "hello-agent",
       "description": "Hello Agent package scaffolded by package-create",
       "owner": "agents-repo",
@@ -56,7 +62,7 @@
         "estimatedCost": 1,
         "band": "low"
       },
-      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/hello-agent/README.md",
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/hello-agent/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
@@ -76,5 +82,9 @@
         }
       ]
     }
-  ]
+  ],
+  "aliases": {
+    "agents-repo-package-creation": "agents-repo/agents-repo-package-creation",
+    "hello-agent": "agents-repo/hello-agent"
+  }
 }

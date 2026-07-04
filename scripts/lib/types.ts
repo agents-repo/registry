@@ -121,6 +121,9 @@ export interface Manifest {
 
 export interface PackageIndexEntry {
   id: string;
+  namespace: string;
+  package: string;
+  path: string;
   name: string;
   description: string;
   owner: string;
@@ -136,7 +139,14 @@ export interface PackageIndexEntry {
 export interface PackageIndex {
   schemaVersion: string;
   updatedAt: string;
+  aliases?: Record<string, string>;
   packages: PackageIndexEntry[];
+}
+
+export interface PackageRef {
+  namespace: string;
+  packageId: string;
+  qualifiedId: string;
 }
 
 export interface ValidationIssue {

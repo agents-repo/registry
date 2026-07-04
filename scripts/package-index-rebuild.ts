@@ -13,51 +13,39 @@ import {
 import { ErrorCode, PackageError } from './lib/errors';
 import { IndexManager } from './lib/index-manager';
 import { readJsonFile, writeJsonFile } from './lib/io/json';
+import { listDiscoveredPackages } from './lib/namespace';
 import { getSchemaCurrentVersion } from './lib/schema-versions';
+import { writePackageTree } from './lib/tree-manager';
 import type { Manifest, PackageMetadata } from './lib/types';
 
-function listEligiblePackageIds(packagesDir: string): string[] {
-  const entries = fs.readdirSync(packagesDir, { withFileTypes: true });
-
-  return entries
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .filter((packageId) => {
-      const packageDir = path.join(packagesDir, packageId);
-      const metadataPath = path.join(packageDir, METADATA_FILENAME);
-      const manifestPath = path.join(packageDir, VERSIONS_DIR, MANIFEST_FILENAME);
-      return fs.existsSync(metadataPath) && fs.existsSync(manifestPath);
-    })
-    .sort((a, b) => a.localeCompare(b));
-}
-
-function writeEmptyIndex(indexPath: string): void {
+function writeEmptyIndex(packagesDir: string, indexPath: string): void {
   writeJsonFile(indexPath, {
     schemaVersion: getSchemaCurrentVersion(SCHEMA_FAMILY_INDEX),
     updatedAt: new Date().toISOString(),
+    aliases: {},
     packages: [],
   });
+  writePackageTree(packagesDir, []);
 }
 
 function main(): void {
   const { packagesDir } = resolveScriptPaths(import.meta.url);
   const indexPath = path.join(packagesDir, INDEX_FILENAME);
-  const packageIds = listEligiblePackageIds(packagesDir);
+  const discovered = listDiscoveredPackages(packagesDir);
 
   if (fs.existsSync(indexPath)) {
     fs.unlinkSync(indexPath);
   }
 
-  if (packageIds.length === 0) {
-    writeEmptyIndex(indexPath);
+  if (discovered.length === 0) {
+    writeEmptyIndex(packagesDir, indexPath);
     console.log('Rebuilt packages/index.json with 0 package entries');
     return;
   }
 
-  const manager = new IndexManager(indexPath);
+  const manager = new IndexManager(indexPath, packagesDir);
 
-  for (const packageId of packageIds) {
-    const packageDir = path.join(packagesDir, packageId);
+  for (const { ref, packageDir } of discovered) {
     const metadataPath = path.join(packageDir, METADATA_FILENAME);
     const manifestPath = path.join(packageDir, VERSIONS_DIR, MANIFEST_FILENAME);
 
@@ -68,7 +56,7 @@ function main(): void {
     if (latest === null) {
       throw new PackageError(
         ErrorCode.ERR_VALIDATION_FAILED,
-        `versions/${MANIFEST_FILENAME} latest for package "${packageId}" must be a MAJOR.MINOR.PATCH release version`,
+        `versions/${MANIFEST_FILENAME} latest for package "${ref.qualifiedId}" must be a MAJOR.MINOR.PATCH release version`,
       );
     }
 
@@ -76,14 +64,16 @@ function main(): void {
     if (latestEntry === undefined) {
       throw new PackageError(
         ErrorCode.ERR_VALIDATION_FAILED,
-        `versions/${MANIFEST_FILENAME} for package "${packageId}" is missing entry for latest version "${latest}"`,
+        `versions/${MANIFEST_FILENAME} for package "${ref.qualifiedId}" is missing entry for latest version "${latest}"`,
       );
     }
 
-    manager.update(packageId, metadata, latest, latestEntry.artifacts);
+    manager.update(ref, metadata, latest, latestEntry.artifacts, { deferDerivedRefresh: true });
   }
 
-  console.log(`Rebuilt packages/index.json with ${packageIds.length} package entries`);
+  manager.refreshDerivedState(discovered);
+
+  console.log(`Rebuilt packages/index.json with ${discovered.length} package entries`);
 }
 
 try {

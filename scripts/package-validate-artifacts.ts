@@ -4,7 +4,7 @@
  * built package version snapshot.
  *
  * Usage:
- *   npm run package:validate-artifacts -- --package <id> [--version <semver>]
+ *   npm run package:validate-artifacts -- --package <namespace>/<package-id> [--version <semver>]
  *
  * When --version is omitted, the version is read from the package metadata file.
  *
@@ -31,6 +31,7 @@ import {
   resolveScriptPaths,
 } from './lib/cli';
 import { exitWithValidationResult } from './lib/cli/reporting';
+import { resolvePackageDir } from './lib/namespace';
 import { SnapshotValidator } from './lib/snapshot-validator';
 
 // ---------------------------------------------------------------------------
@@ -59,7 +60,8 @@ function main(): void {
 
   let version = versionArg;
   if (version === undefined) {
-    const metadataPath = path.join(packagesDir, packageId, METADATA_FILENAME);
+    const { packageDir } = resolvePackageDir(packageId, packagesDir);
+    const metadataPath = path.join(packageDir, METADATA_FILENAME);
     if (!fs.existsSync(metadataPath)) {
       console.error(`${METADATA_FILENAME} not found for package: ${packageId}`);
       process.exit(1);
