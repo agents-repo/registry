@@ -66,10 +66,9 @@ function main(): void {
   const target = parseTarget(argv);
   const checkOnly = hasFlag(argv, '--check');
   const { repoRoot, packagesDir } = resolveScriptPaths(import.meta.url);
-  const packageArg = parseOptionalFlagValue(argv, '--package');
 
   let pkg: Package | undefined;
-  if (packageArg !== undefined && packageArg.length > 0) {
+  if (hasFlag(argv, '--package')) {
     const qualifiedId = parseRequiredPackageId(argv);
     pkg = new Package(qualifiedId, packagesDir);
   }
