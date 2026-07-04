@@ -120,6 +120,24 @@ describe('syncCursorSkills', (): void => {
     expect(content).toContain('Use when the user needs the skill-one workflow.');
     expect(content).toContain('<!-- agents-repo package version:');
   });
+
+  it('removes stale skill directories when agent ids change', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'cursor-stale', {
+      agents: [{ id: 'current-skill', name: 'current-skill', description: 'Current skill after stale cleanup.' }],
+      flows: [],
+    });
+
+    const staleSkillDir = path.join(repoRoot, '.cursor', 'skills', 'stale-skill');
+    fs.mkdirSync(staleSkillDir, { recursive: true });
+    fs.writeFileSync(path.join(staleSkillDir, 'SKILL.md'), 'stale', 'utf-8');
+
+    const pkg = new Package('agents-repo/cursor-stale', path.join(repoRoot, 'packages'));
+    syncCursorSkills(repoRoot, pkg);
+
+    expect(fs.existsSync(staleSkillDir)).toBe(false);
+    expect(fs.existsSync(path.join(repoRoot, '.cursor', 'skills', 'current-skill', 'SKILL.md'))).toBe(true);
+  });
 });
 
 describe('syncCursorRules', (): void => {
