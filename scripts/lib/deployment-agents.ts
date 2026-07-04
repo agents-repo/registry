@@ -28,7 +28,7 @@ function collectFromDir(
     if (seenIds.has(id)) {
       throw new PackageError(
         ErrorCode.ERR_ZIP_COLLISION,
-        `Collision building deployment listing: "${AGENTS_DIR}/${fileName}" already exists`,
+        `Collision building deployment listing: "${dirName}/${fileName}" conflicts with an existing agent or flow id`,
       );
     }
 
