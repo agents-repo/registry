@@ -68,8 +68,10 @@ function main(): void {
       );
     }
 
-    manager.update(ref, metadata, latest, latestEntry.artifacts);
+    manager.update(ref, metadata, latest, latestEntry.artifacts, { deferDerivedRefresh: true });
   }
+
+  manager.refreshDerivedState(discovered);
 
   console.log(`Rebuilt packages/index.json with ${discovered.length} package entries`);
 }

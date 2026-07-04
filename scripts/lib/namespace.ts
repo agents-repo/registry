@@ -1,11 +1,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { ErrorCode, PackageError } from './errors';
-import { ID_PATTERN, INDEX_FILENAME, METADATA_FILENAME, MANIFEST_FILENAME, TREE_FILENAME, VERSIONS_DIR, OWNERS_FILENAME } from './constants';
+import {
+  ID_PATTERN,
+  INDEX_FILENAME,
+  METADATA_FILENAME,
+  MANIFEST_FILENAME,
+  OWNERS_FILENAME,
+  QUALIFIED_ID_PATTERN,
+  TREE_FILENAME,
+  VERSIONS_DIR,
+} from './constants';
 import type { ValidationIssue, ValidationReport } from './types';
 import { err } from './validators/common/issues';
-
-export const QUALIFIED_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*\/[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export const RESERVED_NAMESPACE_NAMES = new Set([INDEX_FILENAME, TREE_FILENAME]);
 

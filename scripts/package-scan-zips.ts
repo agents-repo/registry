@@ -12,7 +12,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import semver from 'semver';
 import { parseReleaseVersion, resolveScriptPaths } from './lib/cli';
 import { SnapshotValidator } from './lib/snapshot-validator';
@@ -128,6 +128,7 @@ function main(): void {
   console.log(`\nPackage snapshot scan passed (${results.length} snapshot(s)).`);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+const entryScript = process.argv[1];
+if (entryScript && fileURLToPath(import.meta.url) === path.resolve(entryScript)) {
   main();
 }

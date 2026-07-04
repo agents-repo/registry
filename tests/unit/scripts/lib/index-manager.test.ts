@@ -159,4 +159,32 @@ describe('IndexManager', (): void => {
       manager.update(makeRef('hello-agent'), metadata, '1.0.0', DEFAULT_ARTIFACTS);
     }).toThrow('estimateOverallCost.band');
   });
+
+  it('refreshes aliases and tree once from a pre-discovered package list', (): void => {
+    const tempDir = makeTempDir();
+    const indexPath = path.join(tempDir, 'index.json');
+    const manager = new IndexManager(indexPath, tempDir);
+    const alphaRef = makeRef('alpha-package');
+    const betaRef = makeRef('beta-package');
+
+    manager.update(alphaRef, makeMetadata({ name: 'alpha-package' }), '1.0.0', DEFAULT_ARTIFACTS, {
+      deferDerivedRefresh: true,
+    });
+    manager.update(betaRef, makeMetadata({ name: 'beta-package' }), '1.0.0', DEFAULT_ARTIFACTS, {
+      deferDerivedRefresh: true,
+    });
+
+    const discovered = [
+      { ref: alphaRef, packageDir: path.join(tempDir, 'agents-repo', 'alpha-package'), namespaceDir: path.join(tempDir, 'agents-repo') },
+      { ref: betaRef, packageDir: path.join(tempDir, 'agents-repo', 'beta-package'), namespaceDir: path.join(tempDir, 'agents-repo') },
+    ];
+
+    manager.refreshDerivedState(discovered);
+
+    const index = readIndex(indexPath);
+    expect(index.aliases).toEqual({
+      'alpha-package': 'agents-repo/alpha-package',
+      'beta-package': 'agents-repo/beta-package',
+    });
+  });
 });

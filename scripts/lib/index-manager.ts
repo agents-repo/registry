@@ -15,6 +15,7 @@ import {
   buildPackagePath,
   listDiscoveredPackages,
   validateNamespaceEqualsOwner,
+  type DiscoveredPackage,
   type PackageRef,
 } from './namespace';
 import { writePackageTree } from './tree-manager';
@@ -134,13 +135,21 @@ function assertNoEntriesMissingOwner(index: PackageIndex): void {
   }
 }
 
-function refreshAliasesAndTree(index: PackageIndex, packagesDir: string): void {
-  const discovered = listDiscoveredPackages(packagesDir);
-  index.aliases = buildAliasesFromPackages(discovered);
+function refreshAliasesAndTree(
+  index: PackageIndex,
+  packagesDir: string,
+  discovered?: DiscoveredPackage[],
+): void {
+  const packages = discovered ?? listDiscoveredPackages(packagesDir);
+  index.aliases = buildAliasesFromPackages(packages);
   writePackageTree(
     packagesDir,
-    discovered.map((entry) => entry.ref),
+    packages.map((entry) => entry.ref),
   );
+}
+
+export interface IndexUpdateOptions {
+  deferDerivedRefresh?: boolean;
 }
 
 export class IndexManager {
@@ -157,6 +166,7 @@ export class IndexManager {
     metadata: PackageMetadata,
     manifestLatest: string,
     artifacts: ManifestArtifactEntry[],
+    options: IndexUpdateOptions = {},
   ): void {
     const { namespace, packageId, qualifiedId } = ref;
     const estimateOverallCost: unknown = metadata.estimateOverallCost;
@@ -214,7 +224,15 @@ export class IndexManager {
     }
 
     index.updatedAt = new Date().toISOString();
-    refreshAliasesAndTree(index, this.packagesDir);
+    if (options.deferDerivedRefresh !== true) {
+      refreshAliasesAndTree(index, this.packagesDir);
+    }
+    writeJsonFile(this.indexPath, index);
+  }
+
+  refreshDerivedState(discovered?: DiscoveredPackage[]): void {
+    const index = readJsonFile<PackageIndex>(this.indexPath);
+    refreshAliasesAndTree(index, this.packagesDir, discovered);
     writeJsonFile(this.indexPath, index);
   }
 }
