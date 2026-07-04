@@ -7,7 +7,8 @@ license: MIT
 inputs:
   - name: script-stage-request
     type: object
-    description: Script stage request containing package ID, stage name,
+    description: Script stage request containing namespace, package-id
+      or qualified package ref (depending on stage), stage name,
       command arguments, and execution context.
 outputs:
   - name: script-stage-report
@@ -25,11 +26,12 @@ output, and returns a deterministic report for flow branching.
 
 ## Responsibilities
 
-- Execute `npm run package:create -- --package <id> ...`
+- Execute
+  `npm run package:create -- --namespace <namespace> --package <package-id> ...`
   when the requested stage is scaffold creation.
-- Execute `npm run package:validate -- --package <id>`
+- Execute `npm run package:validate -- --package <namespace>/<package-id>`
   when the requested stage is source validation.
-- Execute `npm run package:build -- --package <id>`
+- Execute `npm run package:build -- --package <namespace>/<package-id>`
   when the requested stage is build.
 - Return a structured stage report including command string, exit code,
   key output summary, and next action recommendation.
@@ -49,8 +51,9 @@ output, and returns a deterministic report for flow branching.
 
 ## Interaction Contract
 
-Input: a script stage request with package ID,
-stage (`create`, `validate`, or `build`),
+Input: a script stage request with namespace and leaf package-id
+(for `create`) or qualified package ref `<namespace>/<package-id>`
+(for `validate` or `build`), stage (`create`, `validate`, or `build`),
 required command arguments, and optional retry context.
 
 Output: a structured script stage report with the executed command,

@@ -20,7 +20,7 @@
     {
       "name": "package-blueprint",
       "type": "object",
-      "description": "Structured blueprint with package IDs, scaffold arguments, definition plan, metadata values, and open questions."
+      "description": "Structured blueprint with namespace, package-id, qualified package ref, scaffold arguments, definition plan, metadata values, and open questions."
     }
   ]
 }

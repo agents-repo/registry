@@ -13,7 +13,7 @@
     {
       "name": "script-stage-request",
       "type": "object",
-      "description": "Script stage request containing package ID, stage name, command arguments, and execution context."
+      "description": "Script stage request containing namespace, package-id or qualified package ref (depending on stage), stage name, command arguments, and execution context."
     }
   ],
   "outputs": [

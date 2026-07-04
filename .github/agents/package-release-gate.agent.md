@@ -7,8 +7,9 @@ license: MIT
 inputs:
   - name: release-gate-request
     type: object
-    description: Release gate request with package ID,
-      optional version override, and retry context.
+    description: Release gate request with qualified package ref
+      (`<namespace>/<package-id>`), optional version override,
+      and retry context.
 outputs:
   - name: release-gate-report
     type: object
@@ -25,10 +26,12 @@ and reports gate status with explicit blocking issues.
 
 ## Responsibilities
 
-- Execute `npm run package:validate-artifacts -- --package <namespace>/<id>`
+- Execute
+  `npm run package:validate-artifacts -- --package <namespace>/<package-id>`
   for default artifact gate checks.
 - Execute
-  `npm run package:validate-artifacts -- --package <namespace>/<id> --version <semver>`
+  `npm run package:validate-artifacts -- --package <namespace>/<package-id>
+  --version <semver>`
   when an explicit version is requested.
 - Return a structured release gate report with command, exit code,
   blocker summary, and recommended routing.
@@ -44,9 +47,9 @@ and reports gate status with explicit blocking issues.
 
 ## Interaction Contract
 
-Input: a release gate request containing package ID,
-optional explicit version, and context from prior
-validate or build stages.
+Input: a release gate request containing qualified package ref
+`<namespace>/<package-id>`, optional explicit version,
+and context from prior validate or build stages.
 
 Output: a structured release gate report with the executed command,
 gate result (`pass` or `fail`),

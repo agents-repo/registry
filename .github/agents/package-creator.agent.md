@@ -32,6 +32,11 @@ validation feedback.
 
 - Author `metadata.json` at the package root
   with all required fields populated from the blueprint.
+- Ensure `metadata.owner` equals the scaffold `namespace`
+  (phase 1: namespace MUST match owner).
+- When setting `homepage` or `quickstart` to registry tree URLs,
+  use `packages/<namespace>/<package-id>/`, not the old flat
+  `packages/<package-id>/` path.
 - Create one `<agent-id>.agent.md` and one
   `<agent-id>.metadata.json` pair for every agent in the blueprint.
 - Create one `<flow-id>.agent.md` and one
@@ -55,6 +60,9 @@ validation feedback.
 - Agent and flow IDs MUST conform to
   `^[a-z0-9]+(?:-[a-z0-9]+)*$` and MUST be unique
   across both `agents/` and `flows/`.
+- `metadata.owner` MUST equal the scaffold namespace in phase 1.
+- Registry tree `homepage` and `quickstart` URLs MUST use
+  `packages/<namespace>/<package-id>/`, not flat `packages/<package-id>/`.
 - `license` MUST be `MIT` in all agent and flow frontmatter
   and in all `.metadata.json` sidecars.
 - Frontmatter `name` MUST exactly equal the file stem of the `.agent.md` file.
@@ -62,6 +70,8 @@ validation feedback.
   identical to the corresponding frontmatter values.
 - Do not generate `versions/` snapshot content, ZIPs, or checksums;
   those are outside the authoring scope.
+- Do not use qualified or namespaced agent or flow IDs;
+  IDs remain leaf kebab-case within the package.
 
 ## Interaction Contract
 

@@ -13,7 +13,7 @@
     {
       "name": "release-gate-request",
       "type": "object",
-      "description": "Release gate request with package ID, optional version override, and retry context."
+      "description": "Release gate request with qualified package ref (`<namespace>/<package-id>`), optional version override, and retry context."
     }
   ],
   "outputs": [

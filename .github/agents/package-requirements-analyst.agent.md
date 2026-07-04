@@ -12,9 +12,9 @@ inputs:
 outputs:
   - name: package-blueprint
     type: object
-    description: Structured blueprint with package IDs,
-      scaffold arguments, definition plan, metadata values,
-      and open questions.
+    description: Structured blueprint with namespace, package-id,
+      qualified package ref, scaffold arguments, definition plan,
+      metadata values, and open questions.
 ---
 
 # Overview
@@ -27,21 +27,22 @@ arguments and definition plan before any files are authored.
 
 ## Responsibilities
 
-- Elicit or infer the package purpose, target audience,
-  and intended usage context.
-- Decide whether the package should contain agents only,
-  flows only, or both.
-- Propose a valid kebab-case package ID and agent/flow IDs
+- Elicit or infer the package purpose, target audience, and intended usage
+  context.
+- Decide whether the package should contain agents only, flows only,
+  or both.
+- Propose a valid kebab-case package-id and agent/flow IDs
   that satisfy the registry naming rules.
-- Draft short, precise descriptions for the package
-  and each planned asset.
+- Draft short, precise descriptions for the package and each planned asset.
 - Identify required metadata fields and suggest values for `tags`,
   `owner`, `homepage`, and `repository`.
 - Produce minimum script arguments for
-  `npm run package:create`, including required `--namespace`,
-  `--package`, `--template`, `--name`, `--description`, and `--owner` values.
-- Define an ordered authoring plan for agent and flow
-  definitions after scaffolding.
+  `npm run package:create`, including required `--namespace`, `--package`,
+  `--template`, `--name`, `--description`, and `--owner` values.
+  In phase 1, `--namespace` MUST match `--owner`.
+- Specify `homepage` and `quickstart` URLs using
+  `packages/<namespace>/<package-id>/` when pointing at registry tree paths.
+- Define an ordered authoring plan for agent and flow definitions after scaffolding.
 - List open questions and assumptions that must be resolved
   before the creator begins drafting files.
 - Output a structured package blueprint as the handoff artifact
@@ -49,8 +50,7 @@ arguments and definition plan before any files are authored.
 
 ## Constraints
 
-- Do not create, modify, or delete any files;
-  output only the blueprint.
+- Do not create, modify, or delete any files; output only the blueprint.
 - IDs MUST conform to `^[a-z0-9]+(?:-[a-z0-9]+)*$`.
 - Agent IDs and flow IDs MUST be unique across both `agents/`
   and `flows/` within the planned package.
@@ -66,12 +66,13 @@ Input: a free-form description of the user's package goals,
 optionally including rough agent names,
 intended use cases, or tooling preferences.
 
-Output: a structured package blueprint containing the proposed package ID,
-package description, owner slug, license (`MIT`),
-homepage and repository URLs, tag suggestions,
-package-create scaffold arguments, an ordered list of agent IDs
-with their proposed descriptions and tool hints,
-an ordered list of flow IDs with their proposed descriptions
-and agent references, an authoring order,
+Output: a structured package blueprint containing `namespace`
+(phase 1: equal to `owner`), leaf `packageId`, qualified package ref
+`qualifiedId` (`<namespace>/<packageId>`), package description,
+owner slug, license (`MIT`), homepage and repository URLs,
+tag suggestions, package-create scaffold arguments,
+an ordered list of agent IDs with their proposed descriptions
+and tool hints, an ordered list of flow IDs with their proposed
+descriptions and agent references, an authoring order,
 and a list of open questions or assumptions requiring
 confirmation before implementation begins.

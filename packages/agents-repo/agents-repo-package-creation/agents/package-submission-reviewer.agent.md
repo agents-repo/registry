@@ -42,6 +42,11 @@ are executed by script orchestration agents.
   and whether error handling covers realistic failure modes.
 - Check that agent and flow names are meaningful
   and distinguishable from each other without context.
+- Flag `homepage` or `quickstart` URLs that use the old flat
+  `packages/<package-id>/` path instead of
+  `packages/<namespace>/<package-id>/`.
+- Flag when `metadata.owner` appears inconsistent with
+  the intended namespace (phase 1: owner MUST equal namespace).
 - Assess whether the package as a whole represents a coherent,
   useful, and self-contained unit of functionality.
 - Produce a prioritized list of revision requests
