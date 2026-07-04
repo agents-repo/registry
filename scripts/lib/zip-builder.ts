@@ -16,6 +16,7 @@ export class ZipBuilder {
   buildDeploymentZip(outputPath: string): void {
     const zip = new AdmZip();
 
+    // listDeploymentAgentFiles returns ids sorted for deterministic ZIP bytes.
     for (const file of listDeploymentAgentFiles(this.packageDir)) {
       zip.addFile(
         `${AGENTS_DIR}/${file.id}.agent.md`,
