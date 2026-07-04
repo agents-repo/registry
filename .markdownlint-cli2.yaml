@@ -1,5 +1,6 @@
 ignores:
   - "node_modules/**"
+  - ".cursor/skills/**/SKILL.md"
 config:
   MD013:
     tables: false

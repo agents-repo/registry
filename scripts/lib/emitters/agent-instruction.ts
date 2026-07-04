@@ -53,23 +53,65 @@ export function agentMdToSkillMd(content: string, packageVersion: string): strin
     description = `${description} Use when the user needs the ${name} workflow.`;
   }
 
-  const capabilityLines: string[] = [];
+  const formatContract = (value: unknown): string => {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+      return `- ${JSON.stringify(value)}`;
+    }
+
+    const record = value as Record<string, unknown>;
+    const contractName = typeof record.name === 'string' ? record.name : '';
+    const contractType = typeof record.type === 'string' ? record.type : '';
+    const contractDescription =
+      typeof record.description === 'string' ? record.description : '';
+
+    if (contractName.length === 0) {
+      return `- ${JSON.stringify(value)}`;
+    }
+
+    const summary =
+      contractType.length > 0 ? `\`${contractName}\` (${contractType})` : `\`${contractName}\``;
+    if (contractDescription.length === 0) {
+      return `- ${summary}`;
+    }
+
+    return `- ${summary}: ${contractDescription}`;
+  };
+
+  const capabilitySections: string[] = [];
+
+  const appendSection = (heading: string, lines: string[]): void => {
+    if (lines.length === 0) {
+      return;
+    }
+
+    capabilitySections.push([heading, '', ...lines].join('\n'));
+  };
+
   if (Array.isArray(data.tools) && data.tools.length > 0) {
-    capabilityLines.push('### Tools', ...data.tools.map((tool) => `- ${String(tool)}`));
+    appendSection('### Tools', data.tools.map((tool) => `- ${String(tool)}`));
   }
+
   if (Array.isArray(data.inputs) && data.inputs.length > 0) {
-    capabilityLines.push('### Inputs', ...data.inputs.map((input) => `- ${JSON.stringify(input)}`));
+    appendSection(
+      '### Inputs',
+      data.inputs.map((input) => formatContract(input)),
+    );
   }
+
   if (Array.isArray(data.outputs) && data.outputs.length > 0) {
-    capabilityLines.push('### Outputs', ...data.outputs.map((output) => `- ${JSON.stringify(output)}`));
+    appendSection(
+      '### Outputs',
+      data.outputs.map((output) => formatContract(output)),
+    );
   }
+
   if (Array.isArray(data.agents) && data.agents.length > 0) {
-    capabilityLines.push('### Referenced agents', ...data.agents.map((agent) => `- ${String(agent)}`));
+    appendSection('### Referenced agents', data.agents.map((agent) => `- ${String(agent)}`));
   }
 
   let body = parsed.content.trim();
-  if (capabilityLines.length > 0) {
-    body = `${body}\n\n## Declared capabilities\n\n${capabilityLines.join('\n')}`;
+  if (capabilitySections.length > 0) {
+    body = `${body}\n\n## Declared capabilities\n\n${capabilitySections.join('\n\n')}`;
   }
 
   body = `${body}\n\n<!-- agents-repo package version: ${packageVersion} -->`;
