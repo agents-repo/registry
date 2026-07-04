@@ -6,6 +6,7 @@ import { listDeploymentAgentFiles } from '../../../../../scripts/lib/deployment-
 import { PackageError } from '../../../../../scripts/lib/errors';
 import { Package } from '../../../../../scripts/lib/package';
 import {
+  checkIdeTargets,
   syncCursorRules,
   syncCursorSkills,
   syncGithubCopilotAgents,
@@ -151,6 +152,55 @@ describe('syncCursorRules', (): void => {
     const content = fs.readFileSync(path.join(repoRoot, written), 'utf-8');
     expect(content).toContain('alwaysApply: true');
     expect(content).toContain('# Agents Registry — Project Guidelines');
+  });
+});
+
+describe('checkIdeTargets', (): void => {
+  it('reports no drift after a successful sync', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'check-sync', {
+      agents: [{ id: 'check-agent', name: 'check-agent', description: 'Agent for drift check tests.' }],
+      flows: [],
+    });
+
+    const sourcePath = path.join(repoRoot, '.github', 'copilot-instructions.md');
+    fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
+    fs.writeFileSync(sourcePath, '# Copilot Agents Registry — Project Guidelines\n', 'utf-8');
+
+    const pkg = new Package('agents-repo/check-sync', path.join(repoRoot, 'packages'));
+    syncIdeTargets(repoRoot, pkg, 'all');
+
+    expect(checkIdeTargets(repoRoot, pkg, 'all')).toEqual([]);
+  });
+
+  it('reports modified and stale mirror drift', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'check-drift', {
+      agents: [{ id: 'fresh-agent', name: 'fresh-agent', description: 'Agent for drift detection tests.' }],
+      flows: [],
+    });
+
+    const sourcePath = path.join(repoRoot, '.github', 'copilot-instructions.md');
+    fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
+    fs.writeFileSync(sourcePath, '# Copilot Agents Registry — Project Guidelines\n', 'utf-8');
+
+    const pkg = new Package('agents-repo/check-drift', path.join(repoRoot, 'packages'));
+    syncIdeTargets(repoRoot, pkg, 'all');
+
+    const agentMirror = path.join(repoRoot, '.github', 'agents', 'fresh-agent.agent.md');
+    fs.writeFileSync(agentMirror, 'stale agent mirror', 'utf-8');
+
+    const staleSkillDir = path.join(repoRoot, '.cursor', 'skills', 'old-skill');
+    fs.mkdirSync(staleSkillDir, { recursive: true });
+    fs.writeFileSync(path.join(staleSkillDir, 'SKILL.md'), 'stale', 'utf-8');
+
+    const issues = checkIdeTargets(repoRoot, pkg, 'all');
+    expect(issues).toEqual(
+      expect.arrayContaining([
+        { kind: 'modified', path: '.github/agents/fresh-agent.agent.md' },
+        { kind: 'stale', path: path.join('.cursor', 'skills', 'old-skill') },
+      ]),
+    );
   });
 });
 

@@ -5,6 +5,9 @@
  * Usage:
  *   npm run package:sync-ide-targets -- --package <namespace>/<package-id> --target <target>
  *
+ * Options:
+ *   --check         Compare committed mirrors to canonical sources without writing
+ *
  * Targets:
  *   github-copilot  Write .github/agents/*.agent.md from package agents/ + flows/
  *   cursor          Write .cursor/skills/<id>/SKILL.md from package agents/ + flows/
@@ -12,14 +15,17 @@
  *   all             Run all three (requires --package)
  */
 
-import { parseOptionalFlagValue, parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
+import { hasFlag, parseOptionalFlagValue, parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
 import { Package } from './lib/package';
-import { IDE_SYNC_TARGETS, syncIdeTargets, type IdeSyncTarget } from './lib/sync/ide-targets';
+import { checkIdeTargets, IDE_SYNC_TARGETS, syncIdeTargets, type IdeSyncTarget } from './lib/sync/ide-targets';
 import { PackageError } from './lib/errors';
 
 function printHelp(): void {
   console.log(`Usage:
   npm run package:sync-ide-targets -- --package <namespace>/<package-id> --target <target>
+
+Options:
+  --check         Compare committed mirrors to canonical sources without writing
 
 Targets:
   github-copilot  Sync .github/agents/ from package source
@@ -58,6 +64,7 @@ function main(): void {
   }
 
   const target = parseTarget(argv);
+  const checkOnly = hasFlag(argv, '--check');
   const { repoRoot, packagesDir } = resolveScriptPaths(import.meta.url);
   const packageArg = parseOptionalFlagValue(argv, '--package');
 
@@ -73,6 +80,20 @@ function main(): void {
   }
 
   try {
+    if (checkOnly) {
+      const issues = checkIdeTargets(repoRoot, pkg, target);
+      if (issues.length > 0) {
+        console.error(`IDE mirror drift detected for target: ${target}`);
+        for (const issue of issues) {
+          console.error(`  [${issue.kind}] ${issue.path}`);
+        }
+        process.exit(1);
+      }
+
+      console.log(`IDE mirrors are up to date for target: ${target}`);
+      return;
+    }
+
     const written = syncIdeTargets(repoRoot, pkg, target);
     console.log(`Synced IDE target(s): ${target}`);
     for (const filePath of written) {
