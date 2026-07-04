@@ -53,9 +53,9 @@ export function agentMdToSkillMd(content: string, packageVersion: string): strin
     description = `${description} Use when the user needs the ${name} workflow.`;
   }
 
-  const formatContract = (value: unknown): string | undefined => {
+  const formatContract = (value: unknown): string => {
     if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-      return undefined;
+      return `- ${JSON.stringify(value)}`;
     }
 
     const record = value as Record<string, unknown>;
@@ -65,7 +65,7 @@ export function agentMdToSkillMd(content: string, packageVersion: string): strin
       typeof record.description === 'string' ? record.description : '';
 
     if (contractName.length === 0) {
-      return undefined;
+      return `- ${JSON.stringify(value)}`;
     }
 
     const summary = `\`${contractName}\` (${contractType})`;
@@ -93,18 +93,14 @@ export function agentMdToSkillMd(content: string, packageVersion: string): strin
   if (Array.isArray(data.inputs) && data.inputs.length > 0) {
     appendSection(
       '### Inputs',
-      data.inputs
-        .map((input) => formatContract(input))
-        .filter((line): line is string => line !== undefined),
+      data.inputs.map((input) => formatContract(input)),
     );
   }
 
   if (Array.isArray(data.outputs) && data.outputs.length > 0) {
     appendSection(
       '### Outputs',
-      data.outputs
-        .map((output) => formatContract(output))
-        .filter((line): line is string => line !== undefined),
+      data.outputs.map((output) => formatContract(output)),
     );
   }
 
