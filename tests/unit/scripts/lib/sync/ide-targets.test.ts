@@ -91,6 +91,12 @@ describe('transformCopilotInstructionsToCursorRules', (): void => {
     expect(output).toContain('[../../README.md](../../README.md)');
     expect(output).toContain('[../../.github/CONTRIBUTING.md](../../.github/CONTRIBUTING.md)');
   });
+
+  it('rewrites titled markdown links while preserving the title suffix', (): void => {
+    const source = 'Read [../README.md](../README.md "Repo readme").';
+    const output = transformCopilotInstructionsToCursorRules(source);
+    expect(output).toContain('[../../README.md](../../README.md "Repo readme")');
+  });
 });
 
 describe('syncGithubCopilotAgents', (): void => {
@@ -188,6 +194,21 @@ describe('syncCursorRules', (): void => {
     expect(fs.existsSync(staleGeneratedPath)).toBe(false);
     expect(fs.existsSync(customRulePath)).toBe(true);
   });
+
+  it('treats CRLF mirror content as in sync when logically identical', (): void => {
+    const repoRoot = makeRepoRoot();
+    const sourcePath = path.join(repoRoot, '.github', 'copilot-instructions.md');
+    fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
+    fs.writeFileSync(sourcePath, '# Copilot Agents Registry — Project Guidelines\n', 'utf-8');
+
+    syncCursorRules(repoRoot);
+
+    const mirrorPath = path.join(repoRoot, '.cursor', 'rules', 'agents-registry.mdc');
+    const content = fs.readFileSync(mirrorPath, 'utf-8');
+    fs.writeFileSync(mirrorPath, content.replace(/\n/g, '\r\n'), 'utf-8');
+
+    expect(checkIdeTargets(repoRoot, undefined, 'cursor-rules')).toEqual([]);
+  });
 });
 
 describe('checkIdeTargets', (): void => {
@@ -251,6 +272,26 @@ describe('checkIdeTargets', (): void => {
     fs.writeFileSync(customRulePath, '---\nalwaysApply: false\n---\n', 'utf-8');
 
     expect(checkIdeTargets(repoRoot, undefined, 'cursor-rules')).toEqual([]);
+  });
+
+  it('reports stale generated cursor rules when checking cursor-rules drift', (): void => {
+    const repoRoot = makeRepoRoot();
+    const sourcePath = path.join(repoRoot, '.github', 'copilot-instructions.md');
+    fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
+    fs.writeFileSync(sourcePath, '# Copilot Agents Registry — Project Guidelines\n', 'utf-8');
+
+    syncCursorRules(repoRoot);
+
+    const staleGeneratedPath = path.join(repoRoot, '.cursor', 'rules', 'old-generated.mdc');
+    fs.writeFileSync(
+      staleGeneratedPath,
+      '<!-- Generated from .github/copilot-instructions.md — do not edit; run npm run sync:cursor-rules -->\nstale\n',
+      'utf-8',
+    );
+
+    expect(checkIdeTargets(repoRoot, undefined, 'cursor-rules')).toEqual([
+      { kind: 'stale', path: path.join('.cursor', 'rules', 'old-generated.mdc') },
+    ]);
   });
 });
 

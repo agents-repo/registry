@@ -96,18 +96,39 @@ function isGeneratedCursorRuleFile(filePath: string): boolean {
   }
 }
 
+function normalizeEol(text: string): string {
+  return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+}
+
+function rewriteMarkdownTarget(url: string, sourceDir: string, targetDir: string): string {
+  const titlePattern = /^(\S+)(\s+"(?:[^"\\]|\\.)*")$/;
+  const titleMatch = titlePattern.exec(url);
+  const pathPart = titleMatch ? titleMatch[1] : url.trim();
+  const titleSuffix = titleMatch ? titleMatch[2] : '';
+
+  if (/^(?:[a-z][a-z0-9+.-]*:|#)/i.test(pathPart)) {
+    return url;
+  }
+
+  const resolvedFromRoot = path.posix.normalize(path.posix.join(sourceDir, pathPart));
+  const rewritten = path.posix.relative(targetDir, resolvedFromRoot);
+  return `${rewritten}${titleSuffix}`;
+}
+
 function rewriteRelativeLinks(body: string): string {
   // Copilot instructions use simple inline markdown links only.
   // eslint-disable-next-line sonarjs/slow-regex -- bounded repo-owned input
   return body.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (match, text: string, url: string) => {
-    if (/^(?:[a-z][a-z0-9+.-]*:|#)/i.test(url)) {
+    const rewrittenUrl = rewriteMarkdownTarget(url, CURSOR_RULES_SOURCE_DIR, CURSOR_RULES_TARGET_DIR);
+    if (rewrittenUrl === url) {
       return match;
     }
 
-    const resolvedFromRoot = path.posix.normalize(path.posix.join(CURSOR_RULES_SOURCE_DIR, url));
-    const rewritten = path.posix.relative(CURSOR_RULES_TARGET_DIR, resolvedFromRoot);
-    const rewrittenText = text === url ? rewritten : text;
-    return `[${rewrittenText}](${rewritten})`;
+    const pathPattern = /^(\S+)/;
+    const pathPart = pathPattern.exec(url)?.[1] ?? url;
+    const rewrittenPath = pathPattern.exec(rewrittenUrl)?.[1] ?? rewrittenUrl;
+    const rewrittenText = text === url || text === pathPart ? rewrittenPath : text;
+    return `[${rewrittenText}](${rewrittenUrl})`;
   });
 }
 
@@ -186,7 +207,7 @@ function expectedCursorRules(repoRoot: string): Map<string, string> {
     );
   }
 
-  const source = fs.readFileSync(sourcePath, 'utf-8');
+  const source = normalizeEol(fs.readFileSync(sourcePath, 'utf-8'));
   return new Map([[CURSOR_RULES_REL, transformCopilotInstructionsToCursorRules(source)]]);
 }
 
@@ -200,8 +221,8 @@ function compareExpectedFiles(repoRoot: string, expected: Map<string, string>): 
       continue;
     }
 
-    const actualContent = fs.readFileSync(fullPath, 'utf-8');
-    if (actualContent !== expectedContent) {
+    const actualContent = normalizeEol(fs.readFileSync(fullPath, 'utf-8'));
+    if (actualContent !== normalizeEol(expectedContent)) {
       issues.push({ kind: 'modified', path: relativePath });
     }
   }
