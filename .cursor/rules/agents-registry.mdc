@@ -169,13 +169,16 @@ Before implementation, agents MUST:
 1. Open a tracking issue (matching issue form when available).
 2. Create a branch named `<prefix>/<issue-number>-<slug>`.
 3. Push the branch and open a draft pull request targeting `main` with
-   `Closes #<issue-number>` before implementation commits.
+   `Closes #<issue-number>` before implementation commits. Pull requests MUST
+   be created as drafts (`gh pr create --draft`).
 
 Agents MAY push additional commits to the task branch when requested.
-Agents MUST NOT push to `main`, merge PRs into `main`, or mark PRs ready
-without maintainer direction.
-Agents MUST hand off at draft PR creation and state that merge is for a
-human maintainer.
+Agents MUST NOT push to `main`, merge PRs into `main`, or mark pull requests
+ready for review.
+After validation, the developer manually marks the pull request ready for
+review; agents MUST NOT perform that step.
+Agents MUST hand off after draft PR creation and state that ready-for-review
+and merge are for a human maintainer.
 
 Task start in this organization authorizes workflow scaffolding (issue,
 branch, draft PR) even when generic tooling rules defer commits until
@@ -208,7 +211,7 @@ Preferred command patterns:
 - create issue:
   `gh issue create --repo agents-repo/registry --title "..." \
   --body-file <file>`
-- create draft PR:
+- create draft PR (MUST use `--draft`):
   `gh pr create --repo agents-repo/registry --draft --title "..." \
   --body-file <file>`
 - inspect PR status:

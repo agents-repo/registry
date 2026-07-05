@@ -25,7 +25,8 @@ body:
         registry release tag.
 
         You MUST open a draft pull request targeting `main` before implementation
-        commits. Include
+        commits (`gh pr create --draft`). The developer manually marks the PR
+        ready for review after validation. Include
         `Closes #<issue-number>` in `## Related Issues`.
 
   - type: dropdown
