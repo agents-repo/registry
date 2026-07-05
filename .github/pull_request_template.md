@@ -68,10 +68,15 @@ If relevant, describe impact on:
   `fix(package):` (or the breaking `feat(package)!:` / `fix(package)!:` form)
   so squash-merge publishes a registry release tag. CI validates this title in
   `pr-package-validation` when package directories change.
-- [ ] If this PR is linked to a tracking issue, `## Related Issues` includes
-  `Closes #<issue-number>`.
+- [ ] A tracking issue was opened before implementation.
+- [ ] The branch name follows `<prefix>/<issue-number>-<slug>`.
+- [ ] This draft PR was opened before implementation commits (or documents
+  why not).
+- [ ] `## Related Issues` includes `Closes #<issue-number>`.
 - [ ] Merge to `main` is for human maintainers only; agents and automation
   must not merge this PR or push directly to `main`.
+- [ ] Agents have not marked this PR ready for review without maintainer
+  direction.
 
 ## Risk and Rollback
 
@@ -80,5 +85,4 @@ If relevant, describe impact on:
 
 ## Related Issues
 
-- If this PR is linked to an issue, include `Closes #<issue-number>`.
-- If this PR is not tied to a tracking issue, state a short rationale here.
+Include `Closes #<issue-number>` for the tracking issue this PR closes.

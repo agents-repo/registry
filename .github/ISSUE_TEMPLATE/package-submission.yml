@@ -24,7 +24,8 @@ body:
         message, which MUST match this format so semantic-release publishes a
         registry release tag.
 
-        If you open a PR for this issue, include
+        You MUST open a draft pull request targeting `main` before implementation
+        commits. Include
         `Closes #<issue-number>` in `## Related Issues`.
 
   - type: dropdown

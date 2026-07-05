@@ -16,7 +16,8 @@ body:
         Use https://github.com/agents-repo/registry/security/advisories/new
         for private disclosure instead.
 
-        If you open a PR for this issue, include
+        You MUST open a draft pull request targeting `main` before implementation
+        commits. Include
         `Closes #<issue-number>` in `## Related Issues`.
 
   - type: textarea

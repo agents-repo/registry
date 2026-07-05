@@ -18,7 +18,8 @@ body:
         **Example:** `feat/15-search-index`
         Create this issue first to get the issue number, then open the branch.
 
-        If you open a PR for this issue, include
+        You MUST open a draft pull request targeting `main` before implementation
+        commits. Include
         `Closes #<issue-number>` in `## Related Issues`.
 
   - type: textarea

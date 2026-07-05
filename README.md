@@ -67,7 +67,8 @@ gh pr create --repo agents-repo/registry \
 ```
 
 For issue-linked PRs, include `Closes #<issue-number>` in
-`## Related Issues`. See `.github/CONTRIBUTING.md` for the canonical policy.
+`## Related Issues`. See `.github/CONTRIBUTING.md` **Required Workflow** for the
+canonical policy (issue → branch → push → draft PR before implementation).
 
 ## IDE Setup
 
@@ -106,8 +107,8 @@ See `.github/CONTRIBUTING.md` for the full edit workflow.
 - Release versions follow Semantic Versioning `MAJOR.MINOR.PATCH` sourced from
     <https://semver.org>.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
-- Pushes to `main` run the release validation checks and then execute
-    `semantic-release`.
+- Pushes to `main` (post-merge integration via pull request, not direct push)
+    run the release validation checks and then execute `semantic-release`.
 - A release is published only when commit history includes releasable changes
     per the commit-to-version mapping below.
 - `workflow_dispatch` remains available for operational checks.

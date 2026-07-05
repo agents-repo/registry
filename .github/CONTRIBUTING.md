@@ -18,22 +18,45 @@ matching form in `.github/ISSUE_TEMPLATE/` when tooling can apply it directly;
 otherwise, they MUST manually include the intended template's sections in the
 issue body.
 
-## GitHub Communication Method (Preferred)
+## Required Workflow
 
-Contributors and agents SHOULD use `gh` CLI as the preferred method to
-communicate with GitHub for issues and pull requests.
-
-Recommended flow:
+Contributors and agents MUST follow this lifecycle before implementation:
 
 1. Inspect and confirm issue scope:
   `gh issue view <number> --repo agents-repo/registry`
 2. Create a branch using the naming rule in this guide.
-3. Open a draft pull request with the required template sections:
+3. Push the branch to the remote repository.
+4. Open a draft pull request with the required template sections before
+  implementation commits:
   `gh pr create --repo agents-repo/registry --draft --title "..." \
   --body-file <file>`
-4. Hand off for human review. Agents MUST NOT merge pull requests into `main`,
+5. Hand off for human review. Agents MUST NOT merge pull requests into `main`,
   push directly to `main`, or mark PRs ready to merge without maintainer
   direction.
+
+All contributors MUST integrate changes to `main` only through merged pull
+requests. Direct commits or pushes to `main` MUST NOT be used.
+
+GitHub requires a pushed remote branch before opening a pull request. An empty
+branch push is acceptable when opening the draft PR before implementation
+commits.
+
+## Workflow exceptions
+
+1. **Security vulnerabilities** — Follow the private advisory flow; no public
+   tracking issue. Branch and pull request are still required before merge to
+   `main`.
+2. **Maintainer emergency hotfix** — Hotfix branch work requires prior
+   maintainer approval documented in an issue or advisory. Delivery to `main`
+   is still via merged pull request.
+
+See the organization [Required Workflow](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#required-workflow)
+for shared norms.
+
+## GitHub Communication Method (Preferred)
+
+Contributors and agents SHOULD use `gh` CLI as the preferred method to
+communicate with GitHub for issues and pull requests.
 
 For long issue/PR descriptions, use `--body-file` to avoid shell escaping and
 truncation issues.
@@ -47,8 +70,8 @@ disclosure.
 - Release versions use Semantic Versioning `MAJOR.MINOR.PATCH` sourced from
   <https://semver.org>.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
-- Pushes to `main` run release validation checks and then execute
-  `semantic-release`.
+- Pushes to `main` (post-merge integration via pull request, not direct push)
+  run release validation checks and then execute `semantic-release`.
 - A release is published only when commit history includes releasable changes
   per the commit-to-version mapping below.
 - `workflow_dispatch` remains available for operational checks.
@@ -119,13 +142,11 @@ pull request summary.
 ## Pull Request Expectations
 
 1. Keep PRs focused and easy to review.
-2. If a PR is linked to a tracking issue, it MUST include
-  `Closes #<issue-number>` in the `## Related Issues` section.
-3. If a PR is not tied to a tracking issue, it MAY omit `Closes`, but SHOULD
-  include a short rationale in the PR body.
-4. Use deterministic language for normative rules.
-5. Include examples when changing specification behavior.
-6. Use `.github/pull_request_template.md` for every PR, or if it cannot be
+2. Every PR targeting `main` MUST include `Closes #<issue-number>` in the
+  `## Related Issues` section.
+3. Use deterministic language for normative rules.
+4. Include examples when changing specification behavior.
+5. Use `.github/pull_request_template.md` for every PR, or if it cannot be
    applied programmatically, include its required sections manually in the PR
    body.
 
