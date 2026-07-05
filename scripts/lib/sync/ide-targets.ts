@@ -18,7 +18,7 @@ const GITHUB_AGENTS_REL = path.join('.github', 'agents');
 const CURSOR_SKILLS_REL = path.join('.cursor', 'skills');
 
 const CURSOR_RULES_GENERATED_COMMENT =
-  '<!-- Generated from .github/copilot-instructions.md — do not edit; run package:sync-ide-targets --target cursor-rules -->';
+  '<!-- Generated from .github/copilot-instructions.md — do not edit; run npm run sync:cursor-rules -->';
 
 const CURSOR_RULES_TRANSFORMS: Array<[string, string]> = [
   ['# Copilot Agents Registry — Project Guidelines', '# Agents Registry — Project Guidelines'],
@@ -85,7 +85,71 @@ function removeStaleSkillDirs(skillsRoot: string, keepIds: Set<string>): void {
   }
 }
 
-export const REPO_IDE_MIRROR_PACKAGE = 'agents-repo/agents-repo-package-creation';
+const CURSOR_RULES_SOURCE_DIR = '.github';
+const CURSOR_RULES_TARGET_DIR = '.cursor/rules';
+
+function isGeneratedCursorRuleFile(filePath: string): boolean {
+  try {
+    return fs.readFileSync(filePath, 'utf-8').includes(CURSOR_RULES_GENERATED_COMMENT);
+  } catch {
+    return false;
+  }
+}
+
+function normalizeEol(text: string): string {
+  return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+}
+
+function rewriteMarkdownTarget(url: string, sourceDir: string, targetDir: string): string {
+  const titlePattern = /^(\S+)(\s+"(?:[^"\\]|\\.)*")$/;
+  const titleMatch = titlePattern.exec(url);
+  const pathPart = titleMatch ? titleMatch[1] : url.trim();
+  const titleSuffix = titleMatch ? titleMatch[2] : '';
+
+  if (/^(?:[a-z][a-z0-9+.-]*:|#)/i.test(pathPart)) {
+    return url;
+  }
+
+  const resolvedFromRoot = path.posix.normalize(path.posix.join(sourceDir, pathPart));
+  const rewritten = path.posix.relative(targetDir, resolvedFromRoot);
+  return `${rewritten}${titleSuffix}`;
+}
+
+function rewriteRelativeLinks(body: string): string {
+  // Copilot instructions use simple inline markdown links only.
+  // eslint-disable-next-line sonarjs/slow-regex -- bounded repo-owned input
+  return body.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (match, text: string, url: string) => {
+    const rewrittenUrl = rewriteMarkdownTarget(url, CURSOR_RULES_SOURCE_DIR, CURSOR_RULES_TARGET_DIR);
+    if (rewrittenUrl === url) {
+      return match;
+    }
+
+    const pathPattern = /^(\S+)/;
+    const pathPart = pathPattern.exec(url)?.[1] ?? url;
+    const rewrittenPath = pathPattern.exec(rewrittenUrl)?.[1] ?? rewrittenUrl;
+    const rewrittenText = text === url || text === pathPart ? rewrittenPath : text;
+    return `[${rewrittenText}](${rewrittenUrl})`;
+  });
+}
+
+function removeStaleGeneratedCursorRuleFiles(rulesDir: string, keepFileNames: Set<string>): void {
+  if (!fs.existsSync(rulesDir)) {
+    return;
+  }
+
+  for (const entry of fs.readdirSync(rulesDir)) {
+    if (!entry.endsWith('.mdc') || keepFileNames.has(entry)) {
+      continue;
+    }
+
+    const filePath = path.join(rulesDir, entry);
+    if (!isGeneratedCursorRuleFile(filePath)) {
+      continue;
+    }
+
+    fs.rmSync(filePath, { force: true });
+  }
+}
 
 export type IdeSyncDriftKind = 'missing' | 'modified' | 'stale';
 
@@ -143,7 +207,7 @@ function expectedCursorRules(repoRoot: string): Map<string, string> {
     );
   }
 
-  const source = fs.readFileSync(sourcePath, 'utf-8');
+  const source = normalizeEol(fs.readFileSync(sourcePath, 'utf-8'));
   return new Map([[CURSOR_RULES_REL, transformCopilotInstructionsToCursorRules(source)]]);
 }
 
@@ -157,8 +221,8 @@ function compareExpectedFiles(repoRoot: string, expected: Map<string, string>): 
       continue;
     }
 
-    const actualContent = fs.readFileSync(fullPath, 'utf-8');
-    if (actualContent !== expectedContent) {
+    const actualContent = normalizeEol(fs.readFileSync(fullPath, 'utf-8'));
+    if (actualContent !== normalizeEol(expectedContent)) {
       issues.push({ kind: 'modified', path: relativePath });
     }
   }
@@ -193,6 +257,11 @@ function findStaleCursorRuleFiles(repoRoot: string, keepFileNames: Set<string>):
   const stalePaths: string[] = [];
   for (const entry of fs.readdirSync(rulesDir)) {
     if (!entry.endsWith('.mdc') || keepFileNames.has(entry)) {
+      continue;
+    }
+
+    const filePath = path.join(rulesDir, entry);
+    if (!isGeneratedCursorRuleFile(filePath)) {
       continue;
     }
 
@@ -306,6 +375,7 @@ export function transformCopilotInstructionsToCursorRules(source: string): strin
   for (const [from, to] of CURSOR_RULES_TRANSFORMS) {
     body = body.replaceAll(from, to);
   }
+  body = rewriteRelativeLinks(body);
 
   return [
     '---',
@@ -366,10 +436,9 @@ export function syncCursorRules(repoRoot: string): string {
   const [relativePath, content] = [...expected.entries()][0];
   const targetPath = path.join(repoRoot, relativePath);
   writeFileEnsuringDir(targetPath, content);
-  removeStaleFiles(
+  removeStaleGeneratedCursorRuleFiles(
     path.dirname(targetPath),
     new Set([path.basename(relativePath)]),
-    '.mdc',
   );
   return path.relative(repoRoot, targetPath);
 }

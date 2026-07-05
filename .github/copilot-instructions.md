@@ -130,6 +130,19 @@ separate commits by intent. If splitting is not practical, the agent MUST use
 the primary intent category and explicitly explain that choice in the handoff
 or PR summary.
 
+## Default Branch Integration (Agents)
+
+- AI agents and coding assistants MUST NOT merge pull requests into `main`
+  (including `gh pr merge`, squash/rebase merge, or local `git merge` followed
+  by push).
+- AI agents MUST NOT push commits directly to `main`.
+- Integration to `main` is a human-only, manual step performed by maintainers
+  after review.
+- Agents MAY create feature branches, push to those branches when explicitly
+  requested, and open draft pull requests targeting `main`.
+- Agents MUST hand off at PR creation and state that merge is for a human
+  maintainer.
+
 ## GitHub Communication Method (gh CLI Preferred)
 
 For GitHub communication in this repository, agents and contributors SHOULD use

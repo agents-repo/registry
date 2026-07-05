@@ -31,6 +31,9 @@ Recommended flow:
 3. Open a draft pull request with the required template sections:
   `gh pr create --repo agents-repo/registry --draft --title "..." \
   --body-file <file>`
+4. Hand off for human review. Agents MUST NOT merge pull requests into `main`,
+  push directly to `main`, or mark PRs ready to merge without maintainer
+  direction.
 
 For long issue/PR descriptions, use `--body-file` to avoid shell escaping and
 truncation issues.
@@ -203,7 +206,7 @@ npm run package:sync-ide-targets -- \
 When only `copilot-instructions.md` changes:
 
 ```bash
-npm run package:sync-ide-targets -- --target cursor-rules
+npm run sync:cursor-rules
 ```
 
 Do not edit deployment mirrors directly. `package:sync-ide-targets` updates

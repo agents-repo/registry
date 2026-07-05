@@ -92,6 +92,12 @@ npm run package:sync-ide-targets -- \
   --target all
 ```
 
+When only `copilot-instructions.md` changes:
+
+```bash
+npm run sync:cursor-rules
+```
+
 Do not edit `.github/agents/`, `.cursor/skills/`, or `.cursor/rules/` directly.
 See `.github/CONTRIBUTING.md` for the full edit workflow.
 
