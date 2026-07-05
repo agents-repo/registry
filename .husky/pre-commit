@@ -8,25 +8,20 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
 	nvm use --silent >/dev/null 2>&1 || true
 fi
 
-run_checks_npm() {
-	npm run lint:all || return $?
-	npm run sync:cursor-rules -- --check
+run_checks() {
+	if command -v corepack >/dev/null 2>&1; then
+		corepack npm run lint:all || return $?
+		corepack npm run sync:cursor-rules -- --check
+	else
+		npm run lint:all || return $?
+		npm run sync:cursor-rules -- --check
+	fi
 }
 
-run_checks_corepack() {
-	corepack npm run lint:all || return $?
-	corepack npm run sync:cursor-rules -- --check
-}
-
-if command -v npm >/dev/null 2>&1; then
-	run_checks_npm
+if command -v corepack >/dev/null 2>&1 || command -v npm >/dev/null 2>&1; then
+	run_checks
 	exit $?
 fi
 
-if command -v corepack >/dev/null 2>&1; then
-	run_checks_corepack
-	exit $?
-fi
-
-echo "[husky] npm not found in PATH; skipping pre-commit checks in this environment." >&2
+echo "[husky] corepack and npm not found in PATH; skipping pre-commit checks in this environment." >&2
 exit 0
