@@ -170,8 +170,8 @@ Agents MUST NOT push to `main`, merge PRs into `main`, or mark pull requests
 ready for review.
 After validation, the developer manually marks the pull request ready for
 review; agents MUST NOT perform that step.
-Agents MUST hand off after draft PR creation and state that ready-for-review
-and merge are for a human maintainer.
+Agents MUST complete requested implementation work on the task branch, then
+hand off. Ready-for-review and merge are for a human maintainer.
 
 Task start in this organization authorizes workflow scaffolding (issue,
 branch, draft PR) even when generic tooling rules defer commits until

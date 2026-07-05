@@ -25,8 +25,9 @@ body:
         registry release tag.
 
         You MUST open a draft pull request targeting `main` before implementation
-        commits (`gh pr create --draft`). The developer manually marks the PR
-        ready for review after validation. Include
+        commits (`gh pr create --draft`). Author package source on the task
+        branch, then run `package:build` and `package:validate-artifacts`
+        before marking the pull request ready for review. Include
         `Closes #<issue-number>` in `## Related Issues`.
 
   - type: dropdown

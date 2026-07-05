@@ -46,11 +46,18 @@ commits.
 ## Workflow exceptions
 
 1. **Security vulnerabilities** — Follow the private advisory flow; no public
-   tracking issue. Branch and pull request are still required before merge to
-   `main`.
+   tracking issue. Branch and draft pull request are still required before merge
+   to `main`. In `## Related Issues`, use `Closes #<issue-number>` when
+   maintainers provide a linked private or advisory tracking issue. Otherwise,
+   reference the private security advisory identifier (for example `GHSA-...`)
+   in the PR body and coordinate linkage with maintainers.
 2. **Maintainer emergency hotfix** — Hotfix branch work requires prior
    maintainer approval documented in an issue or advisory. Delivery to `main`
    is still via merged pull request.
+3. **Package submission** — Follow the standard Required Workflow (issue →
+   branch → draft PR). Author package source on the task branch, then run
+   `package:build` and `package:validate-artifacts` **before marking the pull
+   request ready for review** (not before opening the draft PR).
 
 See the organization [Required Workflow](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#required-workflow)
 for shared norms.
@@ -194,7 +201,9 @@ snapshot. Publish a new semver instead.
 
 ### Required release pipeline
 
-A package submission MUST use the following pipeline before opening a PR:
+Package submissions follow the standard Required Workflow. Open a draft pull
+request on the task branch, author package source, then run this pipeline
+**before marking the pull request ready for review**:
 
 ```bash
 # 1. Build and publish a version snapshot
