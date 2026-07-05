@@ -18,7 +18,7 @@ const GITHUB_AGENTS_REL = path.join('.github', 'agents');
 const CURSOR_SKILLS_REL = path.join('.cursor', 'skills');
 
 const CURSOR_RULES_GENERATED_COMMENT =
-  '<!-- Generated from .github/copilot-instructions.md — do not edit; run package:sync-ide-targets --target cursor-rules -->';
+  '<!-- Generated from .github/copilot-instructions.md — do not edit; run npm run sync:cursor-rules -->';
 
 const CURSOR_RULES_TRANSFORMS: Array<[string, string]> = [
   ['# Copilot Agents Registry — Project Guidelines', '# Agents Registry — Project Guidelines'],

@@ -66,6 +66,8 @@ If relevant, describe impact on:
   manually authored or modified outside of `package-build` script output.
 - [ ] If this PR is linked to a tracking issue, `## Related Issues` includes
   `Closes #<issue-number>`.
+- [ ] Merge to `main` is for human maintainers only; agents and automation
+  must not merge this PR or push directly to `main`.
 
 ## Risk and Rollback
 
