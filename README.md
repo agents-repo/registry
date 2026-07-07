@@ -66,8 +66,10 @@ gh pr create --repo agents-repo/registry \
   --body-file <file>
 ```
 
-For issue-linked PRs, include `Closes #<issue-number>` in
-`## Related Issues`. See `.github/CONTRIBUTING.md` **Required Workflow** for the
+Every PR targeting `main` MUST include a tracking reference in
+`## Related Issues`: `Closes #<issue-number>` for standard tasks, or the
+security-advisory format in `.github/CONTRIBUTING.md` **Workflow exceptions**
+when no public tracking issue exists. See **Required Workflow** for the
 canonical policy (issue → branch → push → draft PR before implementation).
 
 ## IDE Setup

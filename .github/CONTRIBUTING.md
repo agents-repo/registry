@@ -20,7 +20,9 @@ issue body.
 
 ## Required Workflow
 
-Contributors and agents MUST follow this lifecycle before implementation:
+Contributors and agents MUST follow this full lifecycle.
+
+### Task setup (before implementation)
 
 1. Inspect and confirm issue scope:
   `gh issue view <number> --repo agents-repo/registry`
@@ -31,7 +33,10 @@ Contributors and agents MUST follow this lifecycle before implementation:
   (`gh pr create --repo agents-repo/registry --draft`):
   `gh pr create --repo agents-repo/registry --draft --title "..." \
   --body-file <file>`
-5. Implement, validate, then hand off. After validation passes, the developer
+
+### Delivery (after draft PR)
+
+1. Implement, validate, then hand off. After validation passes, the developer
   manually marks the pull request ready for review in GitHub. Agents MUST NOT
   merge pull requests into `main`, push directly to `main`, or mark pull
   requests ready for review.
@@ -39,9 +44,11 @@ Contributors and agents MUST follow this lifecycle before implementation:
 All contributors MUST integrate changes to `main` only through merged pull
 requests. Direct commits or pushes to `main` MUST NOT be used.
 
-GitHub requires a pushed remote branch before opening a pull request. An empty
-branch push is acceptable when opening the draft PR before implementation
-commits.
+GitHub cannot open a pull request when the head and base branches are
+identical. Before `gh pr create --draft`, push at least one commit on the task
+branch that creates a diff (for example an empty scaffolding commit:
+`git commit --allow-empty -m "chore: scaffold draft PR for #<issue-number>"`).
+Implementation commits may follow on the same branch.
 
 ## Workflow exceptions
 
@@ -151,8 +158,10 @@ pull request summary.
 ## Pull Request Expectations
 
 1. Keep PRs focused and easy to review.
-2. Every PR targeting `main` MUST include `Closes #<issue-number>` in the
-  `## Related Issues` section.
+2. Every PR targeting `main` MUST include a tracking reference in
+  `## Related Issues`: `Closes #<issue-number>` for standard tasks, or the
+  security-advisory format described in **Workflow exceptions** when
+  applicable.
 3. Use deterministic language for normative rules.
 4. Include examples when changing specification behavior.
 5. Use `.github/pull_request_template.md` for every PR, or if it cannot be

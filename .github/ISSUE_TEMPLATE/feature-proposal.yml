@@ -14,14 +14,18 @@ body:
         If your request changes normative rules or format definitions in
         `specs/`, use the "Spec change request" issue template instead.
 
-        **Branch name:** `feat/<issue-number>-<short-slug>`
-        **Example:** `feat/15-search-index`
-        Create this issue first to get the issue number, then open the branch.
+        **Workflow:** Submit this issue first. After GitHub assigns a number,
+        create your branch and draft PR—do not edit this issue body to add the
+        number.
 
-        You MUST open a draft pull request targeting `main` before implementation
-        commits (`gh pr create --draft`). The developer manually marks the PR
-        ready for review after validation. Include
-        `Closes #<issue-number>` in `## Related Issues`.
+        **Branch pattern:** `feat/<issue-number>-<slug>` (use the assigned number
+        and a short lowercase kebab-case slug from the title)
+
+        **Example:** `feat/15-search-index`
+
+        **Draft PR:** Open with `gh pr create --draft` before implementation
+        commits. Put the tracking reference in the PR `## Related Issues` section
+        (not in this issue).
 
   - type: textarea
     id: summary
@@ -74,8 +78,8 @@ body:
         - label: I described measurable acceptance criteria.
           required: true
         - label: >-
-            If I open a PR for this issue, I will include
-            `Closes #<issue-number>` in `## Related Issues`.
+            I will open a draft PR with `gh pr create --draft` before
+            implementation commits and mark it ready for review after validation.
           required: true
         - label: I can help test or review this feature.
           required: false

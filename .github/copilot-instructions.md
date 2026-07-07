@@ -161,9 +161,13 @@ Before implementation, agents MUST:
 
 1. Open a tracking issue (matching issue form when available).
 2. Create a branch named `<prefix>/<issue-number>-<slug>`.
-3. Push the branch and open a draft pull request targeting `main` with
-   `Closes #<issue-number>` before implementation commits. Pull requests MUST
-   be created as drafts (`gh pr create --draft`).
+3. Push the branch and open a draft pull request targeting `main` before
+   implementation commits. Pull requests MUST be created as drafts
+   (`gh pr create --draft`). In `## Related Issues`, include
+   `Closes #<issue-number>` for standard tasks, or follow the security-advisory
+   format in `.github/CONTRIBUTING.md` **Workflow exceptions** when applicable.
+   GitHub cannot open a PR when head and base are identical; push a scaffolding
+   commit on the task branch first if needed (see `.github/CONTRIBUTING.md`).
 
 Agents MAY push additional commits to the task branch when requested.
 Agents MUST NOT push to `main`, merge PRs into `main`, or mark pull requests
