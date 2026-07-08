@@ -64,6 +64,10 @@ If relevant, describe impact on:
   has been reviewed.
 - [ ] If a package version was published: no files under `versions/` were
   manually authored or modified outside of `package-build` script output.
+- [ ] If this is a package submission: PR title uses `feat(package):` or
+  `fix(package):` (or the breaking `feat(package)!:` / `fix(package)!:` form)
+  so squash-merge publishes a registry release tag. CI validates this title in
+  `pr-package-validation` when package directories change.
 - [ ] If this PR is linked to a tracking issue, `## Related Issues` includes
   `Closes #<issue-number>`.
 - [ ] Merge to `main` is for human maintainers only; agents and automation

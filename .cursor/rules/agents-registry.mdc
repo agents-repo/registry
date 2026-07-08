@@ -105,6 +105,31 @@ For package tasks, run in order:
 Open an issue using `.github/ISSUE_TEMPLATE/` forms before any change.
 See `.github/CONTRIBUTING.md` for the full workflow.
 
+## Release Workflow
+
+Pushes to `main` run release validation checks and then execute
+`semantic-release`. A release is published only when commit history includes
+releasable changes per the commit-to-version mapping below.
+
+Commit-to-version mapping for automated releases. Custom release rules in
+`.releaserc.json` override `feat(package):` to `PATCH` and breaking changes
+to `MAJOR`; all other types use commit-analyzer built-in default rules when
+no custom rule matches:
+
+- `type!:` or `BREAKING CHANGE:` => `MAJOR`
+- `feat(package):` => `PATCH` (catalog addition or new package version)
+- `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
+- `fix:`, `perf:`, and `revert:` with any scope => `PATCH`
+
+Use `fix(package):` for package corrections; it maps to `PATCH` like any
+other `fix:` commit.
+
+Package submission PRs MUST squash-merge with `feat(package):` or
+`fix(package):` titles (or the breaking `feat(package)!:` / `fix(package)!:`
+form) so registry release tags are published. CI enforces the PR title in
+`pr-package-validation` via `package:validate`; local runs do not unless CI
+env vars are set. See `.github/CONTRIBUTING.md` for the full squash-merge rule.
+
 ## Commit Message Convention
 
 Before creating a commit, the agent MUST inspect staged changes and determine
@@ -186,6 +211,7 @@ When opening tracking issues, the agent MUST use the issue form under
 - feature proposal: `.github/ISSUE_TEMPLATE/feature-proposal.yml`
 - task or chore: `.github/ISSUE_TEMPLATE/task-chore.yml`
 - package submission: `.github/ISSUE_TEMPLATE/package-submission.yml`
+- package correction: `.github/ISSUE_TEMPLATE/package-correction.yml`
 
 When opening a pull request, the agent MUST follow
 `.github/pull_request_template.md`.

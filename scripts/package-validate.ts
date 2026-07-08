@@ -14,6 +14,7 @@
 
 import { parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
 import { exitWithValidationResult } from './lib/cli/reporting';
+import { validatePackagePrTitleFromCiEnv } from './lib/validate-package-pr-title';
 import { PackageValidator } from './lib/validate-package';
 
 // ---------------------------------------------------------------------------
@@ -22,6 +23,8 @@ import { PackageValidator } from './lib/validate-package';
 
 function main(): void {
   const packageId = parseRequiredPackageId(process.argv);
+  validatePackagePrTitleFromCiEnv();
+
   const { packagesDir } = resolveScriptPaths(import.meta.url);
 
   console.log(`Validating package: ${packageId}`);

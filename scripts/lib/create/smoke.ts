@@ -44,6 +44,8 @@ function runScript(repoRoot: string, scriptName: string, args: string[], workspa
     env: {
       ...process.env,
       REGISTRY_REPO_ROOT: workspaceDir,
+      // Smoke runs package:validate under pull_request CI events with unrelated PR titles.
+      SKIP_PACKAGE_PR_TITLE_CHECK: '1',
     },
     stdio: 'inherit',
   });

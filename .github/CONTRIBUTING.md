@@ -59,11 +59,18 @@ The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. Release tags may
 use the common `v<MAJOR>.<MINOR>.<PATCH>` convention without changing the
 underlying version value.
 
-Commit-to-version mapping for automated releases:
+Commit-to-version mapping for automated releases. Custom release rules in
+`.releaserc.json` override `feat(package):` to `PATCH` and breaking changes
+to `MAJOR`; all other types use commit-analyzer built-in default rules when
+no custom rule matches:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
-- `feat:` => `MINOR`
-- `fix:`, `perf:`, and `revert:` => `PATCH`
+- `feat(package):` => `PATCH` (catalog addition or new package version)
+- `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
+- `fix:`, `perf:`, and `revert:` with any scope => `PATCH`
+
+Use `fix(package):` for package corrections; it maps to `PATCH` like any
+other `fix:` commit.
 
 Commit types not listed above do not trigger an automated release.
 
@@ -137,6 +144,13 @@ When updating files in specs/:
 
 ## Package Submission Expectations
 
+Open a tracking issue before starting work:
+
+- **New package or new package version:** `.github/ISSUE_TEMPLATE/package-submission.yml`
+  (`feat(package):` issue and PR titles)
+- **Correction to published package content:** `.github/ISSUE_TEMPLATE/package-correction.yml`
+  (`fix(package):` issue and PR titles)
+
 ### No manual edits under `versions/`
 
 Contributors and AI agents MUST NOT manually create or modify any file under
@@ -184,6 +198,29 @@ The only files contributors and AI agents author directly are:
 - `packages/<namespace>/<package-id>/flows/`
 
 All `versions/` artifacts are produced by step 2.
+
+### Squash-merge title for registry release
+
+When squash-merging a package submission PR, the resulting commit title
+MUST use `feat(package):` for new packages or new package versions, or
+`fix(package):` for corrections to published package content. Breaking
+registry releases MAY use `feat(package)!:` or `fix(package)!:` instead.
+The PR title should match, since GitHub uses it as the default squash-merge
+message. Maintainers MUST NOT edit the squash-merge message away from the
+validated PR title when merging package PRs.
+
+This format triggers a registry release tag so `v2.x` consumers receive the
+updated `packages/index.json`. Non-breaking package merges map to a registry
+`PATCH`; breaking `feat(package)!:` / `fix(package)!:` titles map to
+registry `MAJOR` per `.releaserc.json`.
+
+CI enforces the PR title in the `pr-package-validation` workflow via
+`npm run package:validate` when package directories change. Local
+`package:validate` and `package:build` runs do not check the PR title unless
+`GITHUB_EVENT_NAME=pull_request` and `GITHUB_EVENT_PATH` are set (as in CI).
+Smoke and integration harnesses set `SKIP_PACKAGE_PR_TITLE_CHECK=1` so
+unrelated PR titles do not fail tooling checks; that variable MUST NOT be set
+in package submission CI.
 
 ### IDE deployment mirrors (repo dogfooding)
 
