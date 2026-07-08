@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.1.0",
+  "name": "pr-comment-triage",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "2c6baca3684c18ee17b2f2903d27a484531eeb61c4afed3ade5479daaf861a69",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "045a313e90eacbdef213be230d4fed648b0003c3fb1e30964d201facc933d299"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "1c4536103e9da7b03f0c4bf36fd13be5452cab2617c003e1b409be0fa92f750c"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "503aaf9df6cc3398e09b08ab1667c16d7f7157c81fdafd818f7c63ca31b05574"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "e67588186861acf3013272637d941ab354e788894468335f696ecd30d1c06a5d"
+        }
+      ],
+      "createdAt": "2026-07-08T01:06:08.721Z"
+    }
+  ]
+}

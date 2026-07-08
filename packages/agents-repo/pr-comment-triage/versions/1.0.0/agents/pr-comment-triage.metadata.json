@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "pr-comment-triage",
+  "description": "Fetches PR review comments and threads, triages fix vs reply-only outcomes, applies code fixes, commits and pushes when requested, then replies and resolves threads via gh. Use when triaging PR review comments, addressing Copilot or Bugbot inline feedback, or closing review threads after fixes land.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "tools": ["github"]
+}

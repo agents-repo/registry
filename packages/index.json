@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.3.0",
-  "updatedAt": "2026-07-04T02:42:33.330Z",
+  "updatedAt": "2026-07-08T01:06:08.721Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -81,10 +81,54 @@
           "status": "supported"
         }
       ]
+    },
+    {
+      "id": "agents-repo/pr-comment-triage",
+      "namespace": "agents-repo",
+      "package": "pr-comment-triage",
+      "path": "packages/agents-repo/pr-comment-triage",
+      "name": "pr-comment-triage",
+      "description": "Fetches PR review comments and threads, triages fix vs reply-only outcomes, applies code fixes, commits and pushes when requested, then replies and resolves threads via gh.",
+      "owner": "agents-repo",
+      "latest": "1.0.0",
+      "tags": [
+        "pr",
+        "review",
+        "github",
+        "gh",
+        "triage",
+        "workflow"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/pr-comment-triage/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
     }
   ],
   "aliases": {
     "agents-repo-package-creation": "agents-repo/agents-repo-package-creation",
-    "hello-agent": "agents-repo/hello-agent"
+    "hello-agent": "agents-repo/hello-agent",
+    "pr-comment-triage": "agents-repo/pr-comment-triage"
   }
 }
