@@ -62,8 +62,10 @@ underlying version value.
 Commit-to-version mapping for automated releases:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
-- `feat:` => `MINOR`
-- `fix:`, `perf:`, and `revert:` => `PATCH`
+- `feat:` (no scope) => `MINOR` (platform or tooling changes)
+- `feat(package):` => `PATCH` (catalog addition or new package version)
+- `fix(package):` => `PATCH` (correction to published package content)
+- `fix:`, `perf:`, and `revert:` (no scope) => `PATCH`
 
 Commit types not listed above do not trigger an automated release.
 
@@ -184,6 +186,15 @@ The only files contributors and AI agents author directly are:
 - `packages/<namespace>/<package-id>/flows/`
 
 All `versions/` artifacts are produced by step 2.
+
+### Squash-merge title for registry release
+
+When squash-merging a package submission PR, the resulting commit title
+MUST use `feat(package):` for new packages or new package versions, or
+`fix(package):` for corrections to published package content. The PR title
+should match, since GitHub uses it as the default squash-merge message.
+This format triggers a registry patch release tag so `v2.x` consumers
+receive the updated `packages/index.json`.
 
 ### IDE deployment mirrors (repo dogfooding)
 

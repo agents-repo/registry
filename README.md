@@ -123,8 +123,10 @@ The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. The leading
 The release workflow uses Conventional Commit semantics:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
-- `feat:` => `MINOR`
-- `fix:`, `perf:`, and `revert:` => `PATCH`
+- `feat:` (no scope) => `MINOR` (platform or tooling changes)
+- `feat(package):` => `PATCH` (catalog addition or new package version)
+- `fix(package):` => `PATCH` (correction to published package content)
+- `fix:`, `perf:`, and `revert:` (no scope) => `PATCH`
 
 Commit types not listed above do not trigger an automated release.
 
@@ -132,6 +134,8 @@ Examples:
 
 - `feat!: remove legacy manifest field` => major bump
 - `feat: add release dashboard metadata` => minor bump
+- `feat(package): add agents-repo/hello-agent` => patch bump
+- `fix(package): correct hello-agent metadata` => patch bump
 - `fix: adjust lint config` => patch bump
 
 ## VS Code Workspace Settings

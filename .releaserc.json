@@ -15,6 +15,16 @@
           },
           {
             "type": "feat",
+            "scope": "package",
+            "release": "patch"
+          },
+          {
+            "type": "fix",
+            "scope": "package",
+            "release": "patch"
+          },
+          {
+            "type": "feat",
             "release": "minor"
           },
           {

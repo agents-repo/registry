@@ -98,6 +98,24 @@ For package tasks, run in order:
 Open an issue using `.github/ISSUE_TEMPLATE/` forms before any change.
 See `.github/CONTRIBUTING.md` for the full workflow.
 
+## Release Workflow
+
+Pushes to `main` run release validation checks and then execute
+`semantic-release`. A release is published only when commit history includes
+releasable changes per the commit-to-version mapping below.
+
+Commit-to-version mapping for automated releases:
+
+- `type!:` or `BREAKING CHANGE:` => `MAJOR`
+- `feat:` (no scope) => `MINOR` (platform or tooling changes)
+- `feat(package):` => `PATCH` (catalog addition or new package version)
+- `fix(package):` => `PATCH` (correction to published package content)
+- `fix:`, `perf:`, and `revert:` (no scope) => `PATCH`
+
+Package submission PRs MUST squash-merge with `feat(package):` or
+`fix(package):` titles so registry release tags are published. See
+`.github/CONTRIBUTING.md` for the full squash-merge rule.
+
 ## Commit Message Convention
 
 Before creating a commit, the agent MUST inspect staged changes and determine

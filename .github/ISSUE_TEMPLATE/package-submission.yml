@@ -1,6 +1,6 @@
 name: Package submission
 description: Submit a new agent or flow package to the registry.
-title: "package: "
+title: "feat(package): "
 labels:
   - package
 type: Task
@@ -15,6 +15,12 @@ body:
         **Branch name:** `package/<issue-number>-<package-name>`
         **Example:** `package/56-my-package-name`
         Create this issue first to get the issue number, then open the branch.
+
+        **PR title:** use `feat(package):` for new packages or new package
+        versions, or `fix(package):` for corrections to published package
+        content. GitHub uses the PR title as the default squash-merge commit
+        message, which MUST match this format so semantic-release publishes a
+        registry release tag.
 
         If you open a PR for this issue, include
         `Closes #<issue-number>` in `## Related Issues`.
