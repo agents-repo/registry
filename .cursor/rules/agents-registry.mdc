@@ -172,7 +172,8 @@ Before implementation, agents MUST:
    implementation commits. Pull requests MUST be created as drafts
    (`gh pr create --draft`). In `## Related Issues`, include
    `Closes #<issue-number>` for standard tasks, or follow the security-advisory
-   format in `.github/CONTRIBUTING.md` **Workflow exceptions** when applicable.
+   format defined in the **Workflow exceptions** section of
+   `.github/CONTRIBUTING.md` when applicable.
    GitHub cannot open a PR when head and base are identical; push a scaffolding
    commit on the task branch first if needed (see `.github/CONTRIBUTING.md`).
 
