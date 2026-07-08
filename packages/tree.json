@@ -1,11 +1,16 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-07-04T02:42:33.330Z",
+  "updatedAt": "2026-07-08T01:52:30.471Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
         "agents-repo-package-creation",
         "hello-agent"
+      ]
+    },
+    "maiconfz": {
+      "packages": [
+        "pr-comment-triage"
       ]
     }
   }

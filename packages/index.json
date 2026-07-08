@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.3.0",
-  "updatedAt": "2026-07-04T02:42:33.330Z",
+  "updatedAt": "2026-07-08T01:52:30.471Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -81,10 +81,54 @@
           "status": "supported"
         }
       ]
+    },
+    {
+      "id": "maiconfz/pr-comment-triage",
+      "namespace": "maiconfz",
+      "package": "pr-comment-triage",
+      "path": "packages/maiconfz/pr-comment-triage",
+      "name": "pr-comment-triage",
+      "description": "Triages PR review comments via gh: fetch, fix, commit, reply, and resolve threads",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "pr",
+        "review",
+        "github",
+        "gh",
+        "triage",
+        "workflow"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "quickstart": "https://github.com/maiconfz/agents-repo-registry/blob/main/packages/maiconfz/pr-comment-triage/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
     }
   ],
   "aliases": {
     "agents-repo-package-creation": "agents-repo/agents-repo-package-creation",
-    "hello-agent": "agents-repo/hello-agent"
+    "hello-agent": "agents-repo/hello-agent",
+    "pr-comment-triage": "maiconfz/pr-comment-triage"
   }
 }
