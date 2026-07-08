@@ -47,9 +47,9 @@ fetch → triage → fix → validate/commit/push → reply/resolve
   `duplicate`.
 - **Phase 3 — Fix:** Apply minimal scoped diffs. Do not reply or resolve
   threads during this phase.
-- **Phase 4 — Validate, commit, push:** Run project-appropriate checks,
-  commit when permitted, and push the PR head branch. Capture commit SHA for
-  Phase 5.
+- **Phase 4 — Validate, commit, push:** Run project-appropriate checks after
+  local fixes (even without push permission). Commit and push the PR head
+  branch when permitted. Capture commit SHA for Phase 5.
 - **Phase 5 — Reply and resolve:** After a successful push, reply on each
   thread and resolve it with sequential GraphQL mutations.
 - **Multi-PR / multi-repo:** Repeat the full cycle per repository before
@@ -126,11 +126,19 @@ gh api graphql -f query='
        body: .comments.nodes[0].body[0:200]}'
 ```
 
-If the unresolved count is `100` and `pageInfo.hasNextPage` is true, re-run
-with `reviewThreads(first: 100, after: "<endCursor>")` using `pageInfo.endCursor`
-from the prior response.
+Paginate while `pageInfo.hasNextPage` is `true` — do not gate on unresolved
+count. Each page returns up to 100 threads (resolved and unresolved mixed);
+filter unresolved per page and accumulate results. When `hasNextPage` is
+`true`, re-run with `reviewThreads(first: 100, after: "<endCursor>")` using
+`pageInfo.endCursor` from the prior response. Stop when `hasNextPage` is
+`false`.
 
 ### Count unresolved threads
+
+After all pages are fetched, the unresolved total is the accumulated count
+across pages — not the count from a single page. The jq snippet below counts
+unresolved threads on one page only; repeat per page or sum after pagination
+completes.
 
 ```bash
 gh api graphql -f query='...' -f owner=OWNER -f name=REPO -F number=PR \
@@ -159,13 +167,19 @@ Write a triage table **before** editing files:
 - Minimal scoped diffs; match surrounding conventions.
 - Batch fixes per repository when one PR spans multiple files.
 - Do **not** reply or resolve threads during this phase.
+- After edits, proceed to Phase 4 validation before handoff or commit.
 - If fixes touch normative specs or shared contracts, run that project's
   change-propagation rules before commit.
 
 ## Phase 4 — Validate, commit, push
 
-Run only when `push-permission` is true or the user explicitly requests
-commit/push.
+### Validate
+
+Run project-appropriate checks whenever Phase 3 applied code or doc changes,
+regardless of `push-permission`. Skip validation only when the triage pass
+produced no local edits (all threads are `fixed_remote`, `wont_fix`,
+`by_design`, or `duplicate`). When validation fails, fix issues before handoff
+or commit.
 
 ### Discover project checks
 
@@ -186,6 +200,9 @@ When `package.json` declares `packageManager` for npm, run `corepack enable`,
 unavailable.
 
 ### Commit and push
+
+Run only when `push-permission` is true or the user explicitly requests
+commit/push.
 
 - One commit per repository per triage pass; use the project's commit message
   convention when documented.
@@ -253,7 +270,7 @@ Per repository: `fix → validate → commit → push → threads`.
 - [ ] Fetch unresolved threads (GraphQL primary)
 - [ ] Triage table written
 - [ ] Fixes applied
-- [ ] Validation passed (project-appropriate)
+- [ ] Validation passed when fixes were applied (project-appropriate)
 - [ ] Committed and pushed (if requested)
 - [ ] Threads replied and resolved (post-push)
 - [ ] Handoff summary (PR, SHA, resolved count)
