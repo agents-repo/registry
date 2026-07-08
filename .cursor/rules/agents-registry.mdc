@@ -199,8 +199,8 @@ generic commit or pull request timing rules for workflow setup steps.
 - Integration to `main` is a human-only, manual step performed by maintainers
   after review. All contributors MUST deliver changes to `main` only through
   merged pull requests.
-- Agents MUST hand off at PR creation and state that merge is for a human
-  maintainer.
+- Agents MUST complete requested implementation work on the task branch, then
+  hand off and state that merge is for a human maintainer.
 
 ## GitHub Communication Method (gh CLI Preferred)
 

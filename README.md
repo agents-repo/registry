@@ -70,8 +70,8 @@ Every PR targeting `main` MUST include a tracking reference in
 `## Related Issues`: `Closes #<issue-number>` for standard tasks, or the
 security-advisory format defined in the **Workflow exceptions** section of
 `.github/CONTRIBUTING.md` when no public tracking issue exists. See
-**Required Workflow** for the canonical policy (issue → branch → push → draft PR
-before implementation).
+[Required Workflow](.github/CONTRIBUTING.md#required-workflow) for the
+canonical policy (issue → branch → push → draft PR before implementation).
 
 ## IDE Setup
 

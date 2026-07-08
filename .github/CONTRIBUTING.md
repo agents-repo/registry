@@ -31,8 +31,11 @@ Contributors and agents MUST follow this full lifecycle.
 4. Open a draft pull request with the required template sections before
   implementation commits. Pull requests MUST be created as drafts
   (`gh pr create --repo agents-repo/registry --draft`):
-  `gh pr create --repo agents-repo/registry --draft --title "..." \
-  --body-file <file>`
+
+  ```bash
+  gh pr create --repo agents-repo/registry --draft --title "..." \
+    --body-file <file>
+  ```
 
 ### Delivery (after draft PR)
 
@@ -58,7 +61,7 @@ Implementation commits may follow on the same branch.
    to `main`. In `## Related Issues`, use `Closes #<issue-number>` when
    maintainers provide a linked private or advisory tracking issue. Otherwise,
    reference the private security advisory identifier (for example `GHSA-...`)
-   in the PR body and coordinate linkage with maintainers.
+   in `## Related Issues` and coordinate linkage with maintainers.
 2. **Maintainer emergency hotfix** — Hotfix branch work requires prior
    maintainer approval documented in an issue or advisory. Delivery to `main`
    is still via merged pull request.
