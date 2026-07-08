@@ -112,8 +112,9 @@ Pushes to `main` run release validation checks and then execute
 releasable changes per the commit-to-version mapping below.
 
 Commit-to-version mapping for automated releases. Custom release rules in
-`.releaserc.json` override only `feat(package):` to `PATCH`; all other types
-follow the conventionalcommits preset defaults:
+`.releaserc.json` override `feat(package):` to `PATCH` and breaking changes
+to `MAJOR`; all other types use commit-analyzer built-in default rules when
+no custom rule matches:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
 - `feat(package):` => `PATCH` (catalog addition or new package version)
@@ -208,6 +209,7 @@ When opening tracking issues, the agent MUST use the issue form under
 - feature proposal: `.github/ISSUE_TEMPLATE/feature-proposal.yml`
 - task or chore: `.github/ISSUE_TEMPLATE/task-chore.yml`
 - package submission: `.github/ISSUE_TEMPLATE/package-submission.yml`
+- package correction: `.github/ISSUE_TEMPLATE/package-correction.yml`
 
 When opening a pull request, the agent MUST follow
 `.github/pull_request_template.md`.

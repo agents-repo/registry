@@ -12,13 +12,15 @@ body:
         A package may contain agents, flows, or both.
         Submitted package content must be licensed under MIT.
 
+        For corrections to an **existing** published package, use the
+        **Package correction** form instead (`fix(package):` title).
+
         **Branch name:** `package/<issue-number>-<package-name>`
         **Example:** `package/56-my-package-name`
         Create this issue first to get the issue number, then open the branch.
 
         **PR title:** use `feat(package):` for new packages or new package
-        versions, or `fix(package):` for corrections to published package
-        content. GitHub uses the PR title as the default squash-merge commit
+        versions. GitHub uses the PR title as the default squash-merge commit
         message, which MUST match this format so semantic-release publishes a
         registry release tag.
 

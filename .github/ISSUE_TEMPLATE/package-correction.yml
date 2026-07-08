@@ -1,0 +1,87 @@
+name: Package correction
+description: Correct metadata or content in an existing published package.
+title: "fix(package): "
+labels:
+  - package
+type: Task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form to correct an **existing** published package under
+        `packages/<namespace>/<package-id>/`. For new packages or new package
+        versions, use the **Package submission** form instead.
+
+        **Branch name:** `package/<issue-number>-<package-name>`
+        **Example:** `package/56-my-package-name`
+        Create this issue first to get the issue number, then open the branch.
+
+        **PR title:** MUST use `fix(package):` so squash-merge publishes a
+        registry release tag. GitHub uses the PR title as the default
+        squash-merge commit message.
+
+        If you open a PR for this issue, include
+        `Closes #<issue-number>` in `## Related Issues`.
+
+  - type: input
+    id: package-qualified-id
+    attributes:
+      label: Qualified package ID
+      description: Namespace and package ID (for example agents-repo/hello-agent).
+      placeholder: agents-repo/hello-agent
+    validations:
+      required: true
+
+  - type: input
+    id: package-version
+    attributes:
+      label: Version being corrected
+      description: Semver of the new snapshot you will publish (must be new per versioning-rules.md).
+      placeholder: 1.0.1
+    validations:
+      required: true
+
+  - type: textarea
+    id: correction-summary
+    attributes:
+      label: What is being corrected?
+      description: Describe the change and why it is needed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: affected-files
+    attributes:
+      label: Affected source files
+      description: List paths under the package source tree that will change.
+      placeholder: |
+        packages/agents-repo/hello-agent/metadata.json
+        packages/agents-repo/hello-agent/agents/hello.agent.md
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: correction-checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched for existing similar issues.
+          required: true
+        - label: I followed specs/package-format.md and specs/versioning-rules.md.
+          required: true
+        - label: >-
+            I will run `npm run package:build` and
+            `npm run package:validate-artifacts` before opening a PR.
+          required: true
+        - label: >-
+            I did not manually edit files under `versions/` except via
+            `package:build` output.
+          required: true
+        - label: >-
+            PR title will use `fix(package):` for squash-merge (see
+            CONTRIBUTING.md).
+          required: true
+        - label: >-
+            If I open a PR for this issue, I will include
+            `Closes #<issue-number>` in `## Related Issues`.
+          required: true

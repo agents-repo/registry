@@ -60,8 +60,9 @@ use the common `v<MAJOR>.<MINOR>.<PATCH>` convention without changing the
 underlying version value.
 
 Commit-to-version mapping for automated releases. Custom release rules in
-`.releaserc.json` override only `feat(package):` to `PATCH`; all other types
-follow the conventionalcommits preset defaults:
+`.releaserc.json` override `feat(package):` to `PATCH` and breaking changes
+to `MAJOR`; all other types use commit-analyzer built-in default rules when
+no custom rule matches:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
 - `feat(package):` => `PATCH` (catalog addition or new package version)
@@ -142,6 +143,13 @@ When updating files in specs/:
   was updated or intentionally left unchanged.
 
 ## Package Submission Expectations
+
+Open a tracking issue before starting work:
+
+- **New package or new package version:** `.github/ISSUE_TEMPLATE/package-submission.yml`
+  (`feat(package):` issue and PR titles)
+- **Correction to published package content:** `.github/ISSUE_TEMPLATE/package-correction.yml`
+  (`fix(package):` issue and PR titles)
 
 ### No manual edits under `versions/`
 

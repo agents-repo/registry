@@ -121,8 +121,9 @@ The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. The leading
 ### Commit-To-Version Mapping
 
 The release workflow uses Conventional Commit semantics. Custom release
-rules in `.releaserc.json` override only `feat(package):` to `PATCH`;
-all other types follow the conventionalcommits preset defaults:
+rules in `.releaserc.json` override `feat(package):` to `PATCH` and breaking
+changes to `MAJOR`; all other types use commit-analyzer built-in default rules
+when no custom rule matches:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
 - `feat(package):` => `PATCH` (catalog addition or new package version)
