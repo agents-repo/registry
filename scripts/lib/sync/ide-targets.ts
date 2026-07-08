@@ -17,6 +17,13 @@ const CURSOR_RULES_REL = path.join('.cursor', 'rules', 'agents-registry.mdc');
 const GITHUB_AGENTS_REL = path.join('.github', 'agents');
 const CURSOR_SKILLS_REL = path.join('.cursor', 'skills');
 
+/** Hand-authored infra skills not emitted from package sync; never delete on sync. */
+export const PRESERVED_CURSOR_SKILL_IDS = new Set(['pr-comment-triage']);
+
+function cursorSkillKeepIds(packageSkillIds: Iterable<string>): Set<string> {
+  return new Set([...packageSkillIds, ...PRESERVED_CURSOR_SKILL_IDS]);
+}
+
 const CURSOR_RULES_GENERATED_COMMENT =
   '<!-- Generated from .github/copilot-instructions.md — do not edit; run npm run sync:cursor-rules -->';
 
@@ -306,7 +313,7 @@ function checkGithubCopilotAgents(repoRoot: string, pkg: Package): IdeSyncDriftI
 function checkCursorSkills(repoRoot: string, pkg: Package): IdeSyncDriftIssue[] {
   const expected = expectedCursorSkills(pkg);
   const issues = compareExpectedFiles(repoRoot, expected);
-  const keepIds = new Set(
+  const keepIds = cursorSkillKeepIds(
     [...expected.keys()].map((relativePath) => path.basename(path.dirname(relativePath))),
   );
 
@@ -427,7 +434,7 @@ export function syncCursorSkills(repoRoot: string, pkg: Package): string[] {
     written.push(path.relative(repoRoot, targetPath));
   }
 
-  removeStaleSkillDirs(skillsRoot, new Set(files.map((file) => file.id)));
+  removeStaleSkillDirs(skillsRoot, cursorSkillKeepIds(new Set(files.map((file) => file.id))));
   return written;
 }
 

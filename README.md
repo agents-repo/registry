@@ -98,8 +98,10 @@ When only `copilot-instructions.md` changes:
 npm run sync:cursor-rules
 ```
 
-Do not edit `.github/agents/`, `.cursor/skills/`, or `.cursor/rules/` directly.
-See `.github/CONTRIBUTING.md` for the full edit workflow.
+Do not edit `.github/agents/`, package-generated `.cursor/skills/`, or
+`.cursor/rules/` directly. Hand-authored infra skills (for example
+`pr-comment-triage`) are an exception. See `.github/CONTRIBUTING.md` for the
+full edit workflow.
 
 ## Release Workflow
 

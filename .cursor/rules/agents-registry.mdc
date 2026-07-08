@@ -197,3 +197,13 @@ follows `.github/pull_request_template.md`.
 If the available tool path cannot programmatically apply a template, the
 agent MUST explicitly state that limitation and MUST include all required
 sections from the intended template in the issue or PR body.
+
+## Cursor skills
+
+| Skill | Path | When |
+| --- | --- | --- |
+| `pr-comment-triage` | `.cursor/skills/pr-comment-triage/SKILL.md` | Triage and resolve PR review comments |
+
+Package workflow skills under `.cursor/skills/` are generated from package
+source. Infra skills such as `pr-comment-triage` are hand-authored and
+preserved during package cursor sync.
