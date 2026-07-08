@@ -4,6 +4,7 @@ import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   isValidPackagePrTitle,
+  validatePackagePrTitleFromCiEnv,
   validatePackagePrTitleFromEventPath,
 } from '../../../../scripts/lib/validate-package-pr-title';
 
@@ -67,5 +68,45 @@ describe('validate-package-pr-title', () => {
     expect(() => {
       validatePackagePrTitleFromEventPath(eventPath, 'pull_request');
     }).not.toThrow();
+  });
+
+  it('skips CI validation when SKIP_PACKAGE_PR_TITLE_CHECK is set', () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'registry-pr-title-'));
+    const eventPath = path.join(dir, 'event.json');
+    writeFileSync(
+      eventPath,
+      JSON.stringify({ pull_request: { title: 'package: invalid title' } }),
+      'utf8',
+    );
+
+    const previousSkip = process.env.SKIP_PACKAGE_PR_TITLE_CHECK;
+    const previousEventPath = process.env.GITHUB_EVENT_PATH;
+    const previousEventName = process.env.GITHUB_EVENT_NAME;
+
+    process.env.SKIP_PACKAGE_PR_TITLE_CHECK = '1';
+    process.env.GITHUB_EVENT_PATH = eventPath;
+    process.env.GITHUB_EVENT_NAME = 'pull_request';
+
+    try {
+      expect(() => {
+        validatePackagePrTitleFromCiEnv();
+      }).not.toThrow();
+    } finally {
+      if (previousSkip === undefined) {
+        delete process.env.SKIP_PACKAGE_PR_TITLE_CHECK;
+      } else {
+        process.env.SKIP_PACKAGE_PR_TITLE_CHECK = previousSkip;
+      }
+      if (previousEventPath === undefined) {
+        delete process.env.GITHUB_EVENT_PATH;
+      } else {
+        process.env.GITHUB_EVENT_PATH = previousEventPath;
+      }
+      if (previousEventName === undefined) {
+        delete process.env.GITHUB_EVENT_NAME;
+      } else {
+        process.env.GITHUB_EVENT_NAME = previousEventName;
+      }
+    }
   });
 });

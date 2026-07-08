@@ -44,6 +44,7 @@ function runScript(repoRoot: string, scriptName: string, args: string[], workspa
     env: {
       ...process.env,
       REGISTRY_REPO_ROOT: workspaceDir,
+      SKIP_PACKAGE_PR_TITLE_CHECK: '1',
     },
     stdio: 'inherit',
   });

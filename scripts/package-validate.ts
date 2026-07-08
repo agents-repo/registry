@@ -22,9 +22,9 @@ import { PackageValidator } from './lib/validate-package';
 // ---------------------------------------------------------------------------
 
 function main(): void {
+  const packageId = parseRequiredPackageId(process.argv);
   validatePackagePrTitleFromCiEnv();
 
-  const packageId = parseRequiredPackageId(process.argv);
   const { packagesDir } = resolveScriptPaths(import.meta.url);
 
   console.log(`Validating package: ${packageId}`);

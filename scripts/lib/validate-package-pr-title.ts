@@ -43,6 +43,10 @@ export const validatePackagePrTitleFromEventPath = (
 };
 
 export const validatePackagePrTitleFromCiEnv = (): void => {
+  if (process.env.SKIP_PACKAGE_PR_TITLE_CHECK === '1') {
+    return;
+  }
+
   validatePackagePrTitleFromEventPath(
     process.env.GITHUB_EVENT_PATH,
     process.env.GITHUB_EVENT_NAME,
