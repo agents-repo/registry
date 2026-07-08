@@ -125,8 +125,10 @@ Use `fix(package):` for package corrections; it maps to `PATCH` like any
 other `fix:` commit.
 
 Package submission PRs MUST squash-merge with `feat(package):` or
-`fix(package):` titles so registry release tags are published. See
-`.github/CONTRIBUTING.md` for the full squash-merge rule.
+`fix(package):` titles (or the breaking `feat(package)!:` / `fix(package)!:`
+form) so registry release tags are published. CI enforces the PR title in
+`pr-package-validation` via `package:validate`; local runs do not unless CI
+env vars are set. See `.github/CONTRIBUTING.md` for the full squash-merge rule.
 
 ## Commit Message Convention
 

@@ -203,10 +203,24 @@ All `versions/` artifacts are produced by step 2.
 
 When squash-merging a package submission PR, the resulting commit title
 MUST use `feat(package):` for new packages or new package versions, or
-`fix(package):` for corrections to published package content. The PR title
-should match, since GitHub uses it as the default squash-merge message.
-This format triggers a registry patch release tag so `v2.x` consumers
-receive the updated `packages/index.json`.
+`fix(package):` for corrections to published package content. Breaking
+registry releases MAY use `feat(package)!:` or `fix(package)!:` instead.
+The PR title should match, since GitHub uses it as the default squash-merge
+message. Maintainers MUST NOT edit the squash-merge message away from the
+validated PR title when merging package PRs.
+
+This format triggers a registry release tag so `v2.x` consumers receive the
+updated `packages/index.json`. Non-breaking package merges map to a registry
+`PATCH`; breaking `feat(package)!:` / `fix(package)!:` titles map to
+registry `MAJOR` per `.releaserc.json`.
+
+CI enforces the PR title in the `pr-package-validation` workflow via
+`npm run package:validate` when package directories change. Local
+`package:validate` and `package:build` runs do not check the PR title unless
+`GITHUB_EVENT_NAME=pull_request` and `GITHUB_EVENT_PATH` are set (as in CI).
+Smoke and integration harnesses set `SKIP_PACKAGE_PR_TITLE_CHECK=1` so
+unrelated PR titles do not fail tooling checks; that variable MUST NOT be set
+in package submission CI.
 
 ### IDE deployment mirrors (repo dogfooding)
 

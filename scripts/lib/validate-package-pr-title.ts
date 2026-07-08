@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 
-const PACKAGE_PR_TITLE_PATTERN = /^(feat|fix)\(package\): /;
+const PACKAGE_PR_TITLE_PATTERN = /^(feat|fix)\(package\)!?: ?/;
 
 interface PullRequestEventPayload {
   readonly pull_request?: {
@@ -35,13 +35,15 @@ export const validatePackagePrTitleFromEventPath = (
 
   if (!isValidPackagePrTitle(title)) {
     console.error(
-      'Package PR title must start with feat(package): or fix(package): for semantic-release.',
+      'Package PR title must start with feat(package):, fix(package):, or the breaking',
     );
+    console.error('feat(package)!: / fix(package)!: form for semantic-release.');
     console.error(`Current title: ${title}`);
     process.exit(1);
   }
 };
 
+/** Skips when `SKIP_PACKAGE_PR_TITLE_CHECK=1` (smoke/integration harnesses only). */
 export const validatePackagePrTitleFromCiEnv = (): void => {
   if (process.env.SKIP_PACKAGE_PR_TITLE_CHECK === '1') {
     return;
