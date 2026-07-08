@@ -4,13 +4,19 @@ import { listDeploymentAgentFiles } from '../deployment-agents';
 import { agentMdToSkillMd } from '../emitters/agent-instruction';
 import { resolveDeclaredInstallTargets } from '../compatibility';
 import { ErrorCode, PackageError } from '../errors';
+import { Package } from '../package';
 import type { InstallTargetId, PackageMetadata } from '../types';
-import type { Package } from '../package';
 
 export const IDE_SYNC_TARGETS = ['github-copilot', 'cursor', 'cursor-rules', 'all'] as const;
 export type IdeSyncTarget = (typeof IDE_SYNC_TARGETS)[number];
 
 const PACKAGE_IDE_SYNC_TARGETS = ['github-copilot', 'cursor'] as const;
+
+/** Packages whose IDE mirrors are committed in this repository. */
+export const DOGFOODED_PACKAGE_IDS = [
+  'agents-repo/agents-repo-package-creation',
+  'maiconfz/pr-comment-triage',
+] as const;
 
 const COPILOT_INSTRUCTIONS_REL = path.join('.github', 'copilot-instructions.md');
 const CURSOR_RULES_REL = path.join('.cursor', 'rules', 'agents-registry.mdc');
@@ -42,6 +48,46 @@ function assertInstallTargetDeclared(metadata: PackageMetadata, targetId: Instal
       `Install target "${targetId}" must be supported or experimental for sync, got: ${match.status}`,
     );
   }
+}
+
+function listDogfoodedAgentFileNames(pkg: Package): Set<string> {
+  const names = new Set<string>();
+  for (const qualifiedId of DOGFOODED_PACKAGE_IDS) {
+    const dogfoodPkg = new Package(qualifiedId, pkg.packagesDir);
+    if (!fs.existsSync(dogfoodPkg.packageDir)) {
+      continue;
+    }
+
+    for (const file of listDeploymentAgentFiles(dogfoodPkg.packageDir)) {
+      names.add(`${file.id}.agent.md`);
+    }
+  }
+
+  for (const file of listDeploymentAgentFiles(pkg.packageDir)) {
+    names.add(`${file.id}.agent.md`);
+  }
+
+  return names;
+}
+
+function listDogfoodedSkillIds(pkg: Package): Set<string> {
+  const ids = new Set<string>();
+  for (const qualifiedId of DOGFOODED_PACKAGE_IDS) {
+    const dogfoodPkg = new Package(qualifiedId, pkg.packagesDir);
+    if (!fs.existsSync(dogfoodPkg.packageDir)) {
+      continue;
+    }
+
+    for (const file of listDeploymentAgentFiles(dogfoodPkg.packageDir)) {
+      ids.add(file.id);
+    }
+  }
+
+  for (const file of listDeploymentAgentFiles(pkg.packageDir)) {
+    ids.add(file.id);
+  }
+
+  return ids;
 }
 
 function ensureDir(dirPath: string): void {
@@ -292,9 +338,7 @@ function findStaleSkillDirs(repoRoot: string, keepIds: Set<string>): string[] {
 function checkGithubCopilotAgents(repoRoot: string, pkg: Package): IdeSyncDriftIssue[] {
   const expected = expectedGithubCopilotAgents(pkg);
   const issues = compareExpectedFiles(repoRoot, expected);
-  const keepFileNames = new Set(
-    [...expected.keys()].map((relativePath) => path.basename(relativePath)),
-  );
+  const keepFileNames = listDogfoodedAgentFileNames(pkg);
 
   for (const stalePath of findStaleGithubAgentFiles(repoRoot, keepFileNames)) {
     issues.push({ kind: 'stale', path: stalePath });
@@ -306,9 +350,7 @@ function checkGithubCopilotAgents(repoRoot: string, pkg: Package): IdeSyncDriftI
 function checkCursorSkills(repoRoot: string, pkg: Package): IdeSyncDriftIssue[] {
   const expected = expectedCursorSkills(pkg);
   const issues = compareExpectedFiles(repoRoot, expected);
-  const keepIds = new Set(
-    [...expected.keys()].map((relativePath) => path.basename(path.dirname(relativePath))),
-  );
+  const keepIds = listDogfoodedSkillIds(pkg);
 
   for (const stalePath of findStaleSkillDirs(repoRoot, keepIds)) {
     issues.push({ kind: 'stale', path: stalePath });
@@ -406,7 +448,7 @@ export function syncGithubCopilotAgents(repoRoot: string, pkg: Package): string[
     written.push(path.relative(repoRoot, targetPath));
   }
 
-  removeStaleFiles(agentsDir, new Set(files.map((file) => `${file.id}.agent.md`)), '.agent.md');
+  removeStaleFiles(agentsDir, listDogfoodedAgentFileNames(pkg), '.agent.md');
   return written;
 }
 
@@ -427,7 +469,7 @@ export function syncCursorSkills(repoRoot: string, pkg: Package): string[] {
     written.push(path.relative(repoRoot, targetPath));
   }
 
-  removeStaleSkillDirs(skillsRoot, new Set(files.map((file) => file.id)));
+  removeStaleSkillDirs(skillsRoot, listDogfoodedSkillIds(pkg));
   return written;
 }
 
