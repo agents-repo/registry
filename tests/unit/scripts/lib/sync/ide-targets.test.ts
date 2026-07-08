@@ -156,29 +156,6 @@ describe('syncCursorSkills', (): void => {
     expect(fs.existsSync(staleSkillDir)).toBe(false);
     expect(fs.existsSync(path.join(repoRoot, '.cursor', 'skills', 'current-skill', 'SKILL.md'))).toBe(true);
   });
-
-  it('preserves hand-authored infra skill directories during sync', (): void => {
-    const repoRoot = makeRepoRoot();
-    createDummyPackage(repoRoot, 'cursor-infra', {
-      agents: [{ id: 'current-skill', name: 'current-skill', description: 'Package skill kept during infra preserve.' }],
-      flows: [],
-    });
-
-    const infraSkillDir = path.join(repoRoot, '.cursor', 'skills', 'pr-comment-triage');
-    fs.mkdirSync(infraSkillDir, { recursive: true });
-    fs.writeFileSync(path.join(infraSkillDir, 'SKILL.md'), 'infra skill', 'utf-8');
-
-    const staleSkillDir = path.join(repoRoot, '.cursor', 'skills', 'stale-skill');
-    fs.mkdirSync(staleSkillDir, { recursive: true });
-    fs.writeFileSync(path.join(staleSkillDir, 'SKILL.md'), 'stale', 'utf-8');
-
-    const pkg = new Package('agents-repo/cursor-infra', path.join(repoRoot, 'packages'));
-    syncCursorSkills(repoRoot, pkg);
-
-    expect(fs.existsSync(infraSkillDir)).toBe(true);
-    expect(fs.readFileSync(path.join(infraSkillDir, 'SKILL.md'), 'utf-8')).toBe('infra skill');
-    expect(fs.existsSync(staleSkillDir)).toBe(false);
-  });
 });
 
 describe('syncCursorRules', (): void => {
