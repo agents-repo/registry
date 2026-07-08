@@ -120,13 +120,17 @@ The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. The leading
 
 ### Commit-To-Version Mapping
 
-The release workflow uses Conventional Commit semantics:
+The release workflow uses Conventional Commit semantics. Custom release
+rules in `.releaserc.json` override only `feat(package):` to `PATCH`;
+all other types follow the conventionalcommits preset defaults:
 
 - `type!:` or `BREAKING CHANGE:` => `MAJOR`
-- `feat:` (no scope) => `MINOR` (platform or tooling changes)
 - `feat(package):` => `PATCH` (catalog addition or new package version)
-- `fix(package):` => `PATCH` (correction to published package content)
-- `fix:`, `perf:`, and `revert:` (no scope) => `PATCH`
+- `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
+- `fix:`, `perf:`, and `revert:` with any scope => `PATCH`
+
+Use `fix(package):` for package corrections; it maps to `PATCH` like any
+other `fix:` commit.
 
 Commit types not listed above do not trigger an automated release.
 
@@ -134,6 +138,7 @@ Examples:
 
 - `feat!: remove legacy manifest field` => major bump
 - `feat: add release dashboard metadata` => minor bump
+- `feat(release): add scoped rules` => minor bump
 - `feat(package): add agents-repo/hello-agent` => patch bump
 - `fix(package): correct hello-agent metadata` => patch bump
 - `fix: adjust lint config` => patch bump
