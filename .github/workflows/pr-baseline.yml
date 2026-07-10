@@ -35,3 +35,17 @@ jobs:
           --check
           --package agents-repo/agents-repo-package-creation
           --target all
+
+      - name: Check pr-comment-triage IDE mirrors
+        run: >-
+          npm run package:sync-ide-targets --
+          --check
+          --package maiconfz/pr-comment-triage
+          --target github-copilot
+
+      - name: Check pr-comment-triage Cursor skill
+        run: >-
+          npm run package:sync-ide-targets --
+          --check
+          --package maiconfz/pr-comment-triage
+          --target cursor

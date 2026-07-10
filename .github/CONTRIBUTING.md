@@ -228,8 +228,8 @@ Committed IDE paths are generated from canonical sources:
 
 | Path | Source |
 | --- | --- |
-| `.github/agents/*.agent.md` | `packages/agents-repo/agents-repo-package-creation/` `agents/` + `flows/` |
-| `.cursor/skills/<id>/SKILL.md` | same package source |
+| `.github/agents/*.agent.md` | `packages/agents-repo/agents-repo-package-creation/` and `packages/maiconfz/pr-comment-triage/` (`agents/` + `flows/`) |
+| `.cursor/skills/<id>/SKILL.md` | same package sources |
 | `.cursor/rules/agents-registry.mdc` | `.github/copilot-instructions.md` |
 
 Regenerate after source edits:
@@ -238,6 +238,14 @@ Regenerate after source edits:
 npm run package:sync-ide-targets -- \
   --package agents-repo/agents-repo-package-creation \
   --target all
+
+npm run package:sync-ide-targets -- \
+  --package maiconfz/pr-comment-triage \
+  --target github-copilot
+
+npm run package:sync-ide-targets -- \
+  --package maiconfz/pr-comment-triage \
+  --target cursor
 ```
 
 When only `copilot-instructions.md` changes:
