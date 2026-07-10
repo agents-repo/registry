@@ -100,6 +100,34 @@ describe('transformCopilotInstructionsToCursorRules', (): void => {
 });
 
 describe('syncGithubCopilotAgents', (): void => {
+  it('preserves mirrors from other dogfooded packages when syncing one package', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'agents-repo-package-creation', {
+      namespace: 'agents-repo',
+      agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
+      flows: [],
+    });
+    createDummyPackage(repoRoot, 'pr-comment-triage', {
+      namespace: 'maiconfz',
+      agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
+      flows: [],
+    });
+
+    const pkgA = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
+    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+
+    syncGithubCopilotAgents(repoRoot, pkgA);
+    syncGithubCopilotAgents(repoRoot, pkgB);
+
+    expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'pkg-a-agent.agent.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'pkg-b-agent.agent.md'))).toBe(true);
+
+    syncGithubCopilotAgents(repoRoot, pkgB);
+
+    expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'pkg-a-agent.agent.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'pkg-b-agent.agent.md'))).toBe(true);
+  });
+
   it('writes agent files and removes stale outputs', (): void => {
     const repoRoot = makeRepoRoot();
     createDummyPackage(repoRoot, 'gh-sync', {

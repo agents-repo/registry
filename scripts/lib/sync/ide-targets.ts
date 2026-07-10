@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { listDeploymentAgentFiles } from '../deployment-agents';
+import { listDeploymentAgentFileIds, listDeploymentAgentFiles } from '../deployment-agents';
 import { agentMdToSkillMd } from '../emitters/agent-instruction';
 import { resolveDeclaredInstallTargets } from '../compatibility';
 import { ErrorCode, PackageError } from '../errors';
@@ -58,13 +58,13 @@ function listDogfoodedAgentFileNames(pkg: Package): Set<string> {
       continue;
     }
 
-    for (const file of listDeploymentAgentFiles(dogfoodPkg.packageDir)) {
-      names.add(`${file.id}.agent.md`);
+    for (const id of listDeploymentAgentFileIds(dogfoodPkg.packageDir)) {
+      names.add(`${id}.agent.md`);
     }
   }
 
-  for (const file of listDeploymentAgentFiles(pkg.packageDir)) {
-    names.add(`${file.id}.agent.md`);
+  for (const id of listDeploymentAgentFileIds(pkg.packageDir)) {
+    names.add(`${id}.agent.md`);
   }
 
   return names;
@@ -78,13 +78,13 @@ function listDogfoodedSkillIds(pkg: Package): Set<string> {
       continue;
     }
 
-    for (const file of listDeploymentAgentFiles(dogfoodPkg.packageDir)) {
-      ids.add(file.id);
+    for (const id of listDeploymentAgentFileIds(dogfoodPkg.packageDir)) {
+      ids.add(id);
     }
   }
 
-  for (const file of listDeploymentAgentFiles(pkg.packageDir)) {
-    ids.add(file.id);
+  for (const id of listDeploymentAgentFileIds(pkg.packageDir)) {
+    ids.add(id);
   }
 
   return ids;
