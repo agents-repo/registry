@@ -35,10 +35,10 @@ export const validatePackagePrTitleFromEventPath = (
 
   if (!isValidPackagePrTitle(title)) {
     console.error(
-      'Package PR title must start with feat(package):, fix(package):, or the optional breaking',
+      'Package PR title must start with feat(package): or fix(package):.',
     );
     console.error(
-      'feat(package)!: / fix(package)!: forms (breaking emphasis only; registry release stays PATCH).',
+      'Optional feat(package)!: / fix(package)!: forms emphasize breaking package content; registry release stays PATCH.',
     );
     console.error(`Current title: ${title}`);
     process.exit(1);

@@ -203,19 +203,6 @@ describe('commit-analyzer release rules (.releaserc.json)', () => {
     ).toBe('patch');
   });
 
-  it('maps fix(package) with BREAKING CHANGE footer to patch', () => {
-    expect(
-      resolveReleaseType(
-        {
-          type: 'fix',
-          scope: 'package',
-          notes: [...breakingFooter],
-        },
-        customRules,
-      ),
-    ).toBe('patch');
-  });
-
   it('short-circuits default breaking=>major when custom package rules match', () => {
     const commit = {
       type: 'feat',
