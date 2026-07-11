@@ -162,10 +162,6 @@ function listDogfoodedDeploymentAgentIds(pkg: Package, targetId: PackageIdeSyncT
       continue;
     }
 
-    if (!packageSupportsInstallTargetForSync(dogfoodPkg, targetId)) {
-      continue;
-    }
-
     for (const id of listDeploymentAgentFileIds(dogfoodPkg.packageDir)) {
       ids.add(id);
     }

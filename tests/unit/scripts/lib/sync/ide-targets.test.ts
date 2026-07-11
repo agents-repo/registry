@@ -109,21 +109,16 @@ describe('validateRepoDogfoodingConfig', (): void => {
 });
 
 describe('packageSupportsInstallTargetForSync', (): void => {
-  it('propagates metadata load errors from dogfooded packages during sync', (): void => {
+  it('propagates metadata load errors when syncing a dogfooded package', (): void => {
     const repoRoot = makeRepoRoot();
-    const dogfoodedDir = createDummyPackage(repoRoot, 'agents-repo-package-creation', {
+    const packageDir = createDummyPackage(repoRoot, 'agents-repo-package-creation', {
       namespace: 'agents-repo',
       agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
       flows: [],
     });
-    fs.writeFileSync(path.join(dogfoodedDir, 'metadata.json'), '{invalid json', 'utf-8');
+    fs.writeFileSync(path.join(packageDir, 'metadata.json'), '{invalid json', 'utf-8');
 
-    createDummyPackage(repoRoot, 'gh-metadata-error', {
-      agents: [{ id: 'keep-me', name: 'keep-me', description: 'Kept agent for github sync.' }],
-      flows: [],
-    });
-
-    const pkg = new Package('agents-repo/gh-metadata-error', path.join(repoRoot, 'packages'));
+    const pkg = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
     expect(() => syncGithubCopilotAgents(repoRoot, pkg)).toThrow(SyntaxError);
   });
 });
@@ -152,6 +147,39 @@ describe('syncGithubCopilotAgents', (): void => {
     expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'pkg-b-agent.agent.md'))).toBe(true);
 
     syncGithubCopilotAgents(repoRoot, pkgB);
+
+    expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'pkg-a-agent.agent.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'pkg-b-agent.agent.md'))).toBe(true);
+  });
+
+  it('preserves sibling dogfooded mirrors when metadata no longer declares the install target', (): void => {
+    const repoRoot = makeRepoRoot();
+    const packageBDir = createDummyPackage(repoRoot, 'pr-comment-triage', {
+      namespace: 'maiconfz',
+      agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
+      flows: [],
+    });
+    createDummyPackage(repoRoot, 'agents-repo-package-creation', {
+      namespace: 'agents-repo',
+      agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
+      flows: [],
+    });
+
+    const pkgA = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
+    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+
+    syncGithubCopilotAgents(repoRoot, pkgA);
+    syncGithubCopilotAgents(repoRoot, pkgB);
+
+    const metadataPath = path.join(packageBDir, 'metadata.json');
+    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8')) as Record<string, unknown>;
+    metadata.compatibility = {
+      canonicalFormat: 'agents-repo.agent-instruction@1.0.0',
+      targets: [{ id: 'cursor', status: 'supported' }],
+    };
+    fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), 'utf-8');
+
+    syncGithubCopilotAgents(repoRoot, pkgA);
 
     expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'pkg-a-agent.agent.md'))).toBe(true);
     expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'pkg-b-agent.agent.md'))).toBe(true);
