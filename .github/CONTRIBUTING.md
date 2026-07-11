@@ -295,7 +295,7 @@ Committed IDE paths are generated from canonical sources:
 
 `maiconfz/pr-comment-triage` is dogfooded for GitHub Copilot and Cursor only.
 Claude Code and OpenAI Codex mirrors currently include
-`agents-repo-package-creation` agents only.
+`agents-repo-package-creation` agents and flows only.
 
 Regenerate after source edits:
 

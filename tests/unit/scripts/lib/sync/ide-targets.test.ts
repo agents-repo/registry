@@ -208,7 +208,7 @@ describe('syncClaudeCodeAgents', (): void => {
     expect(fs.existsSync(stalePath)).toBe(false);
   });
 
-  it('preserves mirrors from other dogfooded packages when syncing one package', (): void => {
+  it('removes out-of-scope Claude mirrors when resyncing an in-scope package', (): void => {
     const repoRoot = makeRepoRoot();
     createDummyPackage(repoRoot, 'agents-repo-package-creation', {
       namespace: 'agents-repo',
@@ -274,7 +274,7 @@ describe('syncOpenaiCodexSkills', (): void => {
     expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'current-skill', 'SKILL.md'))).toBe(true);
   });
 
-  it('preserves mirrors from other dogfooded packages when syncing one package', (): void => {
+  it('removes out-of-scope Codex mirrors when resyncing an in-scope package', (): void => {
     const repoRoot = makeRepoRoot();
     createDummyPackage(repoRoot, 'agents-repo-package-creation', {
       namespace: 'agents-repo',
