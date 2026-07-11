@@ -4,6 +4,36 @@
 
 Describe the change and why it is needed.
 
+## Related Issues
+
+`Closes #<issue-number>`
+
+Replace the backticked placeholder above with an unbackticked Closes # line (use
+your issue number).
+
+For standard tasks, use `Closes #<issue-number>`. For security vulnerabilities
+without a public tracking issue, reference the advisory identifier (for example
+`GHSA-...`) and coordinate linkage with maintainers per the
+[Workflow exceptions](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#workflow-exceptions)
+section of the organization CONTRIBUTING guide.
+
+## Workflow Checklist
+
+- [ ] A tracking issue was opened before implementation.
+- [ ] The branch name follows `<prefix>/<issue-number>-<slug>`.
+- [ ] This pull request was created as a draft (`gh pr create --draft` or UI
+  draft option).
+- [ ] This draft PR was opened before implementation commits (or it documents
+  why not).
+- [ ] `## Related Issues` includes a tracking reference (`Closes #<issue-number>`
+  or a security-advisory identifier per the
+  [Workflow exceptions](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#workflow-exceptions)
+  section of the organization CONTRIBUTING guide).
+- [ ] Merge to `main` is for human maintainers only; agents and automation
+  must not merge this PR or push directly to `main`.
+- [ ] A human developer marked this PR ready for review after validation (not
+  agents or automation).
+
 ## Change Type
 
 - [ ] Initial structure
@@ -68,17 +98,8 @@ If relevant, describe impact on:
   `fix(package):` (or the breaking `feat(package)!:` / `fix(package)!:` form)
   so squash-merge publishes a registry release tag. CI validates this title in
   `pr-package-validation` when package directories change.
-- [ ] If this PR is linked to a tracking issue, `## Related Issues` includes
-  `Closes #<issue-number>`.
-- [ ] Merge to `main` is for human maintainers only; agents and automation
-  must not merge this PR or push directly to `main`.
 
 ## Risk and Rollback
 
 - Risk level: low / medium / high
 - Rollback plan:
-
-## Related Issues
-
-- If this PR is linked to an issue, include `Closes #<issue-number>`.
-- If this PR is not tied to a tracking issue, state a short rationale here.

@@ -12,16 +12,25 @@ body:
         `packages/<namespace>/<package-id>/`. For new packages or new package
         versions, use the **Package submission** form instead.
 
-        **Branch name:** `package/<issue-number>-<package-name>`
+        **Workflow:** Submit this issue first. After GitHub assigns a number,
+        create your branch and draft PR—do not edit this issue body to add the
+        number.
+
+        **Branch pattern:** `package/<issue-number>-<package-name>` (use the
+        assigned number and the package name)
+
         **Example:** `package/56-my-package-name`
-        Create this issue first to get the issue number, then open the branch.
 
         **PR title:** MUST use `fix(package):` so squash-merge publishes a
         registry release tag. GitHub uses the PR title as the default
-        squash-merge commit message.
+        squash-merge commit message, which MUST match this format so
+        semantic-release publishes a registry release tag.
 
-        If you open a PR for this issue, include
-        `Closes #<issue-number>` in `## Related Issues`.
+        **Draft PR:** Open with `gh pr create --draft` before implementation
+        commits. Author package source on the task branch, then run
+        `package:build` and `package:validate-artifacts` before marking the
+        pull request ready for review. Put the tracking reference in the PR
+        `## Related Issues` section (not in this issue).
 
   - type: input
     id: package-qualified-id
@@ -71,7 +80,8 @@ body:
           required: true
         - label: >-
             I will run `npm run package:build` and
-            `npm run package:validate-artifacts` before opening a PR.
+            `npm run package:validate-artifacts` before marking the pull
+            request ready for review.
           required: true
         - label: >-
             I did not manually edit files under `versions/` except via
@@ -82,6 +92,6 @@ body:
             CONTRIBUTING.md).
           required: true
         - label: >-
-            If I open a PR for this issue, I will include
-            `Closes #<issue-number>` in `## Related Issues`.
+            I will open a draft PR with `gh pr create --draft` before
+            implementation commits and mark it ready for review after validation.
           required: true
