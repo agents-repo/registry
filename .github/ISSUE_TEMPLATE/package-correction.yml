@@ -21,7 +21,7 @@ body:
 
         **Example:** `package/56-my-package-name`
 
-        **PR title:** use `fix(package):` so squash-merge publishes a
+        **PR title:** MUST use `fix(package):` so squash-merge publishes a
         registry release tag. GitHub uses the PR title as the default
         squash-merge commit message, which MUST match this format so
         semantic-release publishes a registry release tag.

@@ -8,8 +8,8 @@ Describe the change and why it is needed.
 
 `Closes #<issue-number>`
 
-Replace this line with an unbackticked `Closes #<number>` so GitHub links the
-issue.
+Replace the backticked placeholder above with an unbackticked Closes # line (use
+your issue number).
 
 For standard tasks, use `Closes #<issue-number>`. For security vulnerabilities
 without a public tracking issue, reference the advisory identifier (for example
