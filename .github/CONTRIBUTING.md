@@ -293,6 +293,10 @@ Committed IDE paths are generated from canonical sources:
 | `.agents/skills/<id>/SKILL.md` | `packages/agents-repo/agents-repo-package-creation/` (`agents/` + `flows/`) |
 | `.cursor/rules/agents-registry.mdc` | `.github/copilot-instructions.md` |
 
+`maiconfz/pr-comment-triage` is dogfooded for GitHub Copilot and Cursor only.
+Claude Code and OpenAI Codex mirrors currently include
+`agents-repo-package-creation` agents only.
+
 Regenerate after source edits:
 
 ```bash
@@ -309,14 +313,24 @@ npm run package:sync-ide-targets -- \
   --target cursor
 ```
 
+`--target all` syncs GitHub Copilot, Cursor, Claude Code, and OpenAI Codex
+mirrors for the given package, then regenerates Cursor rules from
+`copilot-instructions.md`.
+
 When only `copilot-instructions.md` changes:
 
 ```bash
 npm run sync:cursor-rules
 ```
 
-Do not edit deployment mirrors directly. `package:sync-ide-targets` updates
-repo IDE files only; it does not replace `package:build` for `versions/` snapshots.
+Do not edit `.github/agents/`, `.cursor/skills/`, `.claude/agents/`,
+`.agents/skills/`, or `.cursor/rules/` directly. `package:sync-ide-targets`
+updates repo IDE files only; it does not replace `package:build` for
+`versions/` snapshots.
+
+Local pre-commit checks Cursor rules only (`sync:cursor-rules --check`). Run
+the full IDE mirror drift check before requesting review when mirror sources
+change.
 
 ### Submitted package checklist
 
@@ -367,8 +381,16 @@ Before requesting review:
 3. Run unit tests (`npm run test:run`).
 4. Run type checks (`npm run typecheck`).
 5. Run the repo-wide package ZIP scan (`npm run package:scan-zips`).
-6. Ensure references and paths are valid.
-7. Confirm no unrelated changes are included.
+6. When IDE mirror sources change, run the IDE mirror drift check:
+
+   ```bash
+   npm run package:sync-ide-targets -- --check \
+     --package agents-repo/agents-repo-package-creation --target all
+   ```
+
+   Plus per-package checks for other dogfooded packages as needed.
+7. Ensure references and paths are valid.
+8. Confirm no unrelated changes are included.
 
 When changes affect behavior under `scripts/lib/`, contributors SHOULD add or
 update unit tests under mirrored paths in `tests/unit/`.

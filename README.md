@@ -81,14 +81,21 @@ instructions on clone without manual install steps.
 | IDE | Agents / skills | Project guidelines |
 | --- | --- | --- |
 | GitHub Copilot | `.github/agents/*.agent.md` | `.github/copilot-instructions.md` |
-| Cursor | `.cursor/skills/<id>/SKILL.md` | `.cursor/rules/agents-registry.mdc` |
 | Claude Code | `.claude/agents/<id>.md` | — |
+| Cursor | `.cursor/skills/<id>/SKILL.md` | `.cursor/rules/agents-registry.mdc` |
 | OpenAI Codex | `.agents/skills/<id>/SKILL.md` | — |
 
 Canonical sources for repo workflow agents:
 
-- `packages/agents-repo/agents-repo-package-creation/agents/` and `flows/`
+- All four IDE targets: `packages/agents-repo/agents-repo-package-creation/`
+  (`agents/` + `flows/`)
+- GitHub Copilot and Cursor only: also `packages/maiconfz/pr-comment-triage/`
+  (`agents/` + `flows/`)
 - `.github/copilot-instructions.md` (for Cursor rules)
+
+`maiconfz/pr-comment-triage` is dogfooded for GitHub Copilot and Cursor only.
+Claude Code and OpenAI Codex mirrors currently include
+`agents-repo-package-creation` agents only.
 
 Regenerate mirrors after editing canonical sources:
 
@@ -96,6 +103,20 @@ Regenerate mirrors after editing canonical sources:
 npm run package:sync-ide-targets -- \
   --package agents-repo/agents-repo-package-creation \
   --target all
+```
+
+`--target all` syncs GitHub Copilot, Cursor, Claude Code, and OpenAI Codex
+mirrors for the given package, then regenerates Cursor rules from
+`copilot-instructions.md`.
+
+```bash
+npm run package:sync-ide-targets -- \
+  --package maiconfz/pr-comment-triage \
+  --target github-copilot
+
+npm run package:sync-ide-targets -- \
+  --package maiconfz/pr-comment-triage \
+  --target cursor
 ```
 
 When only `copilot-instructions.md` changes:
