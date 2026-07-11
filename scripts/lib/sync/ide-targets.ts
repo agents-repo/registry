@@ -94,12 +94,16 @@ function assertPackageInRepoDogfoodingScope(pkg: Package, targetId: PackageIdeSy
 }
 
 function resolvePackageIdeSyncTargetsForPackage(pkg: Package | undefined): readonly PackageIdeSyncTarget[] {
-  if (!pkg || !isDogfoodedPackageId(pkg.qualifiedId)) {
+  if (!pkg) {
     return PACKAGE_IDE_SYNC_TARGETS;
   }
 
-  const entry = REPO_DOGFOODED_PACKAGES.find((item) => item.qualifiedId === pkg.qualifiedId);
-  return entry?.targets ?? PACKAGE_IDE_SYNC_TARGETS;
+  if (isDogfoodedPackageId(pkg.qualifiedId)) {
+    const entry = REPO_DOGFOODED_PACKAGES.find((item) => item.qualifiedId === pkg.qualifiedId);
+    return entry?.targets ?? PACKAGE_IDE_SYNC_TARGETS;
+  }
+
+  return listDeclaredPackageIdeSyncTargets(pkg);
 }
 
 function isManagedDeploymentAgentId(id: string): boolean {
@@ -160,6 +164,17 @@ function packageSupportsInstallTargetForSync(dogfoodPkg: Package, targetId: Inst
 
     throw error;
   }
+}
+
+function listDeclaredPackageIdeSyncTargets(pkg: Package): PackageIdeSyncTarget[] {
+  const targets: PackageIdeSyncTarget[] = [];
+  for (const targetId of PACKAGE_IDE_SYNC_TARGETS) {
+    if (packageSupportsInstallTargetForSync(pkg, targetId)) {
+      targets.push(targetId);
+    }
+  }
+
+  return targets;
 }
 
 function listDogfoodedDeploymentAgentIds(pkg: Package, targetId: PackageIdeSyncTarget): Set<string> {

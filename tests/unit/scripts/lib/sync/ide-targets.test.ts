@@ -644,4 +644,34 @@ describe('syncIdeTargets', (): void => {
     expect(written.some((entry) => entry.endsWith('.cursor/rules/agents-registry.mdc'))).toBe(true);
     expect(checkIdeTargets(repoRoot, pkg, 'all')).toEqual([]);
   });
+
+  it('runs only declared install targets when target is all for a non-dogfooded package', (): void => {
+    const repoRoot = makeRepoRoot();
+    const packageDir = createDummyPackage(repoRoot, 'cursor-only-sync', {
+      agents: [{ id: 'cursor-only-agent', name: 'cursor-only-agent', description: 'Cursor-only all-target sync.' }],
+      flows: [],
+    });
+
+    const metadataPath = path.join(packageDir, 'metadata.json');
+    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8')) as Record<string, unknown>;
+    metadata.compatibility = {
+      canonicalFormat: 'agents-repo.agent-instruction@1.0.0',
+      targets: [{ id: 'cursor', status: 'supported' }],
+    };
+    fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), 'utf-8');
+
+    const sourcePath = path.join(repoRoot, '.github', 'copilot-instructions.md');
+    fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
+    fs.writeFileSync(sourcePath, '# Copilot Agents Registry — Project Guidelines\n', 'utf-8');
+
+    const pkg = new Package('agents-repo/cursor-only-sync', path.join(repoRoot, 'packages'));
+    const written = syncIdeTargets(repoRoot, pkg, 'all');
+
+    expect(written.some((entry) => entry.endsWith('.cursor/skills/cursor-only-agent/SKILL.md'))).toBe(true);
+    expect(written.some((entry) => entry.includes('.github/agents'))).toBe(false);
+    expect(written.some((entry) => entry.includes('.claude/agents'))).toBe(false);
+    expect(written.some((entry) => entry.includes('.agents/skills'))).toBe(false);
+    expect(written.some((entry) => entry.endsWith('.cursor/rules/agents-registry.mdc'))).toBe(true);
+    expect(checkIdeTargets(repoRoot, pkg, 'all')).toEqual([]);
+  });
 });
