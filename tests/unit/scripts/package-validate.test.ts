@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
@@ -28,6 +28,7 @@ describe('package-validate', () => {
 
   afterEach(() => {
     if (tempDir.length > 0) {
+      rmSync(tempDir, { recursive: true, force: true });
       tempDir = '';
     }
   });

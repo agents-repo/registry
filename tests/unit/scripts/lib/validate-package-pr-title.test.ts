@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -8,9 +8,22 @@ import {
   validatePackagePrTitleFromEventPath,
 } from '../../../../scripts/lib/validate-package-pr-title';
 
+const tempDirs: string[] = [];
+
+const createTempEventPath = (payload: object): string => {
+  const dir = mkdtempSync(path.join(os.tmpdir(), 'registry-pr-title-'));
+  tempDirs.push(dir);
+  const eventPath = path.join(dir, 'event.json');
+  writeFileSync(eventPath, JSON.stringify(payload), 'utf8');
+  return eventPath;
+};
+
 describe('validate-package-pr-title', () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    for (const dir of tempDirs.splice(0)) {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   it('accepts feat(package): titles', () => {
@@ -48,14 +61,7 @@ describe('validate-package-pr-title', () => {
   });
 
   it('exits when pull request title is invalid', () => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'registry-pr-title-'));
-    const eventPath = path.join(dir, 'event.json');
-    writeFileSync(
-      eventPath,
-      JSON.stringify({ pull_request: { title: 'package: add foo' } }),
-      'utf8',
-    );
-
+    const eventPath = createTempEventPath({ pull_request: { title: 'package: add foo' } });
     let exitCode: number | undefined;
     vi.spyOn(process, 'exit').mockImplementation((code) => {
       exitCode = typeof code === 'number' ? code : undefined;
@@ -69,44 +75,25 @@ describe('validate-package-pr-title', () => {
   });
 
   it('passes when pull request title is valid', () => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'registry-pr-title-'));
-    const eventPath = path.join(dir, 'event.json');
-    writeFileSync(
-      eventPath,
-      JSON.stringify({ pull_request: { title: 'feat(package): add agents-repo/foo' } }),
-      'utf8',
-    );
-
+    const eventPath = createTempEventPath({
+      pull_request: { title: 'feat(package): add agents-repo/foo' },
+    });
     expect(() => {
       validatePackagePrTitleFromEventPath(eventPath, 'pull_request');
     }).not.toThrow();
   });
 
   it('passes when pull request title uses feat(package)!:', () => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'registry-pr-title-'));
-    const eventPath = path.join(dir, 'event.json');
-    writeFileSync(
-      eventPath,
-      JSON.stringify({
-        pull_request: { title: 'feat(package)!: publish agents-repo/foo 2.0.0' },
-      }),
-      'utf8',
-    );
-
+    const eventPath = createTempEventPath({
+      pull_request: { title: 'feat(package)!: publish agents-repo/foo 2.0.0' },
+    });
     expect(() => {
       validatePackagePrTitleFromEventPath(eventPath, 'pull_request');
     }).not.toThrow();
   });
 
   it('exits from CI env when pull request title is invalid and skip is unset', () => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'registry-pr-title-'));
-    const eventPath = path.join(dir, 'event.json');
-    writeFileSync(
-      eventPath,
-      JSON.stringify({ pull_request: { title: 'feat: add tooling' } }),
-      'utf8',
-    );
-
+    const eventPath = createTempEventPath({ pull_request: { title: 'feat: add tooling' } });
     const previousSkip = process.env.SKIP_PACKAGE_PR_TITLE_CHECK;
     const previousEventPath = process.env.GITHUB_EVENT_PATH;
     const previousEventName = process.env.GITHUB_EVENT_NAME;
@@ -146,14 +133,9 @@ describe('validate-package-pr-title', () => {
   });
 
   it('skips CI validation when SKIP_PACKAGE_PR_TITLE_CHECK is set', () => {
-    const dir = mkdtempSync(path.join(os.tmpdir(), 'registry-pr-title-'));
-    const eventPath = path.join(dir, 'event.json');
-    writeFileSync(
-      eventPath,
-      JSON.stringify({ pull_request: { title: 'package: invalid title' } }),
-      'utf8',
-    );
-
+    const eventPath = createTempEventPath({
+      pull_request: { title: 'package: invalid title' },
+    });
     const previousSkip = process.env.SKIP_PACKAGE_PR_TITLE_CHECK;
     const previousEventPath = process.env.GITHUB_EVENT_PATH;
     const previousEventName = process.env.GITHUB_EVENT_NAME;
