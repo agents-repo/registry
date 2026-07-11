@@ -103,17 +103,27 @@ use the common `v<MAJOR>.<MINOR>.<PATCH>` convention without changing the
 underlying version value.
 
 Commit-to-version mapping for automated releases. Custom release rules in
-`.releaserc.json` override `feat(package):` to `PATCH` and breaking changes
-to `MAJOR`; all other types use commit-analyzer built-in default rules when
-no custom rule matches:
+`.releaserc.json` map all `feat(package)` and `fix(package)` commits—including
+`!` and `BREAKING CHANGE:` footers—to `PATCH`. Platform breaking changes use
+commit-analyzer built-in default rules when no custom rule matches:
 
-- `type!:` or `BREAKING CHANGE:` => `MAJOR`
-- `feat(package):` => `PATCH` (catalog addition or new package version)
+- `type!:` or `BREAKING CHANGE:` (without `package` scope) => `MAJOR`
+- `feat(package):` and `feat(package)!:` => `PATCH`
+  (catalog addition or new package version)
+- `fix(package):` and `fix(package)!:` => `PATCH` (package correction)
 - `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
-- `fix:`, `perf:`, and `revert:` with any scope => `PATCH`
+- `fix:`, `perf:`, and `revert:` with any scope except `package` => `PATCH`
 
-Use `fix(package):` for package corrections; it maps to `PATCH` like any
-other `fix:` commit.
+### Registry distribution tags vs package versions
+
+Registry Git tags (for example `v2.0.1`) version the **catalog snapshot**
+consumed via refs like `v2.x`. Package `versions/manifest.json` `latest` values
+version individual package compatibility. These layers are independent.
+
+All package squash-merge titles publish a registry **PATCH** so `v2.x` consumers
+receive catalog updates. Express breaking package compatibility in the package's
+own semver (for example `1.0.0` → `2.0.0`). Registry **MAJOR** is reserved for
+platform, tooling, or spec breaking commits without the `package` scope.
 
 Commit types not listed above do not trigger an automated release.
 
@@ -248,16 +258,20 @@ All `versions/` artifacts are produced by step 2.
 
 When squash-merging a package submission PR, the resulting commit title
 MUST use `feat(package):` for new packages or new package versions, or
-`fix(package):` for corrections to published package content. Breaking
-registry releases MAY use `feat(package)!:` or `fix(package)!:` instead.
+`fix(package):` for corrections to published package content. You MAY use
+`feat(package)!:` or `fix(package)!:` to emphasize breaking **package**
+content in release notes when the published package semver is a breaking bump
+(for example `1.x` → `2.x`). The `!` does **not** trigger a registry MAJOR;
+all package-scoped titles publish a registry **PATCH** per `.releaserc.json`.
+
 The PR title should match, since GitHub uses it as the default squash-merge
 message. Maintainers MUST NOT edit the squash-merge message away from the
 validated PR title when merging package PRs.
 
 This format triggers a registry release tag so `v2.x` consumers receive the
-updated `packages/index.json`. Non-breaking package merges map to a registry
-`PATCH`; breaking `feat(package)!:` / `fix(package)!:` titles map to
-registry `MAJOR` per `.releaserc.json`.
+updated `packages/index.json`. Registry-line breaking changes (layout, index
+schema, namespace contract) MUST use platform commits (`feat!:`, spec changes),
+not `feat(package)!:`.
 
 CI enforces the PR title in the `pr-package-validation` workflow via
 `npm run package:validate` when package directories change. Local

@@ -10,11 +10,12 @@
         "preset": "conventionalcommits",
         "releaseRules": [
           {
-            "breaking": true,
-            "release": "major"
+            "type": "feat",
+            "scope": "package",
+            "release": "patch"
           },
           {
-            "type": "feat",
+            "type": "fix",
             "scope": "package",
             "release": "patch"
           }

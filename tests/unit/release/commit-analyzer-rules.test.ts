@@ -88,6 +88,8 @@ const resolveReleaseType = (
   return analyzeCommitForRelease(DEFAULT_RELEASE_RULES, commit);
 };
 
+const breakingFooter = [{ title: 'BREAKING CHANGE' }] as const;
+
 describe('commit-analyzer release rules (.releaserc.json)', () => {
   const customRules = loadCustomReleaseRules();
 
@@ -96,6 +98,26 @@ describe('commit-analyzer release rules (.releaserc.json)', () => {
     expect(customRules.some((rule) => rule.type === 'feat' && rule.scope === 'package')).toBe(
       true,
     );
+  });
+
+  it('does not include a blanket breaking=>major custom rule', () => {
+    const hasBlanketBreakingMajor = customRules.some(
+      (rule) => rule.breaking === true && rule.release === 'major' && rule.type === undefined,
+    );
+    expect(hasBlanketBreakingMajor).toBe(false);
+  });
+
+  it('includes explicit feat(package) and fix(package) patch rules', () => {
+    expect(
+      customRules.some(
+        (rule) => rule.type === 'feat' && rule.scope === 'package' && rule.release === 'patch',
+      ),
+    ).toBe(true);
+    expect(
+      customRules.some(
+        (rule) => rule.type === 'fix' && rule.scope === 'package' && rule.release === 'patch',
+      ),
+    ).toBe(true);
   });
 
   it('does not include a competing unscoped feat=>minor custom rule', () => {
@@ -109,28 +131,79 @@ describe('commit-analyzer release rules (.releaserc.json)', () => {
     expect(resolveReleaseType({ type: 'feat', scope: 'package' }, customRules)).toBe('patch');
   });
 
-  it('maps breaking feat(package)!: to major', () => {
+  it('maps breaking feat(package)!: to patch', () => {
     expect(
       resolveReleaseType(
         {
           type: 'feat',
           scope: 'package',
-          notes: [{ title: 'BREAKING CHANGE' }],
+          notes: [...breakingFooter],
         },
         customRules,
       ),
-    ).toBe('major');
+    ).toBe('patch');
+  });
+
+  it('maps breaking fix(package)!: to patch', () => {
+    expect(
+      resolveReleaseType(
+        {
+          type: 'fix',
+          scope: 'package',
+          notes: [...breakingFooter],
+        },
+        customRules,
+      ),
+    ).toBe('patch');
+  });
+
+  it('maps fix(package) with BREAKING CHANGE footer to patch', () => {
+    expect(
+      resolveReleaseType(
+        {
+          type: 'fix',
+          scope: 'package',
+          notes: [...breakingFooter],
+        },
+        customRules,
+      ),
+    ).toBe('patch');
   });
 
   it('maps unscoped feat: to minor via built-in defaults', () => {
     expect(resolveReleaseType({ type: 'feat' }, customRules)).toBe('minor');
   });
 
+  it('maps unscoped breaking feat!: to major via built-in defaults', () => {
+    expect(
+      resolveReleaseType(
+        {
+          type: 'feat',
+          notes: [...breakingFooter],
+        },
+        customRules,
+      ),
+    ).toBe('major');
+  });
+
+  it('maps scoped non-package breaking feat: to major via built-in defaults', () => {
+    expect(
+      resolveReleaseType(
+        {
+          type: 'feat',
+          scope: 'release',
+          notes: [...breakingFooter],
+        },
+        customRules,
+      ),
+    ).toBe('major');
+  });
+
   it('maps scoped non-package feat: to minor via built-in defaults', () => {
     expect(resolveReleaseType({ type: 'feat', scope: 'release' }, customRules)).toBe('minor');
   });
 
-  it('maps fix(package): to patch via built-in defaults', () => {
+  it('maps fix(package): to patch via custom rules', () => {
     expect(resolveReleaseType({ type: 'fix', scope: 'package' }, customRules)).toBe('patch');
   });
 

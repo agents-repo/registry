@@ -50,6 +50,26 @@ describe('package-validate', () => {
     expect(result.stderr).toContain('Package PR title must start with feat(package):');
   });
 
+  it('accepts breaking package PR titles in pull_request CI', () => {
+    tempDir = mkdtempSync(path.join(os.tmpdir(), 'registry-package-validate-'));
+    const eventPath = path.join(tempDir, 'event.json');
+    writeFileSync(
+      eventPath,
+      JSON.stringify({
+        pull_request: { title: 'feat(package)!: publish agents-repo/foo 2.0.0' },
+      }),
+      'utf8',
+    );
+
+    const result = runPackageValidate('agents-repo/hello-agent', {
+      GITHUB_EVENT_PATH: eventPath,
+      GITHUB_EVENT_NAME: 'pull_request',
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Validation passed for package: agents-repo/hello-agent');
+  });
+
   it('skips package PR title enforcement when CI env is not a pull request', () => {
     const result = runPackageValidate('agents-repo/hello-agent', {
       GITHUB_EVENT_NAME: 'push',

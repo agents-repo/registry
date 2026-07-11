@@ -125,17 +125,28 @@ The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. The leading
 ### Commit-To-Version Mapping
 
 The release workflow uses Conventional Commit semantics. Custom release
-rules in `.releaserc.json` override `feat(package):` to `PATCH` and breaking
-changes to `MAJOR`; all other types use commit-analyzer built-in default rules
-when no custom rule matches:
+rules in `.releaserc.json` map all `feat(package)` and `fix(package)`
+commits—including `!` and `BREAKING CHANGE:` footers—to `PATCH`. Platform
+breaking changes use commit-analyzer built-in default rules when no custom
+rule matches:
 
-- `type!:` or `BREAKING CHANGE:` => `MAJOR`
-- `feat(package):` => `PATCH` (catalog addition or new package version)
+- `type!:` or `BREAKING CHANGE:` (without `package` scope) => `MAJOR`
+- `feat(package):` and `feat(package)!:` => `PATCH`
+  (catalog addition or new package version)
+- `fix(package):` and `fix(package)!:` => `PATCH` (package correction)
 - `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
-- `fix:`, `perf:`, and `revert:` with any scope => `PATCH`
+- `fix:`, `perf:`, and `revert:` with any scope except `package` => `PATCH`
 
-Use `fix(package):` for package corrections; it maps to `PATCH` like any
-other `fix:` commit.
+### Registry distribution tags vs package versions
+
+Registry Git tags (for example `v2.0.1`) version the **catalog snapshot**
+consumed via refs like `v2.x`. Package `versions/manifest.json` `latest` values
+version individual package compatibility. These layers are independent.
+
+All package squash-merge titles publish a registry **PATCH** so `v2.x` consumers
+receive catalog updates. Express breaking package compatibility in the package's
+own semver (for example `1.0.0` → `2.0.0`). Registry **MAJOR** is reserved for
+platform, tooling, or spec breaking commits without the `package` scope.
 
 Commit types not listed above do not trigger an automated release.
 
@@ -145,6 +156,7 @@ Examples:
 - `feat: add release dashboard metadata` => minor bump
 - `feat(release): add scoped rules` => minor bump
 - `feat(package): add agents-repo/hello-agent` => patch bump
+- `feat(package)!: publish agents-repo/hello-agent 2.0.0` => patch bump
 - `fix(package): correct hello-agent metadata` => patch bump
 - `fix: adjust lint config` => patch bump
 

@@ -25,9 +25,12 @@ body:
         **Example:** `package/56-my-package-name`
 
         **PR title:** use `feat(package):` for new packages or new package
-        versions. GitHub uses the PR title as the default squash-merge commit
-        message, which MUST match this format so semantic-release publishes a
-        registry release tag.
+        versions. When the published package semver is a breaking bump (for
+        example `1.x` → `2.x`), you MAY use `feat(package)!:` to emphasize
+        breaking package content in release notes; this still publishes a
+        registry PATCH tag. GitHub uses the PR title as the default
+        squash-merge commit message, which MUST match this format so
+        semantic-release publishes a registry release tag.
 
         **Draft PR:** Open with `gh pr create --draft` before implementation
         commits. Author package source on the task branch, then run

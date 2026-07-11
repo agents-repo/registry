@@ -82,6 +82,22 @@ describe('validate-package-pr-title', () => {
     }).not.toThrow();
   });
 
+  it('passes when pull request title uses feat(package)!:', () => {
+    const dir = mkdtempSync(path.join(os.tmpdir(), 'registry-pr-title-'));
+    const eventPath = path.join(dir, 'event.json');
+    writeFileSync(
+      eventPath,
+      JSON.stringify({
+        pull_request: { title: 'feat(package)!: publish agents-repo/foo 2.0.0' },
+      }),
+      'utf8',
+    );
+
+    expect(() => {
+      validatePackagePrTitleFromEventPath(eventPath, 'pull_request');
+    }).not.toThrow();
+  });
+
   it('exits from CI env when pull request title is invalid and skip is unset', () => {
     const dir = mkdtempSync(path.join(os.tmpdir(), 'registry-pr-title-'));
     const eventPath = path.join(dir, 'event.json');
