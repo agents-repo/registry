@@ -2,7 +2,7 @@ ignores:
   - "node_modules/**"
   - ".cursor/skills/**/SKILL.md"
   - ".agents/skills/**/SKILL.md"
-  - ".claude/agents/**/*.md"
+  - ".claude/agents/[a-z]*.md"
 config:
   MD013:
     tables: false

@@ -93,6 +93,15 @@ function assertPackageInRepoDogfoodingScope(pkg: Package, targetId: PackageIdeSy
   }
 }
 
+function resolvePackageIdeSyncTargetsForPackage(pkg: Package | undefined): readonly PackageIdeSyncTarget[] {
+  if (!pkg || !isDogfoodedPackageId(pkg.qualifiedId)) {
+    return PACKAGE_IDE_SYNC_TARGETS;
+  }
+
+  const entry = REPO_DOGFOODED_PACKAGES.find((item) => item.qualifiedId === pkg.qualifiedId);
+  return entry?.targets ?? PACKAGE_IDE_SYNC_TARGETS;
+}
+
 function isManagedDeploymentAgentId(id: string): boolean {
   return ID_PATTERN.test(id);
 }
@@ -610,7 +619,7 @@ export function checkIdeTargets(
   };
 
   if (target === 'all') {
-    for (const packageTarget of PACKAGE_IDE_SYNC_TARGETS) {
+    for (const packageTarget of resolvePackageIdeSyncTargetsForPackage(pkg)) {
       runPackageCheck(packageTarget);
     }
     issues.push(...checkCursorRules(repoRoot));
@@ -785,7 +794,7 @@ export function syncIdeTargets(
   };
 
   if (target === 'all') {
-    for (const packageTarget of PACKAGE_IDE_SYNC_TARGETS) {
+    for (const packageTarget of resolvePackageIdeSyncTargetsForPackage(pkg)) {
       runPackageTarget(packageTarget);
     }
     written.push(syncCursorRules(repoRoot));

@@ -108,7 +108,7 @@ describe('validateRepoDogfoodingConfig', (): void => {
   });
 });
 
-describe('packageSupportsInstallTargetForSync', (): void => {
+describe('syncGithubCopilotAgents metadata errors', (): void => {
   it('propagates metadata load errors when syncing a dogfooded package', (): void => {
     const repoRoot = makeRepoRoot();
     const packageDir = createDummyPackage(repoRoot, 'agents-repo-package-creation', {
@@ -620,5 +620,28 @@ describe('syncIdeTargets', (): void => {
     expect(written.some((entry) => entry.endsWith('.claude/agents/all-agent.md'))).toBe(true);
     expect(written.some((entry) => entry.endsWith('.agents/skills/all-agent/SKILL.md'))).toBe(true);
     expect(written.some((entry) => entry.endsWith('.cursor/rules/agents-registry.mdc'))).toBe(true);
+  });
+
+  it('runs only scoped package targets when target is all for a partially dogfooded package', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'pr-comment-triage', {
+      namespace: 'maiconfz',
+      agents: [{ id: 'triage-agent', name: 'triage-agent', description: 'Agent for scoped all-target sync.' }],
+      flows: [],
+    });
+
+    const sourcePath = path.join(repoRoot, '.github', 'copilot-instructions.md');
+    fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
+    fs.writeFileSync(sourcePath, '# Copilot Agents Registry — Project Guidelines\n', 'utf-8');
+
+    const pkg = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+    const written = syncIdeTargets(repoRoot, pkg, 'all');
+
+    expect(written.some((entry) => entry.endsWith('.github/agents/triage-agent.agent.md'))).toBe(true);
+    expect(written.some((entry) => entry.endsWith('.cursor/skills/triage-agent/SKILL.md'))).toBe(true);
+    expect(written.some((entry) => entry.includes('.claude/agents'))).toBe(false);
+    expect(written.some((entry) => entry.includes('.agents/skills'))).toBe(false);
+    expect(written.some((entry) => entry.endsWith('.cursor/rules/agents-registry.mdc'))).toBe(true);
+    expect(checkIdeTargets(repoRoot, pkg, 'all')).toEqual([]);
   });
 });

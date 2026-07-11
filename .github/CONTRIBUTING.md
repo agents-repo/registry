@@ -306,16 +306,14 @@ npm run package:sync-ide-targets -- \
 
 npm run package:sync-ide-targets -- \
   --package maiconfz/pr-comment-triage \
-  --target github-copilot
-
-npm run package:sync-ide-targets -- \
-  --package maiconfz/pr-comment-triage \
-  --target cursor
+  --target all
 ```
 
-`--target all` syncs GitHub Copilot, Cursor, Claude Code, and OpenAI Codex
-mirrors for the given package, then regenerates Cursor rules from
-`copilot-instructions.md`.
+`--target all` syncs every install target in the package's repository dogfooding
+scope, then regenerates Cursor rules from `copilot-instructions.md`. For
+`agents-repo/agents-repo-package-creation`, that includes GitHub Copilot,
+Cursor, Claude Code, and OpenAI Codex; for `maiconfz/pr-comment-triage`,
+GitHub Copilot and Cursor only.
 
 When only `copilot-instructions.md` changes:
 
