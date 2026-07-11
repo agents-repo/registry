@@ -22,9 +22,11 @@ body:
         **Example:** `package/56-my-package-name`
 
         **PR title:** MUST use `fix(package):` so squash-merge publishes a
-        registry release tag. GitHub uses the PR title as the default
-        squash-merge commit message, which MUST match this format so
-        semantic-release publishes a registry release tag.
+        registry release tag. You MAY use `fix(package)!:` when the correction
+        includes a breaking package semver bump; this still publishes a registry
+        PATCH tag. GitHub uses the PR title as the default squash-merge commit
+        message, which MUST match this format so semantic-release publishes a
+        registry release tag.
 
         **Draft PR:** Open with `gh pr create --draft` before implementation
         commits. Author package source on the task branch, then run

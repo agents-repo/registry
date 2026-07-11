@@ -163,6 +163,14 @@ supported spec document version in this table.
 - MINOR increments SHOULD be backward-compatible feature additions.
 - MAJOR increments MAY include breaking changes.
 
+## Registry distribution tags
+
+Package release versions in this document are independent from registry Git
+distribution tags (for example `v2.0.1`) that version the catalog snapshot
+consumed via refs like `v2.x`. Squash-merge commit titles for package
+submissions map to registry PATCH releases regardless of `!` emphasis; see
+`.github/CONTRIBUTING.md` for the commit-to-version mapping.
+
 ## Immutability Rules
 
 - Published ZIP artifacts for a specific version MUST be immutable.

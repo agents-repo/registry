@@ -95,8 +95,9 @@ If relevant, describe impact on:
 - [ ] If a package version was published: no files under `versions/` were
   manually authored or modified outside of `package-build` script output.
 - [ ] If this is a package submission: PR title uses `feat(package):` or
-  `fix(package):` (or the breaking `feat(package)!:` / `fix(package)!:` form)
-  so squash-merge publishes a registry release tag. CI validates this title in
+  `fix(package):` (or the optional `feat(package)!:` / `fix(package)!:` form
+  for breaking package semver emphasis). All package titles publish a registry
+  PATCH tag so `v2.x` consumers receive the update. CI validates this title in
   `pr-package-validation` when package directories change.
 
 ## Risk and Rollback

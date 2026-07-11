@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
@@ -28,6 +28,7 @@ describe('package-validate', () => {
 
   afterEach(() => {
     if (tempDir.length > 0) {
+      rmSync(tempDir, { recursive: true, force: true });
       tempDir = '';
     }
   });
@@ -48,6 +49,26 @@ describe('package-validate', () => {
 
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('Package PR title must start with feat(package):');
+  });
+
+  it('accepts breaking package PR titles in pull_request CI', () => {
+    tempDir = mkdtempSync(path.join(os.tmpdir(), 'registry-package-validate-'));
+    const eventPath = path.join(tempDir, 'event.json');
+    writeFileSync(
+      eventPath,
+      JSON.stringify({
+        pull_request: { title: 'feat(package)!: publish agents-repo/foo 2.0.0' },
+      }),
+      'utf8',
+    );
+
+    const result = runPackageValidate('agents-repo/hello-agent', {
+      GITHUB_EVENT_PATH: eventPath,
+      GITHUB_EVENT_NAME: 'pull_request',
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Validation passed for package: agents-repo/hello-agent');
   });
 
   it('skips package PR title enforcement when CI env is not a pull request', () => {

@@ -112,20 +112,24 @@ Pushes to `main` run release validation checks and then execute
 releasable changes per the commit-to-version mapping below.
 
 Commit-to-version mapping for automated releases. Custom release rules in
-`.releaserc.json` override `feat(package):` to `PATCH` and breaking changes
-to `MAJOR`; all other types use commit-analyzer built-in default rules when
-no custom rule matches:
+`.releaserc.json` map all `feat(package)` and `fix(package)` commits—including
+`!` and `BREAKING CHANGE:` footers—to `PATCH`. Platform breaking changes use
+commit-analyzer built-in default rules when no custom rule matches:
 
-- `type!:` or `BREAKING CHANGE:` => `MAJOR`
-- `feat(package):` => `PATCH` (catalog addition or new package version)
+- `type!:` or `BREAKING CHANGE:` (without `package` scope) => `MAJOR`
+- `feat(package):` and `feat(package)!:` => `PATCH`
+  (catalog addition or new package version)
+- `fix(package):` and `fix(package)!:` => `PATCH` (package correction)
 - `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
-- `fix:`, `perf:`, and `revert:` with any scope => `PATCH`
+- `fix:`, `perf:`, and `revert:` with any scope except `package` => `PATCH`
 
-Use `fix(package):` for package corrections; it maps to `PATCH` like any
-other `fix:` commit.
+Registry Git tags version the catalog snapshot; package `manifest.json` `latest`
+values version individual package compatibility. All package squash-merge titles
+publish a registry **PATCH** so `v2.x` consumers receive updates. The `!` on
+package commits emphasizes breaking package content in release notes only.
 
 Package submission PRs MUST squash-merge with `feat(package):` or
-`fix(package):` titles (or the breaking `feat(package)!:` / `fix(package)!:`
+`fix(package):` titles (or the optional `feat(package)!:` / `fix(package)!:`
 form) so registry release tags are published. CI enforces the PR title in
 `pr-package-validation` via `package:validate`; local runs do not unless CI
 env vars are set. See `.github/CONTRIBUTING.md` for the full squash-merge rule.
