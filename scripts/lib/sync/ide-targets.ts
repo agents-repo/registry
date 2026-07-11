@@ -241,17 +241,21 @@ function removeStaleFiles(
     return;
   }
 
-  for (const entry of fs.readdirSync(dirPath)) {
-    if (!entry.endsWith(extension)) {
+  for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
+    if (!entry.isFile()) {
       continue;
     }
 
-    if (isManagedFile && !isManagedFile(entry)) {
+    if (!entry.name.endsWith(extension)) {
       continue;
     }
 
-    if (!keepFileNames.has(entry)) {
-      fs.rmSync(path.join(dirPath, entry), { force: true });
+    if (isManagedFile && !isManagedFile(entry.name)) {
+      continue;
+    }
+
+    if (!keepFileNames.has(entry.name)) {
+      fs.rmSync(path.join(dirPath, entry.name), { force: true });
     }
   }
 }
@@ -520,12 +524,16 @@ function findStaleClaudeAgentFiles(repoRoot: string, keepFileNames: Set<string>)
   }
 
   const stalePaths: string[] = [];
-  for (const entry of fs.readdirSync(agentsDir)) {
-    if (!isManagedClaudeAgentFileName(entry) || keepFileNames.has(entry)) {
+  for (const entry of fs.readdirSync(agentsDir, { withFileTypes: true })) {
+    if (!entry.isFile()) {
       continue;
     }
 
-    stalePaths.push(path.join(CLAUDE_AGENTS_REL, entry));
+    if (!isManagedClaudeAgentFileName(entry.name) || keepFileNames.has(entry.name)) {
+      continue;
+    }
+
+    stalePaths.push(path.join(CLAUDE_AGENTS_REL, entry.name));
   }
 
   return stalePaths;

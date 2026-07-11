@@ -203,6 +203,21 @@ describe('syncGithubCopilotAgents', (): void => {
     expect(fs.existsSync(path.join(repoRoot, '.github', 'agents', 'keep-me.agent.md'))).toBe(true);
     expect(fs.existsSync(stalePath)).toBe(false);
   });
+
+  it('skips directory entries that look like stale GitHub agent files', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'gh-dir-sync', {
+      agents: [{ id: 'keep-me', name: 'keep-me', description: 'Kept agent for github sync.' }],
+      flows: [],
+    });
+
+    const bogusDir = path.join(repoRoot, '.github', 'agents', 'stale.agent.md');
+    fs.mkdirSync(bogusDir, { recursive: true });
+
+    const pkg = new Package('agents-repo/gh-dir-sync', path.join(repoRoot, 'packages'));
+    expect(() => syncGithubCopilotAgents(repoRoot, pkg)).not.toThrow();
+    expect(fs.existsSync(bogusDir)).toBe(true);
+  });
 });
 
 describe('syncCursorSkills', (): void => {
@@ -278,6 +293,21 @@ describe('syncClaudeCodeAgents', (): void => {
     syncClaudeCodeAgents(repoRoot, pkg);
 
     expect(fs.existsSync(notesPath)).toBe(true);
+  });
+
+  it('skips directory entries that look like managed Claude agent files during stale cleanup', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'claude-dir-sync', {
+      agents: [{ id: 'claude-agent', name: 'claude-agent', description: 'Claude agent for sync tests.' }],
+      flows: [],
+    });
+
+    const bogusDir = path.join(repoRoot, '.claude', 'agents', 'stale-agent.md');
+    fs.mkdirSync(bogusDir, { recursive: true });
+
+    const pkg = new Package('agents-repo/claude-dir-sync', path.join(repoRoot, 'packages'));
+    expect(() => syncClaudeCodeAgents(repoRoot, pkg)).not.toThrow();
+    expect(fs.existsSync(bogusDir)).toBe(true);
   });
 
   it('rejects Claude sync for dogfooded packages outside repository target scope', (): void => {
