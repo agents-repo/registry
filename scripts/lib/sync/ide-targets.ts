@@ -1,8 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { resolveDeclaredInstallTargets } from '../compatibility';
+import { ID_PATTERN } from '../constants';
 import { listDeploymentAgentFileIds, listDeploymentAgentFiles } from '../deployment-agents';
 import { agentMdToClaudeAgentMd, agentMdToSkillMd } from '../emitters/agent-instruction';
-import { resolveDeclaredInstallTargets } from '../compatibility';
 import { ErrorCode, PackageError } from '../errors';
 import { Package } from '../package';
 import type { InstallTargetId, PackageMetadata } from '../types';
@@ -20,19 +21,89 @@ export type IdeSyncTarget = (typeof IDE_SYNC_TARGETS)[number];
 const PACKAGE_IDE_SYNC_TARGETS = ['github-copilot', 'cursor', 'claude-code', 'openai-codex'] as const;
 type PackageIdeSyncTarget = (typeof PACKAGE_IDE_SYNC_TARGETS)[number];
 
-/** Packages whose IDE mirrors are committed in this repository. */
-export const DOGFOODED_PACKAGE_IDS = [
-  'agents-repo/agents-repo-package-creation',
-  'maiconfz/pr-comment-triage',
-] as const;
+interface RepoDogfoodedPackage {
+  qualifiedId: string;
+  targets: readonly PackageIdeSyncTarget[];
+}
 
-/** Per-target dogfooding scope for committed IDE mirrors in this repository. */
-const REPO_DOGFOODED_PACKAGE_IDS_BY_TARGET: Record<PackageIdeSyncTarget, readonly string[]> = {
-  'github-copilot': DOGFOODED_PACKAGE_IDS,
-  cursor: DOGFOODED_PACKAGE_IDS,
-  'claude-code': ['agents-repo/agents-repo-package-creation'],
-  'openai-codex': ['agents-repo/agents-repo-package-creation'],
-};
+/** Single source of truth for committed IDE mirrors and per-target scope. */
+const REPO_DOGFOODED_PACKAGES: readonly RepoDogfoodedPackage[] = [
+  {
+    qualifiedId: 'agents-repo/agents-repo-package-creation',
+    targets: ['github-copilot', 'cursor', 'claude-code', 'openai-codex'],
+  },
+  {
+    qualifiedId: 'maiconfz/pr-comment-triage',
+    targets: ['github-copilot', 'cursor'],
+  },
+];
+
+/** Packages whose IDE mirrors are committed in this repository. */
+export const DOGFOODED_PACKAGE_IDS = REPO_DOGFOODED_PACKAGES.map((entry) => entry.qualifiedId);
+
+const DOGFOODED_PACKAGE_ID_SET = new Set(DOGFOODED_PACKAGE_IDS);
+
+function buildDogfoodedPackageIdsByTarget(): Record<PackageIdeSyncTarget, readonly string[]> {
+  const byTarget: Record<PackageIdeSyncTarget, string[]> = {
+    'github-copilot': [],
+    cursor: [],
+    'claude-code': [],
+    'openai-codex': [],
+  };
+
+  for (const entry of REPO_DOGFOODED_PACKAGES) {
+    for (const target of entry.targets) {
+      byTarget[target].push(entry.qualifiedId);
+    }
+  }
+
+  return byTarget;
+}
+
+const REPO_DOGFOODED_PACKAGE_IDS_BY_TARGET = buildDogfoodedPackageIdsByTarget();
+
+export function validateRepoDogfoodingConfig(): void {
+  const seen = new Set<string>();
+  for (const entry of REPO_DOGFOODED_PACKAGES) {
+    if (seen.has(entry.qualifiedId)) {
+      throw new Error(`Duplicate dogfooded package id: ${entry.qualifiedId}`);
+    }
+
+    seen.add(entry.qualifiedId);
+    if (entry.targets.length === 0) {
+      throw new Error(`Dogfooded package "${entry.qualifiedId}" declares no install targets`);
+    }
+  }
+}
+
+function isDogfoodedPackageId(qualifiedId: string): boolean {
+  return DOGFOODED_PACKAGE_ID_SET.has(qualifiedId);
+}
+
+function assertPackageInRepoDogfoodingScope(pkg: Package, targetId: PackageIdeSyncTarget): void {
+  if (!isDogfoodedPackageId(pkg.qualifiedId)) {
+    return;
+  }
+
+  if (!REPO_DOGFOODED_PACKAGE_IDS_BY_TARGET[targetId].includes(pkg.qualifiedId)) {
+    throw new PackageError(
+      ErrorCode.ERR_VALIDATION_FAILED,
+      `Package "${pkg.qualifiedId}" is not in repository dogfooding scope for install target "${targetId}"`,
+    );
+  }
+}
+
+function isManagedDeploymentAgentId(id: string): boolean {
+  return ID_PATTERN.test(id);
+}
+
+function isManagedClaudeAgentFileName(fileName: string): boolean {
+  if (!fileName.endsWith('.md')) {
+    return false;
+  }
+
+  return isManagedDeploymentAgentId(fileName.slice(0, -3));
+}
 
 const COPILOT_INSTRUCTIONS_REL = path.join('.github', 'copilot-instructions.md');
 const CURSOR_RULES_REL = path.join('.cursor', 'rules', 'agents-registry.mdc');
@@ -73,8 +144,12 @@ function packageSupportsInstallTargetForSync(dogfoodPkg: Package, targetId: Inst
     const metadata = dogfoodPkg.loadMetadata();
     assertInstallTargetDeclared(metadata, targetId);
     return true;
-  } catch {
-    return false;
+  } catch (error) {
+    if (error instanceof PackageError && error.code === ErrorCode.ERR_METADATA_INVALID) {
+      return false;
+    }
+
+    throw error;
   }
 }
 
@@ -96,7 +171,7 @@ function listDogfoodedDeploymentAgentIds(pkg: Package, targetId: PackageIdeSyncT
     }
   }
 
-  if (packageSupportsInstallTargetForSync(pkg, targetId)) {
+  if (!isDogfoodedPackageId(pkg.qualifiedId) && packageSupportsInstallTargetForSync(pkg, targetId)) {
     for (const id of listDeploymentAgentFileIds(pkg.packageDir)) {
       ids.add(id);
     }
@@ -136,13 +211,22 @@ function writeFileEnsuringDir(filePath: string, content: string): void {
   fs.writeFileSync(filePath, content, 'utf-8');
 }
 
-function removeStaleFiles(dirPath: string, keepFileNames: Set<string>, extension: string): void {
+function removeStaleFiles(
+  dirPath: string,
+  keepFileNames: Set<string>,
+  extension: string,
+  isManagedFile?: (fileName: string) => boolean,
+): void {
   if (!fs.existsSync(dirPath)) {
     return;
   }
 
   for (const entry of fs.readdirSync(dirPath)) {
     if (!entry.endsWith(extension)) {
+      continue;
+    }
+
+    if (isManagedFile && !isManagedFile(entry)) {
       continue;
     }
 
@@ -162,9 +246,11 @@ function removeStaleSkillDirs(skillsRoot: string, keepIds: Set<string>): void {
       continue;
     }
 
-    if (!keepIds.has(entry.name)) {
-      fs.rmSync(path.join(skillsRoot, entry.name), { recursive: true, force: true });
+    if (!isManagedDeploymentAgentId(entry.name) || keepIds.has(entry.name)) {
+      continue;
     }
+
+    fs.rmSync(path.join(skillsRoot, entry.name), { recursive: true, force: true });
   }
 }
 
@@ -397,7 +483,7 @@ function findStaleSkillDirs(
 
   const stalePaths: string[] = [];
   for (const entry of fs.readdirSync(skillsRoot, { withFileTypes: true })) {
-    if (!entry.isDirectory() || keepIds.has(entry.name)) {
+    if (!entry.isDirectory() || !isManagedDeploymentAgentId(entry.name) || keepIds.has(entry.name)) {
       continue;
     }
 
@@ -415,7 +501,7 @@ function findStaleClaudeAgentFiles(repoRoot: string, keepFileNames: Set<string>)
 
   const stalePaths: string[] = [];
   for (const entry of fs.readdirSync(agentsDir)) {
-    if (!entry.endsWith('.md') || keepFileNames.has(entry)) {
+    if (!isManagedClaudeAgentFileName(entry) || keepFileNames.has(entry)) {
       continue;
     }
 
@@ -426,6 +512,7 @@ function findStaleClaudeAgentFiles(repoRoot: string, keepFileNames: Set<string>)
 }
 
 function checkGithubCopilotAgents(repoRoot: string, pkg: Package): IdeSyncDriftIssue[] {
+  assertPackageInRepoDogfoodingScope(pkg, 'github-copilot');
   const expected = expectedGithubCopilotAgents(pkg);
   const issues = compareExpectedFiles(repoRoot, expected);
   const keepFileNames = listDogfoodedAgentFileNames(pkg);
@@ -438,6 +525,7 @@ function checkGithubCopilotAgents(repoRoot: string, pkg: Package): IdeSyncDriftI
 }
 
 function checkCursorSkills(repoRoot: string, pkg: Package): IdeSyncDriftIssue[] {
+  assertPackageInRepoDogfoodingScope(pkg, 'cursor');
   const expected = expectedCursorSkills(pkg);
   const issues = compareExpectedFiles(repoRoot, expected);
   const keepIds = listDogfoodedSkillIds(pkg, 'cursor');
@@ -450,6 +538,7 @@ function checkCursorSkills(repoRoot: string, pkg: Package): IdeSyncDriftIssue[] 
 }
 
 function checkClaudeCodeAgents(repoRoot: string, pkg: Package): IdeSyncDriftIssue[] {
+  assertPackageInRepoDogfoodingScope(pkg, 'claude-code');
   const expected = expectedClaudeCodeAgents(pkg);
   const issues = compareExpectedFiles(repoRoot, expected);
   const keepFileNames = listDogfoodedClaudeAgentFileNames(pkg);
@@ -462,6 +551,7 @@ function checkClaudeCodeAgents(repoRoot: string, pkg: Package): IdeSyncDriftIssu
 }
 
 function checkOpenaiCodexSkills(repoRoot: string, pkg: Package): IdeSyncDriftIssue[] {
+  assertPackageInRepoDogfoodingScope(pkg, 'openai-codex');
   const expected = expectedOpenaiCodexSkills(pkg);
   const issues = compareExpectedFiles(repoRoot, expected);
   const keepIds = listDogfoodedSkillIds(pkg, 'openai-codex');
@@ -560,6 +650,7 @@ export function transformCopilotInstructionsToCursorRules(source: string): strin
 }
 
 export function syncGithubCopilotAgents(repoRoot: string, pkg: Package): string[] {
+  assertPackageInRepoDogfoodingScope(pkg, 'github-copilot');
   const metadata = pkg.loadMetadata();
   assertInstallTargetDeclared(metadata, 'github-copilot');
 
@@ -580,6 +671,7 @@ export function syncGithubCopilotAgents(repoRoot: string, pkg: Package): string[
 }
 
 export function syncCursorSkills(repoRoot: string, pkg: Package): string[] {
+  assertPackageInRepoDogfoodingScope(pkg, 'cursor');
   const metadata = pkg.loadMetadata();
   assertInstallTargetDeclared(metadata, 'cursor');
   const version = readPackageVersion(metadata, 'Cursor');
@@ -601,6 +693,7 @@ export function syncCursorSkills(repoRoot: string, pkg: Package): string[] {
 }
 
 export function syncClaudeCodeAgents(repoRoot: string, pkg: Package): string[] {
+  assertPackageInRepoDogfoodingScope(pkg, 'claude-code');
   const metadata = pkg.loadMetadata();
   assertInstallTargetDeclared(metadata, 'claude-code');
 
@@ -616,11 +709,17 @@ export function syncClaudeCodeAgents(repoRoot: string, pkg: Package): string[] {
     written.push(path.relative(repoRoot, targetPath));
   }
 
-  removeStaleFiles(agentsDir, listDogfoodedClaudeAgentFileNames(pkg), '.md');
+  removeStaleFiles(
+    agentsDir,
+    listDogfoodedClaudeAgentFileNames(pkg),
+    '.md',
+    isManagedClaudeAgentFileName,
+  );
   return written;
 }
 
 export function syncOpenaiCodexSkills(repoRoot: string, pkg: Package): string[] {
+  assertPackageInRepoDogfoodingScope(pkg, 'openai-codex');
   const metadata = pkg.loadMetadata();
   assertInstallTargetDeclared(metadata, 'openai-codex');
   const version = readPackageVersion(metadata, 'OpenAI Codex');

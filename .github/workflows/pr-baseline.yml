@@ -39,6 +39,20 @@ jobs:
           --package agents-repo/agents-repo-package-creation
           --target all
 
+      - name: Check package-creation Claude Code mirrors
+        run: >-
+          npm run package:sync-ide-targets --
+          --check
+          --package agents-repo/agents-repo-package-creation
+          --target claude-code
+
+      - name: Check package-creation OpenAI Codex mirrors
+        run: >-
+          npm run package:sync-ide-targets --
+          --check
+          --package agents-repo/agents-repo-package-creation
+          --target openai-codex
+
       - name: Check pr-comment-triage IDE mirrors
         run: >-
           npm run package:sync-ide-targets --

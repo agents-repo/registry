@@ -14,6 +14,7 @@ import {
   syncIdeTargets,
   syncOpenaiCodexSkills,
   transformCopilotInstructionsToCursorRules,
+  validateRepoDogfoodingConfig,
 } from '../../../../../scripts/lib/sync/ide-targets';
 import { createDummyPackage } from '../../../../helpers/package-factory';
 
@@ -98,6 +99,32 @@ describe('transformCopilotInstructionsToCursorRules', (): void => {
     const source = 'Read [../README.md](../README.md "Repo readme").';
     const output = transformCopilotInstructionsToCursorRules(source);
     expect(output).toContain('[../../README.md](../../README.md "Repo readme")');
+  });
+});
+
+describe('validateRepoDogfoodingConfig', (): void => {
+  it('accepts the committed dogfooding configuration', (): void => {
+    expect(() => validateRepoDogfoodingConfig()).not.toThrow();
+  });
+});
+
+describe('packageSupportsInstallTargetForSync', (): void => {
+  it('propagates metadata load errors from dogfooded packages during sync', (): void => {
+    const repoRoot = makeRepoRoot();
+    const dogfoodedDir = createDummyPackage(repoRoot, 'agents-repo-package-creation', {
+      namespace: 'agents-repo',
+      agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
+      flows: [],
+    });
+    fs.writeFileSync(path.join(dogfoodedDir, 'metadata.json'), '{invalid json', 'utf-8');
+
+    createDummyPackage(repoRoot, 'gh-metadata-error', {
+      agents: [{ id: 'keep-me', name: 'keep-me', description: 'Kept agent for github sync.' }],
+      flows: [],
+    });
+
+    const pkg = new Package('agents-repo/gh-metadata-error', path.join(repoRoot, 'packages'));
+    expect(() => syncGithubCopilotAgents(repoRoot, pkg)).toThrow(SyntaxError);
   });
 });
 
@@ -208,6 +235,37 @@ describe('syncClaudeCodeAgents', (): void => {
     expect(fs.existsSync(stalePath)).toBe(false);
   });
 
+  it('does not remove hand-authored non-agent markdown files from Claude agents directory', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'claude-notes', {
+      agents: [{ id: 'claude-agent', name: 'claude-agent', description: 'Claude agent for sync tests.' }],
+      flows: [],
+    });
+
+    const notesPath = path.join(repoRoot, '.claude', 'agents', 'NOTES.md');
+    fs.mkdirSync(path.dirname(notesPath), { recursive: true });
+    fs.writeFileSync(notesPath, 'hand-authored notes', 'utf-8');
+
+    const pkg = new Package('agents-repo/claude-notes', path.join(repoRoot, 'packages'));
+    syncClaudeCodeAgents(repoRoot, pkg);
+
+    expect(fs.existsSync(notesPath)).toBe(true);
+  });
+
+  it('rejects Claude sync for dogfooded packages outside repository target scope', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'pr-comment-triage', {
+      namespace: 'maiconfz',
+      agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
+      flows: [],
+    });
+
+    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+    expect(() => syncClaudeCodeAgents(repoRoot, pkgB)).toThrow(
+      /not in repository dogfooding scope for install target "claude-code"/,
+    );
+  });
+
   it('removes out-of-scope Claude mirrors when resyncing an in-scope package', (): void => {
     const repoRoot = makeRepoRoot();
     createDummyPackage(repoRoot, 'agents-repo-package-creation', {
@@ -215,25 +273,22 @@ describe('syncClaudeCodeAgents', (): void => {
       agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
       flows: [],
     });
-    createDummyPackage(repoRoot, 'pr-comment-triage', {
-      namespace: 'maiconfz',
-      agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
-      flows: [],
-    });
 
     const pkgA = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
-    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
-
-    syncClaudeCodeAgents(repoRoot, pkgA);
-    syncClaudeCodeAgents(repoRoot, pkgB);
-
-    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-a-agent.md'))).toBe(true);
-    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-b-agent.md'))).toBe(true);
 
     syncClaudeCodeAgents(repoRoot, pkgA);
 
+    const outOfScopePath = path.join(repoRoot, '.claude', 'agents', 'pkg-b-agent.md');
+    fs.mkdirSync(path.dirname(outOfScopePath), { recursive: true });
+    fs.writeFileSync(outOfScopePath, 'out of scope mirror', 'utf-8');
+
     expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-a-agent.md'))).toBe(true);
-    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-b-agent.md'))).toBe(false);
+    expect(fs.existsSync(outOfScopePath)).toBe(true);
+
+    syncClaudeCodeAgents(repoRoot, pkgA);
+
+    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-a-agent.md'))).toBe(true);
+    expect(fs.existsSync(outOfScopePath)).toBe(false);
   });
 });
 
@@ -274,6 +329,56 @@ describe('syncOpenaiCodexSkills', (): void => {
     expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'current-skill', 'SKILL.md'))).toBe(true);
   });
 
+  it('does not remove hand-authored non-skill directories from Codex skills root', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'codex-notes', {
+      agents: [{ id: 'codex-skill', name: 'codex-skill', description: 'Short desc.' }],
+      flows: [],
+    });
+
+    const notesDir = path.join(repoRoot, '.agents', 'skills', '_scratch');
+    fs.mkdirSync(notesDir, { recursive: true });
+    fs.writeFileSync(path.join(notesDir, 'NOTES.md'), 'hand-authored notes', 'utf-8');
+
+    const pkg = new Package('agents-repo/codex-notes', path.join(repoRoot, 'packages'));
+    syncOpenaiCodexSkills(repoRoot, pkg);
+
+    expect(fs.existsSync(notesDir)).toBe(true);
+  });
+
+  it('reports OpenAI Codex-specific error when metadata.version is missing', (): void => {
+    const repoRoot = makeRepoRoot();
+    const packageDir = createDummyPackage(repoRoot, 'agents-repo-package-creation', {
+      namespace: 'agents-repo',
+      agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
+      flows: [],
+    });
+
+    const metadataPath = path.join(packageDir, 'metadata.json');
+    const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf-8')) as Record<string, unknown>;
+    delete metadata.version;
+    fs.writeFileSync(metadataPath, JSON.stringify(metadata, null, 2), 'utf-8');
+
+    const pkg = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
+    expect(() => syncOpenaiCodexSkills(repoRoot, pkg)).toThrow(
+      /metadata\.json version is required for OpenAI Codex skill sync/,
+    );
+  });
+
+  it('rejects Codex sync for dogfooded packages outside repository target scope', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'pr-comment-triage', {
+      namespace: 'maiconfz',
+      agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
+      flows: [],
+    });
+
+    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+    expect(() => syncOpenaiCodexSkills(repoRoot, pkgB)).toThrow(
+      /not in repository dogfooding scope for install target "openai-codex"/,
+    );
+  });
+
   it('removes out-of-scope Codex mirrors when resyncing an in-scope package', (): void => {
     const repoRoot = makeRepoRoot();
     createDummyPackage(repoRoot, 'agents-repo-package-creation', {
@@ -281,25 +386,22 @@ describe('syncOpenaiCodexSkills', (): void => {
       agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
       flows: [],
     });
-    createDummyPackage(repoRoot, 'pr-comment-triage', {
-      namespace: 'maiconfz',
-      agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
-      flows: [],
-    });
 
     const pkgA = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
-    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
-
-    syncOpenaiCodexSkills(repoRoot, pkgA);
-    syncOpenaiCodexSkills(repoRoot, pkgB);
-
-    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-a-agent', 'SKILL.md'))).toBe(true);
-    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-b-agent', 'SKILL.md'))).toBe(true);
 
     syncOpenaiCodexSkills(repoRoot, pkgA);
 
+    const outOfScopeDir = path.join(repoRoot, '.agents', 'skills', 'pkg-b-agent');
+    fs.mkdirSync(outOfScopeDir, { recursive: true });
+    fs.writeFileSync(path.join(outOfScopeDir, 'SKILL.md'), 'out of scope mirror', 'utf-8');
+
     expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-a-agent', 'SKILL.md'))).toBe(true);
-    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-b-agent', 'SKILL.md'))).toBe(false);
+    expect(fs.existsSync(path.join(outOfScopeDir, 'SKILL.md'))).toBe(true);
+
+    syncOpenaiCodexSkills(repoRoot, pkgA);
+
+    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-a-agent', 'SKILL.md'))).toBe(true);
+    expect(fs.existsSync(path.join(outOfScopeDir, 'SKILL.md'))).toBe(false);
   });
 });
 
@@ -401,6 +503,36 @@ describe('checkIdeTargets', (): void => {
         { kind: 'modified', path: '.github/agents/fresh-agent.agent.md' },
         { kind: 'stale', path: path.join('.cursor', 'skills', 'old-skill') },
       ]),
+    );
+  });
+
+  it('reports stale Claude and Codex mirror drift', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'check-drift-claude-codex', {
+      agents: [{ id: 'fresh-agent', name: 'fresh-agent', description: 'Agent for drift detection tests.' }],
+      flows: [],
+    });
+
+    const pkg = new Package('agents-repo/check-drift-claude-codex', path.join(repoRoot, 'packages'));
+    syncClaudeCodeAgents(repoRoot, pkg);
+    syncOpenaiCodexSkills(repoRoot, pkg);
+
+    const staleClaudePath = path.join(repoRoot, '.claude', 'agents', 'old-claude-agent.md');
+    fs.mkdirSync(path.dirname(staleClaudePath), { recursive: true });
+    fs.writeFileSync(staleClaudePath, 'stale', 'utf-8');
+
+    const staleCodexDir = path.join(repoRoot, '.agents', 'skills', 'old-codex-skill');
+    fs.mkdirSync(staleCodexDir, { recursive: true });
+    fs.writeFileSync(path.join(staleCodexDir, 'SKILL.md'), 'stale', 'utf-8');
+
+    const claudeIssues = checkIdeTargets(repoRoot, pkg, 'claude-code');
+    const codexIssues = checkIdeTargets(repoRoot, pkg, 'openai-codex');
+
+    expect(claudeIssues).toEqual(
+      expect.arrayContaining([{ kind: 'stale', path: '.claude/agents/old-claude-agent.md' }]),
+    );
+    expect(codexIssues).toEqual(
+      expect.arrayContaining([{ kind: 'stale', path: path.join('.agents', 'skills', 'old-codex-skill') }]),
     );
   });
 
