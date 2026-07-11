@@ -230,10 +230,10 @@ describe('syncClaudeCodeAgents', (): void => {
     expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-a-agent.md'))).toBe(true);
     expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-b-agent.md'))).toBe(true);
 
-    syncClaudeCodeAgents(repoRoot, pkgB);
+    syncClaudeCodeAgents(repoRoot, pkgA);
 
     expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-a-agent.md'))).toBe(true);
-    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-b-agent.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-b-agent.md'))).toBe(false);
   });
 });
 
@@ -296,10 +296,10 @@ describe('syncOpenaiCodexSkills', (): void => {
     expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-a-agent', 'SKILL.md'))).toBe(true);
     expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-b-agent', 'SKILL.md'))).toBe(true);
 
-    syncOpenaiCodexSkills(repoRoot, pkgB);
+    syncOpenaiCodexSkills(repoRoot, pkgA);
 
     expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-a-agent', 'SKILL.md'))).toBe(true);
-    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-b-agent', 'SKILL.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-b-agent', 'SKILL.md'))).toBe(false);
   });
 });
 
