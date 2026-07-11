@@ -24,6 +24,11 @@ type AnalyzeCommitFn = (
   commit: ParsedCommit,
 ) => ReleaseType | false | null | undefined;
 
+interface CommitAnalyzerPluginConfig {
+  readonly preset?: string;
+  readonly releaseRules?: ReleaseRule[];
+}
+
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const require = createRequire(import.meta.url);
 const analyzerLib = path.join(repoRoot, 'node_modules/@semantic-release/commit-analyzer/lib');
@@ -36,33 +41,63 @@ const loadDefaultExport = <T>(modulePath: string): T => {
   return loaded as T;
 };
 
+const noopLogger = {
+  log: () => undefined,
+  error: () => undefined,
+  warn: () => undefined,
+};
+
+type AnalyzeCommitsFn = (
+  pluginConfig: CommitAnalyzerPluginConfig,
+  context: {
+    commits: ReadonlyArray<{ message: string; hash: string }>;
+    cwd: string;
+    logger: typeof noopLogger;
+  },
+) => Promise<ReleaseType | null>;
+
 const analyzeCommit = loadDefaultExport<AnalyzeCommitFn>(
   path.join(analyzerLib, 'analyze-commit.js'),
 );
 const DEFAULT_RELEASE_RULES = loadDefaultExport<readonly ReleaseRule[]>(
   path.join(analyzerLib, 'default-release-rules.js'),
 );
+interface CommitAnalyzerModule {
+  readonly analyzeCommits: AnalyzeCommitsFn;
+}
+
+const loadAnalyzeCommits = (): AnalyzeCommitsFn => {
+  const loaded = require(
+    path.join(repoRoot, 'node_modules/@semantic-release/commit-analyzer/index.js'),
+  ) as CommitAnalyzerModule;
+
+  return loaded.analyzeCommits;
+};
+
+const analyzeCommits = loadAnalyzeCommits();
 const releasercPath = path.join(repoRoot, '.releaserc.json');
 
-const loadCustomReleaseRules = (): ReleaseRule[] => {
+const loadCommitAnalyzerPluginConfig = (): CommitAnalyzerPluginConfig => {
   const config = JSON.parse(readFileSync(releasercPath, 'utf8')) as {
     plugins: ReadonlyArray<
       | string
       | [
           string,
-          {
-            releaseRules?: ReleaseRule[];
-          },
+          CommitAnalyzerPluginConfig,
         ]
     >;
   };
 
   const analyzerPlugin = config.plugins.find(
-    (plugin): plugin is [string, { releaseRules?: ReleaseRule[] }] =>
+    (plugin): plugin is [string, CommitAnalyzerPluginConfig] =>
       Array.isArray(plugin) && plugin[0] === '@semantic-release/commit-analyzer',
   );
 
-  return analyzerPlugin?.[1]?.releaseRules ?? [];
+  return analyzerPlugin?.[1] ?? {};
+};
+
+const loadCustomReleaseRules = (): ReleaseRule[] => {
+  return loadCommitAnalyzerPluginConfig().releaseRules ?? [];
 };
 
 const analyzeCommitForRelease = (
@@ -76,6 +111,7 @@ const analyzeCommitForRelease = (
   return result;
 };
 
+/** Mirrors `analyzeCommits` in `@semantic-release/commit-analyzer/index.js`. */
 const resolveReleaseType = (
   commit: ParsedCommit,
   customRules: readonly ReleaseRule[],
@@ -86,6 +122,16 @@ const resolveReleaseType = (
   }
 
   return analyzeCommitForRelease(DEFAULT_RELEASE_RULES, commit);
+};
+
+const analyzeCommitMessage = async (message: string): Promise<ReleaseType | null> => {
+  const pluginConfig = loadCommitAnalyzerPluginConfig();
+
+  return analyzeCommits(pluginConfig, {
+    commits: [{ message, hash: 'abc1234' }],
+    cwd: repoRoot,
+    logger: noopLogger,
+  });
 };
 
 const breakingFooter = [{ title: 'BREAKING CHANGE' }] as const;
@@ -170,6 +216,18 @@ describe('commit-analyzer release rules (.releaserc.json)', () => {
     ).toBe('patch');
   });
 
+  it('short-circuits default breaking=>major when custom package rules match', () => {
+    const commit = {
+      type: 'feat',
+      scope: 'package',
+      notes: [...breakingFooter],
+    } as const;
+
+    expect(analyzeCommitForRelease(customRules, commit)).toBe('patch');
+    expect(analyzeCommitForRelease(DEFAULT_RELEASE_RULES, commit)).toBe('major');
+    expect(resolveReleaseType(commit, customRules)).toBe('patch');
+  });
+
   it('maps unscoped feat: to minor via built-in defaults', () => {
     expect(resolveReleaseType({ type: 'feat' }, customRules)).toBe('minor');
   });
@@ -209,5 +267,35 @@ describe('commit-analyzer release rules (.releaserc.json)', () => {
 
   it('maps chore: to no release', () => {
     expect(resolveReleaseType({ type: 'chore' }, customRules)).toBeUndefined();
+  });
+});
+
+describe('commit-analyzer analyzeCommits integration (.releaserc.json)', () => {
+  it('uses the conventionalcommits preset parser with custom releaseRules only', () => {
+    expect(loadCommitAnalyzerPluginConfig().preset).toBe('conventionalcommits');
+  });
+
+  it('maps feat(package)!: commit messages to patch via analyzeCommits', async () => {
+    await expect(
+      analyzeCommitMessage('feat(package)!: publish agents-repo/foo 2.0.0'),
+    ).resolves.toBe('patch');
+  });
+
+  it('maps fix(package)!: commit messages to patch via analyzeCommits', async () => {
+    await expect(analyzeCommitMessage('fix(package)!: correct agents-repo/foo')).resolves.toBe(
+      'patch',
+    );
+  });
+
+  it('maps feat(package): commit messages to patch via analyzeCommits', async () => {
+    await expect(analyzeCommitMessage('feat(package): add agents-repo/foo')).resolves.toBe(
+      'patch',
+    );
+  });
+
+  it('maps unscoped feat!: commit messages to major via analyzeCommits', async () => {
+    await expect(analyzeCommitMessage('feat!: remove legacy manifest field')).resolves.toBe(
+      'major',
+    );
   });
 });
