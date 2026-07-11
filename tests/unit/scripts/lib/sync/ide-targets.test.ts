@@ -7,10 +7,12 @@ import { PackageError } from '../../../../../scripts/lib/errors';
 import { Package } from '../../../../../scripts/lib/package';
 import {
   checkIdeTargets,
+  syncClaudeCodeAgents,
   syncCursorRules,
   syncCursorSkills,
   syncGithubCopilotAgents,
   syncIdeTargets,
+  syncOpenaiCodexSkills,
   transformCopilotInstructionsToCursorRules,
 } from '../../../../../scripts/lib/sync/ide-targets';
 import { createDummyPackage } from '../../../../helpers/package-factory';
@@ -186,6 +188,121 @@ describe('syncCursorSkills', (): void => {
   });
 });
 
+describe('syncClaudeCodeAgents', (): void => {
+  it('writes .md agent files and removes stale outputs', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'claude-sync', {
+      agents: [{ id: 'claude-agent', name: 'claude-agent', description: 'Claude agent for sync tests.' }],
+      flows: [],
+    });
+
+    const stalePath = path.join(repoRoot, '.claude', 'agents', 'stale.md');
+    fs.mkdirSync(path.dirname(stalePath), { recursive: true });
+    fs.writeFileSync(stalePath, 'stale', 'utf-8');
+
+    const pkg = new Package('agents-repo/claude-sync', path.join(repoRoot, 'packages'));
+    const written = syncClaudeCodeAgents(repoRoot, pkg);
+
+    expect(written).toEqual(['.claude/agents/claude-agent.md']);
+    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'claude-agent.md'))).toBe(true);
+    expect(fs.existsSync(stalePath)).toBe(false);
+  });
+
+  it('preserves mirrors from other dogfooded packages when syncing one package', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'agents-repo-package-creation', {
+      namespace: 'agents-repo',
+      agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
+      flows: [],
+    });
+    createDummyPackage(repoRoot, 'pr-comment-triage', {
+      namespace: 'maiconfz',
+      agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
+      flows: [],
+    });
+
+    const pkgA = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
+    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+
+    syncClaudeCodeAgents(repoRoot, pkgA);
+    syncClaudeCodeAgents(repoRoot, pkgB);
+
+    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-a-agent.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-b-agent.md'))).toBe(true);
+
+    syncClaudeCodeAgents(repoRoot, pkgB);
+
+    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-a-agent.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.claude', 'agents', 'pkg-b-agent.md'))).toBe(true);
+  });
+});
+
+describe('syncOpenaiCodexSkills', (): void => {
+  it('writes SKILL.md with converted frontmatter and version comment', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'codex-sync', {
+      agents: [{ id: 'codex-skill', name: 'codex-skill', description: 'Short desc.' }],
+      flows: [],
+    });
+
+    const pkg = new Package('agents-repo/codex-sync', path.join(repoRoot, 'packages'));
+    const written = syncOpenaiCodexSkills(repoRoot, pkg);
+    const skillPath = path.join(repoRoot, written[0]);
+
+    expect(skillPath.endsWith('.agents/skills/codex-skill/SKILL.md')).toBe(true);
+    const content = fs.readFileSync(skillPath, 'utf-8');
+    expect(content).toContain('name: codex-skill');
+    expect(content).toContain('Use when the user needs the codex-skill workflow.');
+    expect(content).toContain('<!-- agents-repo package version:');
+  });
+
+  it('removes stale skill directories when agent ids change', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'codex-stale', {
+      agents: [{ id: 'current-skill', name: 'current-skill', description: 'Current skill after stale cleanup.' }],
+      flows: [],
+    });
+
+    const staleSkillDir = path.join(repoRoot, '.agents', 'skills', 'stale-skill');
+    fs.mkdirSync(staleSkillDir, { recursive: true });
+    fs.writeFileSync(path.join(staleSkillDir, 'SKILL.md'), 'stale', 'utf-8');
+
+    const pkg = new Package('agents-repo/codex-stale', path.join(repoRoot, 'packages'));
+    syncOpenaiCodexSkills(repoRoot, pkg);
+
+    expect(fs.existsSync(staleSkillDir)).toBe(false);
+    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'current-skill', 'SKILL.md'))).toBe(true);
+  });
+
+  it('preserves mirrors from other dogfooded packages when syncing one package', (): void => {
+    const repoRoot = makeRepoRoot();
+    createDummyPackage(repoRoot, 'agents-repo-package-creation', {
+      namespace: 'agents-repo',
+      agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
+      flows: [],
+    });
+    createDummyPackage(repoRoot, 'pr-comment-triage', {
+      namespace: 'maiconfz',
+      agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
+      flows: [],
+    });
+
+    const pkgA = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
+    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+
+    syncOpenaiCodexSkills(repoRoot, pkgA);
+    syncOpenaiCodexSkills(repoRoot, pkgB);
+
+    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-a-agent', 'SKILL.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-b-agent', 'SKILL.md'))).toBe(true);
+
+    syncOpenaiCodexSkills(repoRoot, pkgB);
+
+    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-a-agent', 'SKILL.md'))).toBe(true);
+    expect(fs.existsSync(path.join(repoRoot, '.agents', 'skills', 'pkg-b-agent', 'SKILL.md'))).toBe(true);
+  });
+});
+
 describe('syncCursorRules', (): void => {
   it('writes agents-registry.mdc from copilot instructions', (): void => {
     const repoRoot = makeRepoRoot();
@@ -340,6 +457,8 @@ describe('syncIdeTargets', (): void => {
 
     expect(written.some((entry) => entry.endsWith('.github/agents/all-agent.agent.md'))).toBe(true);
     expect(written.some((entry) => entry.endsWith('.cursor/skills/all-agent/SKILL.md'))).toBe(true);
+    expect(written.some((entry) => entry.endsWith('.claude/agents/all-agent.md'))).toBe(true);
+    expect(written.some((entry) => entry.endsWith('.agents/skills/all-agent/SKILL.md'))).toBe(true);
     expect(written.some((entry) => entry.endsWith('.cursor/rules/agents-registry.mdc'))).toBe(true);
   });
 });

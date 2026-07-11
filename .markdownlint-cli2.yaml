@@ -1,6 +1,8 @@
 ignores:
   - "node_modules/**"
   - ".cursor/skills/**/SKILL.md"
+  - ".agents/skills/**/SKILL.md"
+  - ".claude/agents/**/*.md"
 config:
   MD013:
     tables: false

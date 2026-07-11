@@ -82,6 +82,8 @@ instructions on clone without manual install steps.
 | --- | --- | --- |
 | GitHub Copilot | `.github/agents/*.agent.md` | `.github/copilot-instructions.md` |
 | Cursor | `.cursor/skills/<id>/SKILL.md` | `.cursor/rules/agents-registry.mdc` |
+| Claude Code | `.claude/agents/<id>.md` | — |
+| OpenAI Codex | `.agents/skills/<id>/SKILL.md` | — |
 
 Canonical sources for repo workflow agents:
 
@@ -102,7 +104,8 @@ When only `copilot-instructions.md` changes:
 npm run sync:cursor-rules
 ```
 
-Do not edit `.github/agents/`, `.cursor/skills/`, or `.cursor/rules/` directly.
+Do not edit `.github/agents/`, `.cursor/skills/`, `.claude/agents/`,
+`.agents/skills/`, or `.cursor/rules/` directly.
 See `.github/CONTRIBUTING.md` for the full edit workflow.
 
 ## Release Workflow

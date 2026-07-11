@@ -289,6 +289,8 @@ Committed IDE paths are generated from canonical sources:
 | --- | --- |
 | `.github/agents/*.agent.md` | `packages/agents-repo/agents-repo-package-creation/` and `packages/maiconfz/pr-comment-triage/` (`agents/` + `flows/`) |
 | `.cursor/skills/<id>/SKILL.md` | same package sources |
+| `.claude/agents/<id>.md` | `packages/agents-repo/agents-repo-package-creation/` (`agents/` + `flows/`) |
+| `.agents/skills/<id>/SKILL.md` | `packages/agents-repo/agents-repo-package-creation/` (`agents/` + `flows/`) |
 | `.cursor/rules/agents-registry.mdc` | `.github/copilot-instructions.md` |
 
 Regenerate after source edits:
