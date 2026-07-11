@@ -528,7 +528,7 @@ describe('checkIdeTargets', (): void => {
     const issues = checkIdeTargets(repoRoot, pkg, 'all');
     expect(issues).toEqual(
       expect.arrayContaining([
-        { kind: 'modified', path: '.github/agents/fresh-agent.agent.md' },
+        { kind: 'modified', path: path.join('.github', 'agents', 'fresh-agent.agent.md') },
         { kind: 'stale', path: path.join('.cursor', 'skills', 'old-skill') },
       ]),
     );
@@ -557,7 +557,7 @@ describe('checkIdeTargets', (): void => {
     const codexIssues = checkIdeTargets(repoRoot, pkg, 'openai-codex');
 
     expect(claudeIssues).toEqual(
-      expect.arrayContaining([{ kind: 'stale', path: '.claude/agents/old-claude-agent.md' }]),
+      expect.arrayContaining([{ kind: 'stale', path: path.join('.claude', 'agents', 'old-claude-agent.md') }]),
     );
     expect(codexIssues).toEqual(
       expect.arrayContaining([{ kind: 'stale', path: path.join('.agents', 'skills', 'old-codex-skill') }]),
