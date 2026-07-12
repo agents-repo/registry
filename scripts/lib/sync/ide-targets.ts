@@ -461,12 +461,16 @@ function findStaleGithubAgentFiles(repoRoot: string, keepFileNames: Set<string>)
   }
 
   const stalePaths: string[] = [];
-  for (const entry of fs.readdirSync(agentsDir)) {
-    if (!entry.endsWith('.agent.md') || keepFileNames.has(entry)) {
+  for (const entry of fs.readdirSync(agentsDir, { withFileTypes: true })) {
+    if (!entry.isFile()) {
       continue;
     }
 
-    stalePaths.push(path.join(GITHUB_AGENTS_REL, entry));
+    if (!entry.name.endsWith('.agent.md') || keepFileNames.has(entry.name)) {
+      continue;
+    }
+
+    stalePaths.push(path.join(GITHUB_AGENTS_REL, entry.name));
   }
 
   return stalePaths;

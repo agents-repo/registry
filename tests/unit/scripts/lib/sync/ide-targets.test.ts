@@ -217,6 +217,7 @@ describe('syncGithubCopilotAgents', (): void => {
     const pkg = new Package('agents-repo/gh-dir-sync', path.join(repoRoot, 'packages'));
     expect(() => syncGithubCopilotAgents(repoRoot, pkg)).not.toThrow();
     expect(fs.existsSync(bogusDir)).toBe(true);
+    expect(checkIdeTargets(repoRoot, pkg, 'github-copilot')).toEqual([]);
   });
 });
 
