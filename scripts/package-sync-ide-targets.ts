@@ -12,8 +12,10 @@
  * Targets:
  *   github-copilot  Write .github/agents/*.agent.md from package agents/ + flows/
  *   cursor          Write .cursor/skills/<id>/SKILL.md from package agents/ + flows/
+ *   claude-code     Write .claude/agents/<id>.md from package agents/ + flows/
+ *   openai-codex    Write .agents/skills/<id>/SKILL.md from package agents/ + flows/
  *   cursor-rules    Write .cursor/rules/agents-registry.mdc from copilot-instructions.md
- *   all             Run all three (requires --package)
+ *   all             Sync package targets in the package's repo dogfooding scope, then cursor-rules
  */
 
 import { hasFlag, parseOptionalFlagValue, parseRequiredPackageId, resolveScriptPaths } from './lib/cli';
@@ -32,11 +34,15 @@ Options:
 Targets:
   github-copilot  Sync .github/agents/ from package source (requires --package)
   cursor          Sync .cursor/skills/ from package source (requires --package)
+  claude-code     Sync .claude/agents/ from package source (requires --package)
+  openai-codex    Sync .agents/skills/ from package source (requires --package)
   cursor-rules    Sync .cursor/rules/agents-registry.mdc from copilot-instructions.md
-  all             Run github-copilot, cursor, and cursor-rules (requires --package)
+  all             Sync package targets in the package's repo dogfooding scope, then cursor-rules
+                  (requires --package; e.g. all four IDE targets for agents-repo-package-creation,
+                  github-copilot and cursor only for pr-comment-triage)
 
 Canonical sources:
-  Package agents/flows  -> .github/agents/ and .cursor/skills/
+  Package agents/flows  -> .github/agents/, .cursor/skills/, .claude/agents/, and .agents/skills/
   copilot-instructions.md -> .cursor/rules/agents-registry.mdc
 
 Do not edit deployment mirrors directly; edit canonical sources and re-run this script.

@@ -75,6 +75,14 @@ If relevant, describe impact on:
 - [ ] Unit tests pass (`npm run test:run`).
 - [ ] Typecheck passes (`npm run typecheck`).
 - [ ] Repo-wide package ZIP scan passes (`npm run package:scan-zips`).
+- [ ] IDE mirror drift check passes when mirror sources changed:
+
+  ```bash
+  npm run package:sync-ide-targets -- --check \
+    --package agents-repo/agents-repo-package-creation --target all
+  ```
+
+  Plus per-package checks for other dogfooded packages as needed.
 - [ ] New or changed docs are deterministic and clear.
 - [ ] Matching issue template was used (or required sections were included
     manually when template application was not possible), and this PR follows

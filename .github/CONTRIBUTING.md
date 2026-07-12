@@ -289,7 +289,13 @@ Committed IDE paths are generated from canonical sources:
 | --- | --- |
 | `.github/agents/*.agent.md` | `packages/agents-repo/agents-repo-package-creation/` and `packages/maiconfz/pr-comment-triage/` (`agents/` + `flows/`) |
 | `.cursor/skills/<id>/SKILL.md` | same package sources |
+| `.claude/agents/<id>.md` | `packages/agents-repo/agents-repo-package-creation/` (`agents/` + `flows/`) |
+| `.agents/skills/<id>/SKILL.md` | `packages/agents-repo/agents-repo-package-creation/` (`agents/` + `flows/`) |
 | `.cursor/rules/agents-registry.mdc` | `.github/copilot-instructions.md` |
+
+`maiconfz/pr-comment-triage` is dogfooded for GitHub Copilot and Cursor only.
+Claude Code and OpenAI Codex mirrors currently include
+`agents-repo-package-creation` agents and flows only.
 
 Regenerate after source edits:
 
@@ -300,12 +306,14 @@ npm run package:sync-ide-targets -- \
 
 npm run package:sync-ide-targets -- \
   --package maiconfz/pr-comment-triage \
-  --target github-copilot
-
-npm run package:sync-ide-targets -- \
-  --package maiconfz/pr-comment-triage \
-  --target cursor
+  --target all
 ```
+
+`--target all` syncs every install target in the package's repository dogfooding
+scope, then regenerates Cursor rules from `copilot-instructions.md`. For
+`agents-repo/agents-repo-package-creation`, that includes GitHub Copilot,
+Cursor, Claude Code, and OpenAI Codex; for `maiconfz/pr-comment-triage`,
+GitHub Copilot and Cursor only.
 
 When only `copilot-instructions.md` changes:
 
@@ -313,8 +321,14 @@ When only `copilot-instructions.md` changes:
 npm run sync:cursor-rules
 ```
 
-Do not edit deployment mirrors directly. `package:sync-ide-targets` updates
-repo IDE files only; it does not replace `package:build` for `versions/` snapshots.
+Do not edit `.github/agents/`, `.cursor/skills/`, `.claude/agents/`,
+`.agents/skills/`, or `.cursor/rules/` directly. `package:sync-ide-targets`
+updates repo IDE files only; it does not replace `package:build` for
+`versions/` snapshots.
+
+Local pre-commit checks Cursor rules only (`sync:cursor-rules --check`). Run
+the full IDE mirror drift check before requesting review when mirror sources
+change.
 
 ### Submitted package checklist
 
@@ -365,8 +379,16 @@ Before requesting review:
 3. Run unit tests (`npm run test:run`).
 4. Run type checks (`npm run typecheck`).
 5. Run the repo-wide package ZIP scan (`npm run package:scan-zips`).
-6. Ensure references and paths are valid.
-7. Confirm no unrelated changes are included.
+6. When IDE mirror sources change, run the IDE mirror drift check:
+
+   ```bash
+   npm run package:sync-ide-targets -- --check \
+     --package agents-repo/agents-repo-package-creation --target all
+   ```
+
+   Plus per-package checks for other dogfooded packages as needed.
+7. Ensure references and paths are valid.
+8. Confirm no unrelated changes are included.
 
 When changes affect behavior under `scripts/lib/`, contributors SHOULD add or
 update unit tests under mirrored paths in `tests/unit/`.
