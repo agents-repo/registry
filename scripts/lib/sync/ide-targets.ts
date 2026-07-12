@@ -310,7 +310,7 @@ function rewriteMarkdownTarget(url: string, sourceDir: string, targetDir: string
 
 function rewriteRelativeLinks(body: string): string {
   // Copilot instructions use simple inline markdown links only.
-  // eslint-disable-next-line sonarjs/slow-regex -- bounded repo-owned input
+  // eslint-disable-next-line sonarjs/super-linear-regex -- bounded repo-owned input
   return body.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (match, text: string, url: string) => {
     const rewrittenUrl = rewriteMarkdownTarget(url, CURSOR_RULES_SOURCE_DIR, CURSOR_RULES_TARGET_DIR);
     if (rewrittenUrl === url) {
