@@ -15,6 +15,8 @@ import {
 } from './agent-instruction';
 import { resolveDeclaredInstallTargets } from '../compatibility';
 
+const ZIP_WRITE_OPTIONS = { noSort: true } as const;
+
 export interface BuiltTargetArtifact {
   target: InstallTargetId;
   file: string;
@@ -40,7 +42,7 @@ function buildGithubCopilotZip(packageDir: string, outputPath: string, version: 
 }
 
 function buildClaudeCodeZip(packageDir: string, outputPath: string): void {
-  const zip = new AdmZip();
+  const zip = new AdmZip(ZIP_WRITE_OPTIONS);
   for (const file of listAgentInstructionFiles(packageDir)) {
     const entryName = `.claude/agents/${file.id}.md`;
     addZipFile(zip, entryName, agentMdToClaudeAgentMd(file.content));
@@ -54,7 +56,7 @@ function buildSkillLayoutZip(
   version: string,
   skillsRoot: string,
 ): void {
-  const zip = new AdmZip();
+  const zip = new AdmZip(ZIP_WRITE_OPTIONS);
   for (const file of listAgentInstructionFiles(packageDir)) {
     const entryName = `${skillsRoot}/${file.id}/SKILL.md`;
     addZipFile(zip, entryName, agentMdToSkillMd(file.content, version));
