@@ -24,6 +24,9 @@ runs:
             ;;
         esac
         corepack prepare "$PACKAGE_MANAGER" --activate
+        NPM_BIN_DIR="$(dirname "$(command -v npm)")"
+        echo "Activated npm $(npm --version) from ${NPM_BIN_DIR}"
+        echo "${NPM_BIN_DIR}" >> "${GITHUB_PATH}"
 
     - name: Install dependencies
       shell: bash
