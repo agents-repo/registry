@@ -66,12 +66,12 @@ Copilot tasks in this repository MUST use the pinned runtime below to avoid
 tooling drift.
 
 - Node.js: `24.15.0` (see `.nvmrc`)
-- npm: `11.12.1` (see `package.json` `packageManager`)
+- npm: `12.0.1` (see `package.json` `packageManager`)
 
 Before running package or review tasks, execute:
 
 1. `corepack enable`
-2. `corepack prepare npm@11.12.1 --activate`
+2. `corepack prepare npm@12.0.1 --activate`
 3. `npm ci`
 4. `npm run env:check`
 

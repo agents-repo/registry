@@ -25,7 +25,7 @@ Use the pinned runtime to keep local development, Copilot tasks, and CI aligned.
 ### Runtime pins
 
 - Node.js: `24.15.0` (see `.nvmrc` and `.node-version`)
-- npm: `11.12.1` (see `packageManager` in `package.json`)
+- npm: `12.0.1` (see `packageManager` in `package.json`)
 
 ### GitHub CLI
 
@@ -46,7 +46,7 @@ If `gh auth status` reports no login, run `gh auth login`.
 ```bash
 nvm use
 corepack enable
-corepack prepare npm@11.12.1 --activate
+corepack prepare npm@12.0.1 --activate
 npm ci
 npm run env:check
 ```
