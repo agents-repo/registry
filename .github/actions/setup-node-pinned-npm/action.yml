@@ -14,7 +14,7 @@ runs:
     - name: Activate pinned npm
       shell: bash
       run: |
-        corepack enable
+        corepack enable npm
         PACKAGE_MANAGER="$(node -p "require('./package.json').packageManager")"
         case "$PACKAGE_MANAGER" in
           npm@*) ;;
