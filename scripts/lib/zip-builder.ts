@@ -31,7 +31,11 @@ export class ZipBuilder {
     const zip = new AdmZip();
 
     const addDir = (dir: string, prefix: string): void => {
-      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const entries = fs
+        .readdirSync(dir, { withFileTypes: true })
+        .sort((left, right) => left.name.localeCompare(right.name));
+
+      for (const entry of entries) {
         if (entry.name === VERSIONS_DIR) continue;
         const fullPath = path.join(dir, entry.name);
         const zipName = prefix ? `${prefix}/${entry.name}` : entry.name;

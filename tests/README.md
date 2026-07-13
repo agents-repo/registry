@@ -40,3 +40,10 @@ Examples:
 
 Use unit tests for isolated module behavior and deterministic edge cases.
 Use integration and e2e tests for cross-module or workflow orchestration.
+
+ZIP tooling tests:
+
+- `tests/integration/zip-adm-roundtrip.test.ts` exercises real `adm-zip`
+  write/read paths with `zip-scan` validators (no mocks).
+- `tests/unit/scripts/lib/zip-builder.test.ts` asserts repeated builds produce
+  identical ZIP bytes for deployment and source archives.
