@@ -25,6 +25,7 @@ runs:
         esac
         corepack prepare "$PACKAGE_MANAGER" --activate
         PINNED_NPM_VERSION="${PACKAGE_MANAGER#npm@}"
+        PINNED_NPM_VERSION="${PINNED_NPM_VERSION%%+*}"
         ACTUAL_NPM_VERSION="$(npm --version)"
         echo "Activated npm ${ACTUAL_NPM_VERSION}"
         if [ "$ACTUAL_NPM_VERSION" != "$PINNED_NPM_VERSION" ]; then
