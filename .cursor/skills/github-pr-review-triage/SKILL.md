@@ -1,10 +1,8 @@
 ---
-name: pr-comment-triage
+name: github-pr-review-triage
 description: >-
-  Fetches PR review comments and threads, triages fix vs reply-only outcomes,
-  applies code fixes, commits and pushes when requested, then replies and
-  resolves threads via gh. Use when triaging PR review comments, addressing
-  Copilot or Bugbot inline feedback, or closing review threads after fixes land.
+  GitHub PR review triage via gh: fetch threads, fix, commit, reply, and
+  resolve. Use for Copilot or Bugbot inline feedback or closing review threads.
 ---
 # Overview
 

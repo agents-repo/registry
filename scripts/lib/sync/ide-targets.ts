@@ -33,7 +33,7 @@ const REPO_DOGFOODED_PACKAGES: readonly RepoDogfoodedPackage[] = [
     targets: ['github-copilot', 'cursor', 'claude-code', 'openai-codex'],
   },
   {
-    qualifiedId: 'maiconfz/pr-comment-triage',
+    qualifiedId: 'maiconfz/github-pr-review-triage',
     targets: ['github-copilot', 'cursor'],
   },
 ];

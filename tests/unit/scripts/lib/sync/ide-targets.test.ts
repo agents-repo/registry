@@ -131,14 +131,14 @@ describe('syncGithubCopilotAgents', (): void => {
       agents: [{ id: 'pkg-a-agent', name: 'pkg-a-agent', description: 'Agent from package A.' }],
       flows: [],
     });
-    createDummyPackage(repoRoot, 'pr-comment-triage', {
+    createDummyPackage(repoRoot, 'github-pr-review-triage', {
       namespace: 'maiconfz',
       agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
       flows: [],
     });
 
     const pkgA = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
-    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+    const pkgB = new Package('maiconfz/github-pr-review-triage', path.join(repoRoot, 'packages'));
 
     syncGithubCopilotAgents(repoRoot, pkgA);
     syncGithubCopilotAgents(repoRoot, pkgB);
@@ -154,7 +154,7 @@ describe('syncGithubCopilotAgents', (): void => {
 
   it('preserves sibling dogfooded mirrors when metadata no longer declares the install target', (): void => {
     const repoRoot = makeRepoRoot();
-    const packageBDir = createDummyPackage(repoRoot, 'pr-comment-triage', {
+    const packageBDir = createDummyPackage(repoRoot, 'github-pr-review-triage', {
       namespace: 'maiconfz',
       agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
       flows: [],
@@ -166,7 +166,7 @@ describe('syncGithubCopilotAgents', (): void => {
     });
 
     const pkgA = new Package('agents-repo/agents-repo-package-creation', path.join(repoRoot, 'packages'));
-    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+    const pkgB = new Package('maiconfz/github-pr-review-triage', path.join(repoRoot, 'packages'));
 
     syncGithubCopilotAgents(repoRoot, pkgA);
     syncGithubCopilotAgents(repoRoot, pkgB);
@@ -313,13 +313,13 @@ describe('syncClaudeCodeAgents', (): void => {
 
   it('rejects Claude sync for dogfooded packages outside repository target scope', (): void => {
     const repoRoot = makeRepoRoot();
-    createDummyPackage(repoRoot, 'pr-comment-triage', {
+    createDummyPackage(repoRoot, 'github-pr-review-triage', {
       namespace: 'maiconfz',
       agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
       flows: [],
     });
 
-    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+    const pkgB = new Package('maiconfz/github-pr-review-triage', path.join(repoRoot, 'packages'));
     expect(() => syncClaudeCodeAgents(repoRoot, pkgB)).toThrow(
       /not in repository dogfooding scope for install target "claude-code"/,
     );
@@ -426,13 +426,13 @@ describe('syncOpenaiCodexSkills', (): void => {
 
   it('rejects Codex sync for dogfooded packages outside repository target scope', (): void => {
     const repoRoot = makeRepoRoot();
-    createDummyPackage(repoRoot, 'pr-comment-triage', {
+    createDummyPackage(repoRoot, 'github-pr-review-triage', {
       namespace: 'maiconfz',
       agents: [{ id: 'pkg-b-agent', name: 'pkg-b-agent', description: 'Agent from package B.' }],
       flows: [],
     });
 
-    const pkgB = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+    const pkgB = new Package('maiconfz/github-pr-review-triage', path.join(repoRoot, 'packages'));
     expect(() => syncOpenaiCodexSkills(repoRoot, pkgB)).toThrow(
       /not in repository dogfooding scope for install target "openai-codex"/,
     );
@@ -655,7 +655,7 @@ describe('syncIdeTargets', (): void => {
 
   it('runs only scoped package targets when target is all for a partially dogfooded package', (): void => {
     const repoRoot = makeRepoRoot();
-    createDummyPackage(repoRoot, 'pr-comment-triage', {
+    createDummyPackage(repoRoot, 'github-pr-review-triage', {
       namespace: 'maiconfz',
       agents: [{ id: 'triage-agent', name: 'triage-agent', description: 'Agent for scoped all-target sync.' }],
       flows: [],
@@ -665,7 +665,7 @@ describe('syncIdeTargets', (): void => {
     fs.mkdirSync(path.dirname(sourcePath), { recursive: true });
     fs.writeFileSync(sourcePath, '# Copilot Agents Registry — Project Guidelines\n', 'utf-8');
 
-    const pkg = new Package('maiconfz/pr-comment-triage', path.join(repoRoot, 'packages'));
+    const pkg = new Package('maiconfz/github-pr-review-triage', path.join(repoRoot, 'packages'));
     const written = syncIdeTargets(repoRoot, pkg, 'all');
 
     expect(written.some((entry) => entry.endsWith('.github/agents/triage-agent.agent.md'))).toBe(true);

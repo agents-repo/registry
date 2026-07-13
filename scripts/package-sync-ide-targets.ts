@@ -39,7 +39,7 @@ Targets:
   cursor-rules    Sync .cursor/rules/agents-registry.mdc from copilot-instructions.md
   all             Sync package targets in the package's repo dogfooding scope, then cursor-rules
                   (requires --package; e.g. all four IDE targets for agents-repo-package-creation,
-                  github-copilot and cursor only for pr-comment-triage)
+                  github-copilot and cursor only for github-pr-review-triage)
 
 Canonical sources:
   Package agents/flows  -> .github/agents/, .cursor/skills/, .claude/agents/, and .agents/skills/
