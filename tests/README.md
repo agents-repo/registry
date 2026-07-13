@@ -47,3 +47,5 @@ ZIP tooling tests:
   write/read paths with `zip-scan` validators (no mocks).
 - `tests/unit/scripts/lib/zip-builder.test.ts` asserts repeated builds produce
   identical ZIP bytes for deployment and source archives.
+- `tests/unit/scripts/lib/emitters/target-zip-builder.test.ts` covers
+  install-target artifact layout and checksum stability.

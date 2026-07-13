@@ -4,6 +4,18 @@ import AdmZip from 'adm-zip';
 import { AGENT_FILE_EXT, AGENTS_DIR, VERSIONS_DIR } from './constants';
 import { listDeploymentAgentFiles } from './deployment-agents';
 
+const ZIP_WRITE_OPTIONS = { noSort: true } as const;
+
+export function compareUtf16CodeUnits(left: string, right: string): number {
+  if (left < right) {
+    return -1;
+  }
+  if (left > right) {
+    return 1;
+  }
+  return 0;
+}
+
 export class ZipBuilder {
   private readonly packageDir: string;
   private readonly version: string;
@@ -14,7 +26,7 @@ export class ZipBuilder {
   }
 
   buildDeploymentZip(outputPath: string): void {
-    const zip = new AdmZip();
+    const zip = new AdmZip(ZIP_WRITE_OPTIONS);
 
     // listDeploymentAgentFiles returns ids sorted for deterministic ZIP bytes.
     for (const file of listDeploymentAgentFiles(this.packageDir)) {
@@ -28,12 +40,12 @@ export class ZipBuilder {
   }
 
   buildSourceZip(outputPath: string): void {
-    const zip = new AdmZip();
+    const zip = new AdmZip(ZIP_WRITE_OPTIONS);
 
     const addDir = (dir: string, prefix: string): void => {
       const entries = fs
         .readdirSync(dir, { withFileTypes: true })
-        .sort((left, right) => left.name.localeCompare(right.name));
+        .sort((left, right) => compareUtf16CodeUnits(left.name, right.name));
 
       for (const entry of entries) {
         if (entry.name === VERSIONS_DIR) continue;

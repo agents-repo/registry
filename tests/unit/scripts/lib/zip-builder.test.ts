@@ -5,7 +5,7 @@ import AdmZip from 'adm-zip';
 import { afterEach, describe, expect, it } from 'vitest';
 import { AGENTS_DIR, VERSIONS_DIR } from '../../../../scripts/lib/constants';
 import { Checksum } from '../../../../scripts/lib/checksum';
-import { ZipBuilder } from '../../../../scripts/lib/zip-builder';
+import { compareUtf16CodeUnits, ZipBuilder } from '../../../../scripts/lib/zip-builder';
 import { createDummyPackage } from '../../../helpers/package-factory';
 
 const tempDirs: string[] = [];
@@ -109,7 +109,9 @@ describe('ZipBuilder.buildSourceZip', (): void => {
       .filter((entryName) => !entryName.endsWith('/'));
 
     expect(entryNames.some((entryName) => entryName.startsWith(`${VERSIONS_DIR}/`))).toBe(false);
-    expect(entryNames).toEqual([...entryNames].sort((left, right) => left.localeCompare(right)));
+    expect(entryNames).toEqual(
+      [...entryNames].sort(compareUtf16CodeUnits),
+    );
     expect(entryNames.some((entryName) => entryName === 'metadata.json')).toBe(true);
     expect(entryNames.some((entryName) => entryName.startsWith(`${AGENTS_DIR}/`))).toBe(true);
   });
