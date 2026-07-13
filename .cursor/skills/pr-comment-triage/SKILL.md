@@ -173,9 +173,9 @@ Inspect the repository root in this order:
 4. **Other build entry points** — `Makefile`, `justfile`, `mise.toml`, or CI
    workflow files (`.github/workflows/`) for canonical validation commands.
 
-When `package.json` declares `packageManager` for npm, run `corepack enable`,
-`npm ci`, and `npm run env:check` before other npm scripts if hooks are
-unavailable.
+When `package.json` declares `packageManager` for npm, run `corepack enable npm`,
+`corepack prepare` for the pinned version, `npm ci`, and `npm run env:check`
+before other npm scripts if hooks are unavailable.
 
 ### Commit and push
 
