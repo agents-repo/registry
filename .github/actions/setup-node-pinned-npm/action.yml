@@ -14,8 +14,8 @@ runs:
     - name: Activate pinned npm
       shell: bash
       run: |
-        corepack enable
-        PACKAGE_MANAGER="$(node -p "require('./package.json').packageManager")"
+        corepack enable npm
+        PACKAGE_MANAGER=$(node -p 'require("./package.json").packageManager')
         case "$PACKAGE_MANAGER" in
           npm@*) ;;
           *)
@@ -24,7 +24,34 @@ runs:
             ;;
         esac
         corepack prepare "$PACKAGE_MANAGER" --activate
+        PINNED_NPM_VERSION="${PACKAGE_MANAGER#npm@}"
+        PINNED_NPM_VERSION="${PINNED_NPM_VERSION%%+*}"
+        ACTUAL_NPM_VERSION="$(npm --version)"
+        echo "Activated npm ${ACTUAL_NPM_VERSION}"
+        if [ "$ACTUAL_NPM_VERSION" != "$PINNED_NPM_VERSION" ]; then
+          echo "Expected npm ${PINNED_NPM_VERSION}, found ${ACTUAL_NPM_VERSION}" >&2
+          exit 1
+        fi
 
     - name: Install dependencies
       shell: bash
       run: npm ci
+
+    - name: Verify install script approvals
+      shell: bash
+      run: |
+        npm install-scripts ls --json | node -e "
+        const data = JSON.parse(require('fs').readFileSync(0, 'utf8'));
+        const pending = [];
+        for (const entry of data.allowScripts ?? []) {
+          for (const change of entry.changes ?? []) {
+            if (change.change === 'pending') pending.push(change.key);
+          }
+        }
+        if (pending.length > 0) {
+          console.error('INSTALL SCRIPTS CHECK FAILED: unreviewed install scripts:', pending.join(', '));
+          console.error('Approve with: npm install-scripts approve <pkg>');
+          process.exit(1);
+        }
+        console.log('INSTALL SCRIPTS CHECK OK');
+        "

@@ -25,7 +25,7 @@ Use the pinned runtime to keep local development, Copilot tasks, and CI aligned.
 ### Runtime pins
 
 - Node.js: `24.15.0` (see `.nvmrc` and `.node-version`)
-- npm: `11.12.1` (see `packageManager` in `package.json`)
+- npm: `12.0.1` (see `packageManager` in `package.json`)
 
 ### GitHub CLI
 
@@ -45,11 +45,26 @@ If `gh auth status` reports no login, run `gh auth login`.
 
 ```bash
 nvm use
-corepack enable
-corepack prepare npm@11.12.1 --activate
+corepack enable npm
+corepack prepare npm@12.0.1 --activate
 npm ci
 npm run env:check
 ```
+
+### npm 12 install scripts
+
+npm 12 blocks dependency install scripts until they are explicitly approved.
+This repository allowlists required scripts in `package.json` (`allowScripts`).
+CI fails if `npm ci` leaves unreviewed scripts.
+
+When adding or upgrading a dependency with lifecycle scripts:
+
+```bash
+npm install-scripts ls
+npm install-scripts approve <name>@<version>
+```
+
+Then commit the updated `allowScripts` entry in `package.json`.
 
 If you do not use `nvm`, install Node `24.15.0` manually and then run the
 same Corepack and npm commands.
