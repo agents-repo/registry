@@ -70,7 +70,7 @@ tooling drift.
 
 Before running package or review tasks, execute:
 
-1. `corepack enable`
+1. `corepack enable npm`
 2. `corepack prepare npm@12.0.1 --activate`
 3. `npm ci`
 4. `npm run env:check`

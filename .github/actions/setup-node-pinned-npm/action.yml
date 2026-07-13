@@ -24,9 +24,13 @@ runs:
             ;;
         esac
         corepack prepare "$PACKAGE_MANAGER" --activate
-        NPM_BIN_DIR="$(dirname "$(command -v npm)")"
-        echo "Activated npm $(npm --version) from ${NPM_BIN_DIR}"
-        echo "${NPM_BIN_DIR}" >> "${GITHUB_PATH}"
+        PINNED_NPM_VERSION="${PACKAGE_MANAGER#npm@}"
+        ACTUAL_NPM_VERSION="$(npm --version)"
+        echo "Activated npm ${ACTUAL_NPM_VERSION}"
+        if [ "$ACTUAL_NPM_VERSION" != "$PINNED_NPM_VERSION" ]; then
+          echo "Expected npm ${PINNED_NPM_VERSION}, found ${ACTUAL_NPM_VERSION}" >&2
+          exit 1
+        fi
 
     - name: Install dependencies
       shell: bash
