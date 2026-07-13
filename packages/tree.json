@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-07-08T01:52:30.471Z",
+  "updatedAt": "2026-07-13T23:51:04.749Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -10,7 +10,7 @@
     },
     "maiconfz": {
       "packages": [
-        "pr-comment-triage"
+        "github-pr-review-triage"
       ]
     }
   }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.3.0",
-  "updatedAt": "2026-07-08T01:52:30.471Z",
+  "updatedAt": "2026-07-13T23:51:04.749Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -83,12 +83,12 @@
       ]
     },
     {
-      "id": "maiconfz/pr-comment-triage",
+      "id": "maiconfz/github-pr-review-triage",
       "namespace": "maiconfz",
-      "package": "pr-comment-triage",
-      "path": "packages/maiconfz/pr-comment-triage",
-      "name": "pr-comment-triage",
-      "description": "Triages PR review comments via gh: fetch, fix, commit, reply, and resolve threads",
+      "package": "github-pr-review-triage",
+      "path": "packages/maiconfz/github-pr-review-triage",
+      "name": "github-pr-review-triage",
+      "description": "GitHub-specific agent: triages PR review threads via gh CLI — fetch, fix, commit, reply, and resolve",
       "owner": "maiconfz",
       "latest": "1.0.0",
       "tags": [
@@ -105,7 +105,7 @@
         "estimatedCost": 6,
         "band": "moderate"
       },
-      "quickstart": "https://github.com/maiconfz/agents-repo-registry/blob/main/packages/maiconfz/pr-comment-triage/README.md",
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/github-pr-review-triage/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
@@ -129,6 +129,6 @@
   "aliases": {
     "agents-repo-package-creation": "agents-repo/agents-repo-package-creation",
     "hello-agent": "agents-repo/hello-agent",
-    "pr-comment-triage": "maiconfz/pr-comment-triage"
+    "github-pr-review-triage": "maiconfz/github-pr-review-triage"
   }
 }

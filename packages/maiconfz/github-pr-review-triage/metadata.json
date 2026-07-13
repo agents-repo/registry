@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.0.0",
-  "name": "pr-comment-triage",
-  "description": "Triages PR review comments via gh: fetch, fix, commit, reply, and resolve threads",
+  "name": "github-pr-review-triage",
+  "description": "GitHub-specific agent: triages PR review threads via gh CLI — fetch, fix, commit, reply, and resolve",
   "owner": "maiconfz",
   "license": "MIT",
-  "homepage": "https://github.com/maiconfz/agents-repo-registry/tree/main/packages/maiconfz/pr-comment-triage",
-  "repository": "https://github.com/maiconfz/agents-repo-registry",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/github-pr-review-triage",
+  "repository": "https://github.com/agents-repo/registry",
   "tags": [
     "pr",
     "review",
@@ -15,7 +15,7 @@
     "workflow"
   ],
   "createdAt": "2026-07-08T01:40:29.250Z",
-  "updatedAt": "2026-07-08T01:40:29.250Z",
+  "updatedAt": "2026-07-14T00:00:00.000Z",
   "version": "1.0.0",
   "status": "active",
   "category": "automation",
@@ -23,7 +23,7 @@
     "estimatedCost": 6,
     "band": "moderate"
   },
-  "quickstart": "https://github.com/maiconfz/agents-repo-registry/blob/main/packages/maiconfz/pr-comment-triage/README.md",
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/github-pr-review-triage/README.md",
   "compatibility": {
     "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
     "targets": [
