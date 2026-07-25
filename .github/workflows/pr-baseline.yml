@@ -52,3 +52,17 @@ jobs:
           --check
           --package maiconfz/github-pr-review-triage
           --target cursor
+
+      - name: Check github-interactive-issue-implementation-planner IDE mirrors
+        run: >-
+          npm run package:sync-ide-targets --
+          --check
+          --package maiconfz/github-interactive-issue-implementation-planner
+          --target github-copilot
+
+      - name: Check github-interactive-issue-implementation-planner Cursor skill
+        run: >-
+          npm run package:sync-ide-targets --
+          --check
+          --package maiconfz/github-interactive-issue-implementation-planner
+          --target cursor
