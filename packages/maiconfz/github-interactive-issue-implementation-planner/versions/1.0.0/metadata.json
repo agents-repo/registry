@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "github-interactive-issue-implementation-planner",
+  "description": "Interactive GitHub issue planning: load issue via gh, draft and refine an implementation plan with ask-first clarifications.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/github-interactive-issue-implementation-planner",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "github",
+    "issue",
+    "gh",
+    "planning",
+    "implementation",
+    "workflow",
+    "interactive"
+  ],
+  "createdAt": "2026-07-25T02:02:42.610Z",
+  "updatedAt": "2026-07-25T02:02:42.610Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/github-interactive-issue-implementation-planner/README.md",
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ]
+  }
+}
