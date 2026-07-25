@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "issue-implementation-planning",
+  "description": "Orchestrates GitHub issue intake, ask-first implementation planning, and plan refinement. Use with an issue number or URL. Planning only unless the user explicitly requests implementation.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "agents": [
+    "github-issue-intake",
+    "issue-implementation-planner",
+    "implementation-plan-refiner"
+  ],
+  "inputs": [
+    {
+      "name": "issue-reference",
+      "type": "string",
+      "description": "Issue number or full GitHub issue URL."
+    },
+    {
+      "name": "repository",
+      "type": "string",
+      "description": "Optional target repository as owner/name when not inferable."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "refined-implementation-plan",
+      "type": "string",
+      "description": "Final markdown implementation plan after refinement."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Markdown list of remaining questions after refinement."
+    }
+  ]
+}

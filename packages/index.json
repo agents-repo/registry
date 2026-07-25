@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.3.0",
-  "updatedAt": "2026-07-13T23:51:04.749Z",
+  "updatedAt": "2026-07-25T02:03:11.756Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -83,6 +83,50 @@
       ]
     },
     {
+      "id": "maiconfz/github-interactive-issue-implementation-planner",
+      "namespace": "maiconfz",
+      "package": "github-interactive-issue-implementation-planner",
+      "path": "packages/maiconfz/github-interactive-issue-implementation-planner",
+      "name": "github-interactive-issue-implementation-planner",
+      "description": "Interactive GitHub issue planning: load issue via gh, draft and refine an implementation plan with ask-first clarifications.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "github",
+        "issue",
+        "gh",
+        "planning",
+        "implementation",
+        "workflow",
+        "interactive"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/github-interactive-issue-implementation-planner/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    },
+    {
       "id": "maiconfz/github-pr-review-triage",
       "namespace": "maiconfz",
       "package": "github-pr-review-triage",
@@ -129,6 +173,7 @@
   "aliases": {
     "agents-repo-package-creation": "agents-repo/agents-repo-package-creation",
     "hello-agent": "agents-repo/hello-agent",
+    "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage"
   }
 }

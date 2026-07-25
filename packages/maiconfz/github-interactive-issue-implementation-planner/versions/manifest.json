@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.1.0",
+  "name": "github-interactive-issue-implementation-planner",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "eff4ceab96be343f8c2287865280d87bb5b8b88d6d5b08926b7479ae2d949d36",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "039677c08c2a98cea9e0b4a4048a9ffd0b97d89e26689c8fd04b01c3a723bdbe"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "5d8a46f55b723559901b4c05b655426d0d89980ff298adb51bcd72248c26b22d"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "57c603e879093e0ee194bb7095dbb8fd704900a00122652cb39077e56f718d4f"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "8827fd84f94897046ff7d9502619cc5e744a6bd1cbb5c027ae4ce5991f6fdcfa"
+        }
+      ],
+      "createdAt": "2026-07-25T02:03:11.754Z"
+    }
+  ]
+}

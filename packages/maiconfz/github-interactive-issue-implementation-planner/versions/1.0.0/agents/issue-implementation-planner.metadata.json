@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "issue-implementation-planner",
+  "description": "Draft an ask-first implementation plan from an issue brief and local repository context. Use after issue intake. Prefer clarifying questions over assumptions. Does not implement code or re-fetch the issue via gh.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "inputs": [
+    {
+      "name": "issue-brief",
+      "type": "object",
+      "description": "Canonical issue context from github-issue-intake."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "implementation-plan",
+      "type": "string",
+      "description": "Markdown implementation plan for the issue."
+    },
+    {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Markdown list of blocking questions; empty when none."
+    }
+  ]
+}
