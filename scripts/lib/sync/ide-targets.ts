@@ -36,6 +36,10 @@ const REPO_DOGFOODED_PACKAGES: readonly RepoDogfoodedPackage[] = [
     qualifiedId: 'maiconfz/github-pr-review-triage',
     targets: ['github-copilot', 'cursor'],
   },
+  {
+    qualifiedId: 'maiconfz/github-interactive-issue-implementation-planner',
+    targets: ['github-copilot', 'cursor'],
+  },
 ];
 
 /** Packages whose IDE mirrors are committed in this repository. */

@@ -104,11 +104,15 @@ Canonical sources for repo workflow agents:
 
 - All four IDE targets: `packages/agents-repo/agents-repo-package-creation/`
   (`agents/` + `flows/`)
-- GitHub Copilot and Cursor only: also `packages/maiconfz/github-pr-review-triage/`
+- GitHub Copilot and Cursor only: also
+  `packages/maiconfz/github-pr-review-triage/` and
+  `packages/maiconfz/github-interactive-issue-implementation-planner/`
   (`agents/` + `flows/`)
 - `.github/copilot-instructions.md` (for Cursor rules)
 
-`maiconfz/github-pr-review-triage` is dogfooded for GitHub Copilot and Cursor only.
+`maiconfz/github-pr-review-triage` and
+`maiconfz/github-interactive-issue-implementation-planner` are dogfooded for
+GitHub Copilot and Cursor only.
 Claude Code and OpenAI Codex mirrors currently include
 `agents-repo-package-creation` agents and flows only.
 
@@ -123,12 +127,17 @@ npm run package:sync-ide-targets -- \
 `--target all` syncs every install target in the package's repository dogfooding
 scope, then regenerates Cursor rules from `copilot-instructions.md`. For
 `agents-repo/agents-repo-package-creation`, that includes GitHub Copilot,
-Cursor, Claude Code, and OpenAI Codex; for `maiconfz/github-pr-review-triage`,
-GitHub Copilot and Cursor only.
+Cursor, Claude Code, and OpenAI Codex; for `maiconfz/github-pr-review-triage`
+and `maiconfz/github-interactive-issue-implementation-planner`, GitHub Copilot
+and Cursor only.
 
 ```bash
 npm run package:sync-ide-targets -- \
   --package maiconfz/github-pr-review-triage \
+  --target all
+
+npm run package:sync-ide-targets -- \
+  --package maiconfz/github-interactive-issue-implementation-planner \
   --target all
 ```
 
