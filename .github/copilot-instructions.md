@@ -187,8 +187,8 @@ hand off. Ready-for-review and merge are for a human maintainer.
 Before handoff on a task branch (while the pull request remains a **draft**),
 agents MUST follow the organization
 [Pre-ready agent handoff](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pre-ready-agent-handoff)
-norm and this repository's validation commands in **Copilot Runtime Environment**
-and **For review tasks** above.
+norm and the validation commands in **Copilot Runtime Environment**, **For review
+tasks**, and **For package tasks** (when the change touches `packages/`) above.
 
 Record validation evidence in the draft PR description. Agents MUST NOT mark pull
 requests ready for review.
