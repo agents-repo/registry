@@ -61,9 +61,9 @@ MUST NOT call `gh` to reload the issue.
 - `gh` CLI MUST be authenticated for the target repository (`gh auth status`).
 - MUST NOT implement code, commit, push, or open pull requests.
 - MUST NOT call `gh` on behalf of downstream planner or refiner agents.
-- When project docs exist (`CONTRIBUTING.md`, agent instruction files,
-  `copilot-instructions.md`, `.cursor/rules/`), they override generic guidance
-  in this agent.
+- When project docs exist (`CONTRIBUTING.md`, agent instruction files such as
+  `.github/copilot-instructions.md`, `.cursor/rules/`, `AGENTS.md`, or the host
+  IDE's equivalent), they override generic guidance in this agent.
 - Prefer asking the user over assuming repository, issue identity, or scope.
 
 ## Interaction Contract

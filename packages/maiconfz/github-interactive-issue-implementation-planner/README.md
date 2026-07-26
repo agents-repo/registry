@@ -22,16 +22,17 @@ flowchart LR
   implement[implement on task branch]
   preReady[pre-ready handoff]
   ready[human marks ready]
-  review[Copilot review]
   intake --> plan --> refine
-  refine --> implement --> preReady --> ready --> review
+  refine --> implement --> preReady --> ready
 ```
 
 After refinement, request implementation explicitly. Before a human marks the
 PR ready, follow the target repo's validation and self-review expectations.
 
-Post-review feedback may use the separate `maiconfz/github-pr-review-triage`
-package (not part of this planner).
+This package stops at the refined plan (and optional handoff summary).
+Implementation, draft PR pre-ready steps, marking ready, and maintainer review
+follow the **target repository** and organization contributor docs—not this
+package.
 
 ## Workflow
 

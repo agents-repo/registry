@@ -34,30 +34,30 @@
     {
       "version": "1.1.0",
       "srcArtifact": "1.1.0-src.zip",
-      "srcSha256": "ac78846e2b92340662d708904ed1a11e97d1b21149fc3acf0c466b4942170e47",
+      "srcSha256": "dc180a1ef2827afaea9b6e1156c85e86a80966088ff76703e70697f235c66708",
       "artifacts": [
         {
           "target": "github-copilot",
           "file": "1.1.0-github-copilot.zip",
-          "sha256": "eb5d4492aaf03e50a744e2cbe2b0a97cb0147866ee0cedb0671179c698815144"
+          "sha256": "551c2b8c46f08ba60e6299017edc8d75dce31ffa971b4fb55c8745b9e6638e40"
         },
         {
           "target": "claude-code",
           "file": "1.1.0-claude-code.zip",
-          "sha256": "fc9cb6746c3c2b046984dbe9e1b7cb7a8a878a3e2695c4edfcd5436266191a30"
+          "sha256": "7566aeb33105a316e7ce1b5694ef5facf062c4333d8a5cb6fdbb21edd035ed73"
         },
         {
           "target": "cursor",
           "file": "1.1.0-cursor.zip",
-          "sha256": "f8ea168046a7dd3cfd453b4afb73161956bf1d1d945f73b40c5156caadbb3feb"
+          "sha256": "8383c96cb00cdc9db457c97d2b54314ed7d6e0e91975d6337e5a6cbda8dc769c"
         },
         {
           "target": "openai-codex",
           "file": "1.1.0-openai-codex.zip",
-          "sha256": "3b178c88d172c8a7da2f12440a08287701b6056b3d11ab2dbbf73196702fa36a"
+          "sha256": "0e0da580486a2eed6fa41b07781c06c34ff12331cbe8065e7c0c2bbd14364815"
         }
       ],
-      "createdAt": "2026-07-26T01:53:42.377Z"
+      "createdAt": "2026-07-26T02:19:41.801Z"
     }
   ]
 }

@@ -81,5 +81,5 @@ intake → plan → refine → handoff
 
 **Output:** `refined-implementation-plan` and `open-questions`.
 
-On Cursor, planning steps MAY use Plan mode; MUST NOT start code implementation
-unless the user explicitly requests execution.
+When the host IDE provides a planning-only mode, use it for steps 1–3; MUST NOT
+start code implementation unless the user explicitly requests execution.
