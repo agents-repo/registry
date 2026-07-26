@@ -4,7 +4,7 @@ description: >-
   Orchestrates GitHub issue intake, ask-first implementation planning, and plan
   refinement. Use with an issue number or URL. Planning only unless the user
   explicitly requests implementation.
-version: 1.0.0
+version: 1.1.0
 license: MIT
 agents:
   - github-issue-intake
@@ -58,6 +58,9 @@ intake → plan → refine → handoff
 
 4. **Handoff** — Present `refined-implementation-plan` and non-blocking
    `open-questions`. State that implementation requires an explicit user request.
+   Summarize the recommended post-plan sequence: implement on the task branch →
+   run target-repo validation → self-review → update the **draft** PR → agent
+   handoff (human marks ready for review).
 
 ## Error Handling
 
@@ -78,5 +81,5 @@ intake → plan → refine → handoff
 
 **Output:** `refined-implementation-plan` and `open-questions`.
 
-On Cursor, planning steps MAY use Plan mode; MUST NOT start code implementation
-unless the user explicitly requests execution.
+When the host IDE provides a planning-only mode, use it for steps 1–3; MUST NOT
+start code implementation unless the user explicitly requests execution.

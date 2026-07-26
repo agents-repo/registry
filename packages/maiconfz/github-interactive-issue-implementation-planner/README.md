@@ -7,6 +7,34 @@ ask-first implementation plan, then refine it for gaps and inconsistencies.
 **Planning only** — no code changes unless you explicitly request implementation
 after the plan is ready.
 
+## Lifecycle
+
+Planning is one phase of a larger delivery flow. Implementation-time pre-ready
+steps live in each repository's agent instructions and organization
+[CONTRIBUTING](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md)
+(**Pre-ready agent handoff**).
+
+```mermaid
+flowchart LR
+  intake[github-issue-intake]
+  plan[issue-implementation-planner]
+  refine[implementation-plan-refiner]
+  implement[implement on task branch]
+  preReady[pre-ready handoff]
+  ready[human marks ready]
+  intake --> plan --> refine
+  refine --> implement --> preReady --> ready
+```
+
+After refinement, request implementation explicitly. Before a human marks the
+PR ready, follow the target repo's validation and self-review expectations.
+
+This package stops at the flow outputs: a **refined implementation plan** and
+**open questions** (see the `issue-implementation-planning` flow contract).
+Implementation, draft PR pre-ready steps, marking ready, and maintainer review
+follow the **target repository** and organization contributor docs—not this
+package.
+
 ## Workflow
 
 ```mermaid
@@ -41,10 +69,10 @@ Install from the registry for your IDE target:
 
 | Target | Artifact |
 | --- | --- |
-| GitHub Copilot | `1.0.0-github-copilot.zip` |
-| Cursor | `1.0.0-cursor.zip` |
-| Claude Code | `1.0.0-claude-code.zip` |
-| OpenAI Codex | `1.0.0-openai-codex.zip` |
+| GitHub Copilot | `1.1.0-github-copilot.zip` |
+| Cursor | `1.1.0-cursor.zip` |
+| Claude Code | `1.1.0-claude-code.zip` |
+| OpenAI Codex | `1.1.0-openai-codex.zip` |
 
 Extract the ZIP per your target layout.
 
@@ -75,5 +103,5 @@ From the registry repository root:
 PKG=maiconfz/github-interactive-issue-implementation-planner
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.0.0
+npm run package:validate-artifacts -- --package "$PKG" --version 1.1.0
 ```

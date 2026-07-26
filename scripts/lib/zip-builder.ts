@@ -3,6 +3,7 @@ import path from 'node:path';
 import AdmZip from 'adm-zip';
 import { AGENT_FILE_EXT, AGENTS_DIR, VERSIONS_DIR } from './constants';
 import { listDeploymentAgentFiles } from './deployment-agents';
+import { addDeterministicZipEntry } from './deterministic-zip';
 
 const ZIP_WRITE_OPTIONS = { noSort: true } as const;
 
@@ -30,9 +31,10 @@ export class ZipBuilder {
 
     // listDeploymentAgentFiles returns ids sorted for deterministic ZIP bytes.
     for (const file of listDeploymentAgentFiles(this.packageDir)) {
-      zip.addFile(
+      addDeterministicZipEntry(
+        zip,
         `${AGENTS_DIR}/${file.id}${AGENT_FILE_EXT}`,
-        Buffer.from(file.content, 'utf-8'),
+        file.content,
       );
     }
 
@@ -54,7 +56,7 @@ export class ZipBuilder {
         if (entry.isDirectory()) {
           addDir(fullPath, zipName);
         } else {
-          zip.addFile(zipName, fs.readFileSync(fullPath));
+          addDeterministicZipEntry(zip, zipName, fs.readFileSync(fullPath));
         }
       }
     };

@@ -34,6 +34,9 @@ intake → plan → refine → handoff
 
 4. **Handoff** — Present `refined-implementation-plan` and non-blocking
    `open-questions`. State that implementation requires an explicit user request.
+   Summarize the recommended post-plan sequence: implement on the task branch →
+   run target-repo validation → self-review → update the **draft** PR → agent
+   handoff (human marks ready for review).
 
 ## Error Handling
 
@@ -54,8 +57,8 @@ intake → plan → refine → handoff
 
 **Output:** `refined-implementation-plan` and `open-questions`.
 
-On Cursor, planning steps MAY use Plan mode; MUST NOT start code implementation
-unless the user explicitly requests execution.
+When the host IDE provides a planning-only mode, use it for steps 1–3; MUST NOT
+start code implementation unless the user explicitly requests execution.
 
 ## Declared capabilities
 
@@ -76,4 +79,4 @@ unless the user explicitly requests execution.
 - issue-implementation-planner
 - implementation-plan-refiner
 
-<!-- agents-repo package version: 1.0.0 -->
+<!-- agents-repo package version: 1.1.0 -->

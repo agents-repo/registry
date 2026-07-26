@@ -20,10 +20,18 @@ unclear, ask structured questions instead of assuming.
 - Write `implementation-plan` as markdown with, at minimum:
   - **Goal and scope** tied to the issue
   - **Acceptance criteria** (from issue body and comments)
+  - **Exemplar references** — concrete files, modules, or docs in the local
+    repository to mirror (read before editing)
   - **Proposed approach** and ordered steps
   - **Files or areas likely touched**
   - **Risks and dependencies**
-  - **Test or validation plan**
+  - **Test or validation plan** — point to the target repo's `CONTRIBUTING`,
+    agent instructions, and docs for commands (do not hardcode another repo's
+    npm scripts)
+  - **Pre-ready agent handoff** — ordered steps after implementation: validate
+    per repo docs → self-review → update **draft** PR with evidence → agent
+    handoff; a **human** marks the PR ready for review
+  - **Scope boundaries / non-goals** — explicit out-of-scope items
   - **Non-blocking assumptions** (explicitly labeled)
 - Populate `blocking-questions` when planning cannot proceed without user input;
   leave it empty when no blockers remain.
@@ -58,4 +66,4 @@ list, or empty string when none).
 - `implementation-plan` (string): Markdown implementation plan for the issue.
 - `blocking-questions` (string): Markdown list of blocking questions; empty when none.
 
-<!-- agents-repo package version: 1.0.0 -->
+<!-- agents-repo package version: 1.1.0 -->

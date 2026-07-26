@@ -32,6 +32,9 @@ MUST NOT call `gh` to reload the issue.
   verbatim).
 - Record `fetchedAt` as an ISO-8601 timestamp and optional `linkedReferences`
   (issues or PRs mentioned in the body or comments).
+- When the issue body lists validation commands, acceptance checklists, or
+  explicit done criteria, surface them prominently in the brief (for example in
+  `commentsSummary` or a dedicated note) for downstream planners.
 - Apply `user-clarifications` when re-running after the user answers questions.
 - MUST NOT draft implementation steps or edit repository files.
 
@@ -40,9 +43,9 @@ MUST NOT call `gh` to reload the issue.
 - `gh` CLI MUST be authenticated for the target repository (`gh auth status`).
 - MUST NOT implement code, commit, push, or open pull requests.
 - MUST NOT call `gh` on behalf of downstream planner or refiner agents.
-- When project docs exist (`CONTRIBUTING.md`, agent instruction files,
-  `copilot-instructions.md`, `.cursor/rules/`), they override generic guidance
-  in this agent.
+- When project docs exist (`CONTRIBUTING.md`, agent instruction files such as
+  `.github/copilot-instructions.md`, `.cursor/rules/`, `AGENTS.md`, or the host
+  IDE's equivalent), they override generic guidance in this agent.
 - Prefer asking the user over assuming repository, issue identity, or scope.
 
 ## Interaction Contract
@@ -80,4 +83,4 @@ MUST NOT call `gh` to reload the issue.
 
 - `issue-brief` (object): Canonical issue context for downstream planning agents.
 
-<!-- agents-repo package version: 1.0.0 -->
+<!-- agents-repo package version: 1.1.0 -->

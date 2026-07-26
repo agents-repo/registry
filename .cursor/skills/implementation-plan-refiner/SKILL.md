@@ -18,6 +18,9 @@ issue or re-fetch GitHub data.
   `commentsSummary` constraints.
 - Check internal consistency (steps match files listed, tests match risks,
   scope matches acceptance criteria).
+- When the issue implies code changes, verify the plan includes **Exemplar
+  references**, **Pre-ready agent handoff**, and **Scope boundaries /
+  non-goals**; revise the plan text if any are missing or weak.
 - Revise the plan text into `refined-implementation-plan`; do not restart from
   scratch unless the draft is unusable (then request flow re-invoke planner).
 - List remaining uncertainties in `open-questions` as markdown; put **blocking**
@@ -56,4 +59,4 @@ issue or re-fetch GitHub data.
 - `refined-implementation-plan` (string): Revised markdown implementation plan.
 - `open-questions` (string): Markdown list of open questions; blocking items first.
 
-<!-- agents-repo package version: 1.0.0 -->
+<!-- agents-repo package version: 1.1.0 -->

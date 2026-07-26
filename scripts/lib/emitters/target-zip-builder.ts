@@ -8,6 +8,7 @@ import {
 import type { InstallTargetId, ManifestArtifactEntry, PackageMetadata } from '../types';
 import { Checksum } from '../checksum';
 import { ZipBuilder } from '../zip-builder';
+import { addDeterministicZipEntry } from '../deterministic-zip';
 import {
   agentMdToClaudeAgentMd,
   agentMdToSkillMd,
@@ -33,7 +34,7 @@ export function toManifestArtifactEntry(artifact: BuiltTargetArtifact): Manifest
 }
 
 function addZipFile(zip: AdmZip, entryName: string, content: string | Buffer): void {
-  zip.addFile(entryName, typeof content === 'string' ? Buffer.from(content, 'utf-8') : content);
+  addDeterministicZipEntry(zip, entryName, content);
 }
 
 function buildGithubCopilotZip(packageDir: string, outputPath: string, version: string): void {
