@@ -29,7 +29,8 @@ flowchart LR
 After refinement, request implementation explicitly. Before a human marks the
 PR ready, follow the target repo's validation and self-review expectations.
 
-This package stops at the refined plan (and optional handoff summary).
+This package stops at the flow outputs: a **refined implementation plan** and
+**open questions** (see the `issue-implementation-planning` flow contract).
 Implementation, draft PR pre-ready steps, marking ready, and maintainer review
 follow the **target repository** and organization contributor docs—not this
 package.
