@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.3.0",
-  "updatedAt": "2026-07-25T02:03:11.756Z",
+  "updatedAt": "2026-07-26T01:53:42.378Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -90,7 +90,7 @@
       "name": "github-interactive-issue-implementation-planner",
       "description": "Interactive GitHub issue planning: load issue via gh, draft and refine an implementation plan with ask-first clarifications.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.1.0",
       "tags": [
         "github",
         "issue",

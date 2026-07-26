@@ -4,7 +4,7 @@ description: >-
   Refine an implementation plan against the issue brief for gaps and
   inconsistencies. Use after the first plan draft. Prefer questions over
   assumptions. Does not re-intake the issue or implement code.
-version: 1.0.0
+version: 1.1.0
 license: MIT
 inputs:
   - name: issue-brief
@@ -38,6 +38,9 @@ issue or re-fetch GitHub data.
   `commentsSummary` constraints.
 - Check internal consistency (steps match files listed, tests match risks,
   scope matches acceptance criteria).
+- When the issue implies code changes, verify the plan includes **Exemplar
+  references**, **Pre-ready agent handoff**, and **Scope boundaries /
+  non-goals**; revise the plan text if any are missing or weak.
 - Revise the plan text into `refined-implementation-plan`; do not restart from
   scratch unless the draft is unusable (then request flow re-invoke planner).
 - List remaining uncertainties in `open-questions` as markdown; put **blocking**

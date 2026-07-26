@@ -189,6 +189,17 @@ review; agents MUST NOT perform that step.
 Agents MUST complete requested implementation work on the task branch, then
 hand off. Ready-for-review and merge are for a human maintainer.
 
+## Pre-ready handoff
+
+Before handoff on a task branch (while the pull request remains a **draft**),
+agents MUST follow the organization
+[Pre-ready agent handoff](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pre-ready-agent-handoff)
+norm and this repository's validation commands in **Copilot Runtime Environment**
+and **For review tasks** above.
+
+Record validation evidence in the draft PR description. Agents MUST NOT mark pull
+requests ready for review.
+
 Task start in this organization authorizes workflow scaffolding (issue,
 branch, draft PR) even when generic tooling rules defer commits until
 requested. Repo-level agent instructions govern this workspace and supersede

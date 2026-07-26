@@ -4,7 +4,7 @@ description: >-
   Resolve a GitHub issue number or URL, fetch issue and comment context via gh,
   and emit a canonical issue brief. Use when starting issue-driven implementation
   planning. Ask when the repository or issue reference is ambiguous.
-version: 1.0.0
+version: 1.1.0
 license: MIT
 tools:
   - github
@@ -50,6 +50,9 @@ MUST NOT call `gh` to reload the issue.
   verbatim).
 - Record `fetchedAt` as an ISO-8601 timestamp and optional `linkedReferences`
   (issues or PRs mentioned in the body or comments).
+- When the issue body lists validation commands, acceptance checklists, or
+  explicit done criteria, surface them prominently in the brief (for example in
+  `commentsSummary` or a dedicated note) for downstream planners.
 - Apply `user-clarifications` when re-running after the user answers questions.
 - MUST NOT draft implementation steps or edit repository files.
 
