@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for contributing to the Copilot Agents Registry.
+Thanks for contributing to the Agents Registry.
 
 ## Project Focus
 

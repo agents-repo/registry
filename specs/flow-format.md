@@ -109,8 +109,8 @@ Body sections required in order:
 - Within `versions/<version>/<version>.zip`, each bundled
   `agents/*.agent.md` frontmatter `version` MUST equal `<version>`.
 - Flow `<flow-id>.agent.md` files are placed as
-  `agents/<flow-id>.agent.md` in the ZIP because Copilot reads
-  flows as agent instructions.
+  `agents/<flow-id>.agent.md` in the ZIP because the `github-copilot` install
+  target reads flows as agent instructions.
 - `flows/<flow-id>.metadata.json` files MUST NOT be included.
 - ZIP content file names MUST match exact case.
 

@@ -1,10 +1,10 @@
-# Copilot Agents Registry — Project Guidelines
+# Agents Registry — Project Guidelines
 
 ## Project Purpose
 
-This is a spec-first, data-first open-source registry for GitHub Copilot agents
-and multi-agent flows. All structural rules are normative and encoded in `specs/`.
-Runtime logic is out of scope.
+This is a spec-first, data-first open-source registry for agents and
+multi-agent flows across supported install targets. All structural rules are
+normative and encoded in `specs/`. Runtime logic is out of scope.
 
 ## Specs Index
 
@@ -60,9 +60,9 @@ directly modifies package submission requirements.
 Run `npm run lint:md` before committing. If local git hooks are installed, the
 pre-commit hook may also run this check.
 
-## Copilot Runtime Environment
+## Runtime Environment
 
-Copilot tasks in this repository MUST use the pinned runtime below to avoid
+Agent tasks in this repository MUST use the pinned runtime below to avoid
 tooling drift.
 
 - Node.js: `24.15.0` (see `.nvmrc`)
@@ -187,7 +187,7 @@ hand off. Ready-for-review and merge are for a human maintainer.
 Before handoff on a task branch (while the pull request remains a **draft**),
 agents MUST follow the organization
 [Pre-ready agent handoff](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pre-ready-agent-handoff)
-norm and the validation commands in **Copilot Runtime Environment**, **For review
+norm and the validation commands in **Runtime Environment**, **For review
 tasks**, and **For package tasks** (when the change touches `packages/`) above.
 
 Record validation evidence in the draft PR description. Agents MUST NOT mark pull

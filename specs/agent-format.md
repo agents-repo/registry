@@ -109,8 +109,8 @@ Body sections required in order:
 - Agent `<agent-id>.agent.md` files are placed as
   `agents/<agent-id>.agent.md` in the ZIP.
 - Flow `<flow-id>.agent.md` files are also placed under `agents/`
-  in the ZIP; Copilot reads both agents and flows as agent
-  instructions.
+  in the ZIP; the `github-copilot` install target reads both agents and flows as
+  agent instructions.
 - `agents/<agent-id>.metadata.json` files MUST NOT be included.
 - ZIP content file names MUST match exact case.
 
