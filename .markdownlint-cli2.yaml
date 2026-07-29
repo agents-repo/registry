@@ -2,9 +2,10 @@ ignores:
   - "node_modules/**"
   - "AGENTS.md"
   - "CLAUDE.md"
-  - ".cursor/skills/**/SKILL.md"
-  - ".agents/skills/**/SKILL.md"
-  - ".claude/agents/[a-z0-9][a-z0-9-]*.md"
+  - ".cursor/skills/**"
+  - ".agents/skills/**"
+  - ".claude/agents/**"
+  - ".github/agents/**"
 config:
   MD013:
     tables: false

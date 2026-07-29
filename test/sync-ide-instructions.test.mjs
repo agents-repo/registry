@@ -10,6 +10,8 @@ const REPO_ROOT = path.resolve(SCRIPT_DIR, '..');
 
 const GENERATED_COMMENT =
   '<!-- Generated: .github/copilot-instructions.md. Run npm run sync:ide-instructions -->';
+const LEGACY_GENERATED_COMMENT =
+  '<!-- Generated from .github/copilot-instructions.md — do not edit; run npm run sync:cursor-rules -->';
 
 function makeTempRepo() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'registry-ide-sync-'));
@@ -126,6 +128,33 @@ describe('sync-ide-instructions', () => {
     await execFileAsync('node', ['scripts/sync-ide-instructions.mjs'], { cwd: repo });
 
     assert.equal(fs.existsSync(path.join(rulesDir, 'old-generated.mdc')), false);
+    assert.equal(fs.existsSync(path.join(rulesDir, 'agents-registry.mdc')), true);
+  });
+
+  it('removes legacy sync-cursor-rules sibling rules on sync', async () => {
+    const repo = makeTempRepo();
+    tempRepos.push(repo);
+    fs.writeFileSync(
+      path.join(repo, '.github', 'copilot-instructions.md'),
+      '# Source\n',
+      'utf-8',
+    );
+
+    const { execFile } = await import('node:child_process');
+    const { promisify } = await import('node:util');
+    const execFileAsync = promisify(execFile);
+    await execFileAsync('node', ['scripts/sync-ide-instructions.mjs'], { cwd: repo });
+
+    const rulesDir = path.join(repo, '.cursor', 'rules');
+    fs.writeFileSync(
+      path.join(rulesDir, 'legacy-generated.mdc'),
+      `${LEGACY_GENERATED_COMMENT}\nstale\n`,
+      'utf-8',
+    );
+
+    await execFileAsync('node', ['scripts/sync-ide-instructions.mjs'], { cwd: repo });
+
+    assert.equal(fs.existsSync(path.join(rulesDir, 'legacy-generated.mdc')), false);
     assert.equal(fs.existsSync(path.join(rulesDir, 'agents-registry.mdc')), true);
   });
 

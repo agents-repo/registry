@@ -14,6 +14,8 @@ const CONFIG = {
   DESCRIPTION: 'Agents Registry project guidelines (mirrors copilot-instructions.md)',
   GENERATED_COMMENT:
     '<!-- Generated: .github/copilot-instructions.md. Run npm run sync:ide-instructions -->',
+  LEGACY_GENERATED_COMMENT:
+    '<!-- Generated from .github/copilot-instructions.md — do not edit; run npm run sync:cursor-rules -->',
   TITLE_TRANSFORMS: [
     ['# Copilot Agents Registry — Project Guidelines', '# Agents Registry — Project Guidelines'],
     ['## Copilot Runtime Environment', '## Runtime Environment'],
@@ -124,7 +126,11 @@ function normalizeEol(text) {
 
 function isGeneratedMirrorFile(filePath) {
   try {
-    return fs.readFileSync(filePath, 'utf-8').includes(CONFIG.GENERATED_COMMENT);
+    const content = fs.readFileSync(filePath, 'utf-8');
+    return (
+      content.includes(CONFIG.GENERATED_COMMENT) ||
+      content.includes(CONFIG.LEGACY_GENERATED_COMMENT)
+    );
   } catch {
     return false;
   }
