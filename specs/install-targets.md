@@ -105,3 +105,33 @@ The registry index projects install targets for catalog consumers:
 
 Only `supported` and `experimental` targets with built artifacts are
 included. `planned` targets MUST NOT appear in the index.
+
+## Uninstall semantics
+
+CLI `remove` (and compatible tooling) MUST uninstall packages by deleting
+the same on-disk paths that install extract creates for each install target.
+Path mapping is the inverse of extract: ZIP entry names are mapped with the
+same rules as install (including the `github-copilot` remap from `agents/`
+to `.github/agents/`).
+
+| Install target ID | Extract root (project or global home) | Prune boundary (do not remove) |
+| --- | --- | --- |
+| `github-copilot` | Project root or `AGENTS_REPO_HOME` | `.github/`, `.github/agents/` |
+| `claude-code` | Project root or `AGENTS_REPO_HOME` | `.claude/`, `.claude/agents/` |
+| `cursor` | Project root or `AGENTS_REPO_HOME` | `.cursor/`, `.cursor/skills/` |
+| `openai-codex` | Project root or `AGENTS_REPO_HOME` | `.agents/`, `.agents/skills/` |
+
+Tooling MUST derive delete paths by listing file entries in the **locked**
+target artifact ZIP (not from `agents.json` ranges). After deleting files,
+tooling MAY remove empty parent directories up to—but MUST NOT remove—the
+prune boundary directory for that target (for example remove
+`.cursor/skills/my-skill/` when empty, but never `.cursor/skills/` itself).
+
+When a path is missing, tooling SHOULD warn and continue (idempotent
+uninstall). When a path exists but is not a regular file, or its content
+no longer matches the ZIP entry, tooling SHOULD warn and skip deletion
+unless the user passes an explicit force flag defined in the CLI
+`command-contracts.md`.
+
+See [agents-repo CLI `cli-protocol.md` remove
+pipeline](https://github.com/agents-repo/cli/blob/main/specs/cli-protocol.md).
