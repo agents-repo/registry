@@ -102,9 +102,9 @@ Body sections required in order:
 
 ## ZIP Bundle Rules
 
-- Each `versions/<version>/<version>.zip` is a deployment artifact
+- Each `versions/<version>/<version>-github-copilot.zip` is a deployment artifact
   for extraction into a project's `.github/` folder.
-- Within `versions/<version>/<version>.zip`, each bundled
+- Within `versions/<version>/<version>-github-copilot.zip`, each bundled
   `agents/*.agent.md` frontmatter `version` MUST equal `<version>`.
 - Agent `<agent-id>.agent.md` files are placed as
   `agents/<agent-id>.agent.md` in the ZIP.
