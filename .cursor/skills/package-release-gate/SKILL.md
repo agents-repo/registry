@@ -47,11 +47,8 @@ and recommended next step.
 ## Declared capabilities
 
 ### Inputs
-
-- `release-gate-request` (object): Release gate request with qualified package ref (`<namespace>/<package-id>`), optional version override, and retry context.
-
+- {"name":"release-gate-request","type":"object","description":"Release gate request with qualified package ref (`<namespace>/<package-id>`), optional version override, and retry context."}
 ### Outputs
-
-- `release-gate-report` (object): Structured artifact gate report including command details, result, blockers, and next action.
+- {"name":"release-gate-report","type":"object","description":"Structured artifact gate report including command details, result, blockers, and next action."}
 
 <!-- agents-repo package version: 1.0.0 -->

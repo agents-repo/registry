@@ -111,15 +111,10 @@ and `package-release-gate` for artifact gate execution.
 ## Declared capabilities
 
 ### Inputs
-
-- `user-intent` (string): A free-form description of what the user wants the package to do or contain.
-
+- {"name":"user-intent","type":"string","description":"A free-form description of what the user wants the package to do or contain."}
 ### Outputs
-
-- `release-gated-package-source` (object): The fully authored, reviewed, validated, built, and artifact-gated package source tree.
-
+- {"name":"release-gated-package-source","type":"object","description":"The fully authored, reviewed, validated, built, and artifact-gated package source tree."}
 ### Referenced agents
-
 - package-requirements-analyst
 - package-creator
 - package-submission-reviewer

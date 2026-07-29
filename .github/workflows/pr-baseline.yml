@@ -20,8 +20,16 @@ jobs:
       - name: Run all lints
         run: npm run lint:all
 
-      - name: Check Cursor rule mirror
-        run: npm run sync:cursor-rules -- --check
+      - name: Check IDE instruction mirrors
+        run: npm run sync:ide-instructions -- --check
+
+      - name: Verify registry package installs match lockfile
+        run: |
+          rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
+          npx agents-repo@1.13.0 install
+          git diff --exit-code -- \
+            agents.json agents-lock.json \
+            .github/agents .cursor/skills .claude/agents .agents/skills
 
       - name: Run unit tests
         run: npm run test:run
@@ -31,38 +39,3 @@ jobs:
 
       - name: Scan package ZIPs
         run: npm run package:scan-zips
-
-      - name: Check IDE deployment mirrors
-        run: >-
-          npm run package:sync-ide-targets --
-          --check
-          --package agents-repo/agents-repo-package-creation
-          --target all
-
-      - name: Check github-pr-review-triage IDE mirrors
-        run: >-
-          npm run package:sync-ide-targets --
-          --check
-          --package maiconfz/github-pr-review-triage
-          --target github-copilot
-
-      - name: Check github-pr-review-triage Cursor skill
-        run: >-
-          npm run package:sync-ide-targets --
-          --check
-          --package maiconfz/github-pr-review-triage
-          --target cursor
-
-      - name: Check github-interactive-issue-implementation-planner IDE mirrors
-        run: >-
-          npm run package:sync-ide-targets --
-          --check
-          --package maiconfz/github-interactive-issue-implementation-planner
-          --target github-copilot
-
-      - name: Check github-interactive-issue-implementation-planner Cursor skill
-        run: >-
-          npm run package:sync-ide-targets --
-          --check
-          --package maiconfz/github-interactive-issue-implementation-planner
-          --target cursor

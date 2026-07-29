@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0.0",
+  "registry": {
+    "url": "https://registry-proxy.maiconfz.workers.dev",
+    "ref": "v2.x"
+  },
+  "packages": {
+    "agents-repo/agents-repo-package-creation": "^1.0.0",
+    "maiconfz/github-interactive-issue-implementation-planner": "^1.1.0",
+    "maiconfz/github-pr-review-triage": "^1.1.0"
+  },
+  "targets": [
+    "github-copilot",
+    "claude-code",
+    "cursor",
+    "openai-codex"
+  ]
+}
