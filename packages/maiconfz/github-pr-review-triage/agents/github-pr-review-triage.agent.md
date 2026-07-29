@@ -134,10 +134,10 @@ first comment body, author login.
 
 ```bash
 gh api graphql -f query='
-  query($owner: String!, $name: String!, $number: Int!) {
+  query($owner: String!, $name: String!, $number: Int!, $after: String) {
     repository(owner: $owner, name: $name) {
       pullRequest(number: $number) {
-        reviewThreads(first: 100) {
+        reviewThreads(first: 100, after: $after) {
           pageInfo { endCursor hasNextPage }
           nodes {
             id
@@ -151,7 +151,7 @@ gh api graphql -f query='
         }
       }
     }
-  }' -f owner=OWNER -f name=REPO -F number=PR \
+  }' -f owner=OWNER -f name=REPO -F number=PR -f after="$CURSOR" \
   --jq '.data.repository.pullRequest.reviewThreads.nodes[]
     | select(.isResolved==false)
     | {kind: "thread", id, path, line, author: .comments.nodes[0].author.login,
@@ -160,10 +160,9 @@ gh api graphql -f query='
 
 Paginate while `pageInfo.hasNextPage` is `true` — do not gate on unresolved
 count. Each page returns up to 100 threads (resolved and unresolved mixed);
-filter unresolved per page and accumulate results. When `hasNextPage` is
-`true`, re-run with `reviewThreads(first: 100, after: "<endCursor>")` using
-`pageInfo.endCursor` from the prior response. Stop when `hasNextPage` is
-`false`.
+filter unresolved per page and accumulate results. Pass `-f after="$CURSOR"`
+with `pageInfo.endCursor` from the prior response (use an empty string for the
+first page). Stop when `hasNextPage` is `false`.
 
 #### Count unresolved threads
 
@@ -205,8 +204,7 @@ gh api graphql -f query='
       }
     }
   }' -f owner=OWNER -f name=REPO -F number=PR -f after="$CURSOR" \
-  --arg head "$HEAD" \
-  --jq '.data.repository.pullRequest.reviews.nodes[]
+  | jq --arg head "$HEAD" '.data.repository.pullRequest.reviews.nodes[]
     | select(.author.login == "copilot-pull-request-reviewer[bot]")
     | select(.body != null and .body != "")
     | select(.comments.totalCount == 0)
