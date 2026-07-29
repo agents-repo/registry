@@ -89,7 +89,7 @@ packages/
                 flows/
                     <flow-id>.agent.md
                     <flow-id>.metadata.json
-                <version>.zip
+                <version>-<target-id>.zip
                 <version>-src.zip
             manifest.json
 ```
