@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Tooling and validation scripts for the Copilot Agents Registry.",
+  "description": "Tooling and validation scripts for the Agents Registry.",
   "scripts": {
     "env:check": "tsx scripts/validate-env.ts",
     "package:validate": "tsx scripts/package-validate.ts",

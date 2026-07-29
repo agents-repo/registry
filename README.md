@@ -1,6 +1,7 @@
-# Copilot Agents Registry
+# Agents Registry
 
-The open-source source of truth for GitHub Copilot agents and multi-agent flows.
+The open-source source of truth for agents and multi-agent flows across
+supported install targets (GitHub Copilot, Cursor, Claude Code, and OpenAI Codex).
 
 ## Project Scope
 
@@ -20,7 +21,7 @@ Runtime logic is out of scope for this initial baseline.
 
 ## Development Environment
 
-Use the pinned runtime to keep local development, Copilot tasks, and CI aligned.
+Use the pinned runtime to keep local development, agent tasks, and CI aligned.
 
 ### Runtime pins
 
@@ -302,7 +303,7 @@ That smoke flow creates a temporary package workspace under
 `package:create`, `package:validate`, `package:build`, and
 `package:validate-artifacts`.
 
-### PR and Copilot checks
+### PR and repository checks
 
 - PR baseline checks run markdown linting, Sonar linting, unit tests,
   typecheck, and the repo-wide package ZIP scan with pinned runtime.
@@ -312,7 +313,7 @@ That smoke flow creates a temporary package workspace under
   version snapshots.
 - Package script changes also run the dedicated smoke workflow, which calls
   `npm run package:create:smoke -- --package agents-repo/smoke-package`.
-- Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
+- GitHub Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
 
 Package artifacts are designed for reuse in external projects, and downstream
 repositories with different linting rules need to adapt imported agent files
