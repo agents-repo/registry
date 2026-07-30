@@ -50,10 +50,14 @@ npx agents-repo@latest install maiconfz/github-pr-review-triage
 
 - Choose `--targets` for your IDE: `github-copilot`, `cursor`, `claude-code`,
   or `openai-codex` (pass one or more).
-- After install, commit `agents-lock.json` and `agents.json` when they change.
+- After install, commit `agents.json`, `agents-lock.json`, and the extracted
+  install paths when they change.
 - Extract paths follow the install target (see
   [install-targets](https://github.com/agents-repo/registry/blob/main/specs/install-targets.md));
   invoke the agent by name below.
+
+This README is catalog documentation on `main`; installed content comes from
+the versioned deployment ZIPs pinned in your `agents-lock.json`.
 
 ## Usage
 
