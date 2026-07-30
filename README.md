@@ -123,9 +123,9 @@ Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
 Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli):
 
 ```bash
-npx agents-repo init --targets github-copilot claude-code cursor openai-codex
-npx agents-repo install    # bulk sync from agents.json
-npx agents-repo update       # refresh within semver ranges
+npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
+npm run agents:install    # bulk sync from agents.json
+npm run agents:update       # refresh within semver ranges
 ```
 
 Commit `agents.json`, `agents-lock.json`, and extracted paths (`.github/agents/`,
@@ -135,9 +135,8 @@ extracted package files.
 Dogfooded packages:
 
 - `agents-repo/agents-repo-package-creation` — all four IDE targets
-- `maiconfz/github-pr-review-triage` — GitHub Copilot and Cursor
-- `maiconfz/github-interactive-issue-implementation-planner` — GitHub Copilot
-  and Cursor
+- `maiconfz/github-pr-review-triage` — all four IDE targets
+- `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
 
 See `.github/CONTRIBUTING.md` for the full edit workflow.
 

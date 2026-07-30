@@ -81,9 +81,10 @@ If relevant, describe impact on:
   npm run sync:ide-instructions -- --check
   rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
   npx agents-repo@1.13.0 install
-  git diff --exit-code -- \
-    agents.json agents-lock.json \
-    .github/agents .cursor/skills .claude/agents .agents/skills
+  DRIFT_PATHS="agents.json agents-lock.json .github/agents \
+    .cursor/skills .claude/agents .agents/skills"
+  git diff --exit-code -- $DRIFT_PATHS
+  test -z "$(git status --porcelain -- $DRIFT_PATHS)"
   ```
 
 - [ ] New or changed docs are deterministic and clear.

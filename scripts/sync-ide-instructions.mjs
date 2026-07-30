@@ -66,6 +66,12 @@ function rewriteMarkdownTarget(url, targetDir) {
     return url;
   }
 
+  if (pathPart.startsWith('/')) {
+    const resolvedFromRoot = path.posix.normalize(pathPart.slice(1));
+    const rewritten = path.posix.relative(targetDir, resolvedFromRoot);
+    return `${rewritten}${titleSuffix}`;
+  }
+
   const resolvedFromRoot = path.posix.normalize(path.posix.join(SOURCE_DIR, pathPart));
   const rewritten = path.posix.relative(targetDir, resolvedFromRoot);
   return `${rewritten}${titleSuffix}`;
