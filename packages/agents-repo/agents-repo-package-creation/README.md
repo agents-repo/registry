@@ -15,7 +15,8 @@ npx agents-repo@1.13.0 install agents-repo/agents-repo-package-creation
 Commit `agents.json`, `agents-lock.json`, and extracted paths after install.
 All four supported IDE targets receive the package content (rendered per target).
 
-This README documents the package on the registry catalog; installed content comes from the versioned ZIPs pinned in your `agents-lock.json`.
+This README documents the package on the registry catalog. Installed content
+comes from the versioned ZIPs pinned in your `agents-lock.json`.
 
 ## Usage
 
