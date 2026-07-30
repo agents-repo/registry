@@ -79,5 +79,5 @@ From the registry repository root:
 npm run package:validate -- --package maiconfz/github-pr-review-triage
 npm run package:build -- --package maiconfz/github-pr-review-triage
 npm run package:validate-artifacts -- \
-  --package maiconfz/github-pr-review-triage --version 1.1.0
+  --package maiconfz/github-pr-review-triage --version 1.1.1
 ```
