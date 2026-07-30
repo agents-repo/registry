@@ -1,6 +1,6 @@
 {
   "lockfileVersion": 2,
-  "resolvedRef": "v2.1.5",
+  "resolvedRef": "v2.1.6",
   "packages": {
     "agents-repo/agents-repo-package-creation": {
       "version": "1.0.0",
