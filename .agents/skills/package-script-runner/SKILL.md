@@ -51,11 +51,8 @@ classified failure type, and recommended next routing step.
 ## Declared capabilities
 
 ### Inputs
-
-- `script-stage-request` (object): Script stage request containing namespace, package-id or qualified package ref (depending on stage), stage name, command arguments, and execution context.
-
+- {"name":"script-stage-request","type":"object","description":"Script stage request containing namespace, package-id or qualified package ref (depending on stage), stage name, command arguments, and execution context."}
 ### Outputs
-
-- `script-stage-report` (object): Structured report with command executed, exit status, key output, and recommended next step.
+- {"name":"script-stage-report","type":"object","description":"Structured report with command executed, exit status, key output, and recommended next step."}
 
 <!-- agents-repo package version: 1.0.0 -->

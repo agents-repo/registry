@@ -97,59 +97,47 @@ instructions on clone without manual install steps.
 | IDE | Agents / skills | Project guidelines |
 | --- | --- | --- |
 | GitHub Copilot | `.github/agents/*.agent.md` | `.github/copilot-instructions.md` |
-| Claude Code | `.claude/agents/<id>.md` | — |
+| Claude Code | `.claude/agents/<id>.md` | `CLAUDE.md` |
 | Cursor | `.cursor/skills/<id>/SKILL.md` | `.cursor/rules/agents-registry.mdc` |
-| OpenAI Codex | `.agents/skills/<id>/SKILL.md` | — |
+| OpenAI Codex | `.agents/skills/<id>/SKILL.md` | `AGENTS.md` |
 
-Canonical sources for repo workflow agents:
+### Project guidelines (repo-specific)
 
-- All four IDE targets: `packages/agents-repo/agents-repo-package-creation/`
-  (`agents/` + `flows/`)
-- GitHub Copilot and Cursor only: also
-  `packages/maiconfz/github-pr-review-triage/` and
-  `packages/maiconfz/github-interactive-issue-implementation-planner/`
-  (`agents/` + `flows/`)
-- `.github/copilot-instructions.md` (for Cursor rules)
+| Install target | Path | Source |
+| --- | --- | --- |
+| GitHub Copilot | `.github/copilot-instructions.md` | **Canonical** — edit here |
+| Cursor | `.cursor/rules/agents-registry.mdc` | Mirrored from copilot-instructions |
+| Claude Code | `CLAUDE.md` | Mirrored from copilot-instructions |
+| OpenAI Codex | `AGENTS.md` | Mirrored from copilot-instructions |
 
-`maiconfz/github-pr-review-triage` and
-`maiconfz/github-interactive-issue-implementation-planner` are dogfooded for
-GitHub Copilot and Cursor only.
-Claude Code and OpenAI Codex mirrors currently include
-`agents-repo-package-creation` agents and flows only.
-
-Regenerate mirrors after editing canonical sources:
+Regenerate mirrors after editing `copilot-instructions.md`:
 
 ```bash
-npm run package:sync-ide-targets -- \
-  --package agents-repo/agents-repo-package-creation \
-  --target all
+npm run sync:ide-instructions
 ```
 
-`--target all` syncs every install target in the package's repository dogfooding
-scope, then regenerates Cursor rules from `copilot-instructions.md`. For
-`agents-repo/agents-repo-package-creation`, that includes GitHub Copilot,
-Cursor, Claude Code, and OpenAI Codex; for `maiconfz/github-pr-review-triage`
-and `maiconfz/github-interactive-issue-implementation-planner`, GitHub Copilot
-and Cursor only.
+Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
+
+### Registry workflow packages (CLI)
+
+Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli):
 
 ```bash
-npm run package:sync-ide-targets -- \
-  --package maiconfz/github-pr-review-triage \
-  --target all
-
-npm run package:sync-ide-targets -- \
-  --package maiconfz/github-interactive-issue-implementation-planner \
-  --target all
+npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
+npm run agents:install    # bulk sync from agents.json
+npm run agents:update       # refresh within semver ranges
 ```
 
-When only `copilot-instructions.md` changes:
+Commit `agents.json`, `agents-lock.json`, and extracted paths (`.github/agents/`,
+`.cursor/skills/`, `.claude/agents/`, `.agents/skills/`). Do not hand-edit
+extracted package files.
 
-```bash
-npm run sync:cursor-rules
-```
+Dogfooded packages:
 
-Do not edit `.github/agents/`, `.cursor/skills/`, `.claude/agents/`,
-`.agents/skills/`, or `.cursor/rules/` directly.
+- `agents-repo/agents-repo-package-creation` — all four IDE targets
+- `maiconfz/github-pr-review-triage` — all four IDE targets
+- `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
+
 See `.github/CONTRIBUTING.md` for the full edit workflow.
 
 ## Release Workflow

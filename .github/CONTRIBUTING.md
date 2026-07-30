@@ -281,61 +281,56 @@ Smoke and integration harnesses set `SKIP_PACKAGE_PR_TITLE_CHECK=1` so
 unrelated PR titles do not fail tooling checks; that variable MUST NOT be set
 in package submission CI.
 
-### IDE deployment mirrors (repo dogfooding)
+### IDE setup
 
-Committed IDE paths are generated from canonical sources:
+#### Project guidelines (repo-specific)
 
-| Path | Source |
-| --- | --- |
-| `.github/agents/*.agent.md` | `packages/agents-repo/agents-repo-package-creation/`, `packages/maiconfz/github-pr-review-triage/`, and `packages/maiconfz/github-interactive-issue-implementation-planner/` (`agents/` + `flows/`) |
-| `.cursor/skills/<id>/SKILL.md` | same package sources |
-| `.claude/agents/<id>.md` | `packages/agents-repo/agents-repo-package-creation/` (`agents/` + `flows/`) |
-| `.agents/skills/<id>/SKILL.md` | `packages/agents-repo/agents-repo-package-creation/` (`agents/` + `flows/`) |
-| `.cursor/rules/agents-registry.mdc` | `.github/copilot-instructions.md` |
+| Install target | Path | Source |
+| --- | --- | --- |
+| GitHub Copilot | `.github/copilot-instructions.md` | **Canonical** — edit here |
+| Cursor | `.cursor/rules/agents-registry.mdc` | Mirrored from copilot-instructions |
+| Claude Code | `CLAUDE.md` | Mirrored from copilot-instructions |
+| OpenAI Codex | `AGENTS.md` | Mirrored from copilot-instructions |
 
-`maiconfz/github-pr-review-triage` and
-`maiconfz/github-interactive-issue-implementation-planner` are dogfooded for
-GitHub Copilot and Cursor only.
-Claude Code and OpenAI Codex mirrors currently include
-`agents-repo-package-creation` agents and flows only.
-
-Regenerate after source edits:
+Regenerate mirrors after editing `copilot-instructions.md`:
 
 ```bash
-npm run package:sync-ide-targets -- \
-  --package agents-repo/agents-repo-package-creation \
-  --target all
-
-npm run package:sync-ide-targets -- \
-  --package maiconfz/github-pr-review-triage \
-  --target all
-
-npm run package:sync-ide-targets -- \
-  --package maiconfz/github-interactive-issue-implementation-planner \
-  --target all
+npm run sync:ide-instructions
 ```
 
-`--target all` syncs every install target in the package's repository dogfooding
-scope, then regenerates Cursor rules from `copilot-instructions.md`. For
-`agents-repo/agents-repo-package-creation`, that includes GitHub Copilot,
-Cursor, Claude Code, and OpenAI Codex; for `maiconfz/github-pr-review-triage`
-and `maiconfz/github-interactive-issue-implementation-planner`, GitHub Copilot
-and Cursor only.
+Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
 
-When only `copilot-instructions.md` changes:
+#### Registry workflow packages (CLI)
+
+Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli).
+`agents.json` points at `https://registry-proxy.maiconfz.workers.dev` (organization
+catalog proxy).
+
+Bootstrap only when `agents.json` is missing:
 
 ```bash
-npm run sync:cursor-rules
+npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
 ```
 
-Do not edit `.github/agents/`, `.cursor/skills/`, `.claude/agents/`,
-`.agents/skills/`, or `.cursor/rules/` directly. `package:sync-ide-targets`
-updates repo IDE files only; it does not replace `package:build` for
-`versions/` snapshots.
+Use the pinned npm scripts (same CLI version as CI):
 
-Local pre-commit checks Cursor rules only (`sync:cursor-rules --check`). Run
-the full IDE mirror drift check before requesting review when mirror sources
-change.
+```bash
+npm run agents:install   # bulk sync from agents.json
+npm run agents:update    # refresh within semver ranges
+```
+
+Commit `agents.json`, `agents-lock.json`, and extracted paths (`.github/agents/`,
+`.cursor/skills/`, `.claude/agents/`, `.agents/skills/`). Do not hand-edit
+extracted package files.
+
+Dogfooded packages:
+
+- `agents-repo/agents-repo-package-creation` — all four IDE targets
+- `maiconfz/github-pr-review-triage` — all four IDE targets
+- `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
+
+Local pre-commit checks project guideline mirrors (`sync:ide-instructions
+--check`). CI also verifies registry package installs match the lockfile.
 
 ### Submitted package checklist
 
@@ -386,24 +381,18 @@ Before requesting review:
 3. Run unit tests (`npm run test:run`).
 4. Run type checks (`npm run typecheck`).
 5. Run the repo-wide package ZIP scan (`npm run package:scan-zips`).
-6. When IDE mirror sources change, run the IDE mirror drift check:
+6. When IDE mirror sources change, run:
 
    ```bash
-   npm run package:sync-ide-targets -- --check \
-     --package agents-repo/agents-repo-package-creation --target all
-   npm run package:sync-ide-targets -- --check \
-     --package maiconfz/github-pr-review-triage --target github-copilot
-   npm run package:sync-ide-targets -- --check \
-     --package maiconfz/github-pr-review-triage --target cursor
-   npm run package:sync-ide-targets -- --check \
-     --package maiconfz/github-interactive-issue-implementation-planner \
-     --target github-copilot
-   npm run package:sync-ide-targets -- --check \
-     --package maiconfz/github-interactive-issue-implementation-planner \
-     --target cursor
+   npm run sync:ide-instructions -- --check
+   rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
+   npx agents-repo@1.13.0 install
+   DRIFT_PATHS="agents.json agents-lock.json .github/agents \
+     .cursor/skills .claude/agents .agents/skills"
+   git diff --exit-code -- $DRIFT_PATHS
+   test -z "$(git status --porcelain -- $DRIFT_PATHS)"
    ```
 
-   Plus per-package checks for other dogfooded packages as needed.
 7. Ensure references and paths are valid.
 8. Confirm no unrelated changes are included.
 

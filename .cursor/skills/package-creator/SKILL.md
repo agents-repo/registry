@@ -75,11 +75,8 @@ and script execution stages.
 ## Declared capabilities
 
 ### Inputs
-
-- `package-blueprint` (object): Structured blueprint from package-requirements-analyst specifying scaffold args, IDs, descriptions, and metadata values.
-
+- {"name":"package-blueprint","type":"object","description":"Structured blueprint from package-requirements-analyst specifying scaffold args, IDs, descriptions, and metadata values."}
 ### Outputs
-
-- `package-source-tree` (object): The full set of authored package source files including metadata.json, agent pairs, and flow pairs ready for review and script checks.
+- {"name":"package-source-tree","type":"object","description":"The full set of authored package source files including metadata.json, agent pairs, and flow pairs ready for review and script checks."}
 
 <!-- agents-repo package version: 1.0.0 -->

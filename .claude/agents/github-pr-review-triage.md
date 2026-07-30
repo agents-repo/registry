@@ -5,7 +5,6 @@ description: >-
   summaries, fix, commit, reply, and resolve or acknowledge. Use for Copilot or
   Bugbot inline feedback.
 version: 1.1.0
-license: MIT
 tools:
   - github
 inputs:
@@ -30,7 +29,6 @@ outputs:
       Summary with PR URL, commit SHA, threads resolved count, summaries
       acknowledged count, and notes.
 ---
-
 # Overview
 
 Five-phase, project-agnostic workflow for addressing pull request review feedback
