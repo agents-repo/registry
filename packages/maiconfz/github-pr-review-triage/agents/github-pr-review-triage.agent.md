@@ -4,7 +4,7 @@ description: >-
   GitHub PR review triage via gh: fetch unresolved threads and Copilot review
   summaries, fix, commit, reply, and resolve or acknowledge. Use for Copilot or
   Bugbot inline feedback.
-version: 1.1.1
+version: 1.1.0
 license: MIT
 tools:
   - github
@@ -216,11 +216,10 @@ gh api graphql -f query='
 Paginate reviews while `pageInfo.hasNextPage` is `true`, passing
 `pageInfo.endCursor` as `$after`. Stop when `hasNextPage` is `false`.
 
-**Idempotency:** exclude summaries already acknowledged. Before triage,
-fetch all PR issue comments with pagination (`gh api repos/{owner}/{repo}/issues/{n}/comments?per_page=100`,
-following `Link` headers with `rel="next"` until no next page) and skip any summary
-whose `databaseId` appears in a comment posted after `submittedAt` with body
-containing `Re: Copilot review (` and that id.
+**Idempotency:** exclude summaries already acknowledged. Before triage, list PR
+issue comments (`gh api repos/{owner}/{repo}/issues/{n}/comments`) and skip
+any summary whose `databaseId` appears in a comment posted after `submittedAt`
+with body containing `Re: Copilot review (` and that id.
 
 Do **not** fetch PR issue/timeline comments as triage items — only for
 idempotency checks.

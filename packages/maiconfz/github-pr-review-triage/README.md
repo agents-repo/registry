@@ -37,10 +37,10 @@ npx agents-repo@1.13.0 install maiconfz/github-pr-review-triage
 
 | Target | Artifact |
 | --- | --- |
-| GitHub Copilot | `1.1.1-github-copilot.zip` |
-| Cursor | `1.1.1-cursor.zip` |
-| Claude Code | `1.1.1-claude-code.zip` |
-| OpenAI Codex | `1.1.1-openai-codex.zip` |
+| GitHub Copilot | `1.1.0-github-copilot.zip` |
+| Cursor | `1.1.0-cursor.zip` |
+| Claude Code | `1.1.0-claude-code.zip` |
+| OpenAI Codex | `1.1.0-openai-codex.zip` |
 
 Commit `agents.json`, `agents-lock.json`, and extracted paths after install.
 GitHub Copilot installs under `.github/agents/`; Claude Code under
