@@ -104,10 +104,13 @@ Body sections required in order:
 
 ## ZIP Bundle Rules
 
-- Each `versions/<version>/<version>-github-copilot.zip` is a deployment artifact
-  for extraction into a project's `.github/` folder.
-- Within `versions/<version>/<version>-github-copilot.zip`, each bundled
-  `agents/*.agent.md` frontmatter `version` MUST equal `<version>`.
+- Each `versions/<version>/<version>-github-copilot.zip` is a
+  deployment artifact for the `github-copilot` install target.
+  On-disk extract paths follow `install-targets.md` extract mapping
+  (`agents/<path>` in the ZIP → `.github/agents/<path>` under the
+  project root or `AGENTS_REPO_HOME`).
+- Within that ZIP, each bundled `agents/*.agent.md` frontmatter
+  `version` MUST equal `<version>`.
 - Flow `<flow-id>.agent.md` files are placed as
   `agents/<flow-id>.agent.md` in the ZIP because the `github-copilot` install
   target reads flows as agent instructions.
