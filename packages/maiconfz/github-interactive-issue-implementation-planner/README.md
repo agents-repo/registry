@@ -73,8 +73,8 @@ npx agents-repo@1.13.0 install maiconfz/github-interactive-issue-implementation-
 ```
 
 Commit `agents.json`, `agents-lock.json`, and extracted paths after install.
-GitHub Copilot installs agents and flows under `.github/agents/`; Cursor
-installs skills under `.cursor/skills/`.
+GitHub Copilot installs under `.github/agents/`; Claude Code installs under `.claude/agents/`.
+Cursor installs under `.cursor/skills/`; OpenAI Codex installs under `.agents/skills/`.
 
 This README is catalog documentation on `main`; installed content comes from
 the versioned deployment ZIPs in your `agents-lock.json`.

@@ -43,8 +43,8 @@ npx agents-repo@1.13.0 install maiconfz/github-pr-review-triage
 | OpenAI Codex | `1.1.0-openai-codex.zip` |
 
 Commit `agents.json`, `agents-lock.json`, and extracted paths after install.
-GitHub Copilot installs to `.github/agents/`; Cursor installs to
-`.cursor/skills/github-pr-review-triage/SKILL.md`.
+GitHub Copilot installs under `.github/agents/`; Claude Code installs under `.claude/agents/`.
+Cursor installs to `.cursor/skills/github-pr-review-triage/SKILL.md`; OpenAI Codex installs under `.agents/skills/`.
 
 This README is catalog documentation on `main`; installed content comes from
 the versioned deployment ZIPs in your `agents-lock.json`.
