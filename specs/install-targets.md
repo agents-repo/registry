@@ -141,7 +141,9 @@ extract root.
 | `cursor` | Project root or `AGENTS_REPO_HOME` | `.cursor/skills/` |
 | `openai-codex` | Project root or `AGENTS_REPO_HOME` | `.agents/skills/` |
 
-The prune boundary is the innermost managed directory for that target.
+The prune boundary is the shared directory for that target that tooling
+MUST NOT remove (and MUST NOT remove any parent of that directory). Empty
+per-package directories under the boundary MAY be removed.
 Tooling MUST derive delete paths by listing file entries in the **locked**
 target artifact ZIP (not from `agents.json` ranges). After deleting files,
 tooling MAY remove empty parent directories above the deleted file but MUST
