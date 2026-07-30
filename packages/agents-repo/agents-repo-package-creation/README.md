@@ -1,6 +1,6 @@
 # agents-repo-package-creation
 
-Agents and flow for creating, reviewing, and validating new registry packages
+Agents and a flow for creating, reviewing, and validating new registry packages
 for agents-repo from requirements to submission-ready source.
 
 ## Install
