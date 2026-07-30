@@ -41,8 +41,8 @@ supported spec document version in this table.
   `v1.2.3`) when the underlying version value remains `1.2.3`.
 - Pre-release and build metadata MUST NOT be used.
 - Each released version MUST have a snapshot folder at
-  `versions/<version>/` containing the deployment artifact
-  (`<version>.zip`), the source archive (`<version>-src.zip`),
+  `versions/<version>/` containing per-target deployment artifacts
+  (`<version>-<target-id>.zip`), the source archive (`<version>-src.zip`),
   a `metadata.json` snapshot, and source tree snapshots
   (`agents/` and `flows/` if present).
 
@@ -119,16 +119,14 @@ supported spec document version in this table.
 - `manifest.json.latest` MUST equal the maximum semantic version in
   `manifest.json.versions[]`.
 - `manifest.json.versions[].version` MUST be unique.
-- `manifest.json.versions[].artifact` MUST equal `<version>.zip` where
-  `<version>` matches the entry's own `version` field.
-- `manifest.json.versions[].sha256` MUST match the deployment artifact
-  bytes exactly.
+- `manifest.json.versions[].artifacts[]` MUST follow `manifest-schema.md`
+  (per-target `<version>-<target-id>.zip` entries; no legacy `<version>.zip`).
 - `manifest.json.versions[].srcArtifact` MUST equal `<version>-src.zip`
   where `<version>` matches the entry's own `version` field.
 - `manifest.json.versions[].srcSha256` MUST match the source archive
   bytes exactly.
-- Every `.agent.md` file inside `versions/<version>/<version>.zip`
-  MUST have frontmatter `version` equal to `<version>`.
+- Every `.agent.md` file inside each `versions/<version>/<version>-<target-id>.zip`
+  deployment artifact MUST have frontmatter `version` equal to `<version>`.
 - Every `.agent.md` file inside `versions/<version>/<version>-src.zip`
   MUST have frontmatter `version` equal to `<version>`.
 - Every `.agent.md` file inside `versions/<version>/agents/`

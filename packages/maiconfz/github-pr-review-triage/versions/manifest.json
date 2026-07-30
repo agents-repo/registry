@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.1.0",
   "name": "github-pr-review-triage",
-  "latest": "1.0.0",
+  "latest": "1.1.0",
   "versions": [
     {
       "version": "1.0.0",
@@ -30,6 +30,34 @@
         }
       ],
       "createdAt": "2026-07-13T23:51:04.522Z"
+    },
+    {
+      "version": "1.1.0",
+      "srcArtifact": "1.1.0-src.zip",
+      "srcSha256": "7fbdacdc8f1742cd1756a0f8f210b14419e05714a15f03aee256d13cf7939461",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.1.0-github-copilot.zip",
+          "sha256": "237a8b6b2997e4b38f6723982395b0fc4c343989e8dbddbeff7e05c0fccda00a"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.1.0-claude-code.zip",
+          "sha256": "a1553c45f402f70c94ddbcae33e3cef20a018aec71b5297774a73d2f716a28bb"
+        },
+        {
+          "target": "cursor",
+          "file": "1.1.0-cursor.zip",
+          "sha256": "2d84e8eaa1e8f6f4126aa6c9420884a64b630b589122d9af74a40d5d2505fed3"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.1.0-openai-codex.zip",
+          "sha256": "f293ed7451d772b9ac355dec0c8f5146b0873b70db4108d7533cdfee42834ab2"
+        }
+      ],
+      "createdAt": "2026-07-29T23:06:45.669Z"
     }
   ]
 }

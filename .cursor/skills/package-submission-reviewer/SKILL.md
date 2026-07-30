@@ -69,11 +69,8 @@ a prioritized and actionable list of revision requests addressed to
 ## Declared capabilities
 
 ### Inputs
-
-- `package-source-tree` (object): The set of authored package source files to review, including metadata.json, agent definitions, and flow definitions.
-
+- {"name":"package-source-tree","type":"object","description":"The set of authored package source files to review, including metadata.json, agent definitions, and flow definitions."}
 ### Outputs
-
-- `review-report` (object): Structured feedback report with per-file findings, overall readiness verdict, and prioritized revision requests for the creator.
+- {"name":"review-report","type":"object","description":"Structured feedback report with per-file findings, overall readiness verdict, and prioritized revision requests for the creator."}
 
 <!-- agents-repo package version: 1.0.0 -->

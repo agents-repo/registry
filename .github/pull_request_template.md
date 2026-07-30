@@ -78,11 +78,15 @@ If relevant, describe impact on:
 - [ ] IDE mirror drift check passes when mirror sources changed:
 
   ```bash
-  npm run package:sync-ide-targets -- --check \
-    --package agents-repo/agents-repo-package-creation --target all
+  npm run sync:ide-instructions -- --check
+  rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
+  npx agents-repo@1.13.0 install
+  DRIFT_PATHS="agents.json agents-lock.json .github/agents \
+    .cursor/skills .claude/agents .agents/skills"
+  git diff --exit-code -- $DRIFT_PATHS
+  test -z "$(git status --porcelain -- $DRIFT_PATHS)"
   ```
 
-  Plus per-package checks for other dogfooded packages as needed.
 - [ ] New or changed docs are deterministic and clear.
 - [ ] Matching issue template was used (or required sections were included
     manually when template application was not possible), and this PR follows

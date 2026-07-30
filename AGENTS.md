@@ -1,0 +1,262 @@
+<!-- Generated: .github/copilot-instructions.md. Run npm run sync:ide-instructions -->
+
+# Agents Registry — Project Guidelines
+
+## Project Purpose
+
+This is a spec-first, data-first open-source registry for agents and
+multi-agent flows across supported install targets. All structural rules are
+normative and encoded in `specs/`. Runtime logic is out of scope.
+
+## Specs Index
+
+All normative rules live in `specs/`. Defer to these before inventing rules.
+
+- `specs/package-format.md` — directory layout, naming rules, ZIP artifact rules
+- `specs/agent-format.md` — agent file structure, frontmatter fields, body sections
+- `specs/flow-format.md` — flow file structure, agent references
+- `specs/metadata-schema.md` — `metadata.json` schema for package, agent, and flow
+- `specs/manifest-schema.md` — `versions/manifest.json` schema and SHA-256 rules
+- `specs/versioning-rules.md` — semver policy, immutability, deprecation
+
+## Critical Conventions
+
+- Agent and flow source files use the `.agent.md` extension (required by GitHub
+  Copilot)
+- Frontmatter `name` MUST equal the stem before `.agent.md` (e.g. `name: planner`
+  for `planner.agent.md`)
+- IDs are lowercase kebab-case: `^[a-z0-9]+(?:-[a-z0-9]+)*$`
+- ZIP version names have no `v` prefix: `1.0.0.zip` not `v1.0.0.zip`
+- Spec text uses RFC 2119 keywords: MUST, MUST NOT, SHOULD, SHOULD NOT, MAY
+
+## Change Propagation and Consistency Gate
+
+When a change updates definitions, normative rules, schema fields, file
+locations, naming rules, artifact semantics, or version semantics, the agent
+MUST run a cross-file consistency pass before task completion.
+
+Minimum required dependency checks:
+
+- `specs/package-format.md`, `specs/manifest-schema.md`, and
+  `specs/versioning-rules.md` for layout, artifact, and version consistency
+- `specs/agent-format.md`, `specs/flow-format.md`, and
+  `specs/metadata-schema.md` for duplicated field contracts and
+  name/version/license alignment
+- `.github/CONTRIBUTING.md`, `.github/pull_request_template.md`,
+  `.github/ISSUE_TEMPLATE/`, and `README.md` for workflow and documentation
+  consistency
+- any changed `metadata.json` and `versions/manifest.json` examples
+
+The agent MUST either update each inconsistent dependent surface or explicitly
+state why no update is required for that surface.
+
+A spec-definition task MUST NOT be considered complete until the final response
+lists which dependent files were checked and what changed (or why no change was
+needed).
+
+The package submission issue template is out of scope unless the changed rule
+directly modifies package submission requirements.
+
+## Lint
+
+Run `npm run lint:md` before committing. If local git hooks are installed, the
+pre-commit hook may also run this check.
+
+## Runtime Environment
+
+Agent tasks in this repository MUST use the pinned runtime below to avoid
+tooling drift.
+
+- Node.js: `24.15.0` (see `.nvmrc`)
+- npm: `12.0.1` (see `package.json` `packageManager`)
+
+Before running package or review tasks, execute:
+
+1. `corepack enable npm`
+2. `corepack prepare npm@12.0.1 --activate`
+3. `npm ci`
+4. `npm run env:check`
+
+For review tasks, run:
+
+1. `npm run lint:md`
+2. `npm run lint:sonar`
+3. `npm run test:run`
+4. `npm run typecheck`
+5. `npm run package:scan-zips`
+
+When adding or updating tests, follow `tests/README.md` for test layout,
+path mirroring conventions, and scope guidance.
+
+For package tasks, run in order:
+
+1. `npm run package:validate -- --package <namespace>/<package-id>`
+2. `npm run package:build -- --package <namespace>/<package-id>`
+3. `npm run package:validate-artifacts -- --package <namespace>/<package-id>`
+   `--version <version>`
+
+## Contribution
+
+Open an issue using `.github/ISSUE_TEMPLATE/` forms before any change.
+See `.github/CONTRIBUTING.md` for the full workflow.
+
+## Release Workflow
+
+Pushes to `main` run release validation checks and then execute
+`semantic-release`. A release is published only when commit history includes
+releasable changes per the commit-to-version mapping below.
+
+Commit-to-version mapping for automated releases. Custom release rules in
+`.releaserc.json` map all `feat(package)` and `fix(package)` commits—including
+`!` and `BREAKING CHANGE:` footers—to `PATCH`. Platform breaking changes use
+commit-analyzer built-in default rules when no custom rule matches:
+
+- `type!:` or `BREAKING CHANGE:` (without `package` scope) => `MAJOR`
+- `feat(package):` and `feat(package)!:` => `PATCH`
+  (catalog addition or new package version)
+- `fix(package):` and `fix(package)!:` => `PATCH` (package correction)
+- `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
+- `fix:`, `perf:`, and `revert:` with any scope except `package` => `PATCH`
+
+Registry Git tags version the catalog snapshot; package `manifest.json` `latest`
+values version individual package compatibility. All package squash-merge titles
+publish a registry **PATCH** so `v2.x` consumers receive updates. The `!` on
+package commits emphasizes breaking package content in release notes only.
+
+Package submission PRs MUST squash-merge with `feat(package):` or
+`fix(package):` titles (or the optional `feat(package)!:` / `fix(package)!:`
+form) so registry release tags are published. CI enforces the PR title in
+`pr-package-validation` via `package:validate`; local runs do not unless CI
+env vars are set. See `.github/CONTRIBUTING.md` for the full squash-merge rule.
+
+## Commit Message Convention
+
+Before creating a commit, the agent MUST inspect staged changes and determine
+the dominant change intent.
+
+The agent MUST use a commit category prefix that matches that intent from this
+set: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`,
+`ci`, `chore`, `revert`.
+
+Commit messages MUST follow this format:
+
+- `category(subset): summary`
+
+Where `subset` is optional and SHOULD be used when it improves clarity (for
+example, `docs(specs): clarify manifest checksum wording`).
+
+Breaking changes are not limited to `feat`; any category in the allowed set MAY
+be breaking when the staged changes introduce incompatible behavior.
+
+For breaking commits, `!` MUST appear immediately after `category` or
+`category(subset)` in the header (for example, `fix!: ...` or
+`refactor(parser)!: ...`). Breaking commits SHOULD include a `BREAKING CHANGE:`
+footer that describes migration impact.
+
+The agent MUST NOT use a category that does not match the dominant intent of
+the staged changes.
+
+If staged changes contain mixed intents, the agent SHOULD split them into
+separate commits by intent. If splitting is not practical, the agent MUST use
+the primary intent category and explicitly explain that choice in the handoff
+or PR summary.
+
+## Required Workflow (Task Start)
+
+Before implementation, agents MUST:
+
+1. Open a tracking issue (matching issue form when available).
+2. Create a branch named `<prefix>/<issue-number>-<slug>`.
+3. Push the branch and open a draft pull request targeting `main` before
+   implementation commits. Pull requests MUST be created as drafts
+   (`gh pr create --draft`). In `## Related Issues`, include
+   `Closes #<issue-number>` for standard tasks, or follow the security-advisory
+   format defined in the **Workflow exceptions** section of
+   `.github/CONTRIBUTING.md` when applicable.
+   GitHub cannot open a PR when head and base are identical; push a scaffolding
+   commit on the task branch first if needed (see `.github/CONTRIBUTING.md`).
+
+Agents MAY push additional commits to the task branch when requested.
+Agents MUST NOT push to `main`, merge PRs into `main`, or mark pull requests
+ready for review.
+After validation, the developer manually marks the pull request ready for
+review; agents MUST NOT perform that step.
+Agents MUST complete requested implementation work on the task branch, then
+hand off. Ready-for-review and merge are for a human maintainer.
+
+## Pre-ready handoff
+
+Before handoff on a task branch (while the pull request remains a **draft**),
+agents MUST follow the organization
+[Pre-ready agent handoff](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pre-ready-agent-handoff)
+norm and the validation commands in **Runtime Environment**, **For review
+tasks**, and **For package tasks** (when the change touches `packages/`) above.
+
+Record validation evidence in the draft PR description. Agents MUST NOT mark pull
+requests ready for review.
+
+Task start in this organization authorizes workflow scaffolding (issue,
+branch, draft PR) even when generic tooling rules defer commits until
+requested. Repo-level agent instructions govern this workspace and supersede
+generic commit or pull request timing rules for workflow setup steps.
+
+## Default Branch Integration (Agents)
+
+- AI agents and coding assistants MUST NOT merge pull requests into `main`
+  (including `gh pr merge`, squash/rebase merge, or local `git merge` followed
+  by push).
+- AI agents MUST NOT push commits directly to `main`.
+- Integration to `main` is a human-only, manual step performed by maintainers
+  after review. All contributors MUST deliver changes to `main` only through
+  merged pull requests.
+- Agents MUST complete requested implementation work on the task branch, then
+  hand off and state that merge is for a human maintainer.
+
+## GitHub Communication Method (gh CLI Preferred)
+
+For GitHub communication in this repository, agents and contributors SHOULD use
+`gh` CLI as the preferred interface for issue and pull request operations.
+
+Preferred command patterns:
+
+- view issue context: `gh issue view <number> --repo agents-repo/registry`
+- update issue title/body:
+  `gh issue edit <number> --repo agents-repo/registry --title "..." \
+  --body-file <file>`
+- create issue:
+  `gh issue create --repo agents-repo/registry --title "..." \
+  --body-file <file>`
+- create draft PR (MUST use `--draft`):
+  `gh pr create --repo agents-repo/registry --draft --title "..." \
+  --body-file <file>`
+- inspect PR status:
+  `gh pr view <number> --repo agents-repo/registry --json state,url,title`
+
+For long issue or PR bodies, agents MUST prefer `--body-file` over inline
+quoted text to avoid shell escaping and truncation issues.
+
+If `gh` is unavailable in a task environment, agents MAY use the available
+tooling path, but MUST explicitly note that limitation in the handoff summary.
+
+## Issue and PR Template Enforcement
+
+When opening tracking issues, the agent MUST use the issue form under
+`.github/ISSUE_TEMPLATE/` that matches the task type:
+
+- bug or inconsistency: `.github/ISSUE_TEMPLATE/bug-inconsistency.yml`
+- spec change: `.github/ISSUE_TEMPLATE/spec-change.yml`
+- feature proposal: `.github/ISSUE_TEMPLATE/feature-proposal.yml`
+- task or chore: `.github/ISSUE_TEMPLATE/task-chore.yml`
+- package submission: `.github/ISSUE_TEMPLATE/package-submission.yml`
+- package correction: `.github/ISSUE_TEMPLATE/package-correction.yml`
+
+When opening a pull request, the agent MUST follow
+`.github/pull_request_template.md`.
+
+The agent MUST report template usage in its final PR handoff summary,
+including which issue form was used and confirmation that the PR body
+follows `.github/pull_request_template.md`.
+
+If the available tool path cannot programmatically apply a template, the
+agent MUST explicitly state that limitation and MUST include all required
+sections from the intended template in the issue or PR body.

@@ -67,11 +67,8 @@ confirmation before implementation begins.
 ## Declared capabilities
 
 ### Inputs
-
-- `user-intent` (string): A free-form description of what the user wants the package to do or contain.
-
+- {"name":"user-intent","type":"string","description":"A free-form description of what the user wants the package to do or contain."}
 ### Outputs
-
-- `package-blueprint` (object): Structured blueprint with namespace, package-id, qualified package ref, scaffold arguments, definition plan, metadata values, and open questions.
+- {"name":"package-blueprint","type":"object","description":"Structured blueprint with namespace, package-id, qualified package ref, scaffold arguments, definition plan, metadata values, and open questions."}
 
 <!-- agents-repo package version: 1.0.0 -->

@@ -47,7 +47,7 @@ function main(): void {
     return;
   }
 
-  console.log('\nCopilot Agents Registry - Package Create\n');
+  console.log('\nAgents Registry - Package Create\n');
 
   try {
     const { repoRoot } = resolveScriptPaths(import.meta.url);
