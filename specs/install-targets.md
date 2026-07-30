@@ -10,14 +10,15 @@ interpreted as described in RFC 2119.
 
 ## Install Target IDs
 
-| ID | Consumer | ZIP layout root |
+| ID | Consumer | ZIP layout / on-disk path |
 | --- | --- | --- |
 | `github-copilot` | GitHub Copilot | `agents/<id>.agent.md` in ZIP → `.github/agents/<id>.agent.md` on disk (flows flattened) |
-| `claude-code` | Claude Code | `.claude/agents/<id>.md` |
-| `cursor` | Cursor | `.cursor/skills/<id>/SKILL.md` |
-| `openai-codex` | OpenAI Codex | `.agents/skills/<id>/SKILL.md` |
+| `claude-code` | Claude Code | `.claude/agents/<id>.md` (ZIP entry equals on-disk path) |
+| `cursor` | Cursor | `.cursor/skills/<id>/SKILL.md` (ZIP entry equals on-disk path) |
+| `openai-codex` | OpenAI Codex | `.agents/skills/<id>/SKILL.md` (ZIP entry equals on-disk path) |
 
 Tooling MUST treat these IDs as the canonical install target identifiers.
+Full ZIP-to-disk mapping rules are defined in [Extract mapping](#extract-mapping).
 
 ## Artifact Naming
 
@@ -128,11 +129,11 @@ Tooling MUST reject unsafe archive entry paths (for example absolute paths,
 
 ## Uninstall semantics
 
-CLI `remove` (and compatible tooling) MUST uninstall packages by deleting
-the same on-disk paths that [extract mapping](#extract-mapping) creates for
-each install target. Path mapping is the inverse of extract: use the same ZIP
-entry rules to compute relative paths, then delete those files under the
-extract root.
+Compatible tooling (including CLI `remove`) MUST uninstall packages by
+deleting the same on-disk paths that [extract mapping](#extract-mapping)
+creates for each install target. Path mapping is the inverse of extract: use
+the same ZIP entry rules to compute relative paths, then delete those files
+under the extract root.
 
 | Install target ID | Extract root | Prune boundary (MUST NOT remove) |
 | --- | --- | --- |
@@ -144,6 +145,7 @@ extract root.
 The prune boundary is the shared directory for that target that tooling
 MUST NOT remove (and MUST NOT remove any parent of that directory). Empty
 per-package directories under the boundary MAY be removed.
+
 Tooling MUST derive delete paths by listing file entries in the **locked**
 target artifact ZIP (not from `agents.json` ranges). After deleting files,
 tooling MAY remove empty parent directories above the deleted file but MUST
