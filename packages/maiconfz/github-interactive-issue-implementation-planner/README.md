@@ -65,16 +65,19 @@ Optional: invoke individual agents when you need a single step only.
 
 ## Install
 
-Install from the registry for your IDE target:
+Install with the [agents-repo CLI](https://github.com/agents-repo/cli):
 
-| Target | Artifact |
-| --- | --- |
-| GitHub Copilot | `1.1.0-github-copilot.zip` |
-| Cursor | `1.1.0-cursor.zip` |
-| Claude Code | `1.1.0-claude-code.zip` |
-| OpenAI Codex | `1.1.0-openai-codex.zip` |
+```bash
+npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
+npx agents-repo@1.13.0 install maiconfz/github-interactive-issue-implementation-planner
+```
 
-Extract the ZIP per your target layout.
+Commit `agents.json`, `agents-lock.json`, and extracted paths after install.
+GitHub Copilot installs agents and flows under `.github/agents/`; Cursor
+installs skills under `.cursor/skills/`.
+
+This README is catalog documentation on `main`; installed content comes from
+the versioned deployment ZIPs in your `agents-lock.json`.
 
 ## Usage
 

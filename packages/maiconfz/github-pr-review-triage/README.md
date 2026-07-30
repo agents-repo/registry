@@ -28,7 +28,12 @@ flowchart LR
 
 ## Install
 
-Install from the registry for your IDE target:
+Install with the [agents-repo CLI](https://github.com/agents-repo/cli):
+
+```bash
+npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
+npx agents-repo@1.13.0 install maiconfz/github-pr-review-triage
+```
 
 | Target | Artifact |
 | --- | --- |
@@ -37,8 +42,12 @@ Install from the registry for your IDE target:
 | Claude Code | `1.1.0-claude-code.zip` |
 | OpenAI Codex | `1.1.0-openai-codex.zip` |
 
-Extract the ZIP into the project root (or `.github/` for Copilot per target
-layout). Cursor installs to `.cursor/skills/github-pr-review-triage/SKILL.md`.
+Commit `agents.json`, `agents-lock.json`, and extracted paths after install.
+GitHub Copilot installs to `.github/agents/`; Cursor installs to
+`.cursor/skills/github-pr-review-triage/SKILL.md`.
+
+This README is catalog documentation on `main`; installed content comes from
+the versioned deployment ZIPs in your `agents-lock.json`.
 
 ## Usage
 
