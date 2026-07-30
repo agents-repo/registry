@@ -11,6 +11,19 @@ CLI (`gh`) to fetch unresolved review threads and Copilot review summaries
 permitted, then reply and resolve threads or acknowledge summaries on the PR
 conversation.
 
+## Workflow
+
+```mermaid
+flowchart LR
+  fetch[Fetch_feedback]
+  triage[Triage_outcomes]
+  fix[Apply_fixes]
+  ship[Validate_and_push]
+  close[Reply_and_close]
+
+  fetch --> triage --> fix --> ship --> close
+```
+
 ## Prerequisites
 
 - [GitHub CLI](https://cli.github.com/) authenticated for the target repository
@@ -66,19 +79,6 @@ Invoke the **`github-pr-review-triage`** agent when you need to:
 
 Summary acknowledgments appear on the PR conversation timeline (not under the
 review card).
-
-### Workflow
-
-```mermaid
-flowchart LR
-  fetch[Fetch_feedback]
-  triage[Triage_outcomes]
-  fix[Apply_fixes]
-  ship[Validate_and_push]
-  close[Reply_and_close]
-
-  fetch --> triage --> fix --> ship --> close
-```
 
 ## Package contents
 

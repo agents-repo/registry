@@ -10,6 +10,16 @@ ask-first implementation plan, then refine it for gaps and inconsistencies.
 **Planning only** — no code changes unless you explicitly request implementation
 after the plan is ready.
 
+## Workflow
+
+```mermaid
+flowchart LR
+  intake[github-issue-intake]
+  plan[issue-implementation-planner]
+  refine[implementation-plan-refiner]
+  intake --> plan --> refine
+```
+
 ## Prerequisites
 
 - [GitHub CLI](https://cli.github.com/) authenticated for the target repository
@@ -63,16 +73,6 @@ Optional: invoke individual agents when you need a single step only.
 
 - `refined-implementation-plan` — final markdown plan after refinement
 - `open-questions` — remaining questions (blocking items first when present)
-
-### Workflow
-
-```mermaid
-flowchart LR
-  intake[github-issue-intake]
-  plan[issue-implementation-planner]
-  refine[implementation-plan-refiner]
-  intake --> plan --> refine
-```
 
 ### After planning
 
