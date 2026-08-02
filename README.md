@@ -414,10 +414,18 @@ Primary spec documents:
 
 ## Related Repositories
 
-This project is part of a two-repository setup:
+This repository is the catalog **source of truth**. It is one part of the
+agents-repo platform. For diagrams and end-to-end flows (publish, browse,
+install), see the organization [Ecosystem
+overview](https://github.com/agents-repo/.github/blob/main/docs/ecosystem.md).
 
-- `registry`: core source of truth (this repository)
-- `webapp`: frontend that reads data from the registry
+| Repository | Role |
+| --- | --- |
+| [registry](https://github.com/agents-repo/registry) | Specs, packages, and validation (this repository) |
+| [registry-proxy](https://github.com/agents-repo/registry-proxy) | Cached read-only access to registry files |
+| [webapp](https://github.com/agents-repo/webapp) | Browse, search, and download UI |
+| [cli](https://github.com/agents-repo/cli) | `npx agents-repo` installer |
+| [.github](https://github.com/agents-repo/.github) | Organization policies and org profile |
 
 ## License
 
