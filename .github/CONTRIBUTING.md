@@ -312,7 +312,8 @@ Bootstrap only when `agents.json` is missing:
 npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
 ```
 
-Use the pinned npm scripts (same CLI version as CI):
+Use the pinned npm scripts for local bulk install and update (pinned CLI
+release; pr-baseline CI uses `agents-repo@latest` for lock-pinned `ci` only):
 
 ```bash
 npm run agents:install   # bulk sync from agents.json
@@ -330,7 +331,9 @@ Dogfooded packages:
 - `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
 
 Local pre-commit checks project guideline mirrors (`sync:ide-instructions
---check`). CI also verifies registry package installs match the lockfile.
+--check`). CI runs `npx agents-repo@latest ci` to reinstall registry packages
+from the committed lock and fail on extract or lock drift (not semver-max
+`install`).
 
 ### Submitted package checklist
 
