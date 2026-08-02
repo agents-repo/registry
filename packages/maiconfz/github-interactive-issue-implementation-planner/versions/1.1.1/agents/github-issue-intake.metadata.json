@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "github-issue-intake",
+  "description": "Resolve a GitHub issue number or URL, fetch issue and comment context via gh, and emit a canonical issue brief. Use when starting issue-driven implementation planning. Ask when the repository or issue reference is ambiguous.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 3,
+    "band": "low"
+  },
+  "tools": [
+    "github"
+  ],
+  "inputs": [
+    {
+      "name": "issue-reference",
+      "type": "string",
+      "description": "Issue number or full GitHub issue URL."
+    },
+    {
+      "name": "repository",
+      "type": "string",
+      "description": "Optional target repository as owner/name when not inferable."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "issue-brief",
+      "type": "object",
+      "description": "Canonical issue context for downstream planning agents."
+    }
+  ]
+}
