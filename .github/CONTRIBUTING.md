@@ -312,7 +312,8 @@ Bootstrap only when `agents.json` is missing:
 npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
 ```
 
-Use the pinned npm scripts (same CLI version as CI):
+Use the pinned npm scripts for local bulk install and update (pinned CLI
+release; pr-baseline CI uses `agents-repo@latest` for lock-pinned `ci` only):
 
 ```bash
 npm run agents:install   # bulk sync from agents.json
