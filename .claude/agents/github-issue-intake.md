@@ -5,7 +5,7 @@ description: >-
   and emit a canonical issue brief. Use when starting issue-driven
   implementation planning. Ask when the repository or issue reference is
   ambiguous.
-version: 1.1.0
+version: 1.1.1
 tools:
   - github
 inputs:
@@ -58,6 +58,10 @@ MUST NOT call `gh` to reload the issue.
 ## Constraints
 
 - `gh` CLI MUST be authenticated for the target repository (`gh auth status`).
+- MUST verify the target is an issue (not a pull request) before fetching issue
+  fields — for example via `gh api repos/owner/name/issues/<n>` and checking
+  that `pull_request` is absent. If the reference is a PR, stop and ask for a
+  real issue number or URL.
 - MUST NOT implement code, commit, push, or open pull requests.
 - MUST NOT call `gh` on behalf of downstream planner or refiner agents.
 - When project docs exist (`CONTRIBUTING.md`, agent instruction files such as
@@ -77,6 +81,14 @@ MUST NOT call `gh` to reload the issue.
 
 ## Suggested gh commands
 
+- Verify issue (not PR) before intake. Stop if `pull_request` is present:
+
+  ```bash
+  gh api repos/owner/name/issues/<n> --jq \
+    'if .pull_request then "pull_request" else "issue" end'
+  ```
+
+  If the result is `pull_request`, ask the user for a real issue number or URL.
 - Issue view:
   `gh issue view <n> --repo owner/name --json number,title,body,state,labels,author,assignees,milestone,url`
 - Comments:

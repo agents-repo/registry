@@ -79,4 +79,4 @@ start code implementation unless the user explicitly requests execution.
 - issue-implementation-planner
 - implementation-plan-refiner
 
-<!-- agents-repo package version: 1.1.0 -->
+<!-- agents-repo package version: 1.1.1 -->

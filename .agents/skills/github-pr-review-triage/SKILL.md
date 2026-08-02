@@ -57,6 +57,12 @@ fetch → triage → fix → validate/commit/push → reply/(resolve|acknowledge
   Phase 1).
 - `gh pr comment` posts to the PR timeline, not under the review card — that
   is acceptable for summary acknowledgment.
+- MUST write reply and acknowledgment bodies to a file and pass them with
+  `--body-file` (or GraphQL body via `jq --rawfile` / `--input -`). MUST NOT
+  interpolate GitHub-sourced review text into shell-quoted `--body` or
+  `-f body="..."`.
+- On GraphQL list queries, omit `-f after` on the first page (do not pass an
+  empty string). On later pages, pass `-f after` with `pageInfo.endCursor`.
 - Do not merge pull requests, push to the default branch, or mark a PR ready
   unless project policy explicitly allows agents to do so.
 - When project docs exist (`CONTRIBUTING.md`, agent instruction files,
@@ -106,6 +112,8 @@ first comment body, author login.
 
 #### List unresolved threads
 
+First page — **omit** `-f after` (GitHub rejects an empty `after` cursor):
+
 ```bash
 gh api graphql -f query='
   query($owner: String!, $name: String!, $number: Int!, $after: String) {
@@ -125,18 +133,27 @@ gh api graphql -f query='
         }
       }
     }
-  }' -f owner=OWNER -f name=REPO -F number=PR -f after="$CURSOR" \
-  --jq '.data.repository.pullRequest.reviewThreads.nodes[]
-    | select(.isResolved==false)
-    | {kind: "thread", id, path, line, author: .comments.nodes[0].author.login,
-       body: .comments.nodes[0].body[0:200]}'
+  }' -f owner=OWNER -f name=REPO -F number=PR \
+  --jq '{
+    pageInfo: .data.repository.pullRequest.reviewThreads.pageInfo,
+    nodes: [
+      .data.repository.pullRequest.reviewThreads.nodes[]
+      | select(.isResolved==false)
+      | {kind: "thread", id, path, line,
+         author: .comments.nodes[0].author.login,
+         body: .comments.nodes[0].body[0:200]}
+    ]
+  }'
 ```
+
+Later pages — pass `-f after="$CURSOR"` where `$CURSOR` is
+`pageInfo.endCursor` from the prior response. Keep `pageInfo` in the jq
+output so pagination can continue after filtering unresolved nodes.
 
 Paginate while `pageInfo.hasNextPage` is `true` — do not gate on unresolved
 count. Each page returns up to 100 threads (resolved and unresolved mixed);
-filter unresolved per page and accumulate results. Pass `-f after="$CURSOR"`
-with `pageInfo.endCursor` from the prior response (use an empty string for the
-first page). Stop when `hasNextPage` is `false`.
+filter unresolved per page and accumulate results. Stop when `hasNextPage` is
+`false`.
 
 #### Count unresolved threads
 
@@ -159,6 +176,7 @@ from Step 0.
 
 ```bash
 HEAD=$(gh pr view {n} --repo {owner}/{repo} --json headRefOid --jq .headRefOid)
+# First page: omit -f after. Later pages: -f after="$CURSOR" from pageInfo.endCursor.
 gh api graphql -f query='
   query($owner: String!, $name: String!, $number: Int!, $after: String) {
     repository(owner: $owner, name: $name) {
@@ -177,23 +195,33 @@ gh api graphql -f query='
         }
       }
     }
-  }' -f owner=OWNER -f name=REPO -F number=PR -f after="$CURSOR" \
-  | jq --arg head "$HEAD" '.data.repository.pullRequest.reviews.nodes[]
-    | select(.author.login == "copilot-pull-request-reviewer[bot]")
-    | select(.body != null and .body != "")
-    | select(.comments.totalCount == 0)
-    | select(.commit.oid == $head)
-    | {kind: "review_summary", review_id: .databaseId, node_id: .id,
-       body: .body[0:500], submitted_at: .submittedAt, commit_id: .commit.oid}'
+  }' -f owner=OWNER -f name=REPO -F number=PR \
+  | jq --arg head "$HEAD" '{
+      pageInfo: .data.repository.pullRequest.reviews.pageInfo,
+      nodes: [
+        .data.repository.pullRequest.reviews.nodes[]
+        | select(.author.login == "copilot-pull-request-reviewer[bot]")
+        | select(.body != null and .body != "")
+        | select(.comments.totalCount == 0)
+        | select(.commit.oid == $head)
+        | {kind: "review_summary", review_id: .databaseId, node_id: .id,
+           body: .body[0:500], submitted_at: .submittedAt, commit_id: .commit.oid}
+      ]
+    }'
 ```
 
 Paginate reviews while `pageInfo.hasNextPage` is `true`, passing
-`pageInfo.endCursor` as `$after`. Stop when `hasNextPage` is `false`.
+`pageInfo.endCursor` as `$after` on later pages only. Stop when `hasNextPage`
+is `false`.
 
 **Idempotency:** exclude summaries already acknowledged. Before triage, list PR
-issue comments (`gh api repos/{owner}/{repo}/issues/{n}/comments`) and skip
-any summary whose `databaseId` appears in a comment posted after `submittedAt`
-with body containing `Re: Copilot review (` and that id.
+issue comments with pagination and skip any summary whose `databaseId` appears
+in a comment posted after `submittedAt` with body containing
+`Re: Copilot review (` and that id:
+
+```bash
+gh api --paginate repos/{owner}/{repo}/issues/{n}/comments
+```
 
 Do **not** fetch PR issue/timeline comments as triage items — only for
 idempotency checks.
@@ -281,16 +309,20 @@ call:
 
 #### Reply to a thread
 
+Write the reply body to a temp file first (never interpolate review text into
+shell-quoted `-f body=`):
+
 ```bash
-gh api graphql -f query='
-  mutation($threadId: ID!, $body: String!) {
+# REPLY_FILE contains the final reply text (written by the agent/tools)
+jq -n --rawfile body "$REPLY_FILE" --arg threadId "PRRT_..." \
+  --arg q 'mutation($threadId: ID!, $body: String!) {
     addPullRequestReviewThreadReply(input: {
       pullRequestReviewThreadId: $threadId
       body: $body
-    }) {
-      comment { id }
-    }
-  }' -f threadId="PRRT_..." -f body="Fixed in abc1234: summary."
+    }) { comment { id } }
+  }' \
+  '{query: $q, variables: {threadId: $threadId, body: $body}}' \
+| gh api graphql --input -
 ```
 
 #### Resolve a thread
@@ -310,12 +342,17 @@ thread IDs (`PRRT_...`).
 
 ### Review summaries
 
-Acknowledge on the PR conversation (no resolve API):
+Acknowledge on the PR conversation (no resolve API). Write the acknowledgment
+to a file, then:
 
 ```bash
-gh pr comment {n} --repo {owner}/{repo} \
-  --body "Re: Copilot review (${databaseId}): Fixed in {sha}: {summary}."
+gh pr comment {n} --repo {owner}/{repo} --body-file "$REPLY_FILE"
 ```
+
+Example acknowledgment text (contents of `$REPLY_FILE`, not an inline shell
+string):
+
+`Re: Copilot review (${databaseId}): Fixed in {sha}: {summary}.`
 
 Use the review `databaseId` from Phase 1. **Never** call `resolveReviewThread`
 for summaries.
@@ -391,4 +428,4 @@ Per repository: `fix → validate → commit → push → threads and summaries`
 - `triage-table` (string): Markdown table with kind (thread or review_summary), path, line, author, outcome, and rationale.
 - `handoff-summary` (string): Summary with PR URL, commit SHA, threads resolved count, summaries acknowledged count, and notes.
 
-<!-- agents-repo package version: 1.1.0 -->
+<!-- agents-repo package version: 1.1.1 -->
