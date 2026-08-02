@@ -23,10 +23,10 @@ jobs:
       - name: Check IDE instruction mirrors
         run: npm run sync:ide-instructions -- --check
 
-      - name: Verify registry package installs match lockfile
+      - name: Verify registry package installs from lock
         run: |
           rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
-          npx agents-repo@1.13.0 install
+          npx agents-repo@latest ci
           DRIFT_PATHS="agents.json agents-lock.json .github/agents .cursor/skills .claude/agents .agents/skills"
           git diff --exit-code -- $DRIFT_PATHS
           test -z "$(git status --porcelain -- $DRIFT_PATHS)"

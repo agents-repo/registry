@@ -330,7 +330,9 @@ Dogfooded packages:
 - `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
 
 Local pre-commit checks project guideline mirrors (`sync:ide-instructions
---check`). CI also verifies registry package installs match the lockfile.
+--check`). CI runs `npx agents-repo@latest ci` to reinstall registry packages
+from the committed lock and fail on extract or lock drift (not semver-max
+`install`).
 
 ### Submitted package checklist
 
