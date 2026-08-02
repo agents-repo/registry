@@ -66,4 +66,4 @@ list, or empty string when none).
 - `implementation-plan` (string): Markdown implementation plan for the issue.
 - `blocking-questions` (string): Markdown list of blocking questions; empty when none.
 
-<!-- agents-repo package version: 1.1.0 -->
+<!-- agents-repo package version: 1.1.1 -->

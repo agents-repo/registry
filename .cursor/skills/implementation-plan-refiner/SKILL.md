@@ -59,4 +59,4 @@ issue or re-fetch GitHub data.
 - `refined-implementation-plan` (string): Revised markdown implementation plan.
 - `open-questions` (string): Markdown list of open questions; blocking items first.
 
-<!-- agents-repo package version: 1.1.0 -->
+<!-- agents-repo package version: 1.1.1 -->

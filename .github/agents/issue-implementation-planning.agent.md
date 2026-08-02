@@ -4,7 +4,7 @@ description: >-
   Orchestrates GitHub issue intake, ask-first implementation planning, and plan
   refinement. Use with an issue number or URL. Planning only unless the user
   explicitly requests implementation.
-version: 1.1.0
+version: 1.1.1
 license: MIT
 agents:
   - github-issue-intake
