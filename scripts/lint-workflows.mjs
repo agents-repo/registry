@@ -179,13 +179,14 @@ function bootstrapFromRelease() {
       if (asset.endsWith('.tar.gz')) {
         execTrusted('tar', ['-xzf', archivePath, '-C', stagingDir], { stdio: 'inherit' });
       } else if (asset.endsWith('.zip')) {
-        execTrusted('unzip', ['-o', archivePath, '-d', stagingDir], { stdio: 'inherit' });
+        // Windows release assets are .zip; tar.exe is bundled with Windows 10+.
+        execTrusted('tar', ['-xf', archivePath, '-C', stagingDir], { stdio: 'inherit' });
       } else {
         throw new Error(`Unknown archive type: ${asset}`);
       }
     } catch (error) {
       const detail = error instanceof Error ? error.message : String(error);
-      throw new Error(`Failed to extract actionlint (requires tar or unzip). ${detail}`, {
+      throw new Error(`Failed to extract actionlint (requires tar). ${detail}`, {
         cause: error,
       });
     }
