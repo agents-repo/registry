@@ -27,9 +27,16 @@ jobs:
         run: |
           rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
           npx agents-repo@latest ci
-          DRIFT_PATHS="agents.json agents-lock.json .github/agents .cursor/skills .claude/agents .agents/skills"
-          git diff --exit-code -- $DRIFT_PATHS
-          test -z "$(git status --porcelain -- $DRIFT_PATHS)"
+          drift_paths=(
+            agents.json
+            agents-lock.json
+            .github/agents
+            .cursor/skills
+            .claude/agents
+            .agents/skills
+          )
+          git diff --exit-code -- "${drift_paths[@]}"
+          test -z "$(git status --porcelain -- "${drift_paths[@]}")"
 
       - name: Run unit tests
         run: npm run test:run

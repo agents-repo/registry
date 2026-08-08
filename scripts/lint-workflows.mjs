@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable security/detect-non-literal-fs-filename -- cache paths from pinned ACTIONLINT_VERSION and platform */
-/* eslint-disable sonarjs/no-os-command-from-path -- actionlint from PATH when version matches pin, else explicit release URL */
+/* eslint-disable sonarjs/no-os-command-from-path -- PATH actionlint only as bootstrap fallback */
 /* eslint-disable sonarjs/super-linear-regex -- version token parsed from actionlint -version stdout */
 /* eslint-disable sonarjs/file-permissions -- chmod required for bootstrapped actionlint binary */
 /* eslint-disable sonarjs/cognitive-complexity -- platform-specific release asset selection */
@@ -11,10 +11,24 @@ import { fileURLToPath } from 'node:url';
 
 /** Pinned actionlint release — keep in sync across agents-repo org repositories. */
 const ACTIONLINT_VERSION = '1.7.12';
+const BOOTSTRAP_LOCK_WAIT_MS = 120_000;
+const BOOTSTRAP_LOCK_POLL_MS = 200;
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const WORKFLOWS_DIR = path.join(REPO_ROOT, '.github', 'workflows');
 const CACHE_ROOT = path.join(REPO_ROOT, '.cache', 'actionlint');
+const BOOTSTRAP_LOCK_FILE = path.join(CACHE_ROOT, '.bootstrap.lock');
+
+function sleepSync(ms) {
+  const view = new Int32Array(new SharedArrayBuffer(4));
+  Atomics.wait(view, 0, 0, ms);
+}
+
+function cachedBinaryPath() {
+  const versionDir = path.join(CACHE_ROOT, ACTIONLINT_VERSION);
+  const binaryName = process.platform === 'win32' ? 'actionlint.exe' : 'actionlint';
+  return path.join(versionDir, binaryName);
+}
 
 function readPathActionlintVersion() {
   try {
@@ -51,30 +65,38 @@ function releaseAssetName() {
   );
 }
 
-function downloadAndExtract() {
+function bootstrapFromRelease() {
   const asset = releaseAssetName();
   const versionDir = path.join(CACHE_ROOT, ACTIONLINT_VERSION);
   const binaryName = process.platform === 'win32' ? 'actionlint.exe' : 'actionlint';
   const binaryPath = path.join(versionDir, binaryName);
 
-  if (fs.existsSync(binaryPath)) {
-    return binaryPath;
-  }
-
   fs.mkdirSync(versionDir, { recursive: true });
   const archivePath = path.join(versionDir, asset);
   const url = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${asset}`;
 
-  execFileSync('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
+  try {
+    execFileSync('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to download actionlint (requires curl). ${detail}`, { cause: error });
+  }
 
   const stagingDir = fs.mkdtempSync(path.join(CACHE_ROOT, '.staging-'));
   try {
-    if (asset.endsWith('.tar.gz')) {
-      execFileSync('tar', ['-xzf', archivePath, '-C', stagingDir], { stdio: 'inherit' });
-    } else if (asset.endsWith('.zip')) {
-      execFileSync('unzip', ['-o', archivePath, '-d', stagingDir], { stdio: 'inherit' });
-    } else {
-      throw new Error(`Unknown archive type: ${asset}`);
+    try {
+      if (asset.endsWith('.tar.gz')) {
+        execFileSync('tar', ['-xzf', archivePath, '-C', stagingDir], { stdio: 'inherit' });
+      } else if (asset.endsWith('.zip')) {
+        execFileSync('unzip', ['-o', archivePath, '-d', stagingDir], { stdio: 'inherit' });
+      } else {
+        throw new Error(`Unknown archive type: ${asset}`);
+      }
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to extract actionlint (requires tar or unzip). ${detail}`, {
+        cause: error,
+      });
     }
 
     fs.unlinkSync(archivePath);
@@ -96,19 +118,84 @@ function downloadAndExtract() {
   return binaryPath;
 }
 
-function resolveActionlintBinary() {
-  const pathVersion = readPathActionlintVersion();
-  if (pathVersion === ACTIONLINT_VERSION) {
-    return 'actionlint';
+function withBootstrapLock(install) {
+  const existing = cachedBinaryPath();
+  if (fs.existsSync(existing)) {
+    return existing;
   }
 
+  fs.mkdirSync(CACHE_ROOT, { recursive: true });
+  const deadline = Date.now() + BOOTSTRAP_LOCK_WAIT_MS;
+  let releaseLock = null;
+
+  while (Date.now() < deadline) {
+    const ready = cachedBinaryPath();
+    if (fs.existsSync(ready)) {
+      return ready;
+    }
+
+    try {
+      const fd = fs.openSync(BOOTSTRAP_LOCK_FILE, 'wx');
+      fs.closeSync(fd);
+      releaseLock = () => {
+        try {
+          fs.unlinkSync(BOOTSTRAP_LOCK_FILE);
+        } catch {
+          /* ignore stale lock cleanup */
+        }
+      };
+      break;
+    } catch (error) {
+      const code = error && typeof error === 'object' && 'code' in error ? error.code : undefined;
+      if (code !== 'EEXIST') {
+        throw error;
+      }
+      sleepSync(BOOTSTRAP_LOCK_POLL_MS);
+    }
+  }
+
+  if (!releaseLock) {
+    throw new Error('Timed out waiting for actionlint bootstrap lock');
+  }
+
+  try {
+    const ready = cachedBinaryPath();
+    if (fs.existsSync(ready)) {
+      return ready;
+    }
+    return install();
+  } finally {
+    releaseLock();
+  }
+}
+
+function downloadAndExtract() {
+  return withBootstrapLock(() => bootstrapFromRelease());
+}
+
+function resolveActionlintBinary() {
+  const cached = cachedBinaryPath();
+  if (fs.existsSync(cached)) {
+    return cached;
+  }
+
+  const pathVersion = readPathActionlintVersion();
   if (pathVersion && pathVersion !== ACTIONLINT_VERSION) {
     console.warn(
       `actionlint on PATH is ${pathVersion}; expected ${ACTIONLINT_VERSION}. Using cached bootstrap.`,
     );
   }
 
-  return downloadAndExtract();
+  try {
+    return downloadAndExtract();
+  } catch (error) {
+    if (pathVersion === ACTIONLINT_VERSION) {
+      const detail = error instanceof Error ? error.message : String(error);
+      console.warn(`actionlint bootstrap failed; using actionlint from PATH. ${detail}`);
+      return 'actionlint';
+    }
+    throw error;
+  }
 }
 
 function workflowsPresent() {
