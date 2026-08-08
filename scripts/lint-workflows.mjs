@@ -4,6 +4,7 @@
 /* eslint-disable sonarjs/super-linear-regex -- version token parsed from actionlint -version stdout */
 /* eslint-disable sonarjs/file-permissions -- chmod required for bootstrapped actionlint binary */
 /* eslint-disable sonarjs/cognitive-complexity -- platform-specific release asset selection */
+import { createHash } from 'node:crypto';
 import { execFileSync, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -28,6 +29,20 @@ function cachedBinaryPath() {
   const versionDir = path.join(CACHE_ROOT, ACTIONLINT_VERSION);
   const binaryName = process.platform === 'win32' ? 'actionlint.exe' : 'actionlint';
   return path.join(versionDir, binaryName);
+}
+
+function removeStaleBootstrapLockIfNeeded() {
+  if (!fs.existsSync(BOOTSTRAP_LOCK_FILE)) {
+    return;
+  }
+  try {
+    const { mtimeMs } = fs.statSync(BOOTSTRAP_LOCK_FILE);
+    if (Date.now() - mtimeMs > BOOTSTRAP_LOCK_WAIT_MS) {
+      fs.unlinkSync(BOOTSTRAP_LOCK_FILE);
+    }
+  } catch {
+    /* ignore lock stat/unlink errors */
+  }
 }
 
 function readPathActionlintVersion() {
@@ -65,6 +80,38 @@ function releaseAssetName() {
   );
 }
 
+function expectedArchiveSha256(asset) {
+  const checksumsUrl = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_checksums.txt`;
+  let checksumsBody;
+  try {
+    checksumsBody = execFileSync('curl', ['-fsSL', checksumsUrl], { encoding: 'utf8' });
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to download actionlint checksums (requires curl). ${detail}`, {
+      cause: error,
+    });
+  }
+
+  for (const line of checksumsBody.split('\n')) {
+    const match = line.match(/^([a-f0-9]{64})\s{2}(.+)$/);
+    if (match && match[2] === asset) {
+      return match[1];
+    }
+  }
+
+  throw new Error(`Checksum for ${asset} not found in actionlint release checksums file`);
+}
+
+function verifyArchiveSha256(archivePath, asset) {
+  const expected = expectedArchiveSha256(asset);
+  const actual = createHash('sha256').update(fs.readFileSync(archivePath)).digest('hex');
+  if (actual !== expected) {
+    throw new Error(
+      `actionlint archive checksum mismatch for ${asset}: expected ${expected}, got ${actual}`,
+    );
+  }
+}
+
 function bootstrapFromRelease() {
   const asset = releaseAssetName();
   const versionDir = path.join(CACHE_ROOT, ACTIONLINT_VERSION);
@@ -81,6 +128,8 @@ function bootstrapFromRelease() {
     const detail = error instanceof Error ? error.message : String(error);
     throw new Error(`Failed to download actionlint (requires curl). ${detail}`, { cause: error });
   }
+
+  verifyArchiveSha256(archivePath, asset);
 
   const stagingDir = fs.mkdtempSync(path.join(CACHE_ROOT, '.staging-'));
   try {
@@ -112,7 +161,7 @@ function bootstrapFromRelease() {
   }
 
   if (process.platform !== 'win32') {
-    fs.chmodSync(binaryPath, 0o755);
+    fs.chmodSync(binaryPath, 0o750);
   }
 
   return binaryPath;
@@ -134,6 +183,8 @@ function withBootstrapLock(install) {
       return ready;
     }
 
+    removeStaleBootstrapLockIfNeeded();
+
     try {
       const fd = fs.openSync(BOOTSTRAP_LOCK_FILE, 'wx');
       fs.closeSync(fd);
@@ -150,12 +201,16 @@ function withBootstrapLock(install) {
       if (code !== 'EEXIST') {
         throw error;
       }
+      removeStaleBootstrapLockIfNeeded();
       sleepSync(BOOTSTRAP_LOCK_POLL_MS);
     }
   }
 
   if (!releaseLock) {
-    throw new Error('Timed out waiting for actionlint bootstrap lock');
+    throw new Error(
+      `Timed out after ${BOOTSTRAP_LOCK_WAIT_MS}ms waiting for actionlint bootstrap lock at ${BOOTSTRAP_LOCK_FILE}. ` +
+        'If no other process is installing actionlint, remove the stale lock file and retry.',
+    );
   }
 
   try {
@@ -182,7 +237,7 @@ function resolveActionlintBinary() {
   const pathVersion = readPathActionlintVersion();
   if (pathVersion && pathVersion !== ACTIONLINT_VERSION) {
     console.warn(
-      `actionlint on PATH is ${pathVersion}; expected ${ACTIONLINT_VERSION}. Using cached bootstrap.`,
+      `actionlint on PATH is ${pathVersion}; expected ${ACTIONLINT_VERSION}. Bootstrapping pinned release instead.`,
     );
   }
 
@@ -205,6 +260,16 @@ function workflowsPresent() {
   return fs.readdirSync(WORKFLOWS_DIR).some((name) => name.endsWith('.yml') || name.endsWith('.yaml'));
 }
 
+function listWorkflowFiles() {
+  if (!fs.existsSync(WORKFLOWS_DIR)) {
+    return [];
+  }
+  return fs
+    .readdirSync(WORKFLOWS_DIR)
+    .filter((name) => name.endsWith('.yml') || name.endsWith('.yaml'))
+    .map((name) => path.join(WORKFLOWS_DIR, name));
+}
+
 function main() {
   if (!workflowsPresent()) {
     console.log('No .github/workflows YAML files; skipping actionlint.');
@@ -212,7 +277,8 @@ function main() {
   }
 
   const binary = resolveActionlintBinary();
-  const result = spawnSync(binary, ['-color'], {
+  const workflowFiles = listWorkflowFiles();
+  const result = spawnSync(binary, ['-color', ...workflowFiles], {
     cwd: REPO_ROOT,
     stdio: 'inherit',
     env: { ...process.env },
