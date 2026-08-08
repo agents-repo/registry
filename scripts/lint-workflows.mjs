@@ -22,7 +22,7 @@ const BOOTSTRAP_LOCK_FILE = path.join(CACHE_ROOT, '.bootstrap.lock');
 /** OS-managed binary locations — excludes /usr/local, which is often user-writable. */
 const TRUSTED_PATH_DIRS =
   process.platform === 'win32'
-    ? ['C:\\Windows\\System32', 'C:\\Windows']
+    ? [String.raw`C:\Windows\System32`, String.raw`C:\Windows`]
     : ['/usr/sbin', '/usr/bin', '/sbin', '/bin'];
 
 function trustedPathValue() {
