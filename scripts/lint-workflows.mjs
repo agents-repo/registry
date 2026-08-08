@@ -19,11 +19,11 @@ const WORKFLOWS_DIR = path.join(REPO_ROOT, '.github', 'workflows');
 const CACHE_ROOT = path.join(REPO_ROOT, '.cache', 'actionlint');
 const BOOTSTRAP_LOCK_FILE = path.join(CACHE_ROOT, '.bootstrap.lock');
 
-/** Standard OS binary locations — avoids relying on a user-writable PATH. */
+/** OS-managed binary locations — excludes /usr/local, which is often user-writable. */
 const TRUSTED_PATH_DIRS =
   process.platform === 'win32'
     ? ['C:\\Windows\\System32', 'C:\\Windows']
-    : ['/usr/local/sbin', '/usr/local/bin', '/usr/sbin', '/usr/bin', '/sbin', '/bin'];
+    : ['/usr/sbin', '/usr/bin', '/sbin', '/bin'];
 
 function trustedPathValue() {
   return TRUSTED_PATH_DIRS.join(process.platform === 'win32' ? ';' : ':');
