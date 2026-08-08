@@ -322,7 +322,7 @@ function main() {
   const binary = resolveActionlintBinary();
   const workflowFiles = listWorkflowFiles();
   const executable = path.isAbsolute(binary) ? binary : resolveTrustedExecutable(binary);
-  const result = spawnSync(executable, ['-color', ...workflowFiles], {
+  const result = spawnSync(executable, workflowFiles, {
     cwd: REPO_ROOT,
     stdio: 'inherit',
     env: trustedEnv(),
