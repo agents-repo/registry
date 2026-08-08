@@ -335,6 +335,11 @@ Local pre-commit checks project guideline mirrors (`sync:ide-instructions
 from the committed lock and fail on extract or lock drift (not semver-max
 `install`).
 
+Changes under `.github/workflows/` MUST pass `npm run lint:workflows`
+(included in `npm run lint:all`). See the organization
+[GitHub Actions workflow linting](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#github-actions-workflow-linting)
+norm.
+
 ### Submitted package checklist
 
 A package submission should include:
