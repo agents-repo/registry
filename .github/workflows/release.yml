@@ -68,7 +68,7 @@ jobs:
       - name: Run semantic-release (dry run)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release --dry-run
+        run: npm run release:dry-run
 
   release-publish:
     name: Publish GitHub Release
@@ -94,4 +94,4 @@ jobs:
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: npm run release

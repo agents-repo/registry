@@ -77,21 +77,83 @@ function rewriteMarkdownTarget(url, targetDir) {
   return `${rewritten}${titleSuffix}`;
 }
 
+const MARKDOWN_LINK_LEADING_PATH = /^(\S+)/;
+
+function leadingMarkdownPath(value) {
+  return MARKDOWN_LINK_LEADING_PATH.exec(value)?.[1] ?? value;
+}
+
+function scanInlineMarkdownLink(body, openBracket) {
+  const closeBracket = body.indexOf(']', openBracket + 1);
+  if (closeBracket === -1) {
+    return { kind: 'end', tailStart: openBracket };
+  }
+  if (body.charAt(closeBracket + 1) !== '(') {
+    return {
+      kind: 'skip',
+      append: body.charAt(openBracket),
+      nextIndex: openBracket + 1,
+    };
+  }
+  const closeParen = body.indexOf(')', closeBracket + 2);
+  if (closeParen === -1) {
+    return { kind: 'end', tailStart: openBracket };
+  }
+  return {
+    kind: 'link',
+    text: body.slice(openBracket + 1, closeBracket),
+    url: body.slice(closeBracket + 2, closeParen),
+    match: body.slice(openBracket, closeParen + 1),
+    nextIndex: closeParen + 1,
+  };
+}
+
+function formatRewrittenMarkdownLink(text, url, match, rewrittenUrl) {
+  if (rewrittenUrl === url) {
+    return match;
+  }
+  const pathPart = leadingMarkdownPath(url);
+  const rewrittenPath = leadingMarkdownPath(rewrittenUrl);
+  const rewrittenText = text === url || text === pathPart ? rewrittenPath : text;
+  return `[${rewrittenText}](${rewrittenUrl})`;
+}
+
 function rewriteRelativeLinks(body, targetDir) {
   // Copilot instructions use simple inline markdown links only.
-  // eslint-disable-next-line sonarjs/super-linear-regex -- bounded repo-owned input
-  return body.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (match, text, url) => {
-    const rewrittenUrl = rewriteMarkdownTarget(url, targetDir);
-    if (rewrittenUrl === url) {
-      return match;
+  let result = '';
+  let index = 0;
+  while (index < body.length) {
+    const openBracket = body.indexOf('[', index);
+    if (openBracket === -1) {
+      result += body.slice(index);
+      break;
     }
-
-    const pathPattern = /^(\S+)/;
-    const pathPart = pathPattern.exec(url)?.[1] ?? url;
-    const rewrittenPath = pathPattern.exec(rewrittenUrl)?.[1] ?? rewrittenUrl;
-    const rewrittenText = text === url || text === pathPart ? rewrittenPath : text;
-    return `[${rewrittenText}](${rewrittenUrl})`;
-  });
+    result += body.slice(index, openBracket);
+    const scanned = scanInlineMarkdownLink(body, openBracket);
+    if (scanned.kind === 'end') {
+      result += body.slice(scanned.tailStart);
+      break;
+    }
+    if (scanned.kind === 'skip') {
+      result += scanned.append;
+      index = scanned.nextIndex;
+      continue;
+    }
+    if (scanned.url.length === 0) {
+      result += scanned.match;
+      index = scanned.nextIndex;
+      continue;
+    }
+    const rewrittenUrl = rewriteMarkdownTarget(scanned.url, targetDir);
+    result += formatRewrittenMarkdownLink(
+      scanned.text,
+      scanned.url,
+      scanned.match,
+      rewrittenUrl,
+    );
+    index = scanned.nextIndex;
+  }
+  return result;
 }
 
 function applyTitleTransforms(body) {
@@ -127,7 +189,7 @@ function transformCursorMirror(source) {
 }
 
 function normalizeEol(text) {
-  return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  return text.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
 }
 
 function isGeneratedMirrorFile(filePath) {
@@ -243,10 +305,10 @@ function writeMirrors() {
   }
 }
 
-const argv = process.argv.slice(2);
-if (argv.includes('--help') || argv.includes('-h')) {
+const argv = new Set(process.argv.slice(2));
+if (argv.has('--help') || argv.has('-h')) {
   printHelp();
-} else if (argv.includes('--check')) {
+} else if (argv.has('--check')) {
   checkMirrors();
 } else {
   writeMirrors();
