@@ -25,7 +25,7 @@ Use the pinned runtime to keep local development, agent tasks, and CI aligned.
 
 ### Runtime pins
 
-- Node.js: `24.15.0` (see `.nvmrc` and `.node-version`)
+- Node.js: `24.18.0` (see `.nvmrc` and `.node-version`)
 - npm: `12.0.1` (see `packageManager` in `package.json`)
 
 ### GitHub CLI
@@ -67,7 +67,7 @@ npm install-scripts approve <name>@<version>
 
 Then commit the updated `allowScripts` entry in `package.json`.
 
-If you do not use `nvm`, install Node `24.15.0` manually and then run the
+If you do not use `nvm`, install Node `24.18.0` manually and then run the
 same Corepack and npm commands.
 
 Common `gh` commands used in this workflow:
