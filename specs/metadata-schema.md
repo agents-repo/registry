@@ -150,7 +150,8 @@ Additional optional fields:
 - `owner` MUST be a non-empty GitHub owner or organization slug.
 - `maintainers`, when present, MUST be an array of unique GitHub usernames or
   team slugs.
-- `compatibility`, when present, MUST be an object.
+- `compatibility`, when present, MUST be an object with `targets` per
+  `install-targets.md` and optional `consumption` per `chat-consumption.md`.
 - `documentation`, when present, MUST be an HTTPS URL.
 - `keywords`, when present, MUST be an array of unique non-empty strings.
 - `quickstart`, when present, MUST be an HTTPS URL.
@@ -238,6 +239,7 @@ Additional required fields:
 | `inputs` | array of `Contract` | Input contracts; see `agent-format.md` |
 | `outputs` | array of `Contract` | Output contracts; see `agent-format.md` |
 | `customAttributes` | object | Arbitrary key-value map for detail rendering |
+| `chatWeb` | string | `included` or `excluded`; see `chat-consumption.md` |
 
 ### EstimateCost Object Schema (Shared: Agent and Flow)
 
@@ -359,6 +361,7 @@ Additional required fields:
 | `inputs` | array of `Contract` | Flow input contracts; see `flow-format.md` |
 | `outputs` | array of `Contract` | Flow outputs; see `flow-format.md` |
 | `customAttributes` | object | Arbitrary key-value map for detail rendering |
+| `chatWeb` | string | `included` or `excluded`; see `chat-consumption.md` |
 
 ### Validation Rules
 

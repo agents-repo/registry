@@ -13,6 +13,8 @@ import {
   ESTIMATED_COST_MAX,
   INSTALL_TARGET_IDS,
   SCHEMA_FAMILY_PACKAGE,
+  CONSUMPTION_CHANNEL_IDS,
+  CONSUMPTION_CHANNEL_STATUSES,
 } from '../../constants';
 
 function validateName(
@@ -316,6 +318,65 @@ function validateCompatibilityField(m: Record<string, unknown>, issues: Validati
         'compatibility.targets must include at least one supported or experimental install target',
       ),
     );
+  }
+
+  validateConsumptionField(record, issues);
+}
+
+function validateConsumptionField(record: Record<string, unknown>, issues: ValidationIssue[]): void {
+  if (record['consumption'] === undefined) {
+    return;
+  }
+
+  if (!Array.isArray(record['consumption'])) {
+    issues.push(
+      err('ERR_METADATA_INVALID', 'compatibility.consumption must be an array when provided'),
+    );
+    return;
+  }
+
+  const seen = new Set<string>();
+  for (const entry of record['consumption']) {
+    if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+      issues.push(
+        err('ERR_METADATA_INVALID', 'compatibility.consumption entries must be objects'),
+      );
+      continue;
+    }
+
+    const channel = entry as Record<string, unknown>;
+    const id = channel['id'];
+    const status = channel['status'];
+
+    if (
+      typeof id !== 'string' ||
+      !CONSUMPTION_CHANNEL_IDS.includes(id as (typeof CONSUMPTION_CHANNEL_IDS)[number])
+    ) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `compatibility.consumption id must be one of: ${CONSUMPTION_CHANNEL_IDS.join(', ')}`,
+        ),
+      );
+    } else if (seen.has(id)) {
+      issues.push(
+        err('ERR_METADATA_INVALID', `compatibility.consumption contains duplicate id: ${id}`),
+      );
+    } else {
+      seen.add(id);
+    }
+
+    if (
+      typeof status !== 'string' ||
+      !CONSUMPTION_CHANNEL_STATUSES.includes(status as (typeof CONSUMPTION_CHANNEL_STATUSES)[number])
+    ) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          'compatibility.consumption status must be supported or planned',
+        ),
+      );
+    }
   }
 }
 

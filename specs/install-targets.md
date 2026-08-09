@@ -8,6 +8,10 @@ layouts for multi-tool agent instruction packages.
 The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY are to be
 interpreted as described in RFC 2119.
 
+Chat-web consumption paths for agents are defined in `chat-consumption.md`
+(`/pkg/.../agents/<agent-id>.agent.md`). Install-target ZIP layouts remain
+defined in `install-targets.md`.
+
 ## Install Target IDs
 
 | ID | Consumer | ZIP layout / on-disk path |

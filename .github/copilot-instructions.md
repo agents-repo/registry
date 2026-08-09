@@ -15,6 +15,7 @@ All normative rules live in `specs/`. Defer to these before inventing rules.
 - `specs/flow-format.md` — flow file structure, agent references
 - `specs/metadata-schema.md` — `metadata.json` schema for package, agent, and flow
 - `specs/manifest-schema.md` — `versions/manifest.json` schema and SHA-256 rules
+- `specs/chat-consumption.md` — chat-web channel, `instructions.json`, `/pkg/` paths
 - `specs/versioning-rules.md` — semver policy, immutability, deprecation
 
 ## Critical Conventions
@@ -35,7 +36,8 @@ MUST run a cross-file consistency pass before task completion.
 
 Minimum required dependency checks:
 
-- `specs/package-format.md`, `specs/manifest-schema.md`, and
+- `specs/package-format.md`, `specs/manifest-schema.md`,
+  `specs/chat-consumption.md`, and
   `specs/versioning-rules.md` for layout, artifact, and version consistency
 - `specs/agent-format.md`, `specs/flow-format.md`, and
   `specs/metadata-schema.md` for duplicated field contracts and

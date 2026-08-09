@@ -37,8 +37,9 @@ Contributors and AI agents MUST follow this pipeline to produce a release:
 2. Run `npm run package:build -- --package <namespace>/<package-id>` to
   generate the version snapshot. This command automatically runs preflight
   validation equivalent to `package:validate`, builds per-install-target
-  deployment ZIPs plus the source archive, computes SHA-256 checksums, writes
-  `versions/<version>/`, updates `versions/manifest.json`, and updates
+  deployment ZIPs plus the source archive, emits `instructions.json` when
+  chat-web is enabled (see `chat-consumption.md`), computes SHA-256 checksums,
+  writes `versions/<version>/`, updates `versions/manifest.json`, and updates
   `packages/index.json`.
 3. Run `npm run package:validate-artifacts -- --package <namespace>/<package-id>`
   to validate generated artifacts for structural and security issues.
@@ -127,6 +128,8 @@ Each released version MUST have a corresponding snapshot folder at
 - MUST contain one deployment ZIP per built install target named
   `<version>-<target-id>.zip` (see `specs/install-targets.md`).
 - MUST contain `<version>-src.zip` — the source archive.
+- MAY contain `instructions.json` when chat-web is enabled for the package;
+  see `specs/chat-consumption.md`.
 - MUST be treated as immutable once published. No file inside a
   released version folder MUST be modified or removed.
 

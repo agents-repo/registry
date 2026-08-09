@@ -418,6 +418,7 @@ Primary spec documents:
 - `specs/flow-format.md`
 - `specs/versioning-rules.md`
 - `specs/index-schema.md`
+- `specs/chat-consumption.md`
 - `specs/schema-versions.json`
 
 ## Related Repositories

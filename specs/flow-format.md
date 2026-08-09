@@ -102,6 +102,10 @@ Body sections required in order:
   MUST follow the root working-copy consistency rules defined in
   `versioning-rules.md`.
 
+Chat-web paths for flows are defined in `chat-consumption.md`
+(`/pkg/.../flows/<flow-id>.agent.md`). Declaring `agents[]` populates
+`agentInstructions` in `instructions.json` per that spec.
+
 ## ZIP Bundle Rules
 
 - Each `versions/<version>/<version>-github-copilot.zip` is a

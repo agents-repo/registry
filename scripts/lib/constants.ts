@@ -44,6 +44,18 @@ export const SCHEMA_FAMILY_AGENT = 'metadata.agent';
 export const SCHEMA_FAMILY_FLOW = 'metadata.flow';
 export const SCHEMA_FAMILY_INDEX = 'index';
 export const SCHEMA_FAMILY_MANIFEST = 'manifest';
+export const SCHEMA_FAMILY_INSTRUCTIONS_MANIFEST = 'instructions.manifest';
+
+export const INSTRUCTIONS_FILENAME = 'instructions.json';
+
+export const CHAT_WEB_CONSUMPTION_ID = 'chat-web';
+export const CONSUMPTION_CHANNEL_IDS = [CHAT_WEB_CONSUMPTION_ID] as const;
+export type ConsumptionChannelId = (typeof CONSUMPTION_CHANNEL_IDS)[number];
+export const CONSUMPTION_CHANNEL_STATUSES = ['supported', 'planned'] as const;
+export type ConsumptionChannelStatus = (typeof CONSUMPTION_CHANNEL_STATUSES)[number];
+
+export const CHAT_WEB_ENTRY_VALUES = ['included', 'excluded'] as const;
+export type ChatWebEntryValue = (typeof CHAT_WEB_ENTRY_VALUES)[number];
 
 // --- Validation regex patterns ---
 
