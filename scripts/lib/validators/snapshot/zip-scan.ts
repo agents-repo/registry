@@ -1,6 +1,6 @@
 import AdmZip from 'adm-zip';
-import { parseFrontmatter } from '../../frontmatter';
-import type { ValidationIssue } from '../../types';
+import { parseFrontmatter, parseFrontmatterData } from '../../frontmatter';
+import type { InstallTargetId, ValidationIssue } from '../../types';
 import { err } from '../common/issues';
 import {
   AGENTS_DIR,
@@ -14,8 +14,6 @@ import {
   ZIP_UNIX_TYPE_MASK,
   VERSIONS_DIR,
 } from '../../constants';
-import type { InstallTargetId } from '../../types';
-import { parseFrontmatterData } from '../../frontmatter';
 
 const ALLOWED_ZIP_EXTENSION_SUFFIXES = Array.from(ALLOWED_ZIP_EXTENSIONS).sort(
   (left, right) => right.length - left.length,

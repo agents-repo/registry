@@ -30,12 +30,31 @@ beforeEach((): void => {
 });
 
 describe('scanSnapshotZip', (): void => {
-  it('flags disallowed file types inside constrained source paths', (): void => {
+  it.each([
+    {
+      name: 'flags disallowed file types inside constrained source paths',
+      entryName: 'agents/run.exe',
+      body: Buffer.from('MZ', 'utf-8'),
+      expectedCodes: ['ERR_ZIP_DISALLOWED_PAYLOAD'],
+    },
+    {
+      name: 'flags non-canonical case for constrained source root directories',
+      entryName: 'Agents/hello-agent.agent.md',
+      body: Buffer.from('---\nname: hello-agent\n---\n', 'utf-8'),
+      expectedCodes: ['ERR_ZIP_UNEXPECTED_ENTRY'],
+    },
+    {
+      name: 'flags wrong-case constrained roots and disallowed payloads together',
+      entryName: 'Agents/run.exe',
+      body: Buffer.from('MZ', 'utf-8'),
+      expectedCodes: ['ERR_ZIP_UNEXPECTED_ENTRY', 'ERR_ZIP_DISALLOWED_PAYLOAD'],
+    },
+  ])('$name', ({ entryName, body, expectedCodes }): void => {
     mockEntries = [
       toZipEntry({
-        entryName: 'agents/run.exe',
+        entryName,
         attr: 0,
-        getData: () => Buffer.from('MZ', 'utf-8'),
+        getData: () => body,
       }),
     ];
 
@@ -44,42 +63,9 @@ describe('scanSnapshotZip', (): void => {
       expectedVersion: '1.0.0',
     });
 
-    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
-  });
-
-  it('flags non-canonical case for constrained source root directories', (): void => {
-    mockEntries = [
-      toZipEntry({
-        entryName: 'Agents/hello-agent.agent.md',
-        attr: 0,
-        getData: () => Buffer.from('---\nname: hello-agent\n---\n', 'utf-8'),
-      }),
-    ];
-
-    const issues = scanSnapshotZip('mock.zip', {
-      type: 'source',
-      expectedVersion: '1.0.0',
-    });
-
-    expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
-  });
-
-  it('flags wrong-case constrained roots and disallowed payloads together', (): void => {
-    mockEntries = [
-      toZipEntry({
-        entryName: 'Agents/run.exe',
-        attr: 0,
-        getData: () => Buffer.from('MZ', 'utf-8'),
-      }),
-    ];
-
-    const issues = scanSnapshotZip('mock.zip', {
-      type: 'source',
-      expectedVersion: '1.0.0',
-    });
-
-    expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
-    expect(issues.some((issue) => issue.code === 'ERR_ZIP_DISALLOWED_PAYLOAD')).toBe(true);
+    for (const code of expectedCodes) {
+      expect(issues.some((issue) => issue.code === code)).toBe(true);
+    }
   });
 
   it('allows constrained source entries with spec-compliant extensions', (): void => {

@@ -79,19 +79,46 @@ function rewriteMarkdownTarget(url, targetDir) {
 
 function rewriteRelativeLinks(body, targetDir) {
   // Copilot instructions use simple inline markdown links only.
-  // eslint-disable-next-line sonarjs/super-linear-regex -- bounded repo-owned input
-  return body.replace(/\[([^\]]*)\]\(([^)]+)\)/g, (match, text, url) => {
+  let result = '';
+  let index = 0;
+  while (index < body.length) {
+    const openBracket = body.indexOf('[', index);
+    if (openBracket === -1) {
+      result += body.slice(index);
+      break;
+    }
+    result += body.slice(index, openBracket);
+    const closeBracket = body.indexOf(']', openBracket + 1);
+    if (closeBracket === -1) {
+      result += body.slice(openBracket);
+      break;
+    }
+    if (body.charAt(closeBracket + 1) !== '(') {
+      result += body.charAt(openBracket);
+      index = openBracket + 1;
+      continue;
+    }
+    const closeParen = body.indexOf(')', closeBracket + 2);
+    if (closeParen === -1) {
+      result += body.slice(openBracket);
+      break;
+    }
+    const text = body.slice(openBracket + 1, closeBracket);
+    const url = body.slice(closeBracket + 2, closeParen);
+    const match = body.slice(openBracket, closeParen + 1);
     const rewrittenUrl = rewriteMarkdownTarget(url, targetDir);
     if (rewrittenUrl === url) {
-      return match;
+      result += match;
+    } else {
+      const pathPattern = /^(\S+)/;
+      const pathPart = pathPattern.exec(url)?.[1] ?? url;
+      const rewrittenPath = pathPattern.exec(rewrittenUrl)?.[1] ?? rewrittenUrl;
+      const rewrittenText = text === url || text === pathPart ? rewrittenPath : text;
+      result += `[${rewrittenText}](${rewrittenUrl})`;
     }
-
-    const pathPattern = /^(\S+)/;
-    const pathPart = pathPattern.exec(url)?.[1] ?? url;
-    const rewrittenPath = pathPattern.exec(rewrittenUrl)?.[1] ?? rewrittenUrl;
-    const rewrittenText = text === url || text === pathPart ? rewrittenPath : text;
-    return `[${rewrittenText}](${rewrittenUrl})`;
-  });
+    index = closeParen + 1;
+  }
+  return result;
 }
 
 function applyTitleTransforms(body) {
@@ -127,7 +154,7 @@ function transformCursorMirror(source) {
 }
 
 function normalizeEol(text) {
-  return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  return text.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
 }
 
 function isGeneratedMirrorFile(filePath) {
@@ -243,10 +270,10 @@ function writeMirrors() {
   }
 }
 
-const argv = process.argv.slice(2);
-if (argv.includes('--help') || argv.includes('-h')) {
+const argv = new Set(process.argv.slice(2));
+if (argv.has('--help') || argv.has('-h')) {
   printHelp();
-} else if (argv.includes('--check')) {
+} else if (argv.has('--check')) {
   checkMirrors();
 } else {
   writeMirrors();

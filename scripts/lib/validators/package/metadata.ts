@@ -224,6 +224,50 @@ function validateMaintainersField(m: Record<string, unknown>, issues: Validation
   );
 }
 
+function validateCompatibilityTargetEntry(
+  entry: unknown,
+  seen: Set<string>,
+  issues: ValidationIssue[],
+): boolean {
+  if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+    issues.push(
+      err('ERR_METADATA_INVALID', 'compatibility.targets entries must be objects'),
+    );
+    return false;
+  }
+
+  const target = entry as Record<string, unknown>;
+  let hasBuildableTarget = false;
+
+  if (!isInstallTargetId(target['id'])) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `compatibility.targets id must be one of: ${INSTALL_TARGET_IDS.join(', ')}`,
+      ),
+    );
+  } else if (seen.has(target['id'])) {
+    issues.push(
+      err('ERR_METADATA_INVALID', `compatibility.targets contains duplicate id: ${target['id']}`),
+    );
+  } else {
+    seen.add(target['id']);
+  }
+
+  if (!isInstallTargetStatus(target['status'])) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        'compatibility.targets status must be supported, experimental, or planned',
+      ),
+    );
+  } else if (target['status'] === 'supported' || target['status'] === 'experimental') {
+    hasBuildableTarget = true;
+  }
+
+  return hasBuildableTarget;
+}
+
 function validateCompatibilityField(m: Record<string, unknown>, issues: ValidationIssue[]): void {
   if (m['compatibility'] === undefined) {
     return;
@@ -255,37 +299,7 @@ function validateCompatibilityField(m: Record<string, unknown>, issues: Validati
   const seen = new Set<string>();
   let hasBuildableTarget = false;
   for (const entry of record['targets']) {
-    if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
-      issues.push(
-        err('ERR_METADATA_INVALID', 'compatibility.targets entries must be objects'),
-      );
-      continue;
-    }
-
-    const target = entry as Record<string, unknown>;
-    if (!isInstallTargetId(target['id'])) {
-      issues.push(
-        err(
-          'ERR_METADATA_INVALID',
-          `compatibility.targets id must be one of: ${INSTALL_TARGET_IDS.join(', ')}`,
-        ),
-      );
-    } else if (seen.has(target['id'])) {
-      issues.push(
-        err('ERR_METADATA_INVALID', `compatibility.targets contains duplicate id: ${target['id']}`),
-      );
-    } else {
-      seen.add(target['id']);
-    }
-
-    if (!isInstallTargetStatus(target['status'])) {
-      issues.push(
-        err(
-          'ERR_METADATA_INVALID',
-          'compatibility.targets status must be supported, experimental, or planned',
-        ),
-      );
-    } else if (target['status'] === 'supported' || target['status'] === 'experimental') {
+    if (validateCompatibilityTargetEntry(entry, seen, issues)) {
       hasBuildableTarget = true;
     }
   }
