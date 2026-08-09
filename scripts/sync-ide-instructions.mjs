@@ -77,6 +77,47 @@ function rewriteMarkdownTarget(url, targetDir) {
   return `${rewritten}${titleSuffix}`;
 }
 
+const MARKDOWN_LINK_LEADING_PATH = /^(\S+)/;
+
+function leadingMarkdownPath(value) {
+  return MARKDOWN_LINK_LEADING_PATH.exec(value)?.[1] ?? value;
+}
+
+function scanInlineMarkdownLink(body, openBracket) {
+  const closeBracket = body.indexOf(']', openBracket + 1);
+  if (closeBracket === -1) {
+    return { kind: 'end', tailStart: openBracket };
+  }
+  if (body.charAt(closeBracket + 1) !== '(') {
+    return {
+      kind: 'skip',
+      append: body.charAt(openBracket),
+      nextIndex: openBracket + 1,
+    };
+  }
+  const closeParen = body.indexOf(')', closeBracket + 2);
+  if (closeParen === -1) {
+    return { kind: 'end', tailStart: openBracket };
+  }
+  return {
+    kind: 'link',
+    text: body.slice(openBracket + 1, closeBracket),
+    url: body.slice(closeBracket + 2, closeParen),
+    match: body.slice(openBracket, closeParen + 1),
+    nextIndex: closeParen + 1,
+  };
+}
+
+function formatRewrittenMarkdownLink(text, url, match, rewrittenUrl) {
+  if (rewrittenUrl === url) {
+    return match;
+  }
+  const pathPart = leadingMarkdownPath(url);
+  const rewrittenPath = leadingMarkdownPath(rewrittenUrl);
+  const rewrittenText = text === url || text === pathPart ? rewrittenPath : text;
+  return `[${rewrittenText}](${rewrittenUrl})`;
+}
+
 function rewriteRelativeLinks(body, targetDir) {
   // Copilot instructions use simple inline markdown links only.
   let result = '';
@@ -88,35 +129,29 @@ function rewriteRelativeLinks(body, targetDir) {
       break;
     }
     result += body.slice(index, openBracket);
-    const closeBracket = body.indexOf(']', openBracket + 1);
-    if (closeBracket === -1) {
-      result += body.slice(openBracket);
+    const scanned = scanInlineMarkdownLink(body, openBracket);
+    if (scanned.kind === 'end') {
+      result += body.slice(scanned.tailStart);
       break;
     }
-    if (body.charAt(closeBracket + 1) !== '(') {
-      result += body.charAt(openBracket);
-      index = openBracket + 1;
+    if (scanned.kind === 'skip') {
+      result += scanned.append;
+      index = scanned.nextIndex;
       continue;
     }
-    const closeParen = body.indexOf(')', closeBracket + 2);
-    if (closeParen === -1) {
-      result += body.slice(openBracket);
-      break;
+    if (scanned.url.length === 0) {
+      result += scanned.match;
+      index = scanned.nextIndex;
+      continue;
     }
-    const text = body.slice(openBracket + 1, closeBracket);
-    const url = body.slice(closeBracket + 2, closeParen);
-    const match = body.slice(openBracket, closeParen + 1);
-    const rewrittenUrl = rewriteMarkdownTarget(url, targetDir);
-    if (rewrittenUrl === url) {
-      result += match;
-    } else {
-      const pathPattern = /^(\S+)/;
-      const pathPart = pathPattern.exec(url)?.[1] ?? url;
-      const rewrittenPath = pathPattern.exec(rewrittenUrl)?.[1] ?? rewrittenUrl;
-      const rewrittenText = text === url || text === pathPart ? rewrittenPath : text;
-      result += `[${rewrittenText}](${rewrittenUrl})`;
-    }
-    index = closeParen + 1;
+    const rewrittenUrl = rewriteMarkdownTarget(scanned.url, targetDir);
+    result += formatRewrittenMarkdownLink(
+      scanned.text,
+      scanned.url,
+      scanned.match,
+      rewrittenUrl,
+    );
+    index = scanned.nextIndex;
   }
   return result;
 }
