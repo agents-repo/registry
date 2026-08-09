@@ -100,22 +100,11 @@ export class SnapshotValidator {
     }
   }
 
-  private verifyManifestChecksums(
+  private verifyTargetArtifacts(
     entry: Manifest['versions'][number],
     versionDir: string,
-    srcZipPath: string,
     issues: ValidationIssue[],
   ): void {
-    if (!Array.isArray(entry.artifacts) || entry.artifacts.length === 0) {
-      issues.push(
-        err(
-          'ERR_VALIDATION_FAILED',
-          `manifest.json version ${this.version}: artifacts must be a non-empty array`,
-        ),
-      );
-      return;
-    }
-
     for (const artifact of entry.artifacts) {
       const artifactPath = path.join(versionDir, artifact.file);
       if (!fs.existsSync(artifactPath)) {
@@ -141,20 +130,34 @@ export class SnapshotValidator {
 
       issues.push(...scanTargetArtifactZip(artifactPath, artifact.target, this.version));
     }
+  }
 
-    if (fs.existsSync(srcZipPath)) {
-      const actualSrcHash = Checksum.sha256(srcZipPath);
-      if (actualSrcHash !== entry.srcSha256) {
-        issues.push(
-          err(
-            'ERR_CHECKSUM_MISMATCH',
-            `Source archive sha256 mismatch for version "${this.version}": ` +
-              `manifest has "${entry.srcSha256}", computed "${actualSrcHash}"`,
-          ),
-        );
-      }
+  private verifySourceArchiveChecksum(
+    entry: Manifest['versions'][number],
+    srcZipPath: string,
+    issues: ValidationIssue[],
+  ): void {
+    if (!fs.existsSync(srcZipPath)) {
+      return;
     }
 
+    const actualSrcHash = Checksum.sha256(srcZipPath);
+    if (actualSrcHash !== entry.srcSha256) {
+      issues.push(
+        err(
+          'ERR_CHECKSUM_MISMATCH',
+          `Source archive sha256 mismatch for version "${this.version}": ` +
+            `manifest has "${entry.srcSha256}", computed "${actualSrcHash}"`,
+        ),
+      );
+    }
+  }
+
+  private verifyInstructionsChecksums(
+    entry: Manifest['versions'][number],
+    versionDir: string,
+    issues: ValidationIssue[],
+  ): void {
     const instructionsArtifact = entry.instructionsArtifact;
     const instructionsSha256 = entry.instructionsSha256;
     const hasInstructionsArtifact = instructionsArtifact !== undefined;
@@ -170,47 +173,74 @@ export class SnapshotValidator {
       return;
     }
 
-    if (hasInstructionsArtifact) {
-      if (instructionsArtifact !== INSTRUCTIONS_FILENAME) {
-        issues.push(
-          err(
-            'ERR_VALIDATION_FAILED',
-            `manifest.json version ${this.version}: instructionsArtifact must be "${INSTRUCTIONS_FILENAME}"`,
-          ),
-        );
-      }
-
-      const instructionsPath = path.join(versionDir, INSTRUCTIONS_FILENAME);
-      if (!fs.existsSync(instructionsPath)) {
-        issues.push(
-          err(
-            'ERR_VALIDATION_FAILED',
-            `Missing chat-web manifest: ${INSTRUCTIONS_FILENAME}`,
-          ),
-        );
-      } else if (
-        typeof instructionsSha256 !== 'string' ||
-        !SHA256_PATTERN.test(instructionsSha256)
-      ) {
-        issues.push(
-          err(
-            'ERR_VALIDATION_FAILED',
-            `manifest.json version ${this.version}: instructionsSha256 must be 64 lowercase hex characters`,
-          ),
-        );
-      } else {
-        const actualHash = Checksum.sha256(instructionsPath);
-        if (actualHash !== instructionsSha256) {
-          issues.push(
-            err(
-              'ERR_CHECKSUM_MISMATCH',
-              `${INSTRUCTIONS_FILENAME} sha256 mismatch for version "${this.version}": ` +
-                `manifest has "${instructionsSha256}", computed "${actualHash}"`,
-            ),
-          );
-        }
-      }
+    if (!hasInstructionsArtifact) {
+      return;
     }
+
+    if (instructionsArtifact !== INSTRUCTIONS_FILENAME) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `manifest.json version ${this.version}: instructionsArtifact must be "${INSTRUCTIONS_FILENAME}"`,
+        ),
+      );
+    }
+
+    const instructionsPath = path.join(versionDir, INSTRUCTIONS_FILENAME);
+    if (!fs.existsSync(instructionsPath)) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `Missing chat-web manifest: ${INSTRUCTIONS_FILENAME}`,
+        ),
+      );
+      return;
+    }
+
+    if (
+      typeof instructionsSha256 !== 'string' ||
+      !SHA256_PATTERN.test(instructionsSha256)
+    ) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `manifest.json version ${this.version}: instructionsSha256 must be 64 lowercase hex characters`,
+        ),
+      );
+      return;
+    }
+
+    const actualHash = Checksum.sha256(instructionsPath);
+    if (actualHash !== instructionsSha256) {
+      issues.push(
+        err(
+          'ERR_CHECKSUM_MISMATCH',
+          `${INSTRUCTIONS_FILENAME} sha256 mismatch for version "${this.version}": ` +
+            `manifest has "${instructionsSha256}", computed "${actualHash}"`,
+        ),
+      );
+    }
+  }
+
+  private verifyManifestChecksums(
+    entry: Manifest['versions'][number],
+    versionDir: string,
+    srcZipPath: string,
+    issues: ValidationIssue[],
+  ): void {
+    if (!Array.isArray(entry.artifacts) || entry.artifacts.length === 0) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `manifest.json version ${this.version}: artifacts must be a non-empty array`,
+        ),
+      );
+      return;
+    }
+
+    this.verifyTargetArtifacts(entry, versionDir, issues);
+    this.verifySourceArchiveChecksum(entry, srcZipPath, issues);
+    this.verifyInstructionsChecksums(entry, versionDir, issues);
   }
 
   private validateManifestAndChecksums(

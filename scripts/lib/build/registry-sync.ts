@@ -4,9 +4,12 @@ import { IndexManager } from '../index-manager';
 import { ManifestManager } from '../manifest-manager';
 import { toManifestArtifactEntry, type BuiltTargetArtifact } from '../emitters/target-zip-builder';
 import type { ManifestVersionEntry, PackageMetadata, PackageRef } from '../types';
-import { INSTRUCTIONS_FILENAME, SOURCE_ARCHIVE_SUFFIX } from '../constants';
+import {
+  INSTRUCTIONS_FILENAME,
+  SCHEMA_FAMILY_MANIFEST,
+  SOURCE_ARCHIVE_SUFFIX,
+} from '../constants';
 import { getSchemaCurrentVersion } from '../schema-versions';
-import { SCHEMA_FAMILY_MANIFEST } from '../constants';
 
 export function updateManifestAndIndexWithRollback(opts: {
   ref: PackageRef;
