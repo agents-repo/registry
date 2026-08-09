@@ -238,6 +238,7 @@ function validateCompatibilityTargetEntry(
 
   const target = entry as Record<string, unknown>;
   let hasBuildableTarget = false;
+  let hasValidId = false;
 
   if (!isInstallTargetId(target['id'])) {
     issues.push(
@@ -252,6 +253,7 @@ function validateCompatibilityTargetEntry(
     );
   } else {
     seen.add(target['id']);
+    hasValidId = true;
   }
 
   if (!isInstallTargetStatus(target['status'])) {
@@ -261,7 +263,10 @@ function validateCompatibilityTargetEntry(
         'compatibility.targets status must be supported, experimental, or planned',
       ),
     );
-  } else if (target['status'] === 'supported' || target['status'] === 'experimental') {
+  } else if (
+    hasValidId &&
+    (target['status'] === 'supported' || target['status'] === 'experimental')
+  ) {
     hasBuildableTarget = true;
   }
 

@@ -72,7 +72,7 @@ function main(): void {
     const parsedVersion = parseReleaseVersion(metadata.version);
     if (parsedVersion === null) {
       console.error(
-        `Version in ${METADATA_FILENAME} must be a MAJOR.MINOR.PATCH release version`,
+        `Version in ${METADATA_FILENAME} must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(metadata.version)}`,
       );
       process.exit(1);
     }
@@ -81,7 +81,9 @@ function main(): void {
 
   const normalizedVersion = parseReleaseVersion(version);
   if (normalizedVersion === null) {
-    console.error('--version must be a MAJOR.MINOR.PATCH release version');
+    console.error(
+      `--version must be a MAJOR.MINOR.PATCH release version, got: ${JSON.stringify(version)}`,
+    );
     process.exit(1);
   }
   version = normalizedVersion;
