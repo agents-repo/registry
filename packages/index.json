@@ -1,6 +1,6 @@
 {
-  "schemaVersion": "1.3.0",
-  "updatedAt": "2026-08-02T03:25:18.323Z",
+  "schemaVersion": "1.4.0",
+  "updatedAt": "2026-08-09T22:46:58.500Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -51,7 +51,7 @@
       "name": "hello-agent",
       "description": "Hello Agent package scaffolded by package-create",
       "owner": "agents-repo",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "agent",
         "hello"
@@ -80,7 +80,8 @@
           "id": "openai-codex",
           "status": "supported"
         }
-      ]
+      ],
+      "chatWeb": true
     },
     {
       "id": "maiconfz/github-interactive-issue-implementation-planner",

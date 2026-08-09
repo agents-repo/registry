@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "agents-repo/hello-agent",
+  "version": "1.0.1",
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "hello-again",
+      "path": "/pkg/agents-repo/hello-agent/1.0.1/agents/hello-again.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "hello-agent",
+      "path": "/pkg/agents-repo/hello-agent/1.0.1/agents/hello-agent.agent.md"
+    },
+    {
+      "kind": "flow",
+      "id": "hello-agents",
+      "path": "/pkg/agents-repo/hello-agent/1.0.1/flows/hello-agents.agent.md",
+      "agentInstructions": [
+        "/pkg/agents-repo/hello-agent/1.0.1/agents/hello-agent.agent.md",
+        "/pkg/agents-repo/hello-agent/1.0.1/agents/hello-again.agent.md"
+      ]
+    }
+  ]
+}
