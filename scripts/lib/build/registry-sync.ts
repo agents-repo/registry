@@ -54,9 +54,13 @@ export function updateManifestAndIndexWithRollback(opts: {
   updatedManifest.schemaVersion = getSchemaCurrentVersion(SCHEMA_FAMILY_MANIFEST);
   manifestManager.save(updatedManifest);
 
-  const savedVersionEntry = updatedManifest.versions.find((entry) => entry.version === version);
-  if (savedVersionEntry === undefined) {
-    throw new Error(`manifest upsert did not retain version entry for ${version}`);
+  const latestVersionEntry = updatedManifest.versions.find(
+    (entry) => entry.version === updatedManifest.latest,
+  );
+  if (latestVersionEntry === undefined) {
+    throw new Error(
+      `manifest upsert did not retain entry for latest version ${updatedManifest.latest}`,
+    );
   }
 
   const oldIndexContent = readTextFileIfExists(indexPath);
@@ -66,8 +70,8 @@ export function updateManifestAndIndexWithRollback(opts: {
       ref,
       metadata,
       updatedManifest.latest,
-      manifestArtifacts,
-      { latestVersionEntry: savedVersionEntry },
+      latestVersionEntry.artifacts,
+      { latestVersionEntry },
     );
   } catch (indexError) {
     try {

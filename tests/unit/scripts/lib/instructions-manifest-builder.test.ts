@@ -109,4 +109,45 @@ describe('buildInstructionsManifest', (): void => {
     const result = buildInstructionsManifest(makeRef(), packageDir, makeMetadata(), '1.0.0');
     expect(result?.manifest.instructions.map((entry) => entry.id)).toEqual(['keep']);
   });
+
+  it('rejects flow agents[] values that are not kebab-case IDs', (): void => {
+    const packageDir = makeTempPackageDir();
+    writeAgent(packageDir, 'planner');
+    const flowsDir = path.join(packageDir, 'flows');
+    fs.mkdirSync(flowsDir, { recursive: true });
+    const flowId = 'main-flow';
+    fs.writeFileSync(
+      path.join(flowsDir, `${flowId}.agent.md`),
+      `---
+name: ${flowId}
+version: 1.0.0
+description: Flow for tests with enough characters here.
+license: MIT
+agents:
+  - ../evil
+---
+
+# flow
+`,
+      'utf-8',
+    );
+    fs.writeFileSync(
+      path.join(flowsDir, `${flowId}.metadata.json`),
+      JSON.stringify({
+        schemaVersion: '1.0.0',
+        name: flowId,
+        description: 'Flow for tests with enough characters here.',
+        license: 'MIT',
+        status: 'active',
+        category: 'assistant',
+        estimateCost: { estimatedCost: 2, band: 'low' },
+        agents: ['../evil'],
+      }),
+      'utf-8',
+    );
+
+    expect(() => buildInstructionsManifest(makeRef(), packageDir, makeMetadata(), '1.0.0')).toThrow(
+      /agents\[\]/,
+    );
+  });
 });

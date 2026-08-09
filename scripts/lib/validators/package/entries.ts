@@ -24,6 +24,7 @@ import {
   AGENT_FILE_EXT,
   AGENT_METADATA_EXT,
   CHAT_WEB_ENTRY_VALUES,
+  ID_PATTERN,
 } from '../../constants';
 
 const CONTRACT_TYPES: ReadonlySet<string> = new Set(CONTRACT_ALLOWED_TYPES);
@@ -60,6 +61,30 @@ function validateStringArrayField(
         `${context}: ${fieldName} must not contain duplicates: ${duplicateValues.join(', ')}`,
       ),
     );
+  }
+
+  return true;
+}
+
+function validateIdArrayField(
+  value: unknown,
+  fieldName: string,
+  context: string,
+  issues: ValidationIssue[],
+): value is string[] {
+  if (!validateStringArrayField(value, fieldName, context, issues)) {
+    return false;
+  }
+
+  for (const item of value) {
+    if (typeof item === 'string' && !ID_PATTERN.test(item)) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: ${fieldName} entries must be lowercase kebab-case IDs, got "${item}"`,
+        ),
+      );
+    }
   }
 
   return true;
@@ -170,7 +195,7 @@ function validateEntryMetadataOptionalFields(
 
   if (md['agents'] !== undefined) {
     if (dirLabel === 'flows') {
-      validateStringArrayField(md['agents'], 'agents', context, issues);
+      validateIdArrayField(md['agents'], 'agents', context, issues);
     } else {
       issues.push(err('ERR_METADATA_INVALID', `${context}: agents is only valid for flow metadata`));
     }
