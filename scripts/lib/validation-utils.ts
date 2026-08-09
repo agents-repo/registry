@@ -33,4 +33,16 @@ export class ValidationUtils {
     const parsed = semver.parse(v);
     return parsed !== null && parsed.prerelease.length === 0 && parsed.build.length === 0;
   }
+
+  static describeInvalidReleaseVersionInput(value: unknown): string {
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    if (value === null) {
+      return 'null';
+    }
+
+    return `<${typeof value}>`;
+  }
 }
