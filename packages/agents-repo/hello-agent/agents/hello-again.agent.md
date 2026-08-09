@@ -18,7 +18,7 @@ to validate multi-agent package behavior.
 ## Constraints
 
 - Keep responses deterministic and concise
-- Preserve compatibility with package frontmatter version 1.0.0
+- Preserve compatibility with package frontmatter version 1.0.1
 
 ## Interaction Contract
 
