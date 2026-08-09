@@ -10,10 +10,12 @@ import {
   AGENTS_DIR,
   FLOWS_DIR,
   MANIFEST_FILENAME,
+  INSTRUCTIONS_FILENAME,
   METADATA_FILENAME,
   SOURCE_ARCHIVE_SUFFIX,
   TARGET_ARTIFACT_FILE_PATTERN,
   VERSIONS_DIR,
+  SHA256_PATTERN,
 } from './constants';
 import { resolvePackageDir } from './namespace';
 
@@ -78,6 +80,7 @@ export class SnapshotValidator {
   private validateVersionDirEntries(versionDir: string, issues: ValidationIssue[]): void {
     const allowedTopLevelEntries = new Set([
       METADATA_FILENAME,
+      INSTRUCTIONS_FILENAME,
       `${this.version}${SOURCE_ARCHIVE_SUFFIX}`,
       AGENTS_DIR,
       FLOWS_DIR,
@@ -149,6 +152,63 @@ export class SnapshotValidator {
               `manifest has "${entry.srcSha256}", computed "${actualSrcHash}"`,
           ),
         );
+      }
+    }
+
+    const instructionsArtifact = entry.instructionsArtifact;
+    const instructionsSha256 = entry.instructionsSha256;
+    const hasInstructionsArtifact = instructionsArtifact !== undefined;
+    const hasInstructionsSha256 = instructionsSha256 !== undefined;
+
+    if (hasInstructionsArtifact !== hasInstructionsSha256) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `manifest.json version ${this.version}: instructionsArtifact and instructionsSha256 must both be present or both absent`,
+        ),
+      );
+      return;
+    }
+
+    if (hasInstructionsArtifact) {
+      if (instructionsArtifact !== INSTRUCTIONS_FILENAME) {
+        issues.push(
+          err(
+            'ERR_VALIDATION_FAILED',
+            `manifest.json version ${this.version}: instructionsArtifact must be "${INSTRUCTIONS_FILENAME}"`,
+          ),
+        );
+      }
+
+      const instructionsPath = path.join(versionDir, INSTRUCTIONS_FILENAME);
+      if (!fs.existsSync(instructionsPath)) {
+        issues.push(
+          err(
+            'ERR_VALIDATION_FAILED',
+            `Missing chat-web manifest: ${INSTRUCTIONS_FILENAME}`,
+          ),
+        );
+      } else if (
+        typeof instructionsSha256 !== 'string' ||
+        !SHA256_PATTERN.test(instructionsSha256)
+      ) {
+        issues.push(
+          err(
+            'ERR_VALIDATION_FAILED',
+            `manifest.json version ${this.version}: instructionsSha256 must be 64 lowercase hex characters`,
+          ),
+        );
+      } else {
+        const actualHash = Checksum.sha256(instructionsPath);
+        if (actualHash !== instructionsSha256) {
+          issues.push(
+            err(
+              'ERR_CHECKSUM_MISMATCH',
+              `${INSTRUCTIONS_FILENAME} sha256 mismatch for version "${this.version}": ` +
+                `manifest has "${instructionsSha256}", computed "${actualHash}"`,
+            ),
+          );
+        }
       }
     }
   }

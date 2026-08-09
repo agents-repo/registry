@@ -68,7 +68,10 @@ function main(): void {
       );
     }
 
-    manager.update(ref, metadata, latest, latestEntry.artifacts, { deferDerivedRefresh: true });
+    manager.update(ref, metadata, latest, latestEntry.artifacts, {
+      deferDerivedRefresh: true,
+      latestVersionEntry: latestEntry,
+    });
   }
 
   manager.refreshDerivedState(discovered);

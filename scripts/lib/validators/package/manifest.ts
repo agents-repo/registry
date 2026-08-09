@@ -135,6 +135,51 @@ function validateVersionEntryFields(e: Record<string, unknown>, ver: string, iss
       ),
     );
   }
+
+  validateInstructionsManifestFields(e, ver, issues);
+}
+
+function validateInstructionsManifestFields(
+  e: Record<string, unknown>,
+  ver: string,
+  issues: ValidationIssue[],
+): void {
+  const artifact = e['instructionsArtifact'];
+  const sha256 = e['instructionsSha256'];
+  const hasArtifact = artifact !== undefined;
+  const hasSha = sha256 !== undefined;
+
+  if (hasArtifact !== hasSha) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: instructionsArtifact and instructionsSha256 must both be present or both absent`,
+      ),
+    );
+    return;
+  }
+
+  if (!hasArtifact) {
+    return;
+  }
+
+  if (artifact !== 'instructions.json') {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: instructionsArtifact must be "instructions.json"`,
+      ),
+    );
+  }
+
+  if (typeof sha256 !== 'string' || !SHA256_PATTERN.test(sha256)) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: instructionsSha256 must be 64 lowercase hex characters`,
+      ),
+    );
+  }
 }
 
 function validateVersionEntry(

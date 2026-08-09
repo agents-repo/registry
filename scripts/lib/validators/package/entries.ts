@@ -23,6 +23,7 @@ import {
   SCHEMA_FAMILY_FLOW,
   AGENT_FILE_EXT,
   AGENT_METADATA_EXT,
+  CHAT_WEB_ENTRY_VALUES,
 } from '../../constants';
 
 const CONTRACT_TYPES: ReadonlySet<string> = new Set(CONTRACT_ALLOWED_TYPES);
@@ -181,6 +182,20 @@ function validateEntryMetadataOptionalFields(
 
   if (md['outputs'] !== undefined) {
     validateContractArray(md['outputs'], 'outputs', context, issues);
+  }
+
+  if (md['chatWeb'] !== undefined) {
+    if (
+      typeof md['chatWeb'] !== 'string' ||
+      !CHAT_WEB_ENTRY_VALUES.includes(md['chatWeb'] as (typeof CHAT_WEB_ENTRY_VALUES)[number])
+    ) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: chatWeb must be "included" or "excluded" when provided`,
+        ),
+      );
+    }
   }
 }
 

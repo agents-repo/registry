@@ -5,6 +5,9 @@ import {
   INSTALL_TARGET_IDS,
   INSTALL_TARGET_STATUSES,
   INDEX_INSTALL_TARGET_STATUSES,
+  CONSUMPTION_CHANNEL_IDS,
+  CONSUMPTION_CHANNEL_STATUSES,
+  CHAT_WEB_ENTRY_VALUES,
 } from './constants';
 export {
   STATUS_VALUES,
@@ -13,6 +16,9 @@ export {
   INSTALL_TARGET_IDS,
   INSTALL_TARGET_STATUSES,
   INDEX_INSTALL_TARGET_STATUSES,
+  CONSUMPTION_CHANNEL_IDS,
+  CONSUMPTION_CHANNEL_STATUSES,
+  CHAT_WEB_ENTRY_VALUES,
 };
 
 // Derive types from constants to eliminate duplication
@@ -49,6 +55,30 @@ export function isIndexInstallTargetStatus(value: unknown): value is IndexInstal
   return typeof value === 'string' && INDEX_INSTALL_TARGET_STATUSES.includes(value as IndexInstallTargetStatus);
 }
 
+export type ConsumptionChannelId = typeof CONSUMPTION_CHANNEL_IDS[number];
+export type ConsumptionChannelStatus = typeof CONSUMPTION_CHANNEL_STATUSES[number];
+export type ChatWebEntryValue = typeof CHAT_WEB_ENTRY_VALUES[number];
+
+export function isConsumptionChannelId(value: unknown): value is ConsumptionChannelId {
+  return typeof value === 'string' && CONSUMPTION_CHANNEL_IDS.includes(value as ConsumptionChannelId);
+}
+
+export function isConsumptionChannelStatus(value: unknown): value is ConsumptionChannelStatus {
+  return (
+    typeof value === 'string' &&
+    CONSUMPTION_CHANNEL_STATUSES.includes(value as ConsumptionChannelStatus)
+  );
+}
+
+export function isChatWebEntryValue(value: unknown): value is ChatWebEntryValue {
+  return typeof value === 'string' && CHAT_WEB_ENTRY_VALUES.includes(value as ChatWebEntryValue);
+}
+
+export interface ConsumptionChannel {
+  id: ConsumptionChannelId;
+  status: ConsumptionChannelStatus;
+}
+
 export interface CompatibilityTarget {
   id: InstallTargetId;
   status: InstallTargetStatus;
@@ -57,6 +87,7 @@ export interface CompatibilityTarget {
 export interface PackageCompatibility {
   canonicalFormat?: string;
   targets: CompatibilityTarget[];
+  consumption?: ConsumptionChannel[];
 }
 
 export interface InstallTargetIndexEntry {
@@ -110,6 +141,8 @@ export interface ManifestVersionEntry {
   srcSha256: string;
   artifacts: ManifestArtifactEntry[];
   createdAt: string;
+  instructionsArtifact?: string;
+  instructionsSha256?: string;
 }
 
 export interface Manifest {
@@ -134,6 +167,7 @@ export interface PackageIndexEntry {
   estimateOverallCost: EstimateOverallCost;
   quickstart?: string;
   installTargets?: InstallTargetIndexEntry[];
+  chatWeb?: true;
 }
 
 export interface PackageIndex {

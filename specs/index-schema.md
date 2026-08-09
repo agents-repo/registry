@@ -1,4 +1,4 @@
-# Index Schema Specification (1.3.0)
+# Index Schema Specification (1.4.0)
 
 This document defines the deterministic `index.json` format
 for the registry-level package index.
@@ -11,11 +11,12 @@ are to be interpreted as described in RFC 2119.
 ## Schema Version Lifecycle
 
 `schemaVersion` identifies the index **format** version, not the package
-release version and not the spec document version (`1.3.0`).
+release version and not the spec document version (`1.4.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.3.0` | index schemaVersion | current | Adds `namespace`, `package`, `path`, `aliases`; qualified `id` |
+| `1.4.0` | index schemaVersion | current | Adds optional `chatWeb` |
+| `1.3.0` | index schemaVersion | supported | Adds `namespace`, `package`, `path`, `aliases`; qualified `id` |
 | `1.2.0` | index schemaVersion | supported | Adds optional `installTargets` |
 | `1.1.0` | index schemaVersion | supported | Adds required `owner` field |
 | `1.0.0` | index schemaVersion | deprecated | Missing required `owner` field |
@@ -73,6 +74,7 @@ Each entry in `packages` MUST be an object with:
 | `estimateOverallCost` | object | yes | Includes required `band` |
 | `quickstart` | string | no | HTTPS URL |
 | `installTargets` | array | no | Projected install targets; see [Install Targets](#install-targets) |
+| `chatWeb` | boolean | no | `true` when chat-web is enabled for latest; see `chat-consumption.md` |
 
 `estimateOverallCost` object schema:
 
@@ -100,6 +102,12 @@ When present, `installTargets` MUST be an array of objects:
 `installTargets` is projected at build time from `metadata.json`
 `compatibility.targets` and the built manifest artifacts. `planned`
 targets MUST NOT appear in the index.
+
+## Chat Web
+
+When present, `chatWeb` MUST be the boolean `true`. Tooling MUST omit the
+field when the package does not publish chat-web instructions for
+`latest` per `chat-consumption.md`.
 
 ## Validation Rules
 

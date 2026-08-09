@@ -219,4 +219,32 @@ describe('IndexManager', (): void => {
 
     vi.restoreAllMocks();
   });
+
+  it('projects chatWeb when latest manifest version includes instructions.json', (): void => {
+    const tempDir = makeTempDir();
+    const indexPath = path.join(tempDir, 'index.json');
+    const manager = new IndexManager(indexPath, tempDir);
+    const metadata = makeMetadata({
+      compatibility: {
+        targets: INSTALL_TARGET_IDS.map((id) => ({ id, status: 'supported' as const })),
+        consumption: [{ id: 'chat-web', status: 'supported' }],
+      },
+    });
+
+    manager.update(makeRef('chat-package'), metadata, '1.0.0', DEFAULT_ARTIFACTS, {
+      latestVersionEntry: {
+        version: '1.0.0',
+        srcArtifact: '1.0.0-src.zip',
+        srcSha256: 'a'.repeat(64),
+        artifacts: DEFAULT_ARTIFACTS,
+        createdAt: '2026-05-22T00:00:00.000Z',
+        instructionsArtifact: 'instructions.json',
+        instructionsSha256: 'b'.repeat(64),
+      },
+    });
+
+    const index = readIndex(indexPath);
+    const entry = index.packages.find((pkg) => pkg.id === 'agents-repo/chat-package');
+    expect(entry?.chatWeb).toBe(true);
+  });
 });

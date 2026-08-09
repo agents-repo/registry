@@ -29,6 +29,9 @@ Each agent `<agent-id>` MUST include:
 
 The `<agent-id>` stem MUST be identical for both files.
 
+Chat-web fetch paths for published versions are defined in
+`chat-consumption.md` (`/pkg/.../agents/<agent-id>.agent.md`).
+
 ## Agent File Structure
 
 `<agent-id>.agent.md` MUST start with YAML frontmatter followed by

@@ -1,4 +1,4 @@
-# Manifest Schema Specification (1.1.0)
+# Manifest Schema Specification (1.2.0)
 
 This document defines the deterministic `manifest.json`
 format for package releases.
@@ -11,11 +11,12 @@ are to be interpreted as described in RFC 2119.
 ## Schema Version Lifecycle
 
 `schemaVersion` identifies the manifest **format** version, not the package
-release version and not the spec document version (`1.1.0`).
+release version and not the spec document version (`1.2.0`).
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.1.0` | manifest schemaVersion | current | Multi-target `artifacts[]` |
+| `1.2.0` | manifest schemaVersion | current | Optional `instructionsArtifact` / `instructionsSha256` |
+| `1.1.0` | manifest schemaVersion | supported | Multi-target `artifacts[]` |
 | `1.0.0` | manifest schemaVersion | eol | Legacy single `artifact` / `sha256`; migrate with `package:build` |
 
 Tooling MUST reject manifests whose `schemaVersion` is not in the table above
@@ -58,6 +59,11 @@ Each entry in `versions` MUST be an object with:
 | `srcArtifact` | string | yes | Source archive filename in version dir |
 | `srcSha256` | string | yes | Lowercase hex, exactly 64 characters |
 | `createdAt` | string | yes | RFC 3339 timestamp |
+| `instructionsArtifact` | string | no (1.2.0+) | MUST be `instructions.json` when present |
+| `instructionsSha256` | string | no (1.2.0+) | SHA-256 of `instructions.json` when present |
+
+When `instructionsArtifact` is present, `instructionsSha256` MUST be present
+and vice versa. See `chat-consumption.md`.
 
 ### Artifact Entry Schema
 
@@ -85,6 +91,9 @@ Each `artifacts[]` entry MUST be an object with:
   `versions/<version>/<version>-src.zip`.
 - `versions[].artifacts[].sha256` MUST match the bytes of each target artifact.
 - `versions[].srcSha256` MUST match the bytes of the source archive exactly.
+- When `instructionsArtifact` is present, the file MUST exist at
+  `versions/<version>/instructions.json` and `instructionsSha256` MUST match
+  its bytes.
 - Target ZIP layouts MUST follow `install-targets.md`.
 - Root source-tree `.agent.md` frontmatter `version` consistency relative
   to `latest` MUST satisfy `versioning-rules.md`.

@@ -125,6 +125,9 @@ supported spec document version in this table.
   where `<version>` matches the entry's own `version` field.
 - `manifest.json.versions[].srcSha256` MUST match the source archive
   bytes exactly.
+- When present, `manifest.json.versions[].instructionsArtifact` and
+  `instructionsSha256` MUST follow `manifest-schema.md` and
+  `chat-consumption.md`.
 - Every `.agent.md` file inside each `versions/<version>/<version>-<target-id>.zip`
   deployment artifact MUST have frontmatter `version` equal to `<version>`.
 - Every `.agent.md` file inside `versions/<version>/<version>-src.zip`

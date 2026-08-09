@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { printValidationIssues } from '../cli/reporting';
-import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR } from '../constants';
+import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR, INSTRUCTIONS_FILENAME } from '../constants';
 import { ErrorCode, PackageError } from '../errors';
 import { GitContext } from '../git';
 import { Package } from '../package';
@@ -13,6 +13,8 @@ import { PackageValidator } from '../validate-package';
 import { ValidationUtils } from '../validation-utils';
 import { ZipBuilder } from '../zip-builder';
 import { buildTargetArtifacts, type BuiltTargetArtifact } from '../emitters/target-zip-builder';
+import { buildInstructionsManifest } from '../instructions-manifest-builder';
+import { writeJsonFile } from '../io/json';
 
 export interface BuildPackageResult {
   packageId: string;
@@ -132,6 +134,18 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
     const srcZipSha256 = Checksum.sha256(srcZipPath);
     logMessage(log, `       src sha256: ${srcZipSha256}`);
 
+    const instructionsBuild = buildInstructionsManifest(pkg.ref, pkg.packageDir, metadata, version);
+    let instructionsSha256: string | undefined;
+    if (instructionsBuild !== null) {
+      const instructionsPath = path.join(versionDir, INSTRUCTIONS_FILENAME);
+      writeJsonFile(instructionsPath, instructionsBuild.manifest);
+      instructionsSha256 = Checksum.sha256(instructionsPath);
+      logMessage(
+        log,
+        `       ${INSTRUCTIONS_FILENAME} sha256: ${instructionsSha256} (${instructionsBuild.includedCount} instructions)`,
+      );
+    }
+
     logMessage(log, `[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME} and packages/${INDEX_FILENAME}`);
     updateManifestAndIndexWithRollback({
       ref: pkg.ref,
@@ -142,6 +156,7 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
       version,
       artifacts,
       srcZipSha256,
+      instructionsSha256,
     });
   } catch (error) {
     rollbackVersionDirectory(versionDir);

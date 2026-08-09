@@ -9,7 +9,7 @@ import {
   GITHUB_USER_OR_TEAM_SLUG_PATTERN,
   SCHEMA_FAMILY_INDEX,
 } from './constants';
-import { projectInstallTargetsForIndex } from './compatibility';
+import { projectInstallTargetsForIndex, projectChatWebForIndex } from './compatibility';
 import {
   buildAliasesFromPackages,
   buildPackagePath,
@@ -19,7 +19,7 @@ import {
   type PackageRef,
 } from './namespace';
 import { writePackageTree } from './tree-manager';
-import type { ManifestArtifactEntry, PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
+import type { ManifestArtifactEntry, ManifestVersionEntry, PackageIndex, PackageIndexEntry, PackageMetadata } from './types';
 import { isStatus, isPackageCostBand, STATUS_VALUES, PACKAGE_COST_BANDS } from './types';
 import path from 'node:path';
 
@@ -147,6 +147,7 @@ function refreshAliases(
 
 export interface IndexUpdateOptions {
   deferDerivedRefresh?: boolean;
+  latestVersionEntry?: ManifestVersionEntry;
 }
 
 export class IndexManager {
@@ -211,6 +212,13 @@ export class IndexManager {
       ...projectQuickstart(metadata.quickstart, qualifiedId),
       installTargets: projectInstallTargetsForIndex(metadata, artifacts),
     };
+
+    if (
+      options.latestVersionEntry !== undefined &&
+      projectChatWebForIndex(metadata, options.latestVersionEntry)
+    ) {
+      entry.chatWeb = true;
+    }
 
     const existing = index.packages.findIndex((p) => p.id === qualifiedId);
     if (existing >= 0) {

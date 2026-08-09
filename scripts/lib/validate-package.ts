@@ -20,6 +20,7 @@ import {
   validateMetadataVersionAgainstManifestLatest,
   validateSharedFrontmatterVersion,
 } from './validators/package/version-consistency';
+import { validateChatWebIncludedRequiresSupportedChannel } from './validators/package/chat-web-consistency';
 
 // ---------------------------------------------------------------------------
 // PackageValidator class
@@ -63,6 +64,10 @@ export function validatePackage(
   });
 
   validatePackageEntriesSection(packageDir, issues);
+
+  if (validatedMetadata !== null) {
+    validateChatWebIncludedRequiresSupportedChannel(packageDir, validatedMetadata, issues);
+  }
 
   validatePackageManifestSection(packageDir, leafPackageId, validatedMetadata, issues);
 
