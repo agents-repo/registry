@@ -124,7 +124,7 @@ Install and refresh catalog packages with the [agents-repo CLI](https://github.c
 After `npm ci`, use the npm scripts (CLI pinned in `devDependencies`):
 
 ```bash
-npx agents-repo@1.19.0 init --targets github-copilot claude-code cursor openai-codex
+npm exec agents-repo -- init --targets github-copilot claude-code cursor openai-codex
 npm run agents:install    # bulk sync from agents.json
 npm run agents:update     # refresh within semver ranges
 npm run agents:ci         # lock-pinned registry install (CI parity)

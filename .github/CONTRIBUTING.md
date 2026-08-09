@@ -310,7 +310,7 @@ Bootstrap only when `agents.json` is missing (one-time; use a published CLI
 release or `npm exec agents-repo -- init` after `npm ci`):
 
 ```bash
-npx agents-repo@1.19.0 init --targets github-copilot claude-code cursor openai-codex
+npm exec agents-repo -- init --targets github-copilot claude-code cursor openai-codex
 ```
 
 Use the npm scripts for bulk install, update, and CI (CLI version is pinned in
