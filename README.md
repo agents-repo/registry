@@ -120,10 +120,11 @@ Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
 
 ### Registry workflow packages (CLI)
 
-Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli):
+Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli).
+After `npm ci`, use the npm scripts (CLI pinned in `devDependencies`):
 
 ```bash
-npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
+npx agents-repo@1.19.0 init --targets github-copilot claude-code cursor openai-codex
 npm run agents:install    # bulk sync from agents.json
 npm run agents:update       # refresh within semver ranges
 ```

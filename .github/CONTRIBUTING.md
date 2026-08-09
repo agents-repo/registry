@@ -306,18 +306,21 @@ Install and refresh catalog packages with the [agents-repo CLI](https://github.c
 `agents.json` points at `https://registry-proxy.maiconfz.workers.dev` (organization
 catalog proxy).
 
-Bootstrap only when `agents.json` is missing:
+Bootstrap only when `agents.json` is missing (one-time; use a published CLI
+release or `npm exec agents-repo -- init` after `npm ci`):
 
 ```bash
-npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
+npx agents-repo@1.19.0 init --targets github-copilot claude-code cursor openai-codex
 ```
 
-Use the pinned npm scripts for local bulk install and update (pinned CLI
-release; pr-baseline CI uses `agents-repo@latest` for lock-pinned `ci` only):
+Use the npm scripts for bulk install, update, and CI (CLI version is pinned in
+`package.json` / `package-lock.json`, distinct from registry packages in
+`agents-lock.json`):
 
 ```bash
 npm run agents:install   # bulk sync from agents.json
 npm run agents:update    # refresh within semver ranges
+npm run agents:ci        # same command pr-baseline uses after npm ci
 ```
 
 Commit `agents.json`, `agents-lock.json`, and extracted paths (`.github/agents/`,
@@ -331,7 +334,7 @@ Dogfooded packages:
 - `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
 
 Local pre-commit checks project guideline mirrors (`sync:ide-instructions
---check`). CI runs `npx agents-repo@latest ci` to reinstall registry packages
+--check`). CI runs `npm run agents:ci` to reinstall registry packages
 from the committed lock and fail on extract or lock drift (not semver-max
 `install`).
 
@@ -394,7 +397,7 @@ Before requesting review:
    ```bash
    npm run sync:ide-instructions -- --check
    rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
-   npx agents-repo@1.13.0 install
+   npm run agents:ci
    DRIFT_PATHS="agents.json agents-lock.json .github/agents \
      .cursor/skills .claude/agents .agents/skills"
    git diff --exit-code -- $DRIFT_PATHS
