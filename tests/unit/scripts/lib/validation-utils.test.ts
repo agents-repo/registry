@@ -2,11 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { ValidationUtils } from '../../../../scripts/lib/validation-utils';
 
 describe('ValidationUtils.describeInvalidReleaseVersionInput', (): void => {
-  it('returns the string value for string inputs', (): void => {
-    expect(ValidationUtils.describeInvalidReleaseVersionInput('1.0.0-beta')).toBe('1.0.0-beta');
+  it('returns a JSON-quoted string for string inputs', (): void => {
+    expect(ValidationUtils.describeInvalidReleaseVersionInput('1.0.0-beta')).toBe('"1.0.0-beta"');
+    expect(ValidationUtils.describeInvalidReleaseVersionInput('')).toBe('""');
+    expect(ValidationUtils.describeInvalidReleaseVersionInput('bad\ninput')).toBe('"bad\\ninput"');
   });
 
-  it('returns null for null', (): void => {
+  it("returns the string 'null' for null", (): void => {
     expect(ValidationUtils.describeInvalidReleaseVersionInput(null)).toBe('null');
   });
 
