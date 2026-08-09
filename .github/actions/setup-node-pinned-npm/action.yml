@@ -35,7 +35,7 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: npm ci
+      run: npm ci --ignore-scripts
 
     - name: Verify install script approvals
       shell: bash
@@ -55,3 +55,25 @@ runs:
         }
         console.log('INSTALL SCRIPTS CHECK OK');
         "
+
+    - name: Run approved install scripts
+      shell: bash
+      run: |
+        mapfile -t approved_pkgs < <(node -e "
+        const fs = require('fs');
+        const path = require('path');
+        const allow = require('./package.json').allowScripts ?? {};
+        for (const [key, ok] of Object.entries(allow)) {
+          if (!ok) continue;
+          const at = key.lastIndexOf('@');
+          const name = at > 0 ? key.slice(0, at) : key;
+          const pkgPath = name.startsWith('@')
+            ? path.join('node_modules', ...name.split('/'))
+            : path.join('node_modules', name);
+          if (!fs.existsSync(pkgPath)) continue;
+          console.log(key);
+        }
+        ")
+        if ((${#approved_pkgs[@]} > 0)); then
+          npm rebuild --foreground-scripts "${approved_pkgs[@]}"
+        fi

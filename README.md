@@ -25,7 +25,7 @@ Use the pinned runtime to keep local development, agent tasks, and CI aligned.
 
 ### Runtime pins
 
-- Node.js: `24.15.0` (see `.nvmrc` and `.node-version`)
+- Node.js: `24.18.0` (see `.nvmrc` and `.node-version`)
 - npm: `12.0.1` (see `packageManager` in `package.json`)
 
 ### GitHub CLI
@@ -67,7 +67,7 @@ npm install-scripts approve <name>@<version>
 
 Then commit the updated `allowScripts` entry in `package.json`.
 
-If you do not use `nvm`, install Node `24.15.0` manually and then run the
+If you do not use `nvm`, install Node `24.18.0` manually and then run the
 same Corepack and npm commands.
 
 Common `gh` commands used in this workflow:
@@ -120,12 +120,14 @@ Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
 
 ### Registry workflow packages (CLI)
 
-Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli):
+Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli).
+After `npm ci`, use the npm scripts (CLI pinned in `devDependencies`):
 
 ```bash
-npx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex
+npm exec agents-repo -- init --targets github-copilot claude-code cursor openai-codex
 npm run agents:install    # bulk sync from agents.json
-npm run agents:update       # refresh within semver ranges
+npm run agents:update     # refresh within semver ranges
+npm run agents:ci         # lock-pinned registry install (CI parity)
 ```
 
 Commit `agents.json`, `agents-lock.json`, and extracted paths (`.github/agents/`,
