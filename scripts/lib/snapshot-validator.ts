@@ -77,14 +77,34 @@ export class SnapshotValidator {
     this.validateSnapshotMetadata(snapshotMetaPath, issues);
   }
 
-  private validateVersionDirEntries(versionDir: string, issues: ValidationIssue[]): void {
+  private peekManifestVersionEntry(manifestPath: string): Manifest['versions'][number] | undefined {
+    if (!fs.existsSync(manifestPath)) {
+      return undefined;
+    }
+
+    try {
+      const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf-8')) as Manifest;
+      return manifest.versions.find((versionEntry) => versionEntry.version === this.version);
+    } catch {
+      return undefined;
+    }
+  }
+
+  private validateVersionDirEntries(
+    versionDir: string,
+    issues: ValidationIssue[],
+    allowInstructionsFile: boolean,
+  ): void {
     const allowedTopLevelEntries = new Set([
       METADATA_FILENAME,
-      INSTRUCTIONS_FILENAME,
       `${this.version}${SOURCE_ARCHIVE_SUFFIX}`,
       AGENTS_DIR,
       FLOWS_DIR,
     ]);
+
+    if (allowInstructionsFile) {
+      allowedTopLevelEntries.add(INSTRUCTIONS_FILENAME);
+    }
 
     for (const entry of fs.readdirSync(versionDir)) {
       if (allowedTopLevelEntries.has(entry) || TARGET_ARTIFACT_FILE_PATTERN.test(entry)) {
@@ -316,7 +336,11 @@ export class SnapshotValidator {
     }
 
     this.validateRequiredSnapshotFiles(srcZipPath, snapshotMetaPath, issues);
-    this.validateVersionDirEntries(versionDir, issues);
+
+    const manifestEntry = this.peekManifestVersionEntry(manifestPath);
+    const allowInstructionsFile = manifestEntry?.instructionsArtifact === INSTRUCTIONS_FILENAME;
+    this.validateVersionDirEntries(versionDir, issues, allowInstructionsFile);
+
     this.validateManifestAndChecksums(manifestPath, versionDir, srcZipPath, snapshotMetaPath, issues);
 
     if (fs.existsSync(srcZipPath)) {

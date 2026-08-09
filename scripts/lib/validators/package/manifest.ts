@@ -93,7 +93,12 @@ function validateArtifactEntry(
   }
 }
 
-function validateVersionEntryFields(e: Record<string, unknown>, ver: string, issues: ValidationIssue[]): void {
+function validateVersionEntryFields(
+  e: Record<string, unknown>,
+  ver: string,
+  issues: ValidationIssue[],
+  manifestSchemaVersion: unknown,
+): void {
   if (e['srcArtifact'] !== `${ver}${SOURCE_ARCHIVE_SUFFIX}`) {
     issues.push(
       err(
@@ -136,18 +141,39 @@ function validateVersionEntryFields(e: Record<string, unknown>, ver: string, iss
     );
   }
 
-  validateInstructionsManifestFields(e, ver, issues);
+  validateInstructionsManifestFields(e, ver, issues, manifestSchemaVersion);
+}
+
+const MANIFEST_INSTRUCTIONS_FIELDS_MIN_SCHEMA = '1.2.0';
+
+function manifestSchemaSupportsInstructionsFields(manifestSchemaVersion: unknown): boolean {
+  return (
+    typeof manifestSchemaVersion === 'string' &&
+    semver.valid(manifestSchemaVersion) !== null &&
+    semver.gte(manifestSchemaVersion, MANIFEST_INSTRUCTIONS_FIELDS_MIN_SCHEMA)
+  );
 }
 
 function validateInstructionsManifestFields(
   e: Record<string, unknown>,
   ver: string,
   issues: ValidationIssue[],
+  manifestSchemaVersion: unknown,
 ): void {
   const artifact = e['instructionsArtifact'];
   const sha256 = e['instructionsSha256'];
   const hasArtifact = artifact !== undefined;
   const hasSha = sha256 !== undefined;
+
+  if ((hasArtifact || hasSha) && !manifestSchemaSupportsInstructionsFields(manifestSchemaVersion)) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: instructionsArtifact and instructionsSha256 require manifest.json schemaVersion ${MANIFEST_INSTRUCTIONS_FIELDS_MIN_SCHEMA} or newer`,
+      ),
+    );
+    return;
+  }
 
   if (hasArtifact !== hasSha) {
     issues.push(
@@ -186,6 +212,7 @@ function validateVersionEntry(
   entry: unknown,
   issues: ValidationIssue[],
   versionSet: Set<string>,
+  manifestSchemaVersion: unknown,
 ): void {
   if (typeof entry !== 'object' || entry === null) {
     issues.push(err('ERR_VALIDATION_FAILED', 'manifest.json versions entries must be objects'));
@@ -203,7 +230,7 @@ function validateVersionEntry(
   }
 
   addVersionUniquenessIssue(versionSet, ver, issues);
-  validateVersionEntryFields(e, ver, issues);
+  validateVersionEntryFields(e, ver, issues, manifestSchemaVersion);
 }
 
 function validateLatestMatchesMax(
@@ -276,9 +303,10 @@ export function validateManifest(
     return m as unknown as Manifest;
   }
 
+  const manifestSchemaVersion = m['schemaVersion'];
   const versionSet = new Set<string>();
   for (const entry of m['versions'] as unknown[]) {
-    validateVersionEntry(entry, issues, versionSet);
+    validateVersionEntry(entry, issues, versionSet, manifestSchemaVersion);
   }
 
   validateLatestMatchesMax(m['latest'], versionSet, issues);
