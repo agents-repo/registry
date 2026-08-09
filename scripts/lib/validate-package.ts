@@ -55,46 +55,16 @@ export function validatePackage(
     return report;
   }
 
-  // 2. Package metadata
-  const metadata = loadPackageMetadata(packageDir, issues);
-  let validatedMetadata: PackageMetadata | null = null;
-  if (metadata !== null) {
-    if (typeof metadata.owner === 'string') {
-      try {
-        validateNamespaceEqualsOwner(ref.namespace, metadata.owner, ref.qualifiedId);
-      } catch (error) {
-        issues.push({
-          code: 'ERR_METADATA_INVALID',
-          severity: 'error',
-          message: error instanceof Error ? error.message : String(error),
-        });
-      }
-    }
-    if (validateMetadata(metadata, leafPackageId, issues)) {
-      validatedMetadata = metadata;
-    }
-    validateMetadataVersionAgainstManifestLatest(packageDir, metadata, issues);
-  }
+  const validatedMetadata = validatePackageMetadataSection({
+    ref,
+    packageDir,
+    leafPackageId,
+    issues,
+  });
 
-  // 3. Agent and flow entries
-  const { agentEntries, flowEntries, allEntries } = loadPackageEntries(packageDir, issues);
+  validatePackageEntriesSection(packageDir, issues);
 
-  // 4-5. Entry consistency checks
-  validateHasEntries(agentEntries, flowEntries, issues);
-  validateUniqueIdsAcrossEntryTypes(agentEntries, flowEntries, issues);
-
-  // 6. Frontmatter version consistency checks
-  const sharedFrontmatterVersion = validateSharedFrontmatterVersion(allEntries, issues);
-  validateFrontmatterVersionMatchesMetadata(packageDir, sharedFrontmatterVersion, issues);
-
-  // 8. Manifest validation (if present)
-  const manifestPath = getManifestPath(packageDir);
-  if (hasManifest(packageDir) && validatedMetadata !== null) {
-    const manifest = validateManifest(manifestPath, leafPackageId, issues);
-    if (manifest !== null) {
-      validateCompatibilityManifestAlignment(validatedMetadata, manifest, issues);
-    }
-  }
+  validatePackageManifestSection(packageDir, leafPackageId, validatedMetadata, issues);
 
   const { errors, warnings } = splitIssues(issues);
 
@@ -104,4 +74,63 @@ export function validatePackage(
     warnings,
     passed: errors.length === 0,
   };
+}
+
+function validatePackageMetadataSection(options: {
+  readonly ref: ReturnType<typeof parseQualifiedPackageRef>;
+  readonly packageDir: string;
+  readonly leafPackageId: string;
+  readonly issues: ValidationIssue[];
+}): PackageMetadata | null {
+  const metadata = loadPackageMetadata(options.packageDir, options.issues);
+  let validatedMetadata: PackageMetadata | null = null;
+  if (metadata === null) {
+    return null;
+  }
+
+  if (typeof metadata.owner === 'string') {
+    try {
+      validateNamespaceEqualsOwner(
+        options.ref.namespace,
+        metadata.owner,
+        options.ref.qualifiedId,
+      );
+    } catch (error) {
+      options.issues.push({
+        code: 'ERR_METADATA_INVALID',
+        severity: 'error',
+        message: error instanceof Error ? error.message : String(error),
+      });
+    }
+  }
+  if (validateMetadata(metadata, options.leafPackageId, options.issues)) {
+    validatedMetadata = metadata;
+  }
+  validateMetadataVersionAgainstManifestLatest(options.packageDir, metadata, options.issues);
+  return validatedMetadata;
+}
+
+function validatePackageEntriesSection(packageDir: string, issues: ValidationIssue[]): void {
+  const { agentEntries, flowEntries, allEntries } = loadPackageEntries(packageDir, issues);
+  validateHasEntries(agentEntries, flowEntries, issues);
+  validateUniqueIdsAcrossEntryTypes(agentEntries, flowEntries, issues);
+  const sharedFrontmatterVersion = validateSharedFrontmatterVersion(allEntries, issues);
+  validateFrontmatterVersionMatchesMetadata(packageDir, sharedFrontmatterVersion, issues);
+}
+
+function validatePackageManifestSection(
+  packageDir: string,
+  leafPackageId: string,
+  validatedMetadata: PackageMetadata | null,
+  issues: ValidationIssue[],
+): void {
+  const manifestPath = getManifestPath(packageDir);
+  if (!hasManifest(packageDir) || validatedMetadata === null) {
+    return;
+  }
+
+  const manifest = validateManifest(manifestPath, leafPackageId, issues);
+  if (manifest !== null) {
+    validateCompatibilityManifestAlignment(validatedMetadata, manifest, issues);
+  }
 }

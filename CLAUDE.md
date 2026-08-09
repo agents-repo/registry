@@ -67,7 +67,7 @@ pre-commit hook may also run this check.
 Agent tasks in this repository MUST use the pinned runtime below to avoid
 tooling drift.
 
-- Node.js: `24.15.0` (see `.nvmrc`)
+- Node.js: `24.18.0` (see `.nvmrc`)
 - npm: `12.0.1` (see `package.json` `packageManager`)
 
 Before running package or review tasks, execute:
