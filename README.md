@@ -1,10 +1,8 @@
 # Agents Registry
 
-<!-- markdownlint-disable MD013 -->
-![License](https://img.shields.io/github/license/agents-repo/registry) ![Build](https://github.com/agents-repo/registry/actions/workflows/pr-baseline.yml/badge.svg) [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=agents-repo_registry&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=agents-repo_registry) ![Release](https://img.shields.io/github/v/release/agents-repo/registry?sort=semver) ![Stars](https://img.shields.io/github/stars/agents-repo/registry?style=flat)
+![License](https://img.shields.io/github/license/agents-repo/registry) ![PR baseline checks](https://github.com/agents-repo/registry/actions/workflows/pr-baseline.yml/badge.svg?event=pull_request&branch=main) [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=agents-repo_registry&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=agents-repo_registry) ![Release](https://img.shields.io/github/v/release/agents-repo/registry?sort=semver) ![Stars](https://img.shields.io/github/stars/agents-repo/registry?style=flat) <!-- markdownlint-disable-line MD013 -->
 
-![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?style=flat&logo=conventionalcommits&logoColor=white) ![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg) ![Top language](https://img.shields.io/github/languages/top/agents-repo/registry) ![Node.js](https://img.shields.io/badge/Node.js-24-339933?style=flat&logo=nodedotjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white)
-<!-- markdownlint-enable MD013 -->
+![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-FE5196?style=flat&logo=conventionalcommits&logoColor=white) ![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg) ![Top language](https://img.shields.io/github/languages/top/agents-repo/registry) ![Node.js](https://img.shields.io/badge/Node.js-24-339933?style=flat&logo=nodedotjs&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=typescript&logoColor=white) <!-- markdownlint-disable-line MD013 -->
 
 ---
 
