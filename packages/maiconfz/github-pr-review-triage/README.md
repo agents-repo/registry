@@ -1,27 +1,29 @@
 # github-pr-review-triage
 
 GitHub-specific agent: triages PR review threads and Copilot review summaries
-via `gh` — fetch, fix, commit, reply, resolve or acknowledge.
+via `gh` — fetch, fix, commit, push, reply, resolve or acknowledge.
 
 ## Objective
 
 Triages pull request review feedback on any GitHub repository. Uses the GitHub
 CLI (`gh`) to fetch unresolved review threads and Copilot review summaries
-(zero inline comments), classify outcomes, apply fixes, validate and push when
-permitted, then reply and resolve threads or acknowledge summaries on the PR
-conversation.
+(zero inline comments), classify outcomes, apply fixes, validate, then
+**automatically** commit, push, reply, resolve threads, and acknowledge
+summaries when `gh` is authenticated (default). Pass `dry-run: true` for
+review-only mode without shipping.
 
 ## Workflow
 
 ```mermaid
 flowchart LR
+  preflight[Preflight_gh_auth]
   fetch[Fetch_feedback]
   triage[Triage_outcomes]
   fix[Apply_fixes]
   ship[Validate_and_push]
   close[Reply_and_close]
 
-  fetch --> triage --> fix --> ship --> close
+  preflight --> fetch --> triage --> fix --> ship --> close
 ```
 
 ## Prerequisites
@@ -68,13 +70,23 @@ Invoke the **`github-pr-review-triage`** agent when you need to:
 - Batch-triage unresolved review threads before CI fixes
 - Close review threads after fixes land on the branch
 
+When `gh` is authenticated, the agent commits, pushes, and resolves threads
+by default. No extra permission input is required.
+
 ### Inputs
 
 | Input | Required | Description |
 | --- | --- | --- |
-| `repository` | yes | GitHub repository as `owner/name` |
-| `pull-request` | yes | Pull request number |
-| `push-permission` | yes | Whether commit and push are allowed for this pass |
+| `repository` | no | GitHub repository as `owner/name` (auto-discovered from current branch when omitted) |
+| `pull-request` | no | Pull request number (auto-discovered from current branch when omitted) |
+| `dry-run` | no | When `true`, fetch/triage/fix/validate only — no commit, push, or thread resolution. Defaults to `false` |
+
+### Migration from 1.1.x
+
+| 1.1.x | 1.2.0 |
+| --- | --- |
+| `push-permission: true` | Omit `dry-run` (default is full automation) |
+| `push-permission: false` | `dry-run: true` |
 
 ### Outputs
 
@@ -97,5 +109,5 @@ From the registry repository root (package authors / registry contributors):
 npm run package:validate -- --package maiconfz/github-pr-review-triage
 npm run package:build -- --package maiconfz/github-pr-review-triage
 npm run package:validate-artifacts -- \
-  --package maiconfz/github-pr-review-triage --version 1.1.1
+  --package maiconfz/github-pr-review-triage --version 1.2.0
 ```
