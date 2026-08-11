@@ -55,13 +55,32 @@
     "gray-matter": "^4.0.3",
     "husky": "^9",
     "jsonc-eslint-parser": "^3.1.0",
-    "markdownlint-cli2": "^0.23.0",
+    "markdownlint-cli2": "^0.23.2",
     "semantic-release": "^25.0.6",
     "semver": "^7.8.5",
     "simple-git": "^3.36.0",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.10"
+  },
+  "overrides": {
+    "brace-expansion@^1": "1.1.18",
+    "brace-expansion@^2": "2.1.4",
+    "brace-expansion@^5": "5.0.9",
+    "ip-address": "^10.4.0",
+    "tar": "^7.5.22",
+    "undici@^6": "^6.28.0",
+    "undici@^7": "^7.29.0",
+    "undici@^8": "^8.9.0",
+    "js-yaml@^3": "3.15.1",
+    "js-yaml@^4": "4.3.1",
+    "js-yaml@^5": "5.2.2",
+    "npm": {
+      "brace-expansion": "5.0.9",
+      "ip-address": "^10.4.0",
+      "tar": "^7.5.22",
+      "undici": "^6.28.0"
+    }
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
