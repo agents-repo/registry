@@ -23,8 +23,8 @@ const VENDORED_CHECKSUMS_FILE = path.join(
   'scripts',
   `actionlint_${ACTIONLINT_VERSION}_checksums.txt`,
 );
-const CURL_MAX_ATTEMPTS = 5;
-const CURL_RETRY_DELAY_MS = 1_000;
+const CURL_MAX_ATTEMPTS = 8;
+const CURL_RETRY_BASE_MS = 2_000;
 
 /** OS-managed binary locations — excludes /usr/local, which is often user-writable. */
 const TRUSTED_PATH_DIRS =
@@ -40,7 +40,7 @@ function trustedEnv() {
   return { ...process.env, PATH: trustedPathValue() };
 }
 
-function resolveTrustedExecutable(commandName) {
+function trustedExecutablePath(commandName) {
   const fileName =
     process.platform === 'win32' && !commandName.toLowerCase().endsWith('.exe')
       ? `${commandName}.exe`
@@ -51,14 +51,26 @@ function resolveTrustedExecutable(commandName) {
       return candidate;
     }
   }
-  throw new Error(
-    `Required executable "${commandName}" was not found under trusted system directories.`,
-  );
+  return null;
+}
+
+function resolveTrustedExecutable(commandName) {
+  const executable = trustedExecutablePath(commandName);
+  if (!executable) {
+    throw new Error(
+      `Required executable "${commandName}" was not found under trusted system directories.`,
+    );
+  }
+  return executable;
 }
 
 function execTrusted(commandName, args, options = {}) {
   const executable = resolveTrustedExecutable(commandName);
   return execFileSync(executable, args, { ...options, env: trustedEnv() });
+}
+
+function curlRetryDelayMs(attempt) {
+  return CURL_RETRY_BASE_MS * 2 ** (attempt - 1);
 }
 
 function execTrustedWithRetries(commandName, args, options = {}) {
@@ -69,11 +81,64 @@ function execTrustedWithRetries(commandName, args, options = {}) {
     } catch (error) {
       lastError = error;
       if (attempt < CURL_MAX_ATTEMPTS) {
-        sleepSync(CURL_RETRY_DELAY_MS * attempt);
+        const delayMs = curlRetryDelayMs(attempt);
+        console.warn(
+          `${commandName} attempt ${attempt}/${CURL_MAX_ATTEMPTS} failed; retrying in ${delayMs}ms.`,
+        );
+        sleepSync(delayMs);
       }
     }
   }
   throw lastError;
+}
+
+function downloadReleaseArchive(asset, archivePath) {
+  const url = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${asset}`;
+  let curlError;
+  try {
+    execTrustedWithRetries('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
+    return;
+  } catch (error) {
+    curlError = error;
+    console.warn(`curl download failed for ${asset}; trying gh release download if available.`);
+  }
+
+  const gh = trustedExecutablePath('gh');
+  if (!gh) {
+    const detail = curlError instanceof Error ? curlError.message : String(curlError);
+    throw new Error(`Failed to download actionlint (requires curl). ${detail}`, { cause: curlError });
+  }
+
+  const versionDir = path.dirname(archivePath);
+  try {
+    execFileSync(
+      gh,
+      [
+        'release',
+        'download',
+        `v${ACTIONLINT_VERSION}`,
+        '--repo',
+        'rhysd/actionlint',
+        '--pattern',
+        asset,
+        '--dir',
+        versionDir,
+        '--clobber',
+      ],
+      { stdio: 'inherit', env: trustedEnv() },
+    );
+  } catch (error) {
+    const curlDetail = curlError instanceof Error ? curlError.message : String(curlError);
+    const ghDetail = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Failed to download actionlint via curl and gh. curl: ${curlDetail}; gh: ${ghDetail}`,
+      { cause: error },
+    );
+  }
+
+  if (!fs.existsSync(archivePath)) {
+    throw new Error(`gh release download completed but archive is missing: ${archivePath}`);
+  }
 }
 
 function parseSemverToken(stdout) {
@@ -191,14 +256,8 @@ function bootstrapFromRelease() {
 
   fs.mkdirSync(versionDir, { recursive: true });
   const archivePath = path.join(versionDir, asset);
-  const url = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${asset}`;
 
-  try {
-    execTrustedWithRetries('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
-  } catch (error) {
-    const detail = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to download actionlint (requires curl). ${detail}`, { cause: error });
-  }
+  downloadReleaseArchive(asset, archivePath);
 
   verifyArchiveSha256(archivePath, asset);
 
