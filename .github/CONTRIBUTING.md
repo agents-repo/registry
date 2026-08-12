@@ -65,8 +65,14 @@ Implementation commits may follow on the same branch.
 2. **Maintainer emergency hotfix** — Hotfix branch work requires prior
    maintainer approval documented in an issue or advisory. Delivery to `main`
    is still via merged pull request.
-3. **Package submission** — Follow the standard Required Workflow (issue →
-   branch → draft PR). Author package source on the task branch, then run
+3. **Package submission** — External contributors SHOULD fork **agents-repo/registry**,
+   work on the fork, and open a pull request from the fork to upstream `main`.
+   A tracking issue on upstream is **recommended but not required** for package
+   submissions and corrections. When an issue exists, branch
+   `package/<issue-number>-<slug>` and include `Closes #<issue-number>` in the
+   pull request. Without an issue, branch `package/<slug>` and describe the
+   package in `## Related Issues`. Author package source on the task branch,
+   open a draft pull request before substantive commits, then run
    `package:build` and `package:validate-artifacts` **before marking the pull
    request ready for review** (not before opening the draft PR).
 
@@ -132,15 +138,20 @@ Commit types not listed above do not trigger an automated release.
 Branch names MUST follow the pattern `<prefix>/<issue-number>-<slug>`,
 where `<slug>` is a short lowercase kebab-case description.
 
+Package submissions without a tracking issue MAY use `package/<slug>` instead
+of `package/<issue-number>-<slug>`.
+
 | Issue type | Prefix | Example |
 | --- | --- | --- |
 | Bug or inconsistency | `fix/` | `fix/42-correct-manifest-artifact-rule` |
 | Spec change request | `spec/` | `spec/7-add-contract-schema` |
 | Feature proposal | `feat/` | `feat/15-search-index` |
 | Task or chore | `chore/` | `chore/31-update-dependencies` |
-| Package submission | `package/` | `package/56-my-package-name` |
+| Package submission (with issue) | `package/` | `package/56-my-package-name` |
+| Package submission (no issue) | `package/` | `package/my-package-name` |
 
-Create the issue first to obtain the issue number, then open the branch.
+When using a tracking issue, create the issue first to obtain the issue number,
+then open the branch.
 
 ## Commit Message Convention
 
@@ -175,7 +186,9 @@ pull request summary.
 2. Every PR targeting `main` MUST include a tracking reference in
   `## Related Issues`: `Closes #<issue-number>` for standard tasks, or the
   security-advisory format described in **Workflow exceptions** when
-  applicable.
+  applicable. Package submission and correction pull requests MAY omit
+  `Closes #` when no tracking issue was opened; describe the package in
+  `## Related Issues` instead.
 3. Use deterministic language for normative rules.
 4. Include examples when changing specification behavior.
 5. Use `.github/pull_request_template.md` for every PR, or if it cannot be
@@ -197,12 +210,35 @@ When updating files in specs/:
 
 ## Package Submission Expectations
 
-Open a tracking issue before starting work:
+Open a tracking issue when helpful (recommended for larger or ambiguous work,
+optional for small self-contained pull requests):
 
 - **New package or new package version:** `.github/ISSUE_TEMPLATE/package-submission.yml`
   (`feat(package):` issue and PR titles)
 - **Correction to published package content:** `.github/ISSUE_TEMPLATE/package-correction.yml`
   (`fix(package):` issue and PR titles)
+
+Issues MUST be opened on **agents-repo/registry** (upstream), not on a fork.
+
+### Fork contributions
+
+External contributors SHOULD:
+
+1. Fork **agents-repo/registry** on GitHub.
+2. Clone the fork, add `upstream` pointing at **agents-repo/registry**, and sync
+   `main` from upstream before branching.
+3. Create a task branch on the fork (`package/<issue-number>-<slug>` or
+   `package/<slug>`).
+4. Open a draft pull request with base **agents-repo/registry** `main` and head
+   `YOUR_FORK_USER:branch` before substantive implementation commits.
+5. Push implementation commits to the fork branch; keep the fork synced with
+   upstream while work is in progress.
+
+Org members with write access MAY branch on upstream directly; the fork flow is
+still recommended for isolation.
+
+See the [Submit a package](https://agents-repo.org/docs/submitting-a-package)
+guide on agents-repo.org for a contributor-oriented walkthrough.
 
 ### No manual edits under `versions/`
 

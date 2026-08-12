@@ -15,14 +15,21 @@ body:
         For corrections to an **existing** published package, use the
         **Package correction** form instead (`fix(package):` title).
 
-        **Workflow:** Submit this issue first. After GitHub assigns a number,
-        create your branch and draft PR—do not edit this issue body to add the
-        number.
+        **Workflow:** Opening a tracking issue on **agents-repo/registry**
+        (upstream, not your fork) is optional but recommended—especially for
+        larger submissions or when you want maintainer feedback before heavy
+        work.         When GitHub assigns an issue number, you may include it in your
+        branch name; otherwise use `package/<package-id>`.
 
-        **Branch pattern:** `package/<issue-number>-<package-name>` (use the
-        assigned number and the package name)
+        After branching, open a draft PR from your fork to upstream before
+        substantive implementation commits—do not edit this issue body to add
+        the number.
 
-        **Example:** `package/56-my-package-name`
+        **Branch pattern:** `package/<issue-number>-<package-id>` when you
+        opened an issue, or `package/<package-id>` without one (use the
+        assigned number and the package ID when applicable)
+
+        **Example:** `package/56-my-package-id` or `package/my-package-id`
 
         **PR title:** use `feat(package):` for new packages or new package
         versions. When the published package semver is a breaking bump (for
@@ -116,7 +123,7 @@ body:
     attributes:
       label: Proposed path
       description: Path under packages/.
-      placeholder: packages/my-package-name/
+      placeholder: packages/my-namespace/my-package-id/
     validations:
       required: true
 

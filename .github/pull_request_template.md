@@ -6,29 +6,33 @@ Describe the change and why it is needed.
 
 ## Related Issues
 
-`Closes #<issue-number>`
+For standard tasks, paste a line like `Closes #123` (replace `123` with your
+issue number).
 
-Replace the backticked placeholder above with an unbackticked Closes # line (use
-your issue number).
+For package submissions or corrections **without** a tracking issue, describe the
+package here (namespace/package-id and intent) instead of `Closes #`.
 
-For standard tasks, use `Closes #<issue-number>`. For security vulnerabilities
-without a public tracking issue, reference the advisory identifier (for example
-`GHSA-...`) and coordinate linkage with maintainers per the
+For security vulnerabilities without a public tracking issue, reference the
+advisory identifier (for example `GHSA-...`) and coordinate linkage with
+maintainers per the
 [Workflow exceptions](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#workflow-exceptions)
 section of the organization CONTRIBUTING guide.
 
 ## Workflow Checklist
 
-- [ ] A tracking issue was opened before implementation.
-- [ ] The branch name follows `<prefix>/<issue-number>-<slug>`.
+- [ ] A tracking issue was opened before implementation (or not applicable for a
+  package PR without an issue).
+- [ ] The branch name follows `<prefix>/<issue-number>-<slug>` (or
+  `package/<slug>` for package submissions without an issue).
 - [ ] This pull request was created as a draft (`gh pr create --draft` or UI
   draft option).
 - [ ] This draft PR was opened before implementation commits (or it documents
   why not).
-- [ ] `## Related Issues` includes a tracking reference (`Closes #<issue-number>`
-  or a security-advisory identifier per the
+- [ ] `## Related Issues` includes a tracking reference (`Closes #<issue-number>`,
+  a security-advisory identifier per the
   [Workflow exceptions](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#workflow-exceptions)
-  section of the organization CONTRIBUTING guide).
+  section of the organization CONTRIBUTING guide, or a package description for
+  package submissions without a tracking issue).
 - [ ] Merge to `main` is for human maintainers only; agents and automation
   must not merge this PR or push directly to `main`.
 - [ ] A human developer marked this PR ready for review after validation (not
