@@ -9,7 +9,7 @@ runs:
       uses: actions/cache@v4
       with:
         path: .cache/actionlint
-        key: actionlint-1.7.12-${{ runner.os }}-${{ runner.arch }}
+        key: actionlint-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('scripts/actionlint_*_checksums.txt', 'scripts/lint-workflows.mjs') }}
 
     - name: Setup Node
       uses: actions/setup-node@v6

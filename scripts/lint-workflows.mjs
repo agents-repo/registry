@@ -23,7 +23,7 @@ const VENDORED_CHECKSUMS_FILE = path.join(
   'scripts',
   `actionlint_${ACTIONLINT_VERSION}_checksums.txt`,
 );
-const CURL_MAX_ATTEMPTS = 8;
+const CURL_MAX_ATTEMPTS = 3;
 const CURL_RETRY_BASE_MS = 2_000;
 
 /** OS-managed binary locations — excludes /usr/local, which is often user-writable. */
@@ -92,53 +92,61 @@ function execTrustedWithRetries(commandName, args, options = {}) {
   throw lastError;
 }
 
-function downloadReleaseArchive(asset, archivePath) {
-  const url = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${asset}`;
-  let curlError;
-  try {
-    execTrustedWithRetries('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
-    return;
-  } catch (error) {
-    curlError = error;
-    console.warn(`curl download failed for ${asset}; trying gh release download if available.`);
-  }
-
-  const gh = trustedExecutablePath('gh');
-  if (!gh) {
-    const detail = curlError instanceof Error ? curlError.message : String(curlError);
-    throw new Error(`Failed to download actionlint (requires curl). ${detail}`, { cause: curlError });
-  }
-
+function downloadWithGh(gh, asset, archivePath) {
   const versionDir = path.dirname(archivePath);
-  try {
-    execFileSync(
-      gh,
-      [
-        'release',
-        'download',
-        `v${ACTIONLINT_VERSION}`,
-        '--repo',
-        'rhysd/actionlint',
-        '--pattern',
-        asset,
-        '--dir',
-        versionDir,
-        '--clobber',
-      ],
-      { stdio: 'inherit', env: trustedEnv() },
-    );
-  } catch (error) {
-    const curlDetail = curlError instanceof Error ? curlError.message : String(curlError);
-    const ghDetail = error instanceof Error ? error.message : String(error);
-    throw new Error(
-      `Failed to download actionlint via curl and gh. curl: ${curlDetail}; gh: ${ghDetail}`,
-      { cause: error },
-    );
-  }
-
+  execFileSync(
+    gh,
+    [
+      'release',
+      'download',
+      `v${ACTIONLINT_VERSION}`,
+      '--repo',
+      'rhysd/actionlint',
+      '--pattern',
+      asset,
+      '--dir',
+      versionDir,
+      '--clobber',
+    ],
+    { stdio: 'inherit', env: trustedEnv() },
+  );
   if (!fs.existsSync(archivePath)) {
     throw new Error(`gh release download completed but archive is missing: ${archivePath}`);
   }
+}
+
+function downloadReleaseArchive(asset, archivePath) {
+  const url = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${asset}`;
+  const gh = trustedExecutablePath('gh');
+  const tryGhFirst = Boolean(gh && (process.env.GITHUB_TOKEN || process.env.GH_TOKEN));
+  const errors = [];
+
+  const tryGh = () => {
+    if (!gh) {
+      throw new Error('gh was not found under trusted system directories.');
+    }
+    downloadWithGh(gh, asset, archivePath);
+  };
+  const tryCurl = () => {
+    execTrustedWithRetries('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
+  };
+
+  const steps = tryGhFirst ? [tryGh, tryCurl] : [tryCurl, tryGh];
+  for (const step of steps) {
+    try {
+      step();
+      return;
+    } catch (error) {
+      errors.push(error);
+      const detail = error instanceof Error ? error.message : String(error);
+      console.warn(`actionlint archive download step failed; trying next source. ${detail}`);
+    }
+  }
+
+  const details = errors.map((error) => (error instanceof Error ? error.message : String(error)));
+  throw new Error(`Failed to download actionlint via gh and curl. ${details.join('; ')}`, {
+    cause: errors.at(-1),
+  });
 }
 
 function parseSemverToken(stdout) {
