@@ -91,9 +91,16 @@ gh pr create --repo agents-repo/registry \
 Every PR targeting `main` MUST include a tracking reference in
 `## Related Issues`: `Closes #<issue-number>` for standard tasks, or the
 security-advisory format defined in the **Workflow exceptions** section of
-`.github/CONTRIBUTING.md` when no public tracking issue exists. See
+`.github/CONTRIBUTING.md` when no public tracking issue exists. Package
+submissions MAY omit a tracking issue; see [Package Submission
+Expectations](.github/CONTRIBUTING.md#package-submission-expectations). See
 [Required Workflow](.github/CONTRIBUTING.md#required-workflow) for the
-canonical policy (issue → branch → push → draft PR before implementation).
+canonical policy (branch → push → draft PR before implementation; tracking
+issue recommended for most work).
+
+Package contributors SHOULD fork the registry, work on the fork, and open a
+pull request to upstream `main`. See [Submit a
+package](https://agents-repo.org/docs/submitting-a-package) on agents-repo.org.
 
 ## IDE Setup
 

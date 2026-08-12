@@ -12,14 +12,19 @@ body:
         `packages/<namespace>/<package-id>/`. For new packages or new package
         versions, use the **Package submission** form instead.
 
-        **Workflow:** Submit this issue first. After GitHub assigns a number,
-        create your branch and draft PR—do not edit this issue body to add the
-        number.
+        **Workflow:** Opening a tracking issue on **agents-repo/registry**
+        (upstream, not your fork) is optional but recommended. When GitHub
+        assigns an issue number, you may include it in your branch name;
+        otherwise use `package/<package-name>`.
 
-        **Branch pattern:** `package/<issue-number>-<package-name>` (use the
-        assigned number and the package name)
+        Work on a **fork** of the registry and open a draft PR from your fork
+        to upstream before substantive implementation commits—do not edit this
+        issue body to add the number.
 
-        **Example:** `package/56-my-package-name`
+        **Branch pattern:** `package/<issue-number>-<package-name>` when you
+        opened an issue, or `package/<package-name>` without one
+
+        **Example:** `package/56-my-package-name` or `package/my-package-name`
 
         **PR title:** MUST use `fix(package):` so squash-merge publishes a
         registry release tag. You MAY use `fix(package)!:` when the correction

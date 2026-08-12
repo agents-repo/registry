@@ -167,16 +167,25 @@ or PR summary.
 
 Before implementation, agents MUST:
 
-1. Open a tracking issue (matching issue form when available).
-2. Create a branch named `<prefix>/<issue-number>-<slug>`.
+1. Open a tracking issue (matching issue form when available), except for
+   external package submissions where the contributor or user explicitly
+   skips an issue—then branch `package/<slug>` without an issue number.
+2. Create a branch named `<prefix>/<issue-number>-<slug>` (or `package/<slug>`
+   for package submissions without a tracking issue).
 3. Push the branch and open a draft pull request targeting `main` before
    implementation commits. Pull requests MUST be created as drafts
    (`gh pr create --draft`). In `## Related Issues`, include
-   `Closes #<issue-number>` for standard tasks, or follow the security-advisory
-   format defined in the **Workflow exceptions** section of
-   `.github/CONTRIBUTING.md` when applicable.
+   `Closes #<issue-number>` when a tracking issue exists, or follow the
+   security-advisory format defined in the **Workflow exceptions** section of
+   `.github/CONTRIBUTING.md` when applicable. Package submissions without an
+   issue SHOULD describe the package in `## Related Issues`.
    GitHub cannot open a PR when head and base are identical; push a scaffolding
    commit on the task branch first if needed (see `.github/CONTRIBUTING.md`).
+
+External package contributors SHOULD fork **agents-repo/registry**, work on the
+fork, and open a draft pull request from `FORK_USER:branch` to upstream `main`.
+See `.github/CONTRIBUTING.md` **Fork contributions** and the [Submit a package](https://agents-repo.org/docs/submitting-a-package)
+guide on agents-repo.org.
 
 Agents MAY push additional commits to the task branch when requested.
 Agents MUST NOT push to `main`, merge PRs into `main`, or mark pull requests

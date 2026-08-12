@@ -19,16 +19,19 @@ section of the organization CONTRIBUTING guide.
 
 ## Workflow Checklist
 
-- [ ] A tracking issue was opened before implementation.
-- [ ] The branch name follows `<prefix>/<issue-number>-<slug>`.
+- [ ] A tracking issue was opened before implementation (or not applicable for a
+  package PR without an issue).
+- [ ] The branch name follows `<prefix>/<issue-number>-<slug>` (or
+  `package/<slug>` for package submissions without an issue).
 - [ ] This pull request was created as a draft (`gh pr create --draft` or UI
   draft option).
 - [ ] This draft PR was opened before implementation commits (or it documents
   why not).
-- [ ] `## Related Issues` includes a tracking reference (`Closes #<issue-number>`
-  or a security-advisory identifier per the
+- [ ] `## Related Issues` includes a tracking reference (`Closes #<issue-number>`,
+  a security-advisory identifier per the
   [Workflow exceptions](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#workflow-exceptions)
-  section of the organization CONTRIBUTING guide).
+  section of the organization CONTRIBUTING guide, or a package description for
+  package submissions without a tracking issue).
 - [ ] Merge to `main` is for human maintainers only; agents and automation
   must not merge this PR or push directly to `main`.
 - [ ] A human developer marked this PR ready for review after validation (not
