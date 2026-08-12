@@ -397,7 +397,11 @@ from the committed lock and fail on extract or lock drift (not semver-max
 Changes under `.github/workflows/` MUST pass `npm run lint:workflows`
 (included in `npm run lint:all`). See the organization
 [GitHub Actions workflow linting](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#github-actions-workflow-linting)
-norm.
+norm. When bumping `ACTIONLINT_VERSION` in `scripts/lint-workflows.mjs`, replace
+`scripts/actionlint_<version>_checksums.txt` with the matching file from the
+[actionlint GitHub release](https://github.com/rhysd/actionlint/releases) and
+remove the previous version's checksums file. Keep the same pin across
+organization repositories.
 
 ### Submitted package checklist
 
