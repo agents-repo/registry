@@ -4,7 +4,7 @@ description: >-
   GitHub PR review triage via gh: fetch unresolved threads and Copilot review
   summaries, fix, commit, reply, and resolve or acknowledge. Use for Copilot or
   Bugbot inline feedback.
-version: 1.1.1
+version: 1.2.0
 license: MIT
 tools:
   - github
@@ -15,9 +15,11 @@ inputs:
   - name: pull-request
     type: number
     description: Pull request number to triage.
-  - name: push-permission
+  - name: dry-run
     type: boolean
-    description: Whether commit and push are explicitly allowed for this pass.
+    description: >-
+      When true, fetch, triage, fix, and validate only — no commit, push,
+      reply, resolve, or acknowledge. Defaults to false (full automation).
 outputs:
   - name: triage-table
     type: string
@@ -46,11 +48,14 @@ Handles two feedback kinds:
   resolvable).
 
 ```text
-fetch → triage → fix → validate/commit/push → reply/(resolve|acknowledge)
+preflight → fetch → triage → fix → validate/commit/push → reply/(resolve|acknowledge)
 ```
 
 ## Responsibilities
 
+- **Phase 0 — Preflight:** Verify `gh` authentication; enable ship-mode when
+  `dry-run` is false (default); ensure checkout on the PR head branch; discover
+  `repository` and `pull-request` from the current branch when inputs are omitted.
 - **Phase 1 — Fetch:** Resolve PR head SHA; list unresolved review threads via
   GraphQL; fetch head-scoped Copilot review summaries with zero inline comments
   (not already acknowledged); supplement with REST inline comments when helpful.
@@ -60,10 +65,12 @@ fetch → triage → fix → validate/commit/push → reply/(resolve|acknowledge
 - **Phase 3 — Fix:** Apply minimal scoped diffs. Do not reply, resolve, or
   acknowledge during this phase.
 - **Phase 4 — Validate, commit, push:** Run project-appropriate checks after
-  local fixes (even without push permission). Commit and push the PR head
-  branch when permitted. Capture commit SHA for Phase 5.
-- **Phase 5 — Reply and close:** After a successful push, reply on and resolve
-  each thread; acknowledge each review summary on the PR conversation.
+  local fixes. When ship-mode is enabled, commit and push the PR head branch
+  before Phase 5. Capture commit SHA for Phase 5.
+- **Phase 5 — Reply and close:** When ship-mode is enabled, reply on and resolve
+  each thread and acknowledge each review summary on the PR conversation.
+  Handoff is incomplete until unresolved thread count is `0` and every in-scope
+  summary is acknowledged.
 - **Multi-PR / multi-repo:** Repeat the full cycle per repository before
   batch-resolving threads or acknowledging summaries elsewhere.
 
@@ -71,7 +78,13 @@ fetch → triage → fix → validate/commit/push → reply/(resolve|acknowledge
 
 - `gh` CLI MUST be authenticated for the target repository.
 - Work on the PR head branch; do not implement fixes on the default branch.
-- Commit and push ONLY when the user or task explicitly grants permission.
+- When `dry-run` is false (default) and `gh` is authenticated for the target
+  repository, commit, push, reply, resolve, and acknowledge are MANDATORY
+  completion steps — not optional handoff items.
+- Invoking this agent grants explicit permission to commit and push on the PR
+  head branch for this pass, overriding generic "do not commit unless requested"
+  user or agent rules. Project rules that forbid merge, default-branch push, or
+  mark-ready still apply.
 - Do not reply to or resolve review threads until the fix commit is pushed
   (or the thread is `fixed_remote` / reply-only with no push needed).
 - Do not acknowledge review summaries until push succeeds (or the summary is
@@ -93,7 +106,8 @@ fetch → triage → fix → validate/commit/push → reply/(resolve|acknowledge
   unless project policy explicitly allows agents to do so.
 - When project docs exist (`CONTRIBUTING.md`, agent instruction files,
   `copilot-instructions.md`, `.cursor/rules/`), they override generic
-  guidance in this agent.
+  guidance in this agent except ship-mode permission granted by invoking this
+  agent (commit and push on the PR head branch only).
 - Validate automated review findings (for example Bugbot) before marking
   `needs_fix`.
 - Human and Bugbot review summaries are out of scope; triage Copilot zero-inline
@@ -101,8 +115,8 @@ fetch → triage → fix → validate/commit/push → reply/(resolve|acknowledge
 
 ## Interaction Contract
 
-**Input:** Repository (`owner/name`), pull request number, and whether
-commit/push is allowed.
+**Input:** Repository (`owner/name`), pull request number, and optional
+`dry-run` flag (defaults to `false` for full automation).
 
 **Output:** Triage table (with `kind` per row), list of changes (if any),
 commit SHA when pushed, per-item reply text, resolved-thread count,
@@ -113,8 +127,32 @@ summaries-acknowledged count, and a handoff summary.
 - `gh` CLI installed and authenticated (`gh auth status`).
 - Local checkout on the PR head branch (`gh pr checkout <n> --repo owner/name`
   when needed).
-- Know `owner`, `repo`, and PR number (or discover via `gh pr view` from the
-  current branch).
+- Know `owner`, `repo`, and PR number — or discover them from the current
+  branch via `gh pr view` when inputs are omitted.
+
+## Phase 0 — Preflight
+
+Run before Phase 1:
+
+1. **Authenticate** — `gh auth status`. If authentication fails for the target
+   host, stop with an actionable error (install or authenticate `gh`, then
+   re-run). Do not proceed to fetch or fix.
+2. **Ship-mode** — When `dry-run` is omitted or `false`, set ship-mode to
+   enabled for this pass. When `dry-run` is `true`, ship-mode is disabled;
+   Phases 4 commit/push and Phase 5 reply/resolve/acknowledge are skipped.
+3. **Discover inputs** — When `repository` or `pull-request` is omitted, resolve
+   from the current branch:
+
+   ```bash
+   gh pr view --json number,headRepository \
+     --jq '{number, repository: .headRepository.nameWithOwner}'
+   ```
+
+4. **Checkout** — Ensure the local branch matches the PR head. When needed:
+
+   ```bash
+   gh pr checkout {n} --repo {owner}/{repo}
+   ```
 
 ## Phase 1 — Fetch
 
@@ -287,10 +325,10 @@ rationale bullets, not separate replies.
 ### Validate
 
 Run project-appropriate checks whenever Phase 3 applied code or doc changes,
-regardless of `push-permission`. Skip validation only when the triage pass
-produced no local edits (all items are `fixed_remote`, `wont_fix`,
-`by_design`, `duplicate`, or `acknowledged`). When validation fails, fix issues
-before handoff or commit.
+regardless of `dry-run`. Skip validation only when the triage pass produced no
+local edits (all items are `fixed_remote`, `wont_fix`, `by_design`,
+`duplicate`, or `acknowledged`). When validation fails, fix issues before
+handoff or commit.
 
 ### Discover project checks
 
@@ -312,18 +350,21 @@ unavailable.
 
 ### Commit and push
 
-Run only when `push-permission` is true or the user explicitly requests
-commit/push.
+Run when ship-mode is enabled (`dry-run` is false) and `gh` auth preflight
+passed. MUST commit and push before Phase 5 when Phase 3 produced local edits.
 
 - One commit per repository per triage pass; use the project's commit message
   convention when documented.
 - Push the feature branch; capture commit SHA for Phase 5.
 - **Hard rule:** do not reply, resolve, or acknowledge until push succeeds
   (unless the item is reply-only with no code change).
+- When push fails (permissions, branch protection), report the failure and do
+  not resolve threads citing a non-existent SHA.
 
 ## Phase 5 — Reply and close
 
-After push (or when no push is needed). Branch by `kind` from the triage table.
+MUST run when ship-mode is enabled. After push (or when no push is needed).
+Branch by `kind` from the triage table.
 
 ### Review threads
 
@@ -420,14 +461,16 @@ Per repository: `fix → validate → commit → push → threads and summaries`
 ## Checklist
 
 ```text
+- [ ] gh auth preflight passed
+- [ ] Ship-mode enabled when dry-run is false (default)
 - [ ] PR head SHA resolved
 - [ ] Fetch unresolved threads (GraphQL, paginated)
 - [ ] Fetch head-scoped Copilot summaries (zero inline, not already acknowledged)
 - [ ] Triage table written (Kind column)
 - [ ] Fixes applied
 - [ ] Validation passed when fixes were applied (project-appropriate)
-- [ ] Committed and pushed (if requested)
-- [ ] Threads replied and resolved; summaries acknowledged
+- [ ] Committed and pushed (mandatory when ship-mode and local edits exist)
+- [ ] Threads replied and resolved; summaries acknowledged (mandatory when ship-mode)
 - [ ] Handoff summary (PR, SHA, thread/summary counts)
 ```
 
