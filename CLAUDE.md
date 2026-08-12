@@ -168,10 +168,11 @@ or PR summary.
 Before implementation, agents MUST:
 
 1. Open a tracking issue (matching issue form when available), except for
-   external package submissions where the contributor or user explicitly
-   skips an issue—then branch `package/<slug>` without an issue number.
+   package submissions and corrections when a tracking issue is omitted per
+   workflow exception #3—then branch `package/<slug>` without an issue number.
 2. Create a branch named `<prefix>/<issue-number>-<slug>` (or `package/<slug>`
-   for package submissions without a tracking issue).
+   for package submissions and corrections without a tracking issue, or
+   `package/<issue-number>-<slug>` when a tracking issue exists).
 3. Push the branch and open a draft pull request targeting `main` before
    implementation commits. Pull requests MUST be created as drafts
    (`gh pr create --draft`). In `## Related Issues`, include

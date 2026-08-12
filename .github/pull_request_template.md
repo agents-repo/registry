@@ -6,14 +6,15 @@ Describe the change and why it is needed.
 
 ## Related Issues
 
-`Closes #<issue-number>`
+For standard tasks, use `Closes #<issue-number>` (replace with your issue
+number, without backticks).
 
-Replace the backticked placeholder above with an unbackticked Closes # line (use
-your issue number).
+For package submissions or corrections **without** a tracking issue, describe the
+package here (namespace/package-id and intent) instead of `Closes #`.
 
-For standard tasks, use `Closes #<issue-number>`. For security vulnerabilities
-without a public tracking issue, reference the advisory identifier (for example
-`GHSA-...`) and coordinate linkage with maintainers per the
+For security vulnerabilities without a public tracking issue, reference the
+advisory identifier (for example `GHSA-...`) and coordinate linkage with
+maintainers per the
 [Workflow exceptions](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#workflow-exceptions)
 section of the organization CONTRIBUTING guide.
 
