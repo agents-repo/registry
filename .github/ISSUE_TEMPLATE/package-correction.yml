@@ -15,16 +15,16 @@ body:
         **Workflow:** Opening a tracking issue on **agents-repo/registry**
         (upstream, not your fork) is optional but recommended. When GitHub
         assigns an issue number, you may include it in your branch name;
-        otherwise use `package/<package-name>`.
+        otherwise use `package/<package-id>`.
 
         Work on a **fork** of the registry and open a draft PR from your fork
         to upstream before substantive implementation commits—do not edit this
         issue body to add the number.
 
-        **Branch pattern:** `package/<issue-number>-<package-name>` when you
-        opened an issue, or `package/<package-name>` without one
+        **Branch pattern:** `package/<issue-number>-<package-id>` when you
+        opened an issue, or `package/<package-id>` without one
 
-        **Example:** `package/56-my-package-name` or `package/my-package-name`
+        **Example:** `package/56-my-package-id` or `package/my-package-id`
 
         **PR title:** MUST use `fix(package):` so squash-merge publishes a
         registry release tag. You MAY use `fix(package)!:` when the correction

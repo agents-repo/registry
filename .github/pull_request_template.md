@@ -6,8 +6,8 @@ Describe the change and why it is needed.
 
 ## Related Issues
 
-For standard tasks, use `Closes #<issue-number>` (replace with your issue
-number, without backticks).
+For standard tasks, paste a line like `Closes #123` (replace `123` with your
+issue number).
 
 For package submissions or corrections **without** a tracking issue, describe the
 package here (namespace/package-id and intent) instead of `Closes #`.

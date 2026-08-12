@@ -92,7 +92,8 @@ Every PR targeting `main` MUST include a tracking reference in
 `## Related Issues`: `Closes #<issue-number>` for standard tasks, or the
 security-advisory format defined in the **Workflow exceptions** section of
 `.github/CONTRIBUTING.md` when no public tracking issue exists. Package
-submissions MAY omit a tracking issue; see [Package Submission
+submissions MAY omit a tracking issue; when no issue exists, describe the
+package in `## Related Issues` instead of `Closes #`. See [Package Submission
 Expectations](.github/CONTRIBUTING.md#package-submission-expectations). See
 [Required Workflow](.github/CONTRIBUTING.md#required-workflow) for the
 canonical policy (branch → push → draft PR before implementation; tracking
