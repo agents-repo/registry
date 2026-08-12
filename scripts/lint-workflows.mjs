@@ -18,6 +18,13 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 const WORKFLOWS_DIR = path.join(REPO_ROOT, '.github', 'workflows');
 const CACHE_ROOT = path.join(REPO_ROOT, '.cache', 'actionlint');
 const BOOTSTRAP_LOCK_FILE = path.join(CACHE_ROOT, '.bootstrap.lock');
+const VENDORED_CHECKSUMS_FILE = path.join(
+  REPO_ROOT,
+  'scripts',
+  `actionlint_${ACTIONLINT_VERSION}_checksums.txt`,
+);
+const CURL_MAX_ATTEMPTS = 3;
+const CURL_RETRY_BASE_MS = 2_000;
 
 /** OS-managed binary locations — excludes /usr/local, which is often user-writable. */
 const TRUSTED_PATH_DIRS =
@@ -33,7 +40,7 @@ function trustedEnv() {
   return { ...process.env, PATH: trustedPathValue() };
 }
 
-function resolveTrustedExecutable(commandName) {
+function trustedExecutablePath(commandName) {
   const fileName =
     process.platform === 'win32' && !commandName.toLowerCase().endsWith('.exe')
       ? `${commandName}.exe`
@@ -44,14 +51,102 @@ function resolveTrustedExecutable(commandName) {
       return candidate;
     }
   }
-  throw new Error(
-    `Required executable "${commandName}" was not found under trusted system directories.`,
-  );
+  return null;
+}
+
+function resolveTrustedExecutable(commandName) {
+  const executable = trustedExecutablePath(commandName);
+  if (!executable) {
+    throw new Error(
+      `Required executable "${commandName}" was not found under trusted system directories.`,
+    );
+  }
+  return executable;
 }
 
 function execTrusted(commandName, args, options = {}) {
   const executable = resolveTrustedExecutable(commandName);
   return execFileSync(executable, args, { ...options, env: trustedEnv() });
+}
+
+function curlRetryDelayMs(attempt) {
+  return CURL_RETRY_BASE_MS * 2 ** (attempt - 1);
+}
+
+function execTrustedWithRetries(commandName, args, options = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= CURL_MAX_ATTEMPTS; attempt++) {
+    try {
+      return execTrusted(commandName, args, options);
+    } catch (error) {
+      lastError = error;
+      if (attempt < CURL_MAX_ATTEMPTS) {
+        const delayMs = curlRetryDelayMs(attempt);
+        console.warn(
+          `${commandName} attempt ${attempt}/${CURL_MAX_ATTEMPTS} failed; retrying in ${delayMs}ms.`,
+        );
+        sleepSync(delayMs);
+      }
+    }
+  }
+  throw lastError;
+}
+
+function downloadWithGh(gh, asset, archivePath) {
+  const versionDir = path.dirname(archivePath);
+  execFileSync(
+    gh,
+    [
+      'release',
+      'download',
+      `v${ACTIONLINT_VERSION}`,
+      '--repo',
+      'rhysd/actionlint',
+      '--pattern',
+      asset,
+      '--dir',
+      versionDir,
+      '--clobber',
+    ],
+    { stdio: 'inherit', env: trustedEnv() },
+  );
+  if (!fs.existsSync(archivePath)) {
+    throw new Error(`gh release download completed but archive is missing: ${archivePath}`);
+  }
+}
+
+function downloadReleaseArchive(asset, archivePath) {
+  const url = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${asset}`;
+  const gh = trustedExecutablePath('gh');
+  const tryGhFirst = Boolean(gh && (process.env.GITHUB_TOKEN || process.env.GH_TOKEN));
+  const errors = [];
+
+  const tryGh = () => {
+    if (!gh) {
+      throw new Error('gh was not found under trusted system directories.');
+    }
+    downloadWithGh(gh, asset, archivePath);
+  };
+  const tryCurl = () => {
+    execTrustedWithRetries('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
+  };
+
+  const steps = tryGhFirst ? [tryGh, tryCurl] : [tryCurl, tryGh];
+  for (const step of steps) {
+    try {
+      step();
+      return;
+    } catch (error) {
+      errors.push(error);
+      const detail = error instanceof Error ? error.message : String(error);
+      console.warn(`actionlint archive download step failed; trying next source. ${detail}`);
+    }
+  }
+
+  const details = errors.map((error) => (error instanceof Error ? error.message : String(error)));
+  throw new Error(`Failed to download actionlint via gh and curl. ${details.join('; ')}`, {
+    cause: errors.at(-1),
+  });
 }
 
 function parseSemverToken(stdout) {
@@ -122,17 +217,24 @@ function releaseAssetName() {
   );
 }
 
-function expectedArchiveSha256(asset) {
+function readChecksumsBody() {
+  if (fs.existsSync(VENDORED_CHECKSUMS_FILE)) {
+    return fs.readFileSync(VENDORED_CHECKSUMS_FILE, 'utf8');
+  }
+
   const checksumsUrl = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_checksums.txt`;
-  let checksumsBody;
   try {
-    checksumsBody = execTrusted('curl', ['-fsSL', checksumsUrl], { encoding: 'utf8' });
+    return execTrustedWithRetries('curl', ['-fsSL', checksumsUrl], { encoding: 'utf8' });
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
     throw new Error(`Failed to download actionlint checksums (requires curl). ${detail}`, {
       cause: error,
     });
   }
+}
+
+function expectedArchiveSha256(asset) {
+  const checksumsBody = readChecksumsBody();
 
   for (const line of checksumsBody.split('\n')) {
     const match = line.match(/^([a-f0-9]{64})\s{2}(.+)$/);
@@ -162,14 +264,8 @@ function bootstrapFromRelease() {
 
   fs.mkdirSync(versionDir, { recursive: true });
   const archivePath = path.join(versionDir, asset);
-  const url = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${asset}`;
 
-  try {
-    execTrusted('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
-  } catch (error) {
-    const detail = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to download actionlint (requires curl). ${detail}`, { cause: error });
-  }
+  downloadReleaseArchive(asset, archivePath);
 
   verifyArchiveSha256(archivePath, asset);
 

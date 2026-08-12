@@ -270,3 +270,21 @@ follows `.github/pull_request_template.md`.
 If the available tool path cannot programmatically apply a template, the
 agent MUST explicitly state that limitation and MUST include all required
 sections from the intended template in the issue or PR body.
+
+Branch names MUST follow `<prefix>/<issue-number>-<slug>`, where `<slug>` is
+short lowercase kebab-case. Package submissions without a tracking issue MAY
+use `package/<slug>` instead of `package/<issue-number>-<slug>`.
+
+Use the prefix that matches the work category:
+
+- bug or inconsistency: `fix/`
+- spec change (normative `specs/`): `spec/`
+- feature proposal: `feat/`
+- task or chore: `chore/`
+- documentation-only work (non-`specs/`): `docs/`
+- package submission or correction: `package/`
+
+See `.github/CONTRIBUTING.md` **Branch Naming** and the organization
+[branch prefix reference](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#branch-prefix-reference).
+Branch prefix categorizes work; conventional **commit** (or squash-merge)
+prefix determines automated release bumps.
