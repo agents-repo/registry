@@ -18,6 +18,13 @@ const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..
 const WORKFLOWS_DIR = path.join(REPO_ROOT, '.github', 'workflows');
 const CACHE_ROOT = path.join(REPO_ROOT, '.cache', 'actionlint');
 const BOOTSTRAP_LOCK_FILE = path.join(CACHE_ROOT, '.bootstrap.lock');
+const VENDORED_CHECKSUMS_FILE = path.join(
+  REPO_ROOT,
+  'scripts',
+  `actionlint_${ACTIONLINT_VERSION}_checksums.txt`,
+);
+const CURL_MAX_ATTEMPTS = 5;
+const CURL_RETRY_DELAY_MS = 1_000;
 
 /** OS-managed binary locations — excludes /usr/local, which is often user-writable. */
 const TRUSTED_PATH_DIRS =
@@ -52,6 +59,21 @@ function resolveTrustedExecutable(commandName) {
 function execTrusted(commandName, args, options = {}) {
   const executable = resolveTrustedExecutable(commandName);
   return execFileSync(executable, args, { ...options, env: trustedEnv() });
+}
+
+function execTrustedWithRetries(commandName, args, options = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= CURL_MAX_ATTEMPTS; attempt++) {
+    try {
+      return execTrusted(commandName, args, options);
+    } catch (error) {
+      lastError = error;
+      if (attempt < CURL_MAX_ATTEMPTS) {
+        sleepSync(CURL_RETRY_DELAY_MS * attempt);
+      }
+    }
+  }
+  throw lastError;
 }
 
 function parseSemverToken(stdout) {
@@ -122,17 +144,24 @@ function releaseAssetName() {
   );
 }
 
-function expectedArchiveSha256(asset) {
+function readChecksumsBody() {
+  if (fs.existsSync(VENDORED_CHECKSUMS_FILE)) {
+    return fs.readFileSync(VENDORED_CHECKSUMS_FILE, 'utf8');
+  }
+
   const checksumsUrl = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_checksums.txt`;
-  let checksumsBody;
   try {
-    checksumsBody = execTrusted('curl', ['-fsSL', checksumsUrl], { encoding: 'utf8' });
+    return execTrustedWithRetries('curl', ['-fsSL', checksumsUrl], { encoding: 'utf8' });
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
     throw new Error(`Failed to download actionlint checksums (requires curl). ${detail}`, {
       cause: error,
     });
   }
+}
+
+function expectedArchiveSha256(asset) {
+  const checksumsBody = readChecksumsBody();
 
   for (const line of checksumsBody.split('\n')) {
     const match = line.match(/^([a-f0-9]{64})\s{2}(.+)$/);
@@ -165,7 +194,7 @@ function bootstrapFromRelease() {
   const url = `https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/${asset}`;
 
   try {
-    execTrusted('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
+    execTrustedWithRetries('curl', ['-fsSL', '-o', archivePath, url], { stdio: 'inherit' });
   } catch (error) {
     const detail = error instanceof Error ? error.message : String(error);
     throw new Error(`Failed to download actionlint (requires curl). ${detail}`, { cause: error });
