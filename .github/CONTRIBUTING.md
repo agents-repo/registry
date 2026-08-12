@@ -18,6 +18,10 @@ matching form in `.github/ISSUE_TEMPLATE/` when tooling can apply it directly;
 otherwise, they MUST manually include the intended template's sections in the
 issue body.
 
+Documentation-only work that does **not** change files under `specs/` uses the
+task/chore issue category and the `docs/` branch prefix. Normative changes to
+`specs/` use the spec-change form and `spec/` branch prefix.
+
 ## Required Workflow
 
 Contributors and agents MUST follow this full lifecycle.
@@ -62,9 +66,10 @@ Implementation commits may follow on the same branch.
    maintainers provide a linked private or advisory tracking issue. Otherwise,
    reference the private security advisory identifier (for example `GHSA-...`)
    in `## Related Issues` and coordinate linkage with maintainers.
-2. **Maintainer emergency hotfix** — Hotfix branch work requires prior
-   maintainer approval documented in an issue or advisory. Delivery to `main`
-   is still via merged pull request.
+2. **Maintainer emergency hotfix** — Work on a `fix/<issue-number>-<slug>`
+   branch only with prior maintainer approval documented in an issue or
+   advisory. Do not use a separate `hotfix/` prefix. Delivery to `main` is
+   still via merged pull request.
 3. **Package submission** — External contributors SHOULD fork **agents-repo/registry**,
    work on the fork, and open a pull request from the fork to upstream `main`.
    A tracking issue on upstream is **recommended but not required** for package
@@ -147,11 +152,15 @@ of `package/<issue-number>-<slug>`.
 | Spec change request | `spec/` | `spec/7-add-contract-schema` |
 | Feature proposal | `feat/` | `feat/15-search-index` |
 | Task or chore | `chore/` | `chore/31-update-dependencies` |
+| Documentation-only work (non-`specs/`) | `docs/` | `docs/88-update-readme` |
 | Package submission (with issue) | `package/` | `package/56-my-package-name` |
 | Package submission (no issue) | `package/` | `package/my-package-name` |
 
 When using a tracking issue, create the issue first to obtain the issue number,
 then open the branch.
+
+See the organization [branch prefix reference](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#branch-prefix-reference)
+for the canonical cross-repo mapping.
 
 ## Commit Message Convention
 

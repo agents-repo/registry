@@ -12,10 +12,15 @@ body:
         create your branch and draft PR—do not edit this issue body to add the
         number.
 
-        **Branch pattern:** `chore/<issue-number>-<slug>` (use the assigned number
-        and a short lowercase kebab-case slug from the title)
+        Use this form for task/chore work. Documentation-only work that does
+        not change files under `specs/` should use a `docs/<issue-number>-<slug>`
+        branch.
 
-        **Example:** `chore/31-update-dependencies`
+        **Branch pattern:** `chore/<issue-number>-<slug>` (or
+        `docs/<issue-number>-<slug>` for documentation-only work)
+
+        **Example:** `chore/31-update-dependencies` or
+        `docs/88-update-readme`
 
         **Draft PR:** Open with `gh pr create --draft` before implementation
         commits. Put the tracking reference in the PR `## Related Issues` section
