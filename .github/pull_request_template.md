@@ -40,13 +40,12 @@ section of the organization CONTRIBUTING guide.
 
 ## Change Type
 
-- [ ] Initial structure
-- [ ] Spec update
-- [ ] Bug fix
+- [ ] Spec change
+- [ ] Feature proposal
+- [ ] Bug or inconsistency
+- [ ] Task or chore
 - [ ] Package submission
-- [ ] Documentation
-- [ ] Tooling or workflow
-- [ ] Maintenance
+- [ ] Package correction
 
 ## Scope
 

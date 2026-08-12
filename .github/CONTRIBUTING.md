@@ -22,6 +22,17 @@ Documentation-only work that does **not** change files under `specs/` uses the
 task/chore issue category and the `docs/` branch prefix. Normative changes to
 `specs/` use the spec-change form and `spec/` branch prefix.
 
+Issue form selection MUST match one of these categories:
+
+| Category | Issue form |
+| --- | --- |
+| Bug or inconsistency | `.github/ISSUE_TEMPLATE/bug-inconsistency.yml` |
+| Spec change | `.github/ISSUE_TEMPLATE/spec-change.yml` |
+| Feature proposal | `.github/ISSUE_TEMPLATE/feature-proposal.yml` |
+| Task or chore | `.github/ISSUE_TEMPLATE/task-chore.yml` |
+| Package submission | `.github/ISSUE_TEMPLATE/package-submission.yml` |
+| Package correction | `.github/ISSUE_TEMPLATE/package-correction.yml` |
+
 ## Required Workflow
 
 Contributors and agents MUST follow this full lifecycle.
