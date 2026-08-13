@@ -100,7 +100,8 @@ canonical policy (branch → push → draft PR before implementation; tracking
 issue recommended for most work).
 
 Package contributors SHOULD fork the registry, work on the fork, and open a
-pull request to upstream `main`. See [Submit a
+pull request to upstream `main`. After the draft PR, the suggested authoring
+path is **`full-package-creation-flow`** (already in the clone). See [Submit a
 package](https://agents-repo.org/docs/submitting-a-package) on agents-repo.org.
 
 ## IDE Setup
@@ -262,8 +263,10 @@ registry/
     LICENSE
 ```
 
-For a minimal working example package, start with
-`packages/agents-repo/hello-agent/README.md`.
+To create a new package, invoke **`full-package-creation-flow`** after the
+draft pull request (see [Package Development Workflow](#package-development-workflow)).
+`packages/agents-repo/hello-agent/README.md` is a published example to read,
+not the starting recipe.
 
 See [NAMESPACE_RULES.md](./NAMESPACE_RULES.md) and [MIGRATION.md](./MIGRATION.md)
 for namespaced package layout.
@@ -274,8 +277,16 @@ For full test layout conventions, path mirroring, and scope guidance, see
 
 ## Package Development Workflow
 
+The **suggested** path for a new package is to invoke
+**`full-package-creation-flow`** from `agents-repo/agents-repo-package-creation`
+after the draft pull request. That package is already extracted in this
+repository (see [IDE Setup](#ide-setup)); do not start with a separate CLI
+install. The flow scaffolds with `package:create`, authors source, reviews
+for submission readiness, and runs the pipeline below.
+
 Contributors and AI agents work only on source files under the package root.
-The scripts manage all versioned artifacts.
+The scripts manage all versioned artifacts. Manual authors MAY skip the flow
+and write those source files directly, then run the same pipeline.
 
 ### Required pipeline
 

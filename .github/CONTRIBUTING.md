@@ -260,6 +260,19 @@ still recommended for isolation.
 See the [Submit a package](https://agents-repo.org/docs/submitting-a-package)
 guide on agents-repo.org for a contributor-oriented walkthrough.
 
+### Suggested authoring path
+
+Package creation is AI-first. After the draft pull request is open, the
+**suggested** path is to invoke **`full-package-creation-flow`** from the
+in-tree `agents-repo/agents-repo-package-creation` package (extracted skills
+and agents are already in the clone; see [README — IDE
+Setup](../README.md#ide-setup)). The flow scaffolds with `package:create`,
+authors source, reviews for submission readiness, and runs the required
+pipeline below.
+
+Authors MAY still write package source files by hand. Either path MUST satisfy
+the required pipeline and MUST NOT edit `versions/` manually.
+
 ### No manual edits under `versions/`
 
 Contributors and AI agents MUST NOT manually create or modify any file under
@@ -281,8 +294,9 @@ snapshot. Publish a new semver instead.
 ### Required release pipeline
 
 Package submissions follow the standard Required Workflow. Open a draft pull
-request on the task branch, author package source, then run this pipeline
-**before marking the pull request ready for review**:
+request on the task branch, then create package source (suggested:
+`full-package-creation-flow`). The flow runs this pipeline; manual authors
+MUST run it themselves **before marking the pull request ready for review**:
 
 ```bash
 # 1. Build and publish a version snapshot
