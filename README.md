@@ -282,7 +282,9 @@ The **suggested** path for a new package is to invoke
 after the draft pull request. That package is already extracted in this
 repository (see [IDE Setup](#ide-setup)); do not start with a separate CLI
 install. The flow scaffolds with `package:create`, authors source, reviews
-for submission readiness, and runs the pipeline below.
+for submission readiness, and can run the pipeline below. The flow MAY exit
+after any step; confirm the pipeline completed before marking the pull
+request ready for review.
 
 Contributors and AI agents work only on source files under the package root.
 The scripts manage all versioned artifacts. Manual authors MAY skip the flow

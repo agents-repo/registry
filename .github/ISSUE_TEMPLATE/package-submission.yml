@@ -43,9 +43,9 @@ body:
         commits. The suggested authoring path is `full-package-creation-flow`
         (already in the clone). Author package source on the task branch, then
         run `package:build` and `package:validate-artifacts` before marking the
-        pull request ready for review (the flow runs that pipeline). Put the
-        tracking reference in the PR `## Related Issues` section (not in this
-        issue).
+        pull request ready for review (the flow can run that pipeline; confirm
+        it completed if you exit early). Put the tracking reference in the PR
+        `## Related Issues` section (not in this issue).
 
   - type: dropdown
     id: package-type

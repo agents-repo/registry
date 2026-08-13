@@ -267,8 +267,9 @@ Package creation is AI-first. After the draft pull request is open, the
 in-tree `agents-repo/agents-repo-package-creation` package (extracted skills
 and agents are already in the clone; see [README — IDE
 Setup](../README.md#ide-setup)). The flow scaffolds with `package:create`,
-authors source, reviews for submission readiness, and runs the required
-pipeline below.
+authors source, reviews for submission readiness, and can run the required
+pipeline below. The flow MAY exit after any step, so invoking it is not a
+substitute for a completed pipeline.
 
 Authors MAY still write package source files by hand. Either path MUST satisfy
 the required pipeline and MUST NOT edit `versions/` manually.
@@ -295,8 +296,9 @@ snapshot. Publish a new semver instead.
 
 Package submissions follow the standard Required Workflow. Open a draft pull
 request on the task branch, then create package source (suggested:
-`full-package-creation-flow`). The flow runs this pipeline; manual authors
-MUST run it themselves **before marking the pull request ready for review**:
+`full-package-creation-flow`). Completing the flow includes this pipeline;
+the flow MAY exit early. Contributors MUST confirm the pipeline has run
+**before marking the pull request ready for review**:
 
 ```bash
 # 1. Build and publish a version snapshot
