@@ -103,7 +103,9 @@ communicate with GitHub for issues and pull requests.
 For long issue/PR descriptions, use `--body-file` to avoid shell escaping and
 truncation issues.
 
-Security vulnerabilities MUST NOT be reported in public issues. Use
+Please report vulnerabilities privately with GitHub Private Vulnerability
+Reporting instead of public GitHub issues, discussions, pull requests, or
+public social channels (including X and Reddit). Use
 `https://github.com/agents-repo/registry/security/advisories/new` for private
 disclosure.
 
