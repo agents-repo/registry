@@ -12,9 +12,11 @@ body:
         create your branch and draft PR—do not edit this issue body to add the
         number.
 
-        Security vulnerabilities MUST NOT be reported in public issues.
+        Please report vulnerabilities privately with GitHub Private Vulnerability
+        Reporting instead of public GitHub issues, discussions, pull requests, or
+        public social channels (including X and Reddit).
         Use https://github.com/agents-repo/registry/security/advisories/new
-        for private disclosure instead.
+        for private disclosure.
 
         **Branch pattern:** `fix/<issue-number>-<slug>` (use the assigned number
         and a short lowercase kebab-case slug from the title)
