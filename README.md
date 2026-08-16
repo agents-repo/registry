@@ -457,6 +457,16 @@ overview](https://github.com/agents-repo/.github/blob/main/docs/ecosystem.md).
 | [cli](https://github.com/agents-repo/cli) | `npx agents-repo` installer |
 | [.github](https://github.com/agents-repo/.github) | Organization policies and org profile |
 
+## Docs and repository pages
+
+For user guides and cross-repo documentation, see [agents-repo.org/docs](https://agents-repo.org/docs/).
+For this repository's overview on the public site, see [agents-repo.org/repositories/registry](https://agents-repo.org/repositories/registry).
+
+When you change a user-facing or contributor workflow in this
+repository, update the corresponding page(s) in
+[agents-repo/webapp](https://github.com/agents-repo/webapp) under
+`src/content/docs/` in the same PR or an immediate follow-up.
+
 ## License
 
 This repository is licensed under MIT.

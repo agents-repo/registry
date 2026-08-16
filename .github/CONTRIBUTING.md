@@ -7,6 +7,16 @@ Thanks for contributing to the Agents Registry.
 This repository is a registry and specification source of truth.
 Most contributions are documentation, schema, and package-structure changes.
 
+## Docs and repository pages
+
+For user guides and cross-repo documentation, see [agents-repo.org/docs](https://agents-repo.org/docs/).
+For this repository's overview on the public site, see [agents-repo.org/repositories/registry](https://agents-repo.org/repositories/registry).
+
+When you change a user-facing or contributor workflow in this
+repository, update the corresponding page(s) in
+[agents-repo/webapp](https://github.com/agents-repo/webapp) under
+`src/content/docs/` in the same PR or an immediate follow-up.
+
 ## Before You Start
 
 1. Open an issue using the appropriate issue form.
