@@ -503,6 +503,16 @@ Before requesting review:
 7. Ensure references and paths are valid.
 8. Confirm no unrelated changes are included.
 
+SonarQube Cloud Automatic Analysis is separate from `npm run lint:sonar`
+(eslint-plugin-sonarjs). Automatic Analysis reads `.sonarcloud.properties`,
+not `sonar-project.properties`. `sonar.sources` and `sonar.tests` must be
+disjoint directory lists (no wildcards). Do not set `sonar.sources` to `.`
+while `sonar.tests` lists nested directories; analysis fails with “Source and
+test paths overlap”. This repository sets
+`sonar.sources=scripts,specs,packages` and `sonar.tests=test,tests`, and
+excludes generated snapshots with `**/versions/**`. Coverage report paths are
+unsupported under Automatic Analysis.
+
 When changes affect behavior under `scripts/lib/`, contributors SHOULD add or
 update unit tests under mirrored paths in `tests/unit/`.
 For full test layout conventions and scope guidance, see `tests/README.md`.
