@@ -9,8 +9,10 @@ Most contributions are documentation, schema, and package-structure changes.
 
 ## Docs and repository pages
 
-For user guides and cross-repo documentation, see [agents-repo.org/docs](https://agents-repo.org/docs/).
-For this repository's overview on the public site, see [agents-repo.org/repositories/registry](https://agents-repo.org/repositories/registry).
+For user guides and cross-repo documentation, see
+[agents-repo.org/docs/](https://agents-repo.org/docs/).
+For this repository's overview on the public site, see
+[agents-repo.org/repositories/registry/](https://agents-repo.org/repositories/registry/).
 
 When you change a user-facing or contributor workflow in this
 repository, update the corresponding page(s) in
