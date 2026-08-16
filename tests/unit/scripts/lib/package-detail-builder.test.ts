@@ -162,6 +162,30 @@ describe('buildPackageDetailDocument', (): void => {
 
     expect(document.readmeMarkdown).toBeUndefined();
   });
+
+  it('omits chatWeb unless the latest manifest entry has an instructions artifact', (): void => {
+    const packageDir = makeTempPackageDir();
+    writeLatestSnapshot(packageDir, false);
+    const manifest = makeManifest();
+    manifest.versions = manifest.versions.map((entry, index) => {
+      if (index !== 1) {
+        return entry;
+      }
+
+      return {
+        version: entry.version,
+        srcArtifact: entry.srcArtifact,
+        srcSha256: entry.srcSha256,
+        artifacts: entry.artifacts,
+        createdAt: entry.createdAt,
+      };
+    });
+
+    const document = buildPackageDetailDocument(makeRef(), packageDir, '1.0.1', manifest);
+
+    expect(document.chatWeb).toBeUndefined();
+    expect(document.instructionsPath).toBeUndefined();
+  });
 });
 
 describe('writePackageDetailJson', (): void => {

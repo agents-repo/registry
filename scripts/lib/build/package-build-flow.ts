@@ -5,7 +5,7 @@ import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR,
 import { ErrorCode, PackageError } from '../errors';
 import { GitContext } from '../git';
 import { Package } from '../package';
-import { rollbackVersionDirectory, warnIfIndexMayBeInconsistent } from './rollback';
+import { rollbackVersionDirectory, restoreTrackedFile, warnIfIndexMayBeInconsistent } from './rollback';
 import { updateManifestAndIndexWithRollback } from './registry-sync';
 import { prepareVersionSnapshot } from './snapshot-writer';
 import { Checksum } from '../checksum';
@@ -14,7 +14,7 @@ import { ValidationUtils } from '../validation-utils';
 import { ZipBuilder } from '../zip-builder';
 import { buildTargetArtifacts, type BuiltTargetArtifact } from '../emitters/target-zip-builder';
 import { buildInstructionsManifest } from '../instructions-manifest-builder';
-import { readJsonFile, writeJsonFile } from '../io/json';
+import { readJsonFile, readTextFileIfExists, writeJsonFile } from '../io/json';
 import { writePackageDetailJson } from '../package-detail-builder';
 import type { Manifest } from '../types';
 
@@ -120,6 +120,8 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
   logMessage(log, `[4/7] Building version snapshot for ${version}`);
   const { srcZipPath } = prepareVersionSnapshot(pkg, versionDir, version);
   const indexPath = path.join(packagesDir, INDEX_FILENAME);
+  const previousManifestContent = readTextFileIfExists(pkg.manifestPath);
+  const previousIndexContent = readTextFileIfExists(indexPath);
   let artifacts: BuiltTargetArtifact[];
 
   try {
@@ -161,9 +163,11 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
       instructionsSha256,
     });
     const manifest = readJsonFile<Manifest>(pkg.manifestPath);
-    writePackageDetailJson(pkg.ref, pkg.packageDir, version, manifest);
+    writePackageDetailJson(pkg.ref, pkg.packageDir, manifest.latest, manifest);
   } catch (error) {
     rollbackVersionDirectory(versionDir);
+    restoreTrackedFile(pkg.manifestPath, previousManifestContent);
+    restoreTrackedFile(indexPath, previousIndexContent);
     warnIfIndexMayBeInconsistent(indexPath, qualifiedId);
     throw error;
   }

@@ -187,7 +187,9 @@ One-time exception: tooling MAY add `versions/<version>/README.md` by
 extracting `README.md` from that version's `<version>-src.zip` when the
 snapshot README is missing. This exception MUST NOT modify ZIP artifacts,
 checksums, or any other snapshot file. After this one-time backfill,
-snapshot README files are immutable like other snapshot files. Tooling
+tooling MUST regenerate package-root `detail.json` from the latest snapshot
+so `readmeMarkdown` matches the backfilled latest README. Snapshot README
+files are then immutable like other snapshot files. Tooling
 MUST NOT copy package-root working-state `README.md` into an older
 snapshot.
 

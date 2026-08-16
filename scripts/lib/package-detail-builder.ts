@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { isChatWebSupported } from './compatibility';
+import { projectChatWebForIndex } from './compatibility';
 import {
   AGENT_FILE_EXT,
   AGENT_METADATA_EXT,
@@ -200,7 +200,8 @@ export function buildPackageDetailDocument(
     document.readmeMarkdown = readmeMarkdown;
   }
 
-  if (isChatWebSupported(metadata)) {
+  const latestEntry = manifest.versions.find((entry) => entry.version === latest);
+  if (latestEntry !== undefined && projectChatWebForIndex(metadata, latestEntry)) {
     document.chatWeb = true;
     document.instructionsPath = `/pkg/${ref.namespace}/${ref.packageId}/${latest}/instructions.json`;
   }

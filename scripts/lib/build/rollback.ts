@@ -29,3 +29,20 @@ export function warnIfIndexMayBeInconsistent(indexPath: string, packageId: strin
     // Index JSON is malformed; leave for user to diagnose.
   }
 }
+
+export function restoreTrackedFile(filePath: string, previousContent: string | null): void {
+  try {
+    if (previousContent === null) {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.error(`  [ROLLBACK] Removed ${filePath} after catalog update failure`);
+      }
+      return;
+    }
+
+    fs.writeFileSync(filePath, previousContent, 'utf-8');
+    console.error(`  [ROLLBACK] Restored ${filePath} after catalog update failure`);
+  } catch (restoreError) {
+    console.error(`  [ROLLBACK] Failed to restore ${filePath}:`, restoreError);
+  }
+}
