@@ -9,7 +9,8 @@ export type SchemaFamily =
   | 'metadata.flow'
   | 'manifest'
   | 'index'
-  | 'instructions.manifest';
+  | 'instructions.manifest'
+  | 'package.detail';
 
 interface SchemaFamilyConfig {
   current: string;
@@ -35,6 +36,7 @@ const schemaFamilies: SchemaFamily[] = [
   'manifest',
   'index',
   'instructions.manifest',
+  'package.detail',
 ];
 
 export class SchemaVersionsService {

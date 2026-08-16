@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import AdmZip from 'adm-zip';
-import { AGENT_FILE_EXT, AGENTS_DIR, VERSIONS_DIR } from './constants';
+import { AGENT_FILE_EXT, AGENTS_DIR, DETAIL_FILENAME, VERSIONS_DIR } from './constants';
 import { listDeploymentAgentFiles } from './deployment-agents';
 import { addDeterministicZipEntry } from './deterministic-zip';
 
@@ -50,7 +50,7 @@ export class ZipBuilder {
         .sort((left, right) => compareUtf16CodeUnits(left.name, right.name));
 
       for (const entry of entries) {
-        if (entry.name === VERSIONS_DIR) continue;
+        if (entry.name === VERSIONS_DIR || entry.name === DETAIL_FILENAME) continue;
         const fullPath = path.join(dir, entry.name);
         const zipName = prefix ? `${prefix}/${entry.name}` : entry.name;
         if (entry.isDirectory()) {

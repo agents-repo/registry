@@ -40,6 +40,10 @@ Lifecycle enforcement:
 (such as a webapp) to discover all packages in the registry without
 needing to enumerate the `packages/` directory.
 
+Latest-snapshot package detail MUST live at
+`packages/<namespace>/<package-id>/detail.json` and MUST NOT be projected
+into this index. See `specs/package-detail-schema.md`.
+
 ## File Location
 
 - The index MUST be stored at `packages/index.json`.

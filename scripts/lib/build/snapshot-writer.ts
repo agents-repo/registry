@@ -1,7 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { Package } from '../package';
-import { AGENTS_DIR, FLOWS_DIR, METADATA_FILENAME, SOURCE_ARCHIVE_SUFFIX } from '../constants';
+import {
+  AGENTS_DIR,
+  FLOWS_DIR,
+  METADATA_FILENAME,
+  README_FILENAME,
+  SOURCE_ARCHIVE_SUFFIX,
+} from '../constants';
 
 export interface SnapshotPaths {
   snapshotMetaPath: string;
@@ -19,6 +25,11 @@ export function prepareVersionSnapshot(
   const srcZipPath = path.join(versionDir, `${version}${SOURCE_ARCHIVE_SUFFIX}`);
 
   fs.copyFileSync(pkg.metadataPath, snapshotMetaPath);
+
+  const packageReadmePath = path.join(pkg.packageDir, README_FILENAME);
+  if (fs.existsSync(packageReadmePath)) {
+    fs.copyFileSync(packageReadmePath, path.join(versionDir, README_FILENAME));
+  }
 
   if (fs.existsSync(pkg.agentsDir)) {
     const snapshotAgentsDir = path.join(versionDir, AGENTS_DIR);

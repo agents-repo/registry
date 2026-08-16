@@ -11,6 +11,7 @@
     "package:validate-artifacts": "tsx scripts/package-validate-artifacts.ts",
     "package:scan-zips": "tsx scripts/package-scan-zips.ts",
     "package:index:rebuild": "tsx scripts/package-index-rebuild.ts",
+    "package:readme:backfill": "tsx scripts/package-readme-backfill.ts",
     "package:create": "tsx scripts/package-create.ts",
     "package:create:smoke": "tsx scripts/package-create-smoke.ts",
     "sync:ide-instructions": "node scripts/sync-ide-instructions.mjs",

@@ -116,6 +116,27 @@ describe('ZipBuilder.buildSourceZip', (): void => {
     expect(entryNames.some((entryName) => entryName.startsWith(`${AGENTS_DIR}/`))).toBe(true);
   });
 
+  it('excludes generated detail.json from the source archive', (): void => {
+    const repoRoot = makeRepoRoot();
+    const packageDir = createDummyPackage(repoRoot, 'zip-source-detail', {
+      agents: [
+        { id: 'alpha', name: 'alpha', description: 'Alpha agent for source zip detail exclusion.' },
+      ],
+    });
+    fs.writeFileSync(path.join(packageDir, 'detail.json'), '{"schemaVersion":"1.0.0"}\n');
+
+    const zipPath = path.join(repoRoot, 'source-detail.zip');
+    new ZipBuilder(packageDir, '1.0.0').buildSourceZip(zipPath);
+
+    const entryNames = new AdmZip(zipPath)
+      .getEntries()
+      .map((entry) => entry.entryName)
+      .filter((entryName) => !entryName.endsWith('/'));
+
+    expect(entryNames.some((entryName) => entryName === 'detail.json')).toBe(false);
+    expect(entryNames.some((entryName) => entryName === 'metadata.json')).toBe(true);
+  });
+
   it('produces identical source ZIP bytes on repeated builds', (): void => {
     const repoRoot = makeRepoRoot();
     const packageDir = createDummyPackage(repoRoot, 'zip-deterministic-source', {

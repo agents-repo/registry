@@ -45,8 +45,11 @@ export const SCHEMA_FAMILY_FLOW = 'metadata.flow';
 export const SCHEMA_FAMILY_INDEX = 'index';
 export const SCHEMA_FAMILY_MANIFEST = 'manifest';
 export const SCHEMA_FAMILY_INSTRUCTIONS_MANIFEST = 'instructions.manifest';
+export const SCHEMA_FAMILY_PACKAGE_DETAIL = 'package.detail';
 
 export const INSTRUCTIONS_FILENAME = 'instructions.json';
+export const README_FILENAME = 'README.md';
+export const DETAIL_FILENAME = 'detail.json';
 
 export const CHAT_WEB_CONSUMPTION_ID = 'chat-web';
 export const CONSUMPTION_CHANNEL_IDS = [CHAT_WEB_CONSUMPTION_ID] as const;

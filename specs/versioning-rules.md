@@ -1,4 +1,4 @@
-# Versioning Rules Specification (1.0.0)
+# Versioning Rules Specification (1.1.0)
 
 This document defines semantic versioning and compatibility rules
 for registry packages and registry specifications.
@@ -15,7 +15,8 @@ define a JSON `schemaVersion` field.
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | spec document version | current | Initial release |
+| `1.1.0` | spec document version | current | Snapshot README and one-time backfill exception |
+| `1.0.0` | spec document version | supported | Initial release |
 
 Tooling and processes that enforce versioning behavior SHOULD use the latest
 supported spec document version in this table.
@@ -43,8 +44,8 @@ supported spec document version in this table.
 - Each released version MUST have a snapshot folder at
   `versions/<version>/` containing per-target deployment artifacts
   (`<version>-<target-id>.zip`), the source archive (`<version>-src.zip`),
-  a `metadata.json` snapshot, and source tree snapshots
-  (`agents/` and `flows/` if present).
+  a `metadata.json` snapshot, `README.md` when the package had one at
+  release, and source tree snapshots (`agents/` and `flows/` if present).
 
 ## Script-Gated Publication
 
@@ -181,6 +182,14 @@ submissions map to registry PATCH releases regardless of `!` emphasis; see
   or removed after publication.
 - `sha256` and `srcSha256` for a published version MUST NOT change.
 - If artifact content changes, a new version MUST be published.
+
+One-time exception: tooling MAY add `versions/<version>/README.md` by
+extracting `README.md` from that version's `<version>-src.zip` when the
+snapshot README is missing. This exception MUST NOT modify ZIP artifacts,
+checksums, or any other snapshot file. After this one-time backfill,
+snapshot README files are immutable like other snapshot files. Tooling
+MUST NOT copy package-root working-state `README.md` into an older
+snapshot.
 
 ## Deprecation Rules
 

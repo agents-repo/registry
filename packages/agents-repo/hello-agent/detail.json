@@ -1,0 +1,154 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "agents-repo/hello-agent",
+  "version": "1.0.1",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "hello-agent",
+    "description": "Hello Agent package scaffolded by package-create",
+    "owner": "agents-repo",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "agent",
+      "hello"
+    ],
+    "createdAt": "2026-05-06T03:32:09.636Z",
+    "updatedAt": "2026-08-09T22:50:00.000Z",
+    "version": "1.0.1",
+    "status": "active",
+    "category": "assistant",
+    "estimateOverallCost": {
+      "estimatedCost": 1,
+      "band": "low"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/hello-agent/README.md",
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "hello-again",
+      "name": "hello-again",
+      "description": "Provides a follow-up hello response for chained greetings",
+      "status": "active",
+      "category": "assistant",
+      "estimateCost": {
+        "estimatedCost": 1,
+        "band": "minimal"
+      },
+      "instructionPath": "packages/agents-repo/hello-agent/versions/1.0.1/agents/hello-again.agent.md"
+    },
+    {
+      "id": "hello-agent",
+      "name": "hello-agent",
+      "description": "Responds with a simple hello workflow",
+      "status": "active",
+      "category": "assistant",
+      "estimateCost": {
+        "estimatedCost": 1,
+        "band": "minimal"
+      },
+      "instructionPath": "packages/agents-repo/hello-agent/versions/1.0.1/agents/hello-agent.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "hello-agents",
+      "name": "hello-agents",
+      "description": "Invokes hello-agent and hello-again in sequence",
+      "status": "active",
+      "category": "assistant",
+      "estimateCost": {
+        "estimatedCost": 1,
+        "band": "minimal"
+      },
+      "instructionPath": "packages/agents-repo/hello-agent/versions/1.0.1/flows/hello-agents.agent.md",
+      "agents": [
+        "hello-agent",
+        "hello-again"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.1",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-06-08T02:09:56.363Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ]
+      },
+      {
+        "version": "1.0.1",
+        "createdAt": "2026-08-09T22:52:46.700Z",
+        "srcArtifact": "1.0.1-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.1-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.1-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.1-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.1-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# hello-agent\n\nHello Agent package scaffolded by package-create.\n\n## Quickstart\n\nThis package demonstrates a minimal multi-agent setup in the registry.\n\n## Package Contents\n\n- Agents:\n  - `hello-agent`\n  - `hello-again`\n- Flows:\n  - `hello-agents` (declares `agents[]` for Level-2 chat-web starter prompts)\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` with `{ \"id\": \"chat-web\", \"status\": \"supported\" }`.\nAll agents and flows are included in the public chat catalog (no\n`chatWeb: excluded` overrides).\n\nAfter `package:build`, the instruction manifest for a released version lives at:\n\n```text\npackages/agents-repo/hello-agent/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp consumers\njoin the registry-proxy origin with those paths per\n[`specs/chat-consumption.md`](../../../specs/chat-consumption.md):\n\n- **Origin:** `https://registry-proxy.maiconfz.workers.dev`\n\nIllustrative absolute fetch URLs for version `1.0.1`:\n\n```text\nhttps://registry-proxy.maiconfz.workers.dev/pkg/agents-repo/hello-agent/1.0.1/instructions.json\nhttps://registry-proxy.maiconfz.workers.dev/pkg/agents-repo/hello-agent/1.0.1/agents/hello-agent.agent.md\nhttps://registry-proxy.maiconfz.workers.dev/pkg/agents-repo/hello-agent/1.0.1/flows/hello-agents.agent.md\n```\n\nThe `hello-agents` flow lists step agents in frontmatter/metadata `agents[]`;\n`package:build` maps that ordered list to `agentInstructions` in\n`instructions.json`.\n\n## Validate and Build\n\nRun from repository root:\n\n```bash\nnpm run package:validate -- --package agents-repo/hello-agent\nnpm run package:build -- --package agents-repo/hello-agent\nnpm run package:validate-artifacts -- \\\n  --package agents-repo/hello-agent --version 1.0.1\n```\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/agents-repo/hello-agent/1.0.1/instructions.json"
+}

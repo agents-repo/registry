@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { printValidationIssues } from '../cli/reporting';
-import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR, INSTRUCTIONS_FILENAME } from '../constants';
+import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR, INSTRUCTIONS_FILENAME, DETAIL_FILENAME } from '../constants';
 import { ErrorCode, PackageError } from '../errors';
 import { GitContext } from '../git';
 import { Package } from '../package';
@@ -14,7 +14,9 @@ import { ValidationUtils } from '../validation-utils';
 import { ZipBuilder } from '../zip-builder';
 import { buildTargetArtifacts, type BuiltTargetArtifact } from '../emitters/target-zip-builder';
 import { buildInstructionsManifest } from '../instructions-manifest-builder';
-import { writeJsonFile } from '../io/json';
+import { readJsonFile, writeJsonFile } from '../io/json';
+import { writePackageDetailJson } from '../package-detail-builder';
+import type { Manifest } from '../types';
 
 export interface BuildPackageResult {
   packageId: string;
@@ -146,7 +148,7 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
       );
     }
 
-    logMessage(log, `[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME} and packages/${INDEX_FILENAME}`);
+    logMessage(log, `[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME}, packages/${INDEX_FILENAME}, and ${DETAIL_FILENAME}`);
     updateManifestAndIndexWithRollback({
       ref: pkg.ref,
       manifestPath: pkg.manifestPath,
@@ -158,6 +160,8 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
       srcZipSha256,
       instructionsSha256,
     });
+    const manifest = readJsonFile<Manifest>(pkg.manifestPath);
+    writePackageDetailJson(pkg.ref, pkg.packageDir, version, manifest);
   } catch (error) {
     rollbackVersionDirectory(versionDir);
     warnIfIndexMayBeInconsistent(indexPath, qualifiedId);
