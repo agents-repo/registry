@@ -120,8 +120,10 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
   logMessage(log, `[4/7] Building version snapshot for ${version}`);
   const { srcZipPath } = prepareVersionSnapshot(pkg, versionDir, version);
   const indexPath = path.join(packagesDir, INDEX_FILENAME);
+  const detailPath = path.join(pkg.packageDir, DETAIL_FILENAME);
   const previousManifestContent = readTextFileIfExists(pkg.manifestPath);
   const previousIndexContent = readTextFileIfExists(indexPath);
+  const previousDetailContent = readTextFileIfExists(detailPath);
   let artifacts: BuiltTargetArtifact[];
 
   try {
@@ -168,6 +170,7 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
     rollbackVersionDirectory(versionDir);
     restoreTrackedFile(pkg.manifestPath, previousManifestContent);
     restoreTrackedFile(indexPath, previousIndexContent);
+    restoreTrackedFile(detailPath, previousDetailContent);
     warnIfIndexMayBeInconsistent(indexPath, qualifiedId);
     throw error;
   }

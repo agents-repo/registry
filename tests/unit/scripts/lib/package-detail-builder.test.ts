@@ -163,6 +163,16 @@ describe('buildPackageDetailDocument', (): void => {
     expect(document.readmeMarkdown).toBeUndefined();
   });
 
+  it('keeps readmeMarkdown when the latest snapshot README is whitespace-only', (): void => {
+    const packageDir = makeTempPackageDir();
+    writeLatestSnapshot(packageDir, false);
+    fs.writeFileSync(path.join(packageDir, VERSIONS_DIR, '1.0.1', README_FILENAME), '   \n', 'utf-8');
+
+    const document = buildPackageDetailDocument(makeRef(), packageDir, '1.0.1', makeManifest());
+
+    expect(document.readmeMarkdown).toBe('   \n');
+  });
+
   it('omits chatWeb unless the latest manifest entry has an instructions artifact', (): void => {
     const packageDir = makeTempPackageDir();
     writeLatestSnapshot(packageDir, false);

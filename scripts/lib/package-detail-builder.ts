@@ -196,7 +196,7 @@ export function buildPackageDetailDocument(
     },
   };
 
-  if (readmeMarkdown !== undefined && readmeMarkdown.trim().length > 0) {
+  if (readmeMarkdown !== undefined) {
     document.readmeMarkdown = readmeMarkdown;
   }
 
