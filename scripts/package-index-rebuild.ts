@@ -14,6 +14,7 @@ import { ErrorCode, PackageError } from './lib/errors';
 import { IndexManager } from './lib/index-manager';
 import { readJsonFile, writeJsonFile } from './lib/io/json';
 import { listDiscoveredPackages } from './lib/namespace';
+import { writePackageDetailJson } from './lib/package-detail-builder';
 import { getSchemaCurrentVersion } from './lib/schema-versions';
 import { writePackageTree } from './lib/tree-manager';
 import type { Manifest, PackageMetadata } from './lib/types';
@@ -72,6 +73,7 @@ function main(): void {
       deferDerivedRefresh: true,
       latestVersionEntry: latestEntry,
     });
+    writePackageDetailJson(ref, packageDir, latest, manifest);
   }
 
   manager.refreshDerivedState(discovered);

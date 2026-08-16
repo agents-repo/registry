@@ -1,4 +1,4 @@
-# Package Format Specification (1.0.0)
+# Package Format Specification (1.1.0)
 
 This document defines the deterministic directory and file format
 for packages stored in the registry.
@@ -15,7 +15,8 @@ a JSON `schemaVersion` field.
 
 | Version | Applies To | Status | Notes |
 | --- | --- | --- | --- |
-| `1.0.0` | spec document version | current | Initial release |
+| `1.1.0` | spec document version | current | Snapshot README, generated `detail.json`, ZIP exclusion |
+| `1.0.0` | spec document version | supported | Initial release |
 
 Tooling and processes that validate package format SHOULD use the latest
 supported spec document version in this table.
@@ -39,8 +40,10 @@ Contributors and AI agents MUST follow this pipeline to produce a release:
   validation equivalent to `package:validate`, builds per-install-target
   deployment ZIPs plus the source archive, emits `instructions.json` when
   chat-web is enabled (see `chat-consumption.md`), computes SHA-256 checksums,
-  writes `versions/<version>/`, updates `versions/manifest.json`, and updates
-  `packages/index.json`.
+  writes `versions/<version>/` (including `README.md` when the package root
+  had one at release), updates `versions/manifest.json`, updates
+  `packages/index.json`, and generates `detail.json` from the latest snapshot
+  (see `package-detail-schema.md`).
 3. Run `npm run package:validate-artifacts -- --package <namespace>/<package-id>`
   to validate generated artifacts for structural and security issues.
 
@@ -50,7 +53,11 @@ Internal shared validation logic within `package-build` is permitted.
 
 Contributors and AI agents MUST NOT manually create or modify any file under
 `versions/`. The `package-build` script is the sole authorized writer for all
-content under `versions/`.
+content under `versions/`, except the one-time README backfill exception in
+`specs/versioning-rules.md`.
+
+Contributors and AI agents MUST NOT manually create or modify `detail.json`.
+`package-build` and `package-index-rebuild` are the authorized writers.
 
 ## Naming Rules
 
@@ -75,6 +82,7 @@ packages/
         <package-id>/
         metadata.json
         README.md (optional)
+        detail.json (generated)
         agents/
             <agent-id>.agent.md
             <agent-id>.metadata.json
@@ -84,6 +92,7 @@ packages/
         versions/
             <version>/
                 metadata.json
+                README.md (when present at release)
                 agents/
                     <agent-id>.agent.md
                     <agent-id>.metadata.json
@@ -107,6 +116,9 @@ Package constraints:
 - `README.md` MAY be present at the package root.
 - When `README.md` is present, package metadata `quickstart` SHOULD point to the
   package README URL.
+- `detail.json` MUST exist after `package-build` or `package-index-rebuild`.
+  Contributors MUST NOT author it. The schema is defined in
+  `specs/package-detail-schema.md`.
 - `agents/` MAY be absent if the package contains no agents.
 - `flows/` MAY be absent if the package contains no flows.
 
@@ -121,6 +133,10 @@ Each released version MUST have a corresponding snapshot folder at
 
 - MUST contain `metadata.json` — a verbatim copy of the package
   `metadata.json` as it existed at release time.
+- MUST contain `README.md` when the package root had `README.md` at
+  release time. `package-build` MUST copy that file into the snapshot.
+  The snapshot MUST NOT contain `README.md` when the package had none
+  at release time.
 - MUST contain `agents/` with the same contents as the package root
   `agents/` at release time, if the package contains agents.
 - MUST contain `flows/` with the same contents as the package root
@@ -186,11 +202,14 @@ Install target identifiers, artifact naming, ZIP layouts, and
 - `<version>-src.zip` is the source archive for that version.
 - A source archive MUST contain the full package source at release
   time, consisting of all files and directories present in the
-  package root at release time except `versions/`.
-- This includes `metadata.json`, `agents/` (with all `.agent.md`
-  and `.metadata.json` files), `flows/` (if present), and any
-  other top-level package files present at release time.
+  package root at release time except `versions/` and `detail.json`.
+- This includes `metadata.json`, `README.md` (when present), `agents/`
+  (with all `.agent.md` and `.metadata.json` files), `flows/` (if present),
+  and any other top-level package files present at release time except
+  `detail.json`.
 - The `versions/` folder MUST NOT be included in the source archive.
+- `detail.json` MUST NOT be included in the source archive or in
+  deployment ZIPs.
 - `.metadata.json` sidecars MUST be included in the source archive.
 - `metadata.json` MUST be included in the source archive.
 
@@ -220,6 +239,9 @@ Install target identifiers, artifact naming, ZIP layouts, and
   project `estimateOverallCost.estimatedCost` and `quickstart`.
 - Package detail-only fields (for example `customAttributes`) MUST NOT
   be projected into `packages/index.json`.
+- Latest-snapshot package detail lives in `packages/<namespace>/<package-id>/detail.json`
+  and MUST NOT be projected into `packages/index.json`. See
+  `specs/package-detail-schema.md`.
 
 ## Determinism Rules
 
@@ -234,12 +256,14 @@ Install target identifiers, artifact naming, ZIP layouts, and
 packages/my-package/
     metadata.json
     README.md (optional)
+    detail.json (generated)
     agents/
         my-agent.agent.md
         my-agent.metadata.json
     versions/
         1.0.0/
             metadata.json
+            README.md (when present at release)
             agents/
                 my-agent.agent.md
                 my-agent.metadata.json
@@ -257,6 +281,7 @@ packages/my-package/
 packages/my-package/
     metadata.json
     README.md (optional)
+    detail.json (generated)
     agents/
         planner.agent.md
         planner.metadata.json
@@ -268,6 +293,7 @@ packages/my-package/
     versions/
         1.0.0/
             metadata.json
+            README.md (when present at release)
             agents/
                 planner.agent.md
                 planner.metadata.json
@@ -283,6 +309,7 @@ packages/my-package/
             1.0.0-src.zip
         1.1.0/
             metadata.json
+            README.md (when present at release)
             agents/
                 planner.agent.md
                 planner.metadata.json

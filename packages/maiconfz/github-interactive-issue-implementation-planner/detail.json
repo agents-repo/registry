@@ -1,0 +1,186 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/github-interactive-issue-implementation-planner",
+  "version": "1.1.1",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "github-interactive-issue-implementation-planner",
+    "description": "Interactive GitHub issue planning: load issue via gh, draft and refine an implementation plan with ask-first clarifications.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/github-interactive-issue-implementation-planner",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "github",
+      "issue",
+      "gh",
+      "planning",
+      "implementation",
+      "workflow",
+      "interactive"
+    ],
+    "createdAt": "2026-07-25T02:02:42.610Z",
+    "updatedAt": "2026-07-30T09:12:28.000Z",
+    "version": "1.1.1",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 7,
+      "band": "high"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/github-interactive-issue-implementation-planner/README.md",
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "github-issue-intake",
+      "name": "github-issue-intake",
+      "description": "Resolve a GitHub issue number or URL, fetch issue and comment context via gh, and emit a canonical issue brief. Use when starting issue-driven implementation planning. Ask when the repository or issue reference is ambiguous.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 3,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/github-interactive-issue-implementation-planner/versions/1.1.1/agents/github-issue-intake.agent.md"
+    },
+    {
+      "id": "implementation-plan-refiner",
+      "name": "implementation-plan-refiner",
+      "description": "Refine an implementation plan against the issue brief for gaps and inconsistencies. Use after the first plan draft. Prefer questions over assumptions. Does not re-intake the issue or implement code.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/github-interactive-issue-implementation-planner/versions/1.1.1/agents/implementation-plan-refiner.agent.md"
+    },
+    {
+      "id": "issue-implementation-planner",
+      "name": "issue-implementation-planner",
+      "description": "Draft an ask-first implementation plan from an issue brief and local repository context. Use after issue intake. Prefer clarifying questions over assumptions. Does not implement code or re-fetch the issue via gh.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/github-interactive-issue-implementation-planner/versions/1.1.1/agents/issue-implementation-planner.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "issue-implementation-planning",
+      "name": "issue-implementation-planning",
+      "description": "Orchestrates GitHub issue intake, ask-first implementation planning, and plan refinement. Use with an issue number or URL. Planning only unless the user explicitly requests implementation.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/github-interactive-issue-implementation-planner/versions/1.1.1/flows/issue-implementation-planning.agent.md",
+      "agents": [
+        "github-issue-intake",
+        "issue-implementation-planner",
+        "implementation-plan-refiner"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.1.1",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-07-25T02:03:11.754Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ]
+      },
+      {
+        "version": "1.1.0",
+        "createdAt": "2026-07-26T02:31:17.655Z",
+        "srcArtifact": "1.1.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.1.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.1.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.1.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.1.0-openai-codex.zip"
+          }
+        ]
+      },
+      {
+        "version": "1.1.1",
+        "createdAt": "2026-08-02T03:25:17.788Z",
+        "srcArtifact": "1.1.1-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.1.1-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.1.1-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.1.1-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.1.1-openai-codex.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "readmeMarkdown": "# github-interactive-issue-implementation-planner\n\nInteractive GitHub issue planning: load issue via `gh`, draft and refine an\nimplementation plan with ask-first clarifications.\n\n## Objective\n\nInteractive GitHub issue workflow: load issue context with `gh`, draft an\nask-first implementation plan, then refine it for gaps and inconsistencies.\n**Planning only** — no code changes unless you explicitly request implementation\nafter the plan is ready.\n\n## Workflow\n\n```mermaid\nflowchart LR\n  intake[github-issue-intake]\n  plan[issue-implementation-planner]\n  refine[implementation-plan-refiner]\n  intake --> plan --> refine\n```\n\n## Prerequisites\n\n- [GitHub CLI](https://cli.github.com/) authenticated for the target repository\n  (`gh auth status`)\n- Local checkout of the repository where you intend to implement the issue\n- Node.js with `npx` (see the [agents-repo CLI](https://github.com/agents-repo/cli))\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets cursor\nnpx agents-repo@latest install maiconfz/github-interactive-issue-implementation-planner\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/github-interactive-issue-implementation-planner\n```\n\n- Choose `--targets` for your IDE: `github-copilot`, `cursor`, `claude-code`,\n  or `openai-codex` (pass one or more).\n- After install, commit `agents.json`, `agents-lock.json`, and the extracted\n  install paths when they change.\n- Extract paths follow the install target (see\n  [install-targets](https://github.com/agents-repo/registry/blob/main/specs/install-targets.md));\n  invoke the flow or agents by name below.\n\nThis README is catalog documentation on `main`; installed content comes from\nthe versioned deployment ZIPs pinned in your `agents-lock.json`.\n\n## Usage\n\nInvoke the **`issue-implementation-planning`** flow when you need to:\n\n- Turn a GitHub issue into a structured implementation plan\n- Clarify requirements before coding (ask-first at intake, plan, and refine)\n- Review a draft plan for gaps against issue acceptance criteria\n\nOptional: invoke individual agents when you need a single step only.\n\n### Inputs\n\n| Input | Required | Description |\n| --- | --- | --- |\n| `issue-reference` | yes | Issue number (for example `42`) or full issue URL |\n| `repository` | no | `owner/name` when not inferable from the local checkout |\n| `user-clarifications` | no | Answers accumulated across clarification loops |\n\n### Outputs\n\n- `refined-implementation-plan` — final markdown plan after refinement\n- `open-questions` — remaining questions (blocking items first when present)\n\n### After planning\n\nThis package stops at the flow outputs above. Implementation, draft PR\npre-ready steps, marking ready, and maintainer review follow the **target\nrepository** and organization\n[CONTRIBUTING](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md)\n(**Pre-ready agent handoff**) — not this package. Request implementation\nexplicitly if you want the agent to write code after the plan is ready.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `issue-implementation-planning` (flow) | Primary entry: intake → plan → refine |\n| `github-issue-intake` | Fetch issue and comment context via `gh` |\n| `issue-implementation-planner` | First implementation plan draft |\n| `implementation-plan-refiner` | Plan QA and gap fixes |\n\n## Maintainers\n\nFrom the registry repository root (package authors / registry contributors):\n\n```bash\nPKG=maiconfz/github-interactive-issue-implementation-planner\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.1.1\n```\n"
+}

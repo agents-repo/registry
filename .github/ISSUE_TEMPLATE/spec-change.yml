@@ -36,6 +36,7 @@ body:
         - specs/versioning-rules.md
         - specs/index-schema.md
         - specs/install-targets.md
+        - specs/package-detail-schema.md
         - specs/schema-versions.json
     validations:
       required: true

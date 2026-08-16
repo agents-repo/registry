@@ -17,7 +17,7 @@
  *   4. Compute SHA-256 checksums.
  *   5. Write the version snapshot to the target version directory.
  *   6. Upsert the manifest in the versions directory.
- *   7. Update the package index file.
+ *   7. Update the package index file and generate detail.json.
  *
  * Exits 0 on success, non-zero on failure.
  */

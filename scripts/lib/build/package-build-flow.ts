@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { printValidationIssues } from '../cli/reporting';
-import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR, INSTRUCTIONS_FILENAME } from '../constants';
+import { INDEX_FILENAME, MANIFEST_FILENAME, SOURCE_ARCHIVE_SUFFIX, VERSIONS_DIR, INSTRUCTIONS_FILENAME, DETAIL_FILENAME } from '../constants';
 import { ErrorCode, PackageError } from '../errors';
 import { GitContext } from '../git';
 import { Package } from '../package';
-import { rollbackVersionDirectory, warnIfIndexMayBeInconsistent } from './rollback';
+import { rollbackVersionDirectory, restoreTrackedFile, warnIfIndexMayBeInconsistent } from './rollback';
 import { updateManifestAndIndexWithRollback } from './registry-sync';
 import { prepareVersionSnapshot } from './snapshot-writer';
 import { Checksum } from '../checksum';
@@ -14,7 +14,9 @@ import { ValidationUtils } from '../validation-utils';
 import { ZipBuilder } from '../zip-builder';
 import { buildTargetArtifacts, type BuiltTargetArtifact } from '../emitters/target-zip-builder';
 import { buildInstructionsManifest } from '../instructions-manifest-builder';
-import { writeJsonFile } from '../io/json';
+import { readJsonFile, readTextFileIfExists, writeJsonFile } from '../io/json';
+import { writePackageDetailJson } from '../package-detail-builder';
+import type { Manifest } from '../types';
 
 export interface BuildPackageResult {
   packageId: string;
@@ -118,6 +120,10 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
   logMessage(log, `[4/7] Building version snapshot for ${version}`);
   const { srcZipPath } = prepareVersionSnapshot(pkg, versionDir, version);
   const indexPath = path.join(packagesDir, INDEX_FILENAME);
+  const detailPath = path.join(pkg.packageDir, DETAIL_FILENAME);
+  const previousManifestContent = readTextFileIfExists(pkg.manifestPath);
+  const previousIndexContent = readTextFileIfExists(indexPath);
+  const previousDetailContent = readTextFileIfExists(detailPath);
   let artifacts: BuiltTargetArtifact[];
 
   try {
@@ -146,7 +152,7 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
       );
     }
 
-    logMessage(log, `[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME} and packages/${INDEX_FILENAME}`);
+    logMessage(log, `[7/7] Updating ${VERSIONS_DIR}/${MANIFEST_FILENAME}, packages/${INDEX_FILENAME}, and ${DETAIL_FILENAME}`);
     updateManifestAndIndexWithRollback({
       ref: pkg.ref,
       manifestPath: pkg.manifestPath,
@@ -158,8 +164,13 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
       srcZipSha256,
       instructionsSha256,
     });
+    const manifest = readJsonFile<Manifest>(pkg.manifestPath);
+    writePackageDetailJson(pkg.ref, pkg.packageDir, manifest.latest, manifest);
   } catch (error) {
     rollbackVersionDirectory(versionDir);
+    restoreTrackedFile(pkg.manifestPath, previousManifestContent);
+    restoreTrackedFile(indexPath, previousIndexContent);
+    restoreTrackedFile(detailPath, previousDetailContent);
     warnIfIndexMayBeInconsistent(indexPath, qualifiedId);
     throw error;
   }

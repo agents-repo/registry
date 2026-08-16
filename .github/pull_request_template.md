@@ -68,6 +68,7 @@ If relevant, describe impact on:
 - package format
 - metadata schema
 - manifest schema
+- package detail schema
 - agent or flow format
 - versioning rules
 

@@ -36,6 +36,12 @@
       "supported": ["1.0.0"],
       "deprecated": [],
       "eol": []
+    },
+    "package.detail": {
+      "current": "1.0.0",
+      "supported": ["1.0.0"],
+      "deprecated": [],
+      "eol": []
     }
   }
 }

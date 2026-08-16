@@ -12,6 +12,7 @@ import {
   MANIFEST_FILENAME,
   INSTRUCTIONS_FILENAME,
   METADATA_FILENAME,
+  README_FILENAME,
   SOURCE_ARCHIVE_SUFFIX,
   TARGET_ARTIFACT_FILE_PATTERN,
   VERSIONS_DIR,
@@ -97,6 +98,7 @@ export class SnapshotValidator {
   ): void {
     const allowedTopLevelEntries = new Set([
       METADATA_FILENAME,
+      README_FILENAME,
       `${this.version}${SOURCE_ARCHIVE_SUFFIX}`,
       AGENTS_DIR,
       FLOWS_DIR,

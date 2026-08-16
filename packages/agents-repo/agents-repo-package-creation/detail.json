@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "agents-repo/agents-repo-package-creation",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "agents-repo-package-creation",
+    "description": "Agents and flow for creating, reviewing, and validating new registry packages for agents-repo from requirements to submission-ready source.",
+    "owner": "agents-repo",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/agents-repo/agents-repo-package-creation",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "agents-repo-package-creation",
+      "authoring",
+      "validation",
+      "review",
+      "registry"
+    ],
+    "createdAt": "2026-05-04T00:00:00Z",
+    "updatedAt": "2026-07-04T00:00:00Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "assistant",
+    "estimateOverallCost": {
+      "estimatedCost": 6,
+      "band": "moderate"
+    },
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "package-creator",
+      "name": "package-creator",
+      "description": "Authors and revises registry package source definitions after scaffolding, producing agent and flow files with matching metadata sidecars.",
+      "status": "active",
+      "category": "assistant",
+      "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.0/agents/package-creator.agent.md"
+    },
+    {
+      "id": "package-release-gate",
+      "name": "package-release-gate",
+      "description": "Executes artifact validation scripts and decides release gate pass or fail with blocking issue summaries.",
+      "status": "active",
+      "category": "assistant",
+      "estimateCost": {
+        "estimatedCost": 3,
+        "band": "low"
+      },
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.0/agents/package-release-gate.agent.md"
+    },
+    {
+      "id": "package-requirements-analyst",
+      "name": "package-requirements-analyst",
+      "description": "Translates user intent into a script-ready package blueprint with naming, metadata, and scaffold arguments for package creation.",
+      "status": "active",
+      "category": "assistant",
+      "estimateCost": {
+        "estimatedCost": 3,
+        "band": "low"
+      },
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.0/agents/package-requirements-analyst.agent.md"
+    },
+    {
+      "id": "package-script-runner",
+      "name": "package-script-runner",
+      "description": "Executes package creation, source validation, and build scripts, returning structured command results and next actions.",
+      "status": "active",
+      "category": "assistant",
+      "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.0/agents/package-script-runner.agent.md"
+    },
+    {
+      "id": "package-submission-reviewer",
+      "name": "package-submission-reviewer",
+      "description": "Reviews a drafted package for human-facing quality, usability, and submission readiness, producing structured feedback and a readiness verdict.",
+      "status": "active",
+      "category": "assistant",
+      "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.0/agents/package-submission-reviewer.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "full-package-creation-flow",
+      "name": "full-package-creation-flow",
+      "description": "Orchestrates package creation through script-driven scaffold, authoring, validation, build, and artifact gate stages.",
+      "status": "active",
+      "category": "assistant",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.0/flows/full-package-creation-flow.agent.md",
+      "agents": [
+        "package-requirements-analyst",
+        "package-creator",
+        "package-submission-reviewer",
+        "package-script-runner",
+        "package-release-gate"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-07-04T02:42:33.330Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ]
+      }
+    ]
+  }
+}
