@@ -182,7 +182,7 @@ body:
         - manifest.latest: "1.0.0"
         - version: "1.0.0"
         - createdAt: <RFC 3339 timestamp, e.g. 2026-05-02T00:00:00Z>
-        - artifacts[].target: <install-target-id>
+        - artifacts[].target: <target-id>
         - artifacts[].file: "1.0.0-<target-id>.zip"
         - artifacts[].sha256: <64-char-lowercase-hex>
         - srcArtifact: "1.0.0-src.zip"
@@ -232,9 +232,10 @@ body:
         - label: I did not include third-party content unless it is licensed under MIT.
           required: true
         - label: >-
-            Each deployment ZIP (<version>-<target-id>.zip) includes only
-            bundled agents/*.agent.md files for all agents and flows in this
-            version, per specs/package-format.md.
+            Each deployment ZIP (<version>-<target-id>.zip) follows the
+            install-target-specific ZIP layout in specs/install-targets.md
+            for all agents and flows in this version, per
+            specs/package-format.md.
           required: true
         - label: >-
             Source ZIP (<version>-src.zip) includes full package source,
