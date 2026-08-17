@@ -6,6 +6,7 @@ ignores:
   - ".agents/skills/**"
   - ".claude/agents/**"
   - ".github/agents/**"
+  - "docs/slides/package-creation.md"
 config:
   MD013:
     tables: false

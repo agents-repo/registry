@@ -23,6 +23,15 @@ jobs:
       - name: Check IDE instruction mirrors
         run: npm run sync:ide-instructions -- --check
 
+      - name: Setup Chrome for Marp PDF
+        uses: browser-actions/setup-chrome@v2
+        id: setup-chrome
+
+      - name: Check slide PDF drift
+        env:
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
+        run: npm run slides:check
+
       - name: Verify registry package installs from lock
         run: |
           rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
