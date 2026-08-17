@@ -388,7 +388,7 @@ Package format:
             flows/
                 <flow-id>.agent.md
                 <flow-id>.metadata.json
-            <version>.zip
+            <version>-<target-id>.zip
             <version>-src.zip
 ```
 
@@ -413,7 +413,9 @@ Package rules:
     for that release.
 - `versions/<version>/agents/` and `versions/<version>/flows/` preserve the
     historical source tree for that release.
-- Each release includes `<version>.zip` and `<version>-src.zip`.
+- Each release includes one `<version>-<target-id>.zip` per built install
+    target and `<version>-src.zip`. Source archives exclude `versions/` and
+    `detail.json`.
 - Use semantic versioning with no `v` prefix.
 - Use SHA-256 checksums.
 - `metadata.json` and all `.metadata.json` sidecars must include a
