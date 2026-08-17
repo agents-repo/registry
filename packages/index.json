@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-17T00:52:28.263Z",
+  "updatedAt": "2026-08-17T19:55:12.451Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -136,7 +136,7 @@
       "name": "github-pr-review-triage",
       "description": "GitHub-specific agent: triages PR review threads and Copilot review summaries via gh CLI — fetch, fix, commit, push, reply, resolve or acknowledge automatically when gh is authenticated",
       "owner": "maiconfz",
-      "latest": "1.2.0",
+      "latest": "1.2.1",
       "tags": [
         "pr",
         "review",
