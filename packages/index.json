@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-16T15:36:37.331Z",
+  "updatedAt": "2026-08-17T00:52:28.263Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -10,7 +10,7 @@
       "name": "agents-repo-package-creation",
       "description": "Agents and flow for creating, reviewing, and validating new registry packages for agents-repo from requirements to submission-ready source.",
       "owner": "agents-repo",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "agents-repo-package-creation",
         "authoring",
@@ -24,6 +24,7 @@
         "estimatedCost": 6,
         "band": "moderate"
       },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/agents-repo-package-creation/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
