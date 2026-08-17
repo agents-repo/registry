@@ -95,7 +95,23 @@ async function runMarp(args) {
   }
 }
 
+/**
+ * Chrome needs --no-sandbox on GitHub-hosted Ubuntu 24.04 runners and other
+ * Linux distros that disable unprivileged user namespaces (AppArmor). Marp CLI
+ * reads CHROME_NO_SANDBOX. Leave an explicit empty value untouched so a local
+ * run can keep the sandbox.
+ */
+function ensureChromeNoSandbox() {
+  if (process.env.CHROME_NO_SANDBOX !== undefined) {
+    return
+  }
+  if (process.env.CI || process.platform === 'linux') {
+    process.env.CHROME_NO_SANDBOX = '1'
+  }
+}
+
 async function convertDeck(deck, outputPath, extraArgs) {
+  ensureChromeNoSandbox()
   const browserPath = await resolveBrowserPath()
   const args = [
     deck.source,
