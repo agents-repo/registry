@@ -3,7 +3,7 @@ name: package-requirements-analyst
 description: >-
   Translates user intent into a script-ready package blueprint with naming,
   metadata, and scaffold arguments for package creation.
-version: 1.0.0
+version: 1.0.1
 inputs:
   - name: user-intent
     type: string
@@ -42,6 +42,8 @@ arguments and definition plan before any files are authored.
   In phase 1, `--namespace` MUST match `--owner`.
 - Specify `homepage` and `quickstart` URLs using
   `packages/<namespace>/<package-id>/` when pointing at registry tree paths.
+  Scaffold always creates package-root `README.md`; `quickstart` SHOULD
+  point at that file. `package-creator` MAY revise the README after scaffold.
 - Define an ordered authoring plan for agent and flow definitions after scaffolding.
 - List open questions and assumptions that must be resolved
   before the creator begins drafting files.

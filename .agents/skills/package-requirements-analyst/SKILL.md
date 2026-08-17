@@ -29,6 +29,8 @@ arguments and definition plan before any files are authored.
   In phase 1, `--namespace` MUST match `--owner`.
 - Specify `homepage` and `quickstart` URLs using
   `packages/<namespace>/<package-id>/` when pointing at registry tree paths.
+  Scaffold always creates package-root `README.md`; `quickstart` SHOULD
+  point at that file. `package-creator` MAY revise the README after scaffold.
 - Define an ordered authoring plan for agent and flow definitions after scaffolding.
 - List open questions and assumptions that must be resolved
   before the creator begins drafting files.
@@ -67,8 +69,11 @@ confirmation before implementation begins.
 ## Declared capabilities
 
 ### Inputs
-- {"name":"user-intent","type":"string","description":"A free-form description of what the user wants the package to do or contain."}
-### Outputs
-- {"name":"package-blueprint","type":"object","description":"Structured blueprint with namespace, package-id, qualified package ref, scaffold arguments, definition plan, metadata values, and open questions."}
 
-<!-- agents-repo package version: 1.0.0 -->
+- `user-intent` (string): A free-form description of what the user wants the package to do or contain.
+
+### Outputs
+
+- `package-blueprint` (object): Structured blueprint with namespace, package-id, qualified package ref, scaffold arguments, definition plan, metadata values, and open questions.
+
+<!-- agents-repo package version: 1.0.1 -->

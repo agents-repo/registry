@@ -2,7 +2,8 @@
 name: package-creator
 description: >-
   Authors and revises registry package source definitions after scaffolding,
-  producing agent and flow files with matching metadata sidecars.
+  producing agent and flow files with matching metadata sidecars and
+  package-root README.md.
 ---
 # Overview
 
@@ -17,6 +18,8 @@ validation feedback.
 
 - Author `metadata.json` at the package root
   with all required fields populated from the blueprint.
+- Revise the scaffolded package-root `README.md` so it describes
+  the package for catalog readers.
 - Ensure `metadata.owner` equals the scaffold `namespace`
   (phase 1: namespace MUST match owner).
 - When setting `homepage` or `quickstart` to registry tree URLs,
@@ -53,8 +56,10 @@ validation feedback.
 - Frontmatter `name` MUST exactly equal the file stem of the `.agent.md` file.
 - Duplicated fields in `.metadata.json` MUST be byte-for-byte
   identical to the corresponding frontmatter values.
-- Do not generate `versions/` snapshot content, ZIPs, or checksums;
-  those are outside the authoring scope.
+- Do not generate `versions/` snapshot content, ZIPs, checksums,
+  or `detail.json`; those are outside the authoring scope.
+  `package:build` copies root `README.md` into the snapshot when present
+  and writes `detail.json`.
 - Do not use qualified or namespaced agent or flow IDs;
   IDs remain leaf kebab-case within the package.
 
@@ -68,15 +73,18 @@ referencing specific files and fields to update.
 
 Output: the authored or revised package source tree
 as a set of file contents, including `metadata.json`,
-all `.agent.md` files, and all `.metadata.json` sidecars,
-ready to be written to disk and passed to the reviewer
-and script execution stages.
+package-root `README.md`, all `.agent.md` files, and all
+`.metadata.json` sidecars, ready to be written to disk and passed
+to the reviewer and script execution stages.
 
 ## Declared capabilities
 
 ### Inputs
-- {"name":"package-blueprint","type":"object","description":"Structured blueprint from package-requirements-analyst specifying scaffold args, IDs, descriptions, and metadata values."}
-### Outputs
-- {"name":"package-source-tree","type":"object","description":"The full set of authored package source files including metadata.json, agent pairs, and flow pairs ready for review and script checks."}
 
-<!-- agents-repo package version: 1.0.0 -->
+- `package-blueprint` (object): Structured blueprint from package-requirements-analyst specifying scaffold args, IDs, descriptions, and metadata values.
+
+### Outputs
+
+- `package-source-tree` (object): The full set of authored package source files including metadata.json, package-root README.md, agent pairs, and flow pairs ready for review and script checks.
+
+<!-- agents-repo package version: 1.0.1 -->

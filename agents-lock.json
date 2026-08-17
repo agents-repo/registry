@@ -1,25 +1,25 @@
 {
   "lockfileVersion": 2,
-  "resolvedRef": "v2.2.2",
+  "resolvedRef": "v2.2.5",
   "packages": {
     "agents-repo/agents-repo-package-creation": {
-      "version": "1.0.0",
+      "version": "1.0.1",
       "byTarget": {
         "github-copilot": {
-          "integrity": "sha256-3a837dba57f2ed090e7b7fb43126620201e4deb3305bc8032b15e56918d36b43",
-          "artifact": "1.0.0-github-copilot.zip"
+          "integrity": "sha256-de0e106b4296c68d3bee91e62e4aaa4a9387c76b3d6aa75d2399471fae6a113f",
+          "artifact": "1.0.1-github-copilot.zip"
         },
         "claude-code": {
-          "integrity": "sha256-de278528c065c4874432f169fa5b61115603b02e3108f6fe949458c728a9d82e",
-          "artifact": "1.0.0-claude-code.zip"
+          "integrity": "sha256-283a6c67841b20384d7f43f324b04d22620e696d1988a20737b018f8ccd68a4c",
+          "artifact": "1.0.1-claude-code.zip"
         },
         "cursor": {
-          "integrity": "sha256-b061af543c26fc76a4448170920ad88d5ae50a12018ce4d0b1f4515b1e692214",
-          "artifact": "1.0.0-cursor.zip"
+          "integrity": "sha256-d312dba153f5d9a546891e9587e0e390f4e82c8251b8a720f898191e4ca34467",
+          "artifact": "1.0.1-cursor.zip"
         },
         "openai-codex": {
-          "integrity": "sha256-a0e5f85e04d9810884983dee922dbdb8f6bb09cdf60a75066c00473b51206987",
-          "artifact": "1.0.0-openai-codex.zip"
+          "integrity": "sha256-4cc2bbdb6a6eb7609398788495d172140afd240f0194e85c19e1b577fb79fc75",
+          "artifact": "1.0.1-openai-codex.zip"
         }
       }
     },
@@ -45,23 +45,23 @@
       }
     },
     "maiconfz/github-pr-review-triage": {
-      "version": "1.2.0",
+      "version": "1.2.1",
       "byTarget": {
         "github-copilot": {
-          "integrity": "sha256-d12dab2ec6b0628b4055bd8a588c8e0fc4ade465af8b4ffa961a7ec8d1fe89c3",
-          "artifact": "1.2.0-github-copilot.zip"
+          "integrity": "sha256-eee422f6b903771536a577802a3da5f4c3e2db030c5d54161d9e15ff782abb4a",
+          "artifact": "1.2.1-github-copilot.zip"
         },
         "claude-code": {
-          "integrity": "sha256-fa52ed095b7b8427c282d7175f326f76eb7a075fdb618066bcaa68b2a0983ae1",
-          "artifact": "1.2.0-claude-code.zip"
+          "integrity": "sha256-f214a445973b3cb4aec5596207a6d88fca19fc2755586e5eeb7de88ab1d275ad",
+          "artifact": "1.2.1-claude-code.zip"
         },
         "cursor": {
-          "integrity": "sha256-062dcf8e228c88130925139b238f9b1c6b61e5f8391134a16762c488fd5602c1",
-          "artifact": "1.2.0-cursor.zip"
+          "integrity": "sha256-9fe582845e1cb608f74dcf7a9626ba610af56e576ff1fdd8ad164580e3d1549a",
+          "artifact": "1.2.1-cursor.zip"
         },
         "openai-codex": {
-          "integrity": "sha256-11c693b7c11e9e9c4947c2d14ab1d9393f8fc7bdd6061fa1ebb50fd95034c31f",
-          "artifact": "1.2.0-openai-codex.zip"
+          "integrity": "sha256-deafc0fe083f3a4e8e432b47229eb163b0dff82c97b539655427d00fbc30a1bb",
+          "artifact": "1.2.1-openai-codex.zip"
         }
       }
     }

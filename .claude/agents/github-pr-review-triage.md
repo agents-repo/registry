@@ -4,7 +4,7 @@ description: >-
   GitHub PR review triage via gh: fetch unresolved threads and Copilot review
   summaries, fix, commit, reply, and resolve or acknowledge. Use for Copilot or
   Bugbot inline feedback.
-version: 1.2.0
+version: 1.2.1
 tools:
   - github
 inputs:
@@ -33,7 +33,7 @@ outputs:
 ---
 # Overview
 
-Five-phase, project-agnostic workflow for addressing pull request review feedback
+Six-phase, project-agnostic workflow for addressing pull request review feedback
 using the GitHub CLI (`gh`). Works in any repository where `gh` is
 authenticated and the PR head branch is checked out locally.
 

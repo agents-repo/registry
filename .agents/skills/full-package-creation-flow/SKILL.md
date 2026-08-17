@@ -50,6 +50,9 @@ structural validation, build, and artifact validation.
   send command errors to `package-creator`
   (and step 1 if argument-level issues are found),
   then re-run step 4 before retrying build.
+  After a successful build, expect generated `detail.json` and, when
+  package-root `README.md` exists, `versions/<version>/README.md`.
+  Do not add `package:readme:backfill` to this pipeline.
 
 6. **Artifact release gate** — Invoke `package-release-gate` to execute
   `npm run package:validate-artifacts -- --package <namespace>/<package-id>`
@@ -111,14 +114,19 @@ and `package-release-gate` for artifact gate execution.
 ## Declared capabilities
 
 ### Inputs
-- {"name":"user-intent","type":"string","description":"A free-form description of what the user wants the package to do or contain."}
+
+- `user-intent` (string): A free-form description of what the user wants the package to do or contain.
+
 ### Outputs
-- {"name":"release-gated-package-source","type":"object","description":"The fully authored, reviewed, validated, built, and artifact-gated package source tree."}
+
+- `release-gated-package-source` (object): The fully authored, reviewed, validated, built, and artifact-gated package source tree.
+
 ### Referenced agents
+
 - package-requirements-analyst
 - package-creator
 - package-submission-reviewer
 - package-script-runner
 - package-release-gate
 
-<!-- agents-repo package version: 1.0.0 -->
+<!-- agents-repo package version: 1.0.1 -->
