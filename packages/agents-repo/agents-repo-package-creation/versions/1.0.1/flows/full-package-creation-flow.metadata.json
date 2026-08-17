@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "full-package-creation-flow",
+  "description": "Orchestrates package creation through script-driven scaffold, authoring, validation, build, and artifact gate stages.",
+  "license": "MIT",
+  "status": "active",
+  "category": "assistant",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "agents": [
+    "package-requirements-analyst",
+    "package-creator",
+    "package-submission-reviewer",
+    "package-script-runner",
+    "package-release-gate"
+  ],
+  "inputs": [
+    {
+      "name": "user-intent",
+      "type": "string",
+      "description": "A free-form description of what the user wants the package to do or contain."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "release-gated-package-source",
+      "type": "object",
+      "description": "The fully authored, reviewed, validated, built, and artifact-gated package source tree."
+    }
+  ]
+}

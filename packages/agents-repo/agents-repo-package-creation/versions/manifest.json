@@ -1,7 +1,7 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "name": "agents-repo-package-creation",
-  "latest": "1.0.0",
+  "latest": "1.0.1",
   "versions": [
     {
       "version": "1.0.0",
@@ -30,6 +30,34 @@
         }
       ],
       "createdAt": "2026-07-04T02:42:33.330Z"
+    },
+    {
+      "version": "1.0.1",
+      "srcArtifact": "1.0.1-src.zip",
+      "srcSha256": "b962d6ea6e1d9d0e260944eabd09b166568701ab9180401150468468725c7758",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.1-github-copilot.zip",
+          "sha256": "de0e106b4296c68d3bee91e62e4aaa4a9387c76b3d6aa75d2399471fae6a113f"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.1-claude-code.zip",
+          "sha256": "283a6c67841b20384d7f43f324b04d22620e696d1988a20737b018f8ccd68a4c"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.1-cursor.zip",
+          "sha256": "d312dba153f5d9a546891e9587e0e390f4e82c8251b8a720f898191e4ca34467"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.1-openai-codex.zip",
+          "sha256": "4cc2bbdb6a6eb7609398788495d172140afd240f0194e85c19e1b577fb79fc75"
+        }
+      ],
+      "createdAt": "2026-08-17T00:52:28.263Z"
     }
   ]
 }
