@@ -4,6 +4,8 @@ theme: agents-repo
 paginate: true
 ---
 
+<!-- markdownlint-disable-file MD025 -->
+
 <!-- _class: title -->
 
 # Creating a registry package
@@ -86,7 +88,8 @@ npm run package:build -- --package <namespace>/<package-id>
 Generates per-target ZIPs, source archive, checksums, `manifest.json`,
 `detail.json`, and updates `packages/index.json`.
 
-ZIP names have **no** `v` prefix: `1.0.0.zip` style version folders.
+ZIP names have **no** `v` prefix: `1.0.0-<target-id>.zip` and `1.0.0-src.zip`
+under `versions/1.0.0/`.
 
 ---
 

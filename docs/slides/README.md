@@ -1,6 +1,7 @@
 # Presentation slides
 
-Marp PDF deck for this repository. **Commit PDF only** — do not commit HTML.
+Marp PDF deck for this repository. **Commit PDFs and `*.src.sha256`
+fingerprints** — do not commit HTML.
 
 Org convention (paths, scripts, Chrome notes, theme sync):
 [agents-repo/.github docs/slides/README.md](https://github.com/agents-repo/.github/blob/main/docs/slides/README.md)

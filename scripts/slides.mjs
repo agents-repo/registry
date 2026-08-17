@@ -9,6 +9,7 @@
  */
 /* eslint-disable security/detect-non-literal-fs-filename -- deck paths are repo-relative stems from docs/slides readdir */
 import { createHash } from 'node:crypto'
+import { constants as fsConstants } from 'node:fs'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
@@ -68,7 +69,11 @@ function chromeCandidates() {
 async function resolveBrowserPath() {
   for (const candidate of chromeCandidates()) {
     try {
-      await fs.access(candidate)
+      const stats = await fs.stat(candidate)
+      if (!stats.isFile()) {
+        continue
+      }
+      await fs.access(candidate, fsConstants.X_OK)
       return candidate
     } catch {
       // try next
@@ -97,16 +102,16 @@ async function runMarp(args) {
 }
 
 /**
- * Chrome needs --no-sandbox on GitHub-hosted Ubuntu 24.04 runners and other
- * Linux distros that disable unprivileged user namespaces (AppArmor). Marp CLI
- * reads CHROME_NO_SANDBOX. Leave an explicit empty value untouched so a local
- * run can keep the sandbox.
+ * Chrome needs --no-sandbox on GitHub-hosted Ubuntu runners. Marp CLI reads
+ * CHROME_NO_SANDBOX. Auto-disable the sandbox only in CI. Local Linux keeps
+ * the sandbox unless the caller exports CHROME_NO_SANDBOX=1. Leave an explicit
+ * empty value untouched.
  */
 function ensureChromeNoSandbox() {
   if (process.env.CHROME_NO_SANDBOX !== undefined) {
     return
   }
-  if (process.env.CI || process.platform === 'linux') {
+  if (process.env.CI) {
     process.env.CHROME_NO_SANDBOX = '1'
   }
 }
