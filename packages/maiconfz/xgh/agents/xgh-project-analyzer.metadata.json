@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "xgh-project-analyzer",
+  "description": "Reactive project read: unnoticed issues are not issues. Prefers shipping over architecture. Matches the user's language. Same safety floor.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "What the user wants analyzed or what they plan to ship."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "analysis",
+      "type": "string",
+      "description": "Reactive ship-first analysis in the user's language."
+    }
+  ]
+}

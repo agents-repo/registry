@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "xgh-reviewer",
+  "description": "Rubber-stamp review if it seems to run. Skips test demands and assigns creative blame. Still blocks secrets, force-push, and data destruction. Matches the user's language.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "diff-or-task",
+      "type": "string",
+      "description": "Local diff, files, or change to rubber-stamp."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "review",
+      "type": "string",
+      "description": "Approve-shaped review with optional creative blame."
+    }
+  ]
+}
