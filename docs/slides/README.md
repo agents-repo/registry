@@ -24,6 +24,9 @@ Theme: `docs/slides/theme/theme.css` (`@theme agents-repo`), copied from
 | --- | --- |
 | `npm run slides:build` | Write PDF and source fingerprint under `docs/slides/pdf/` |
 | `npm run slides:preview:html` | Write HTML under `docs/slides/build/` (gitignored) |
-| `npm run slides:check` | Fail on source drift, missing PDF, or Chrome rebuild failure |
+| `npm run slides:check` | Fail on source drift, missing/non-PDF artifact, or Chrome rebuild failure |
+
+`slides:check` fingerprints Marp HTML, not PDF bytes. Reviewers MUST inspect
+diffs to `docs/slides/pdf/*.pdf`. Rebuild errors no longer hide earlier drift.
 
 After editing the deck, run `npm run slides:build` and commit `docs/slides/pdf/`.

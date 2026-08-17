@@ -23,6 +23,7 @@ const themeCssPath = path.join(themeDir, 'theme.css')
 const pdfDir = path.join(slidesDir, 'pdf')
 const buildDir = path.join(slidesDir, 'build')
 const minPdfBytes = 1024
+const pdfMagic = Buffer.from('%PDF-')
 
 const command = process.argv[2]
 
@@ -128,11 +129,24 @@ async function convertDeck(deck, outputPath, extraArgs) {
   await runMarp(args)
 }
 
-async function assertPdfSize(filePath, stem, label, failures) {
+async function assertPdfArtifact(filePath, stem, label, failures) {
   try {
-    const stat = await fs.stat(filePath)
-    if (stat.size < minPdfBytes) {
-      failures.push(`${stem}: ${label} PDF is too small (${stat.size} bytes)`)
+    const handle = await fs.open(filePath, 'r')
+    try {
+      const stat = await handle.stat()
+      if (stat.size < minPdfBytes) {
+        failures.push(`${stem}: ${label} PDF is too small (${stat.size} bytes)`)
+        return
+      }
+      const header = Buffer.alloc(pdfMagic.length)
+      const { bytesRead } = await handle.read(header, 0, header.length, 0)
+      if (bytesRead < pdfMagic.length || !header.equals(pdfMagic)) {
+        failures.push(
+          `${stem}: ${label} file is not a PDF (missing %PDF- header)`
+        )
+      }
+    } finally {
+      await handle.close()
     }
   } catch {
     failures.push(`${stem}: missing ${path.relative(root, filePath)}`)
@@ -168,8 +182,14 @@ async function rebuildPdfsOrRecordMissingChrome(decks, failures) {
   try {
     for (const deck of decks) {
       const tmpPdf = path.join(tmpDir, `${deck.stem}.pdf`)
-      await convertDeck(deck, tmpPdf, ['--pdf'])
-      await assertPdfSize(tmpPdf, deck.stem, 'rebuilt', failures)
+      try {
+        await convertDeck(deck, tmpPdf, ['--pdf'])
+      } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error)
+        failures.push(`${deck.stem}: rebuild failed (${detail})`)
+        continue
+      }
+      await assertPdfArtifact(tmpPdf, deck.stem, 'rebuilt', failures)
     }
   } finally {
     await fs.rm(tmpDir, { recursive: true, force: true })
@@ -205,7 +225,7 @@ async function checkDecks() {
   const failures = []
 
   for (const deck of decks) {
-    await assertPdfSize(
+    await assertPdfArtifact(
       path.join(pdfDir, `${deck.stem}.pdf`),
       deck.stem,
       'committed',
@@ -214,7 +234,12 @@ async function checkDecks() {
     await checkSourceFingerprint(deck, themeCss, failures)
   }
 
-  await rebuildPdfsOrRecordMissingChrome(decks, failures)
+  try {
+    await rebuildPdfsOrRecordMissingChrome(decks, failures)
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error)
+    failures.push(`slides rebuild aborted: ${detail}`)
+  }
 
   if (failures.length > 0) {
     console.error(failures.join('\n'))
