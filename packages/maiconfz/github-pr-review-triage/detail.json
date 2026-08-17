@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "package": "maiconfz/github-pr-review-triage",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "metadata": {
     "schemaVersion": "1.0.0",
     "name": "github-pr-review-triage",
@@ -20,8 +20,8 @@
       "copilot"
     ],
     "createdAt": "2026-07-08T01:40:29.250Z",
-    "updatedAt": "2026-08-12T00:00:00.000Z",
-    "version": "1.2.0",
+    "updatedAt": "2026-08-17T00:00:00.000Z",
+    "version": "1.2.1",
     "status": "active",
     "category": "automation",
     "estimateOverallCost": {
@@ -62,12 +62,12 @@
         "estimatedCost": 6,
         "band": "moderate"
       },
-      "instructionPath": "packages/maiconfz/github-pr-review-triage/versions/1.2.0/agents/github-pr-review-triage.agent.md"
+      "instructionPath": "packages/maiconfz/github-pr-review-triage/versions/1.2.1/agents/github-pr-review-triage.agent.md"
     }
   ],
   "flows": [],
   "versions": {
-    "latest": "1.2.0",
+    "latest": "1.2.1",
     "entries": [
       {
         "version": "1.0.0",
@@ -160,8 +160,31 @@
             "file": "1.2.0-openai-codex.zip"
           }
         ]
+      },
+      {
+        "version": "1.2.1",
+        "createdAt": "2026-08-17T19:55:12.451Z",
+        "srcArtifact": "1.2.1-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.2.1-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.2.1-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.2.1-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.2.1-openai-codex.zip"
+          }
+        ]
       }
     ]
   },
-  "readmeMarkdown": "# github-pr-review-triage\n\nGitHub-specific agent: triages PR review threads and Copilot review summaries\nvia `gh` — fetch, fix, commit, push, reply, resolve or acknowledge.\n\n## Objective\n\nTriages pull request review feedback on any GitHub repository. Uses the GitHub\nCLI (`gh`) to fetch unresolved review threads and Copilot review summaries\n(zero inline comments), classify outcomes, apply fixes, validate, then\n**automatically** commit, push, reply, resolve threads, and acknowledge\nsummaries when `gh` is authenticated (default). Pass `dry-run: true` for\nreview-only mode without shipping.\n\n## Workflow\n\n```mermaid\nflowchart LR\n  preflight[Preflight_gh_auth]\n  fetch[Fetch_feedback]\n  triage[Triage_outcomes]\n  fix[Apply_fixes]\n  ship[Validate_and_push]\n  close[Reply_and_close]\n\n  preflight --> fetch --> triage --> fix --> ship --> close\n```\n\n## Prerequisites\n\n- [GitHub CLI](https://cli.github.com/) authenticated for the target repository\n  (`gh auth status`)\n- Local checkout on the PR head branch\n- Node.js with `npx` (see the [agents-repo CLI](https://github.com/agents-repo/cli))\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets cursor\nnpx agents-repo@latest install maiconfz/github-pr-review-triage\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/github-pr-review-triage\n```\n\n- Choose `--targets` for your IDE: `github-copilot`, `cursor`, `claude-code`,\n  or `openai-codex` (pass one or more).\n- After install, commit `agents.json`, `agents-lock.json`, and the extracted\n  install paths when they change.\n- Extract paths follow the install target (see\n  [install-targets](https://github.com/agents-repo/registry/blob/main/specs/install-targets.md));\n  invoke the agent by name below.\n\nThis README is catalog documentation on `main`; installed content comes from\nthe versioned deployment ZIPs pinned in your `agents-lock.json`.\n\n## Usage\n\nInvoke the **`github-pr-review-triage`** agent when you need to:\n\n- Address Copilot, Bugbot, or human inline review feedback on an open PR\n- Address Copilot overview or summary reviews with no inline comments\n- Batch-triage unresolved review threads before CI fixes\n- Close review threads after fixes land on the branch\n\nWhen `gh` is authenticated, the agent commits, pushes, and resolves threads\nby default. No extra permission input is required.\n\n### Inputs\n\n| Input | Required | Description |\n| --- | --- | --- |\n| `repository` | no | GitHub repository as `owner/name` (auto-discovered from current branch when omitted) |\n| `pull-request` | no | Pull request number (auto-discovered from current branch when omitted) |\n| `dry-run` | no | When `true`, fetch/triage/fix/validate only — no commit, push, or thread resolution. Defaults to `false` |\n\n### Migration from 1.1.x\n\n| 1.1.x | 1.2.0 |\n| --- | --- |\n| `push-permission: true` | Omit `dry-run` (default is full automation) |\n| `push-permission: false` | `dry-run: true` |\n\n### Outputs\n\n- `triage-table` — markdown table of items, outcomes, and rationale\n- `handoff-summary` — PR URL, commit SHA, resolved/acknowledged counts, notes\n\nSummary acknowledgments appear on the PR conversation timeline (not under the\nreview card).\n\n## Package contents\n\n- `agents/github-pr-review-triage.agent.md` — agent definition and workflow\n- `agents/github-pr-review-triage.metadata.json` — agent metadata sidecar\n\n## Maintainers\n\nFrom the registry repository root (package authors / registry contributors):\n\n```bash\nnpm run package:validate -- --package maiconfz/github-pr-review-triage\nnpm run package:build -- --package maiconfz/github-pr-review-triage\nnpm run package:validate-artifacts -- \\\n  --package maiconfz/github-pr-review-triage --version 1.2.0\n```\n"
+  "readmeMarkdown": "# github-pr-review-triage\n\nGitHub-specific agent: triages PR review threads and Copilot review summaries\nvia `gh` — fetch, fix, commit, push, reply, resolve or acknowledge.\n\n## Objective\n\nTriages pull request review feedback on any GitHub repository. Uses the GitHub\nCLI (`gh`) to fetch unresolved review threads and Copilot review summaries\n(zero inline comments), classify outcomes, apply fixes, validate, then\n**automatically** commit, push, reply, resolve threads, and acknowledge\nsummaries when `gh` is authenticated (default). Pass `dry-run: true` for\nreview-only mode without shipping.\n\n## Workflow\n\n```mermaid\nflowchart LR\n  preflight[Preflight_gh_auth]\n  fetch[Fetch_feedback]\n  triage[Triage_outcomes]\n  fix[Apply_fixes]\n  ship[Validate_and_push]\n  close[Reply_and_close]\n\n  preflight --> fetch --> triage --> fix --> ship --> close\n```\n\n## Prerequisites\n\n- [GitHub CLI](https://cli.github.com/) authenticated for the target repository\n  (`gh auth status`)\n- Local checkout on the PR head branch\n- Node.js with `npx` (see the [agents-repo CLI](https://github.com/agents-repo/cli))\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets cursor\nnpx agents-repo@latest install maiconfz/github-pr-review-triage\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/github-pr-review-triage\n```\n\n- Choose `--targets` for your IDE: `github-copilot`, `cursor`, `claude-code`,\n  or `openai-codex` (pass one or more).\n- After install, commit `agents.json`, `agents-lock.json`, and the extracted\n  install paths when they change.\n- Extract paths follow the install target (see\n  [install-targets](https://github.com/agents-repo/registry/blob/main/specs/install-targets.md));\n  invoke the agent by name below.\n\nThis README is catalog documentation on `main`; installed content comes from\nthe versioned deployment ZIPs pinned in your `agents-lock.json`.\n\n## Usage\n\nInvoke the **`github-pr-review-triage`** agent when you need to:\n\n- Address Copilot, Bugbot, or human inline review feedback on an open PR\n- Address Copilot overview or summary reviews with no inline comments\n- Batch-triage unresolved review threads before CI fixes\n- Close review threads after fixes land on the branch\n\nWhen `gh` is authenticated, the agent commits, pushes, and resolves threads\nby default. No extra permission input is required.\n\n### Inputs\n\n| Input | Required | Description |\n| --- | --- | --- |\n| `repository` | no | GitHub repository as `owner/name` (auto-discovered from current branch when omitted) |\n| `pull-request` | no | Pull request number (auto-discovered from current branch when omitted) |\n| `dry-run` | no | When `true`, fetch/triage/fix/validate only — no commit, push, or thread resolution. Defaults to `false` |\n\n### Migration from 1.1.x\n\n| 1.1.x | 1.2.0 |\n| --- | --- |\n| `push-permission: true` | Omit `dry-run` (default is full automation) |\n| `push-permission: false` | `dry-run: true` |\n\n### Outputs\n\n- `triage-table` — markdown table of items, outcomes, and rationale\n- `handoff-summary` — PR URL, commit SHA, resolved/acknowledged counts, notes\n\nSummary acknowledgments appear on the PR conversation timeline (not under the\nreview card).\n\n## Package contents\n\n- `agents/github-pr-review-triage.agent.md` — agent definition and workflow\n- `agents/github-pr-review-triage.metadata.json` — agent metadata sidecar\n\n## Maintainers\n\nFrom the registry repository root (package authors / registry contributors):\n\n```bash\nnpm run package:validate -- --package maiconfz/github-pr-review-triage\nnpm run package:build -- --package maiconfz/github-pr-review-triage\nnpm run package:validate-artifacts -- \\\n  --package maiconfz/github-pr-review-triage --version 1.2.1\n```\n"
 }
