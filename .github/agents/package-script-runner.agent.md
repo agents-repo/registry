@@ -2,7 +2,7 @@
 name: package-script-runner
 description: Executes package creation, source validation, and build scripts,
   returning structured command results and next actions.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 inputs:
   - name: script-stage-request
@@ -33,6 +33,9 @@ output, and returns a deterministic report for flow branching.
   when the requested stage is source validation.
 - Execute `npm run package:build -- --package <namespace>/<package-id>`
   when the requested stage is build.
+  A successful build copies package-root `README.md` into
+  `versions/<version>/` when that file exists, and writes generated
+  `detail.json`. Do not run `package:readme:backfill` in this flow.
 - Return a structured stage report including command string, exit code,
   key output summary, and next action recommendation.
 - Identify whether a failure should be routed to

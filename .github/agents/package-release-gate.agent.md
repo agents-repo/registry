@@ -2,7 +2,7 @@
 name: package-release-gate
 description: Executes artifact validation scripts and decides release
   gate pass or fail with blocking issue summaries.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 inputs:
   - name: release-gate-request
@@ -42,6 +42,7 @@ and reports gate status with explicit blocking issues.
 - Do not run scaffold, source-validate, or build scripts;
   those are owned by `package-script-runner`.
 - Do not manually edit `versions/` contents or checksums.
+- Do not author or edit `detail.json`.
 - Do not suppress or reinterpret script failures as warnings.
 - Do not produce stylistic review findings unrelated to artifact gate status.
 

@@ -3,7 +3,7 @@ name: full-package-creation-flow
 description: >-
   Orchestrates package creation through script-driven scaffold, authoring,
   validation, build, and artifact gate stages.
-version: 1.0.0
+version: 1.0.1
 agents:
   - package-requirements-analyst
   - package-creator
@@ -68,6 +68,9 @@ structural validation, build, and artifact validation.
   send command errors to `package-creator`
   (and step 1 if argument-level issues are found),
   then re-run step 4 before retrying build.
+  After a successful build, expect generated `detail.json` and, when
+  package-root `README.md` exists, `versions/<version>/README.md`.
+  Do not add `package:readme:backfill` to this pipeline.
 
 6. **Artifact release gate** — Invoke `package-release-gate` to execute
   `npm run package:validate-artifacts -- --package <namespace>/<package-id>`

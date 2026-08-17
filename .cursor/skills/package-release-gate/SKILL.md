@@ -30,6 +30,7 @@ and reports gate status with explicit blocking issues.
 - Do not run scaffold, source-validate, or build scripts;
   those are owned by `package-script-runner`.
 - Do not manually edit `versions/` contents or checksums.
+- Do not author or edit `detail.json`.
 - Do not suppress or reinterpret script failures as warnings.
 - Do not produce stylistic review findings unrelated to artifact gate status.
 
@@ -47,8 +48,11 @@ and recommended next step.
 ## Declared capabilities
 
 ### Inputs
-- {"name":"release-gate-request","type":"object","description":"Release gate request with qualified package ref (`<namespace>/<package-id>`), optional version override, and retry context."}
-### Outputs
-- {"name":"release-gate-report","type":"object","description":"Structured artifact gate report including command details, result, blockers, and next action."}
 
-<!-- agents-repo package version: 1.0.0 -->
+- `release-gate-request` (object): Release gate request with qualified package ref (`<namespace>/<package-id>`), optional version override, and retry context.
+
+### Outputs
+
+- `release-gate-report` (object): Structured artifact gate report including command details, result, blockers, and next action.
+
+<!-- agents-repo package version: 1.0.1 -->

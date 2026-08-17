@@ -30,8 +30,10 @@ are executed by script orchestration agents.
 - Flag `homepage` or `quickstart` URLs that use the old flat
   `packages/<package-id>/` path instead of
   `packages/<namespace>/<package-id>/`.
-- Flag when `metadata.owner` appears inconsistent with
-  the intended namespace (phase 1: owner MUST equal namespace).
+- Review the package-root `README.md` for clarity and usefulness
+  to catalog readers.
+- Flag hand-authored `detail.json` or any hand-edited files under
+  `versions/`.
 - Assess whether the package as a whole represents a coherent,
   useful, and self-contained unit of functionality.
 - Produce a prioritized list of revision requests
@@ -57,8 +59,8 @@ are executed by script orchestration agents.
 ## Interaction Contract
 
 Input: the full set of drafted package source files,
-including `metadata.json`, all `.agent.md` files,
-and all `.metadata.json` sidecars.
+including `metadata.json`, package-root `README.md`,
+all `.agent.md` files, and all `.metadata.json` sidecars.
 
 Output: a structured review report containing per-asset findings,
 a summary of cross-cutting concerns,
@@ -69,8 +71,11 @@ a prioritized and actionable list of revision requests addressed to
 ## Declared capabilities
 
 ### Inputs
-- {"name":"package-source-tree","type":"object","description":"The set of authored package source files to review, including metadata.json, agent definitions, and flow definitions."}
-### Outputs
-- {"name":"review-report","type":"object","description":"Structured feedback report with per-file findings, overall readiness verdict, and prioritized revision requests for the creator."}
 
-<!-- agents-repo package version: 1.0.0 -->
+- `package-source-tree` (object): The set of authored package source files to review, including metadata.json, package-root README.md, agent definitions, and flow definitions.
+
+### Outputs
+
+- `review-report` (object): Structured feedback report with per-file findings, overall readiness verdict, and prioritized revision requests for the creator.
+
+<!-- agents-repo package version: 1.0.1 -->

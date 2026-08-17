@@ -7,7 +7,7 @@ description: >-
 ---
 # Overview
 
-Five-phase, project-agnostic workflow for addressing pull request review feedback
+Six-phase, project-agnostic workflow for addressing pull request review feedback
 using the GitHub CLI (`gh`). Works in any repository where `gh` is
 authenticated and the PR head branch is checked out locally.
 
@@ -469,4 +469,4 @@ Per repository: `fix → validate → commit → push → threads and summaries`
 - `triage-table` (string): Markdown table with kind (thread or review_summary), path, line, author, outcome, and rationale.
 - `handoff-summary` (string): Summary with PR URL, commit SHA, threads resolved count, summaries acknowledged count, and notes.
 
-<!-- agents-repo package version: 1.2.0 -->
+<!-- agents-repo package version: 1.2.1 -->
