@@ -1,0 +1,97 @@
+/* @theme agents-repo */
+
+@import "default";
+
+:root {
+  --color-fg: #221833;
+  --color-bg: #fbf8ff;
+  --color-heading: #1d132a;
+  --color-accent: #8a2ad8;
+  --color-muted: #6e5a89;
+  --color-card: #ffffff;
+  --color-border: #e3d7f3;
+  --color-on-accent: #f9f5ff;
+}
+
+section {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  font-size: 28px;
+  line-height: 1.35;
+  padding: 56px 64px;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--color-heading);
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 1.7em;
+}
+
+h2 {
+  font-size: 1.35em;
+}
+
+a {
+  color: var(--color-accent);
+}
+
+code,
+pre {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+footer {
+  color: var(--color-muted);
+  font-size: 0.55em;
+}
+
+section.title {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: linear-gradient(155deg, #1d132a 0%, #3b1d5c 52%, #8a2ad8 100%);
+  color: var(--color-on-accent);
+}
+
+section.title h1,
+section.title h2,
+section.title p,
+section.title footer {
+  color: var(--color-on-accent);
+}
+
+section.title h1 {
+  font-size: 2.1em;
+}
+
+section.closing {
+  background: var(--color-heading);
+  color: var(--color-on-accent);
+}
+
+section.closing h1,
+section.closing h2,
+section.closing p,
+section.closing a,
+section.closing footer {
+  color: var(--color-on-accent);
+}
+
+table {
+  font-size: 0.72em;
+}
+
+th {
+  background: rgba(138, 42, 216, 0.12);
+}
+
+blockquote {
+  border-left: 6px solid var(--color-accent);
+  color: var(--color-muted);
+}
