@@ -74,7 +74,7 @@ packages/maiconfz/xgh/versions/<version>/instructions.json
 
 Registry artifacts use **path-only** `/pkg/...` strings. WebApp consumers
 join the registry-proxy origin with those paths per
-[`specs/chat-consumption.md`](../../../specs/chat-consumption.md):
+[`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):
 
 - **Origin:** `https://registry-proxy.maiconfz.workers.dev`
 

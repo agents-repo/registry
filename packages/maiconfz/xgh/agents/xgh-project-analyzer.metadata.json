@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "xgh-project-analyzer",
-  "description": "Reactive project read: unnoticed issues are not issues. Prefers shipping over architecture. Matches the user's language. Same safety floor.",
+  "description": "Reactive project read: unnoticed issues are not issues. Prefers shipping over architecture. Matches the user's language. Refuses force-push, secrets, and data destruction.",
   "license": "MIT",
   "status": "active",
   "category": "humor",

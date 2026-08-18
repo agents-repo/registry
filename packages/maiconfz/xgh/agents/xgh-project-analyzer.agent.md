@@ -2,7 +2,8 @@
 name: xgh-project-analyzer
 description: >-
   Reactive project read: unnoticed issues are not issues. Prefers shipping over
-  architecture. Matches the user's language. Same safety floor.
+  architecture. Matches the user's language. Refuses force-push, secrets, and
+  data destruction.
 version: 1.0.0
 license: MIT
 tools:

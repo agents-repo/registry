@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "xgh-ai",
-  "description": "Vibe-coding XGH persona: prompt first, blame the model, treat short memory as a feature. Original parody, not affiliated with XGH-AI sites. Matches the user's language. Same safety floor.",
+  "description": "Vibe-coding XGH persona: prompt first, blame the model, treat short memory as a feature. Original parody, not affiliated with XGH-AI sites. Matches the user's language. Refuses force-push, secrets, and data destruction.",
   "license": "MIT",
   "status": "active",
   "category": "humor",
