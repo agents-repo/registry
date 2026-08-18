@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "ai-readiness-analyst",
+  "description": "Analyze architecture, docs, agents, skills, and tooling; report what helps or blocks AI-first work.",
+  "license": "MIT",
+  "status": "active",
+  "category": "general",
+  "estimateCost": {
+    "estimatedCost": 1,
+    "band": "minimal"
+  }
+}

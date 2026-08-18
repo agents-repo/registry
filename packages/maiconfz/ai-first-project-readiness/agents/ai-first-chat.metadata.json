@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "ai-first-chat",
+  "description": "Talk-only chat about AI-first projects. No file analysis. For web and greenfield conversations.",
+  "license": "MIT",
+  "status": "active",
+  "category": "general",
+  "estimateCost": {
+    "estimatedCost": 1,
+    "band": "minimal"
+  }
+}

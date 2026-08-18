@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "ai-first-project-planning",
+  "description": "Analyze readiness, ask consent, then draft a phased or full-shot improvement plan.",
+  "license": "MIT",
+  "status": "active",
+  "category": "general",
+  "estimateCost": {
+    "estimatedCost": 1,
+    "band": "minimal"
+  }
+}

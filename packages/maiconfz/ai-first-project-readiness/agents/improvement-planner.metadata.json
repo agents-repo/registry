@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "improvement-planner",
+  "description": "Ask-first, plan-only drafts of phased or full-shot AI-readiness improvements. Does not implement.",
+  "license": "MIT",
+  "status": "active",
+  "category": "general",
+  "estimateCost": {
+    "estimatedCost": 1,
+    "band": "minimal"
+  }
+}

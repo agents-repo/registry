@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "ai-first-project-readiness",
+  "description": "Analyze a project's AI-first readiness (architecture, docs, agents, skills, tooling) and, after user consent, draft a phased or full-shot improvement plan. Includes talk-only web chat. Planning only; does not implement.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/ai-first-project-readiness",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "ai",
+    "readiness",
+    "architecture",
+    "documentation",
+    "agents",
+    "skills",
+    "planning",
+    "analysis",
+    "chat"
+  ],
+  "createdAt": "2026-08-18T22:25:42.634Z",
+  "updatedAt": "2026-08-18T22:25:42.634Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "general",
+  "estimateOverallCost": {
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/ai-first-project-readiness/README.md",
+  "maintainers": [
+    "maiconfz"
+  ]
+}
