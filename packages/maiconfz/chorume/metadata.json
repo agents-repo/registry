@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "chorume",
+  "description": "Satirical chorume toolkit: roast messy projects, implement more sludge, rubber-stamp if it still runs. Original parody of Brazilian tech slang. Not affiliated with any influencer; does not impersonate anyone. Replies match the user's language.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/chorume",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "chorume",
+    "satire",
+    "meme",
+    "humor",
+    "coding",
+    "review",
+    "chat"
+  ],
+  "createdAt": "2026-08-18T00:57:16.160Z",
+  "updatedAt": "2026-08-18T01:05:00.000Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "humor",
+  "estimateOverallCost": {
+    "estimatedCost": 5,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/chorume/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      { "id": "chat-web", "status": "supported" }
+    ]
+  }
+}
