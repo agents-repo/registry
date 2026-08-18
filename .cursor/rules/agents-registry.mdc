@@ -111,8 +111,10 @@ See `.github/CONTRIBUTING.md` for the full workflow.
 ## Release Workflow
 
 Pushes to `main` run release validation checks and then execute
-`semantic-release`. A release is published only when commit history includes
-releasable changes per the commit-to-version mapping below.
+`semantic-release`. Release jobs run only when `github.repository` is
+`agents-repo/registry`; on forks they skip. A release is published only when
+commit history includes releasable changes per the commit-to-version mapping
+below.
 
 Commit-to-version mapping for automated releases. Custom release rules in
 `.releaserc.json` map all `feat(package)` and `fix(package)` commits—including
