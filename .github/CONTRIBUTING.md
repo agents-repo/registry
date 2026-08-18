@@ -131,7 +131,7 @@ disclosure.
 - Release jobs run only when `github.repository` is `agents-repo/registry`.
   On forks and other copies, `validate`, `release-dry-run`, and
   `release-publish` skip. GitHub still starts the workflow; skipped jobs are
-  not a disabled Actions tab.
+  not the same as a disabled Actions tab.
 - A release is published only when commit history includes releasable changes
   per the commit-to-version mapping below.
 - `workflow_dispatch` remains available for operational checks on
