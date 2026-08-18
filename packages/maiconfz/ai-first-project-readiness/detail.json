@@ -1,0 +1,153 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/ai-first-project-readiness",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "ai-first-project-readiness",
+    "description": "Analyze a project's AI-first readiness (architecture, docs, agents, skills, tooling) and, after user consent, draft a phased or full-shot improvement plan. Includes talk-only web chat. Planning only; does not implement.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/ai-first-project-readiness",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "ai",
+      "readiness",
+      "architecture",
+      "documentation",
+      "agents",
+      "skills",
+      "planning",
+      "analysis",
+      "chat"
+    ],
+    "createdAt": "2026-08-18T22:25:42.634Z",
+    "updatedAt": "2026-08-18T22:27:42.000Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 7,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/ai-first-project-readiness/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "ai-first-chat",
+      "name": "ai-first-chat",
+      "description": "Talk-only chat about AI-first projects. No file analysis. For web and greenfield conversations.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 2,
+        "band": "minimal"
+      },
+      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.0.0/agents/ai-first-chat.agent.md"
+    },
+    {
+      "id": "ai-readiness-analyst",
+      "name": "ai-readiness-analyst",
+      "description": "Analyze architecture, docs, agents, skills, and tooling; report what helps or blocks AI-first work.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.0.0/agents/ai-readiness-analyst.agent.md"
+    },
+    {
+      "id": "improvement-planner",
+      "name": "improvement-planner",
+      "description": "Ask-first, plan-only drafts of phased or full-shot AI-readiness improvements. Does not implement.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.0.0/agents/improvement-planner.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "ai-first-project-planning",
+      "name": "ai-first-project-planning",
+      "description": "Analyze readiness, ask consent, then draft a phased or full-shot improvement plan.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.0.0/flows/ai-first-project-planning.agent.md",
+      "agents": [
+        "ai-readiness-analyst",
+        "improvement-planner"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-08-18T22:37:36.975Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# ai-first-project-readiness\n\nAnalyze a project's AI-first readiness (architecture, docs, agents, skills,\ntooling) and, after user consent, draft a phased or full-shot improvement\nplan. Includes talk-only web chat. Planning only; does not implement.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nInstalled agents reply in the **language the user used** (English if mixed\nor unclear).\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@latest install maiconfz/ai-first-project-readiness\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/ai-first-project-readiness\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after install.\nAll four supported IDE targets receive the package content (rendered per\ntarget).\n\n## Usage\n\nTwo entry paths:\n\n- **Workspace (IDE):** run `ai-first-project-planning` in the **host\n  project**. It analyzes the tree, shows a readiness report, **asks\n  before planning**, then drafts a phased or full-shot plan. It does not\n  create files.\n- **Chat-web / greenfield talk:** use `ai-first-chat`. It interviews and\n  advises from what you say. It does not read files. If you have a local\n  repo, install this package in an IDE and run the flow there.\n\nStandalone workspace agents:\n\n- `ai-readiness-analyst` — inspect the host tree; write a readiness\n  report. Does not plan.\n- `improvement-planner` — plan only after `planning-consent` is true.\n  Requires a `readiness-report` and `plan-mode` (`phased` or\n  `full-shot`).\n\n`ai-first-chat` is not part of the flow. Informal chat outlines are\n**conversation-only** and are not file-backed plans.\n\n## Package contents\n\n- `ai-readiness-analyst` — host-tree readiness report\n- `improvement-planner` — ask-first phased or full-shot plan\n- `ai-first-chat` — talk-only conversation (chat-web catalog)\n- `ai-first-project-planning` (flow) — analyze, ask, plan\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` with `{ \"id\": \"chat-web\", \"status\": \"supported\" }`.\n\nOnly `ai-first-chat` sets `chatWeb: \"included\"`. `ai-readiness-analyst`,\n`improvement-planner`, and `ai-first-project-planning` set\n`chatWeb: \"excluded\"`. Exclusion affects `instructions.json` only.\nDeployment ZIPs still contain every agent and the flow.\n\nAfter `package:build`, the instruction manifest for a released version\nlives at:\n\n```text\npackages/maiconfz/ai-first-project-readiness/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp consumers\njoin the registry-proxy origin with those paths per\n[`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):\n\n- **Origin:** `https://registry-proxy.maiconfz.workers.dev`\n\nIllustrative absolute fetch URLs for version `1.0.0`:\n\n```text\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.0.0/instructions.json\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.0.0/agents/ai-first-chat.agent.md\n```\n\nThe excluded flow is not listed in `instructions.json`, so chat-web does\nnot receive `agentInstructions` for the filesystem agents.\n\n## Validate and build\n\nFrom the registry repository root:\n\n```bash\nPKG=maiconfz/ai-first-project-readiness\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/ai-first-project-readiness/1.0.0/instructions.json"
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "ai-first-chat",
+  "description": "Talk-only chat about AI-first projects. No file analysis. For web and greenfield conversations.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 2,
+    "band": "minimal"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "The user's question or project description for conversation."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "Conversational reply in the user's language."
+    }
+  ]
+}
