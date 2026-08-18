@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-08-18T01:00:33.268Z",
+  "updatedAt": "2026-08-18T22:29:33.825Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -10,6 +10,7 @@
     },
     "maiconfz": {
       "packages": [
+        "ai-first-project-readiness",
         "chorume",
         "github-interactive-issue-implementation-planner",
         "github-pr-review-triage",

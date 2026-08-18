@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-18T01:00:33.268Z",
+  "updatedAt": "2026-08-18T22:29:33.825Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -64,6 +64,53 @@
         "band": "low"
       },
       "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/hello-agent/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
+      "id": "maiconfz/ai-first-project-readiness",
+      "namespace": "maiconfz",
+      "package": "ai-first-project-readiness",
+      "path": "packages/maiconfz/ai-first-project-readiness",
+      "name": "ai-first-project-readiness",
+      "description": "Analyze a project's AI-first readiness (architecture, docs, agents, skills, tooling) and, after user consent, draft a phased or full-shot improvement plan. Includes talk-only web chat. Planning only; does not implement.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "ai",
+        "readiness",
+        "architecture",
+        "documentation",
+        "agents",
+        "skills",
+        "planning",
+        "analysis",
+        "chat"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 7,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/ai-first-project-readiness/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
@@ -266,6 +313,7 @@
   "aliases": {
     "agents-repo-package-creation": "agents-repo/agents-repo-package-creation",
     "hello-agent": "agents-repo/hello-agent",
+    "ai-first-project-readiness": "maiconfz/ai-first-project-readiness",
     "chorume": "maiconfz/chorume",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
