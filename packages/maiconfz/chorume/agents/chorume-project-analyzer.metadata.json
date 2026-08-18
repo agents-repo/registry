@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "chorume-project-analyzer",
+  "description": "Reads the tree and grades the sludge. Lists mess that can wait. Does not implement. Matches the user's language. Refuses force-push, secrets, and data destruction.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "What the user wants analyzed or which mess they plan to ship."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "analysis",
+      "type": "string",
+      "description": "Sludge-grade analysis in the user's language."
+    }
+  ]
+}

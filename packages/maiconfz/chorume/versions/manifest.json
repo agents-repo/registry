@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "chorume",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "c271f72891f7f66a39420362e8b298db5fc366c40bc72b21bb049511b21e9e0f",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "271446b1248bc4c8182dcab9e787664ca48e46f165e74822628179c36d5a99ba"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "36b2d561340180e88a54a0f8b3424ea474c4586e884cd7646cc3ac070ce38276"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "3a78da75e7a92c12b3c9a1f745e4142d85de801aeece677170109515d0866002"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "2bba8dda3b1ccc347f9fdc9312ca08e71a7ed6c69ce740dec9c8dbd916258b45"
+        }
+      ],
+      "createdAt": "2026-08-18T01:00:33.266Z",
+      "instructionsArtifact": "instructions.json",
+      "instructionsSha256": "6da98463ddfa76987b7fd4ab53762cf671e63a2a4f69d9a607e5cbeb8af0c3cd"
+    }
+  ]
+}
