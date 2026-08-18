@@ -128,9 +128,15 @@ disclosure.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
 - Pushes to `main` (post-merge integration via pull request, not direct push)
   run release validation checks and then execute `semantic-release`.
+- Release jobs run only when `github.repository` is `agents-repo/registry`.
+  On forks and other copies, `validate`, `release-dry-run`, and
+  `release-publish` skip. GitHub still starts the workflow; skipped jobs are
+  not the same as a disabled Actions tab.
 - A release is published only when commit history includes releasable changes
   per the commit-to-version mapping below.
-- `workflow_dispatch` remains available for operational checks.
+- `workflow_dispatch` remains available for operational checks on
+  `agents-repo/registry`. Manual dispatch on a fork also skips all Release
+  jobs.
 - The `dry_run` input defaults to `true`; use `dry_run=false` only when an
   intentional manual publish is run from `main`.
 
@@ -267,6 +273,12 @@ External contributors SHOULD:
    `YOUR_FORK_USER:branch` before substantive implementation commits.
 5. Push implementation commits to the fork branch; keep the fork synced with
    upstream while work is in progress.
+
+PR workflows (baseline checks, package validation, package-create smoke) still
+run on forks. Release jobs skip unless the repository is
+`agents-repo/registry`. Sync the fork's `main` from upstream so the skip
+applies; until then, a fork with Actions enabled can still fail **Publish
+GitHub Release** on push to `main`.
 
 Org members with write access MAY branch on upstream directly; the fork flow is
 still recommended for isolation.

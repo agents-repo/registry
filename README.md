@@ -164,9 +164,13 @@ See `.github/CONTRIBUTING.md` for the full edit workflow.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
 - Pushes to `main` (post-merge integration via pull request, not direct push)
     run the release validation checks and then execute `semantic-release`.
+- Release jobs run only on `agents-repo/registry`. On forks they skip (the
+    workflow run still appears; jobs are skipped, not disabled). Sync `main`
+    from upstream to pick up the skip.
 - A release is published only when commit history includes releasable changes
     per the commit-to-version mapping below.
-- `workflow_dispatch` remains available for operational checks.
+- `workflow_dispatch` remains available for operational checks on
+    `agents-repo/registry`.
 - `dry_run` defaults to `true`; set `dry_run=false` only when intentionally
     running a manual publish from `main`.
 - Git tags use `v<MAJOR>.<MINOR>.<PATCH>` format.
