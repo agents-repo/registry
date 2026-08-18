@@ -27,7 +27,7 @@ outputs:
     description: Markdown plan; empty if the user declined planning.
   - name: open-questions
     type: string
-    description: Remaining questions after analysis or planning.
+    description: Remaining blockers or follow-ups at handoff; copy from planner blocking-questions when present.
 ---
 
 # Overview
@@ -56,12 +56,13 @@ analyze → present report → ask consent → ask plan-mode → plan → handof
    `planning-consent` true, `plan-mode`, and `user-clarifications`. If
    `blocking-questions` is non-empty, ask the user, append answers to
    `user-clarifications`, and repeat this step (max **three** Q&A
-   cycles).
+   cycles). After the last cycle (or when none remain), copy
+   `blocking-questions` into `open-questions` (empty when none).
 
 5. **Handoff** — Present `readiness-report`, `improvement-plan`, and
-   remaining `open-questions`. State that implementation requires a
-   different agent or an explicit user request. This package does not
-   implement.
+   remaining `open-questions` (leftover blockers or follow-ups). State
+   that implementation requires a different agent or an explicit user
+   request. This package does not implement.
 
 ## Error Handling
 
@@ -71,8 +72,8 @@ analyze → present report → ask consent → ask plan-mode → plan → handof
   `improvement-plan`.
 - **Planner invoked without a report:** Ask the user to run this flow
   (or `ai-readiness-analyst`) first.
-- **Same blockers after three Q&A cycles:** Stop looping and surface
-  them in `open-questions`.
+- **Same blockers after three Q&A cycles:** Stop looping, copy them
+  into `open-questions`, and surface them at handoff.
 - **User asks to implement:** Refuse. This package is plan-only unless
   they use a different agent.
 
