@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-17T19:55:12.451Z",
+  "updatedAt": "2026-08-18T00:27:49.209Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -171,12 +171,58 @@
           "status": "supported"
         }
       ]
+    },
+    {
+      "id": "maiconfz/xgh",
+      "namespace": "maiconfz",
+      "package": "xgh",
+      "path": "packages/maiconfz/xgh",
+      "name": "xgh",
+      "description": "Satirical XGH toolkit: first-idea coding, rubber-stamp review, and ship-it pep talks. Original parody of Brazilian developer folklore. Not affiliated with any XGH brand. Replies match the user's language.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "xgh",
+        "satire",
+        "meme",
+        "humor",
+        "coding",
+        "review",
+        "chat"
+      ],
+      "status": "active",
+      "category": "humor",
+      "estimateOverallCost": {
+        "estimatedCost": 5,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/xgh/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
     }
   ],
   "aliases": {
     "agents-repo-package-creation": "agents-repo/agents-repo-package-creation",
     "hello-agent": "agents-repo/hello-agent",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
-    "github-pr-review-triage": "maiconfz/github-pr-review-triage"
+    "github-pr-review-triage": "maiconfz/github-pr-review-triage",
+    "xgh": "maiconfz/xgh"
   }
 }

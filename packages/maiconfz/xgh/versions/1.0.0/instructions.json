@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/xgh",
+  "version": "1.0.0",
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "xgh-ai",
+      "path": "/pkg/maiconfz/xgh/1.0.0/agents/xgh-ai.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "xgh-chat",
+      "path": "/pkg/maiconfz/xgh/1.0.0/agents/xgh-chat.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "xgh-coder",
+      "path": "/pkg/maiconfz/xgh/1.0.0/agents/xgh-coder.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "xgh-project-analyzer",
+      "path": "/pkg/maiconfz/xgh/1.0.0/agents/xgh-project-analyzer.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "xgh-reviewer",
+      "path": "/pkg/maiconfz/xgh/1.0.0/agents/xgh-reviewer.agent.md"
+    },
+    {
+      "kind": "flow",
+      "id": "xgh-ship-it",
+      "path": "/pkg/maiconfz/xgh/1.0.0/flows/xgh-ship-it.agent.md",
+      "agentInstructions": [
+        "/pkg/maiconfz/xgh/1.0.0/agents/xgh-project-analyzer.agent.md",
+        "/pkg/maiconfz/xgh/1.0.0/agents/xgh-coder.agent.md",
+        "/pkg/maiconfz/xgh/1.0.0/agents/xgh-reviewer.agent.md"
+      ]
+    }
+  ]
+}

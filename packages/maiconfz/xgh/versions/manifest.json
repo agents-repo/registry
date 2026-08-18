@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "xgh",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "93b4b3f513b5e283052a847d331c6f05cf192d2401c6c5a0cc24e8ca46a39b20",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "c80366eb2f287fe46338b9e0dcb3b9179d8f4560a6055823464b868ef7c949b4"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "aa767efe9fb3597ea491ae492949383c065e2601d721e812c71ae76c9c7778a5"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "f0b02a8fd5099568c78b7ba39397ccc3ec2d576b31b67745d57edc8e9a31e0ec"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "095be30297d0fcdcfdec5094b950e49d184e8313242d62c8c3ffdbe28de81e25"
+        }
+      ],
+      "createdAt": "2026-08-18T00:27:49.209Z",
+      "instructionsArtifact": "instructions.json",
+      "instructionsSha256": "fae3cb1e90e21fdfa8e5a85cb3990f5086500fd11b7cbe846e6a51a780faf1a9"
+    }
+  ]
+}

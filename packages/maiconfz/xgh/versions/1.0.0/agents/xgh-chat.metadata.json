@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "xgh-chat",
+  "description": "Conversational XGH persona for excuses and ship-it pep talks. Does not edit the working tree unless the user insists. Original parody; does not quote third-party axiom lists. Matches the user's language.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 2,
+    "band": "minimal"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "The user's question, excuse request, or pep-talk prompt."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "Satirical XGH reply in the user's language."
+    }
+  ]
+}

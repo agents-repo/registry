@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-08-17T19:55:12.455Z",
+  "updatedAt": "2026-08-18T00:27:49.210Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -11,7 +11,8 @@
     "maiconfz": {
       "packages": [
         "github-interactive-issue-implementation-planner",
-        "github-pr-review-triage"
+        "github-pr-review-triage",
+        "xgh"
       ]
     }
   }
