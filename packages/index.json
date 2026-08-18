@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-18T00:27:49.209Z",
+  "updatedAt": "2026-08-18T01:00:33.268Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -64,6 +64,51 @@
         "band": "low"
       },
       "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/hello-agent/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
+      "id": "maiconfz/chorume",
+      "namespace": "maiconfz",
+      "package": "chorume",
+      "path": "packages/maiconfz/chorume",
+      "name": "chorume",
+      "description": "Satirical chorume toolkit: roast messy projects, implement more sludge, rubber-stamp if it still runs. Original parody of Brazilian tech slang. Not affiliated with any influencer; does not impersonate anyone. Replies match the user's language.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "chorume",
+        "satire",
+        "meme",
+        "humor",
+        "coding",
+        "review",
+        "chat"
+      ],
+      "status": "active",
+      "category": "humor",
+      "estimateOverallCost": {
+        "estimatedCost": 5,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/chorume/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
@@ -221,6 +266,7 @@
   "aliases": {
     "agents-repo-package-creation": "agents-repo/agents-repo-package-creation",
     "hello-agent": "agents-repo/hello-agent",
+    "chorume": "maiconfz/chorume",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
     "xgh": "maiconfz/xgh"

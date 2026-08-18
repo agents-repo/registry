@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/chorume",
+  "version": "1.0.0",
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "chorume-ai",
+      "path": "/pkg/maiconfz/chorume/1.0.0/agents/chorume-ai.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "chorume-chat",
+      "path": "/pkg/maiconfz/chorume/1.0.0/agents/chorume-chat.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "chorume-coder",
+      "path": "/pkg/maiconfz/chorume/1.0.0/agents/chorume-coder.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "chorume-project-analyzer",
+      "path": "/pkg/maiconfz/chorume/1.0.0/agents/chorume-project-analyzer.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "chorume-reviewer",
+      "path": "/pkg/maiconfz/chorume/1.0.0/agents/chorume-reviewer.agent.md"
+    },
+    {
+      "kind": "flow",
+      "id": "chorume-ship-it",
+      "path": "/pkg/maiconfz/chorume/1.0.0/flows/chorume-ship-it.agent.md",
+      "agentInstructions": [
+        "/pkg/maiconfz/chorume/1.0.0/agents/chorume-project-analyzer.agent.md",
+        "/pkg/maiconfz/chorume/1.0.0/agents/chorume-coder.agent.md",
+        "/pkg/maiconfz/chorume/1.0.0/agents/chorume-reviewer.agent.md"
+      ]
+    }
+  ]
+}
