@@ -22,6 +22,7 @@ concurrency:
 jobs:
   validate:
     name: Validate Release Inputs
+    if: github.repository == 'agents-repo/registry'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -50,7 +51,7 @@ jobs:
 
   release-dry-run:
     name: Release Dry Run
-    if: github.event_name == 'workflow_dispatch' && inputs.dry_run == true && github.ref == 'refs/heads/main'
+    if: github.repository == 'agents-repo/registry' && github.event_name == 'workflow_dispatch' && inputs.dry_run == true && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -73,8 +74,9 @@ jobs:
   release-publish:
     name: Publish GitHub Release
     if: >-
-      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'workflow_dispatch' && inputs.dry_run == false && github.ref == 'refs/heads/main')
+      github.repository == 'agents-repo/registry' &&
+      ((github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+       (github.event_name == 'workflow_dispatch' && inputs.dry_run == false && github.ref == 'refs/heads/main'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
