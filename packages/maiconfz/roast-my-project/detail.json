@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/roast-my-project",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "roast-my-project",
+    "description": "Mean comedy roast of a project, its architecture, code, and tests, grounded in real findings. IDE specialists plus dual-mode kitchen-style personas for local trees and chat-web. Original parody; not affiliated with any chef or show. Replies match the user's language.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/roast-my-project",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "roast",
+      "satire",
+      "humor",
+      "review",
+      "architecture",
+      "analysis",
+      "testing",
+      "chat"
+    ],
+    "createdAt": "2026-08-19T22:35:09.346Z",
+    "updatedAt": "2026-08-19T23:00:00.000Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "humor",
+    "estimateOverallCost": {
+      "estimatedCost": 6,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/roast-my-project/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "architecture-roaster",
+      "name": "architecture-roaster",
+      "description": "Roast architecture and boundaries from the host tree: coupling, layering, ADRs, and dependency direction. Comedy-club voice. Does not implement. Matches the user's language.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/roast-my-project/versions/1.0.0/agents/architecture-roaster.agent.md"
+    },
+    {
+      "id": "brigade-chef",
+      "name": "brigade-chef",
+      "description": "Brigade and technique tropes. Roasts a host tree when readable, otherwise URLs, uploads, or paste. Original parody; does not impersonate anyone. Matches the user's language.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/roast-my-project/versions/1.0.0/agents/brigade-chef.agent.md"
+    },
+    {
+      "id": "code-roaster",
+      "name": "code-roaster",
+      "description": "Roast production source from the host tree: naming, duplication, and in-file error handling. Does not own test files. Comedy-club voice. Does not implement. Matches the user's language.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/roast-my-project/versions/1.0.0/agents/code-roaster.agent.md"
+    },
+    {
+      "id": "fiery-head-chef",
+      "name": "fiery-head-chef",
+      "description": "Fiery head-chef tropes. Roasts a host tree when readable, otherwise URLs, uploads, or paste. Original parody; does not impersonate anyone. Matches the user's language.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/roast-my-project/versions/1.0.0/agents/fiery-head-chef.agent.md"
+    },
+    {
+      "id": "project-roaster",
+      "name": "project-roaster",
+      "description": "Roast overall project shape from the host tree: README, license, scripts, and CI as process. Comedy-club voice. Does not implement. Matches the user's language.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/roast-my-project/versions/1.0.0/agents/project-roaster.agent.md"
+    },
+    {
+      "id": "roast-chat",
+      "name": "roast-chat",
+      "description": "Chat-web roast from public URLs, uploads, or pasted sources. Default comedy-club voice. Does not walk a host tree. Matches the user's language.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/roast-my-project/versions/1.0.0/agents/roast-chat.agent.md"
+    },
+    {
+      "id": "tests-roaster",
+      "name": "tests-roaster",
+      "description": "Roast tests, coverage, and test theater from the host tree. Missing tests are findings. Comedy-club voice. Does not implement. Matches the user's language.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/roast-my-project/versions/1.0.0/agents/tests-roaster.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "full-roast",
+      "name": "full-roast",
+      "description": "Run project, architecture, code, and tests roasters, then one combined plate plus a constructive sting.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/roast-my-project/versions/1.0.0/flows/full-roast.agent.md",
+      "agents": [
+        "project-roaster",
+        "architecture-roaster",
+        "code-roaster",
+        "tests-roaster"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-08-19T22:39:54.679Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# roast-my-project\n\nMean comedy roast of a project, its architecture, code, and tests, grounded\nin real findings. IDE specialists plus dual-mode kitchen-style personas for\nlocal trees and chat-web. Original parody; not affiliated with any chef or\nshow. Replies match the user's language.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nCatalog copy is English. Installed agents reply in the **language the user\nused** (English if mixed or unclear).\n\nThis is a comedy **critique**. It must still be right about the findings.\nIt is not `maiconfz/chorume` (sludge parody that often encourages the mess).\n\n## Disclaimer\n\nDefinitions in this package are original parody of cooking-competition\ncriticism tropes. This package is **not affiliated** with any chef,\nrestaurant, or television show and **does not impersonate** anyone. It is\nnot a transcript or catchphrase pack.\n\nDo not treat the instructions as permission to force-push protected\nbranches, leak secrets, destroy data, disable security, rewrite git\nhistory, or turn off CI and git hooks. Host-agent safety rules still win.\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@latest install maiconfz/roast-my-project\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/roast-my-project\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after\ninstall. All four supported IDE targets receive the package content\n(rendered per target). Installed content comes from the versioned ZIPs\npinned in your `agents-lock.json`.\n\n## Usage\n\nTwo entry paths:\n\n- **Workspace (IDE):** run `full-roast` for a combined plate, or a\n  specialist for one domain. Comedy-club voice. For kitchen tropes on a\n  local tree, run `fiery-head-chef` or `brigade-chef`.\n- **Chat-web:** use `roast-chat` (default voice) or a kitchen agent.\n  `roast-chat` analyzes **public git-forge/project URLs** (not marketing\n  pages), **uploads**, and **pasted sources**. It does not walk a host\n  tree. Kitchen agents walk a host tree when readable; otherwise they use\n  the same remote evidence as `roast-chat`.\n\nStandalone workspace specialists:\n\n- `project-roaster` — overall shape, docs, scripts, CI as process\n- `architecture-roaster` — boundaries, coupling, layering, ADRs\n- `code-roaster` — production source (not test files)\n- `tests-roaster` — tests, coverage, test theater, missing tests\n\n`roast-chat` is not part of `full-roast`. Kitchen agents are not part of\n`full-roast`. A chat-web roast is remote-or-upload evidence, not a\nhost-tree plate, unless a kitchen agent actually inspected a local tree.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `project-roaster` | Host-tree project roast |\n| `architecture-roaster` | Host-tree architecture roast |\n| `code-roaster` | Host-tree production-code roast |\n| `tests-roaster` | Host-tree tests roast |\n| `roast-chat` | Chat-web roast (no host tree) |\n| `fiery-head-chef` | Dual-mode fiery kitchen tropes |\n| `brigade-chef` | Dual-mode brigade kitchen tropes |\n| `full-roast` (flow) | Four specialists, one plate |\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` with `{ \"id\": \"chat-web\", \"status\": \"supported\" }`.\n\n`roast-chat`, `fiery-head-chef`, and `brigade-chef` set\n`chatWeb: \"included\"`. The four specialists and `full-roast` set\n`chatWeb: \"excluded\"`. Exclusion affects `instructions.json` only.\nDeployment ZIPs still contain every agent and the flow.\n\nAfter `package:build`, the instruction manifest for a released version\nlives at:\n\n```text\npackages/maiconfz/roast-my-project/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp consumers\njoin the registry-proxy origin with those paths per\n[`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):\n\n- **Origin:** `https://registry-proxy.maiconfz.workers.dev`\n\nIllustrative absolute fetch URLs for version `1.0.0`:\n\n```text\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.0.0/instructions.json\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.0.0/agents/roast-chat.agent.md\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.0.0/agents/fiery-head-chef.agent.md\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.0.0/agents/brigade-chef.agent.md\n```\n\nThe excluded flow is not listed in `instructions.json`, so chat-web does\nnot receive `agentInstructions` for the filesystem specialists.\n\n## Validate and build\n\nFrom the registry repository root:\n\n```bash\nPKG=maiconfz/roast-my-project\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/roast-my-project/1.0.0/instructions.json"
+}

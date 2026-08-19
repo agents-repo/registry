@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "roast-my-project",
+  "description": "Mean comedy roast of a project, its architecture, code, and tests, grounded in real findings. IDE specialists plus dual-mode kitchen-style personas for local trees and chat-web. Original parody; not affiliated with any chef or show. Replies match the user's language.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/roast-my-project",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "roast",
+    "satire",
+    "humor",
+    "review",
+    "architecture",
+    "analysis",
+    "testing",
+    "chat"
+  ],
+  "createdAt": "2026-08-19T22:35:09.346Z",
+  "updatedAt": "2026-08-19T23:00:00.000Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "humor",
+  "estimateOverallCost": {
+    "estimatedCost": 6,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/roast-my-project/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      { "id": "chat-web", "status": "supported" }
+    ]
+  }
+}

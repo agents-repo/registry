@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-19T02:17:20.552Z",
+  "updatedAt": "2026-08-19T22:39:54.681Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -265,6 +265,52 @@
       ]
     },
     {
+      "id": "maiconfz/roast-my-project",
+      "namespace": "maiconfz",
+      "package": "roast-my-project",
+      "path": "packages/maiconfz/roast-my-project",
+      "name": "roast-my-project",
+      "description": "Mean comedy roast of a project, its architecture, code, and tests, grounded in real findings. IDE specialists plus dual-mode kitchen-style personas for local trees and chat-web. Original parody; not affiliated with any chef or show. Replies match the user's language.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "roast",
+        "satire",
+        "humor",
+        "review",
+        "architecture",
+        "analysis",
+        "testing",
+        "chat"
+      ],
+      "status": "active",
+      "category": "humor",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/roast-my-project/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
       "id": "maiconfz/xgh",
       "namespace": "maiconfz",
       "package": "xgh",
@@ -317,6 +363,7 @@
     "chorume": "maiconfz/chorume",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
+    "roast-my-project": "maiconfz/roast-my-project",
     "xgh": "maiconfz/xgh"
   }
 }
