@@ -39,10 +39,10 @@ Two entry paths:
   before planning**, then drafts a phased or full-shot plan. It does not
   create files.
 - **Chat-web:** use `ai-first-chat`. It interviews from what you say, or
-  analyzes **public project URLs**, **uploads**, and **pasted sources**
-  into a structured readiness report. It does not plan. For a full tree
-  walk and ask-first planning, install this package in an IDE and run
-  the flow there.
+  analyzes **public git-forge/project URLs** (not marketing pages),
+  **uploads**, and **pasted sources** into a structured readiness
+  report. It does not plan. For a full tree walk and ask-first planning,
+  install this package in an IDE and run the flow there.
 
 Standalone workspace agents:
 
