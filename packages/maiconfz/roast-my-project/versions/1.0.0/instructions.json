@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/roast-my-project",
+  "version": "1.0.0",
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "brigade-chef",
+      "path": "/pkg/maiconfz/roast-my-project/1.0.0/agents/brigade-chef.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "fiery-head-chef",
+      "path": "/pkg/maiconfz/roast-my-project/1.0.0/agents/fiery-head-chef.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "roast-chat",
+      "path": "/pkg/maiconfz/roast-my-project/1.0.0/agents/roast-chat.agent.md"
+    }
+  ]
+}

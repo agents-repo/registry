@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "roast-chat",
+  "description": "Chat-web roast from public URLs, uploads, or pasted sources. Default comedy-club voice. Does not walk a host tree. Matches the user's language.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include a project URL, attached or uploaded files, or pasted sources."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "roast-report",
+      "type": "string",
+      "description": "Structured roast; empty when there is no usable evidence."
+    }
+  ]
+}

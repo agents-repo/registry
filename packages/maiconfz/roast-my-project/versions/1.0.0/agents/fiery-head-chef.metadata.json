@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "fiery-head-chef",
+  "description": "Fiery head-chef tropes. Roasts a host tree when readable, otherwise URLs, uploads, or paste. Original parody; does not impersonate anyone. Matches the user's language.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Focus, a project URL, attachments, pasted sources, or a request to roast this repo."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "roast-report",
+      "type": "string",
+      "description": "Structured roast; empty when there is no usable evidence."
+    }
+  ]
+}
