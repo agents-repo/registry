@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1.0.0",
   "package": "maiconfz/ai-first-project-readiness",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "metadata": {
     "schemaVersion": "1.0.0",
     "name": "ai-first-project-readiness",
-    "description": "Analyze a project's AI-first readiness (architecture, docs, agents, skills, tooling) and, after user consent, draft a phased or full-shot improvement plan. Includes talk-only web chat. Planning only; does not implement.",
+    "description": "Analyze a project's AI-first readiness (architecture, docs, agents, skills, tooling) and, after user consent, draft a phased or full-shot improvement plan. Chat-web can analyze public URLs and uploads. Planning only; does not implement.",
     "owner": "maiconfz",
     "license": "MIT",
     "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/ai-first-project-readiness",
@@ -22,8 +22,8 @@
       "chat"
     ],
     "createdAt": "2026-08-18T22:25:42.634Z",
-    "updatedAt": "2026-08-18T22:27:42.000Z",
-    "version": "1.0.0",
+    "updatedAt": "2026-08-19T02:15:00.000Z",
+    "version": "1.1.0",
     "status": "active",
     "category": "automation",
     "estimateOverallCost": {
@@ -66,14 +66,14 @@
     {
       "id": "ai-first-chat",
       "name": "ai-first-chat",
-      "description": "Talk-only chat about AI-first projects. No file analysis. For web and greenfield conversations.",
+      "description": "Analyze AI-first readiness from public project URLs, uploads, or conversation. Emits a structured report when evidence exists. Does not plan.",
       "status": "active",
       "category": "automation",
       "estimateCost": {
-        "estimatedCost": 2,
-        "band": "minimal"
+        "estimatedCost": 5,
+        "band": "moderate"
       },
-      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.0.0/agents/ai-first-chat.agent.md"
+      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.1.0/agents/ai-first-chat.agent.md"
     },
     {
       "id": "ai-readiness-analyst",
@@ -85,7 +85,7 @@
         "estimatedCost": 7,
         "band": "high"
       },
-      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.0.0/agents/ai-readiness-analyst.agent.md"
+      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.1.0/agents/ai-readiness-analyst.agent.md"
     },
     {
       "id": "improvement-planner",
@@ -97,7 +97,7 @@
         "estimatedCost": 6,
         "band": "moderate"
       },
-      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.0.0/agents/improvement-planner.agent.md"
+      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.1.0/agents/improvement-planner.agent.md"
     }
   ],
   "flows": [
@@ -111,7 +111,7 @@
         "estimatedCost": 8,
         "band": "high"
       },
-      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.0.0/flows/ai-first-project-planning.agent.md",
+      "instructionPath": "packages/maiconfz/ai-first-project-readiness/versions/1.1.0/flows/ai-first-project-planning.agent.md",
       "agents": [
         "ai-readiness-analyst",
         "improvement-planner"
@@ -119,7 +119,7 @@
     }
   ],
   "versions": {
-    "latest": "1.0.0",
+    "latest": "1.1.0",
     "entries": [
       {
         "version": "1.0.0",
@@ -144,10 +144,34 @@
           }
         ],
         "instructionsArtifact": "instructions.json"
+      },
+      {
+        "version": "1.1.0",
+        "createdAt": "2026-08-19T02:17:20.552Z",
+        "srcArtifact": "1.1.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.1.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.1.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.1.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.1.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
       }
     ]
   },
-  "readmeMarkdown": "# ai-first-project-readiness\n\nAnalyze a project's AI-first readiness (architecture, docs, agents, skills,\ntooling) and, after user consent, draft a phased or full-shot improvement\nplan. Includes talk-only web chat. Planning only; does not implement.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nInstalled agents reply in the **language the user used** (English if mixed\nor unclear).\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@latest install maiconfz/ai-first-project-readiness\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/ai-first-project-readiness\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after install.\nAll four supported IDE targets receive the package content (rendered per\ntarget).\n\n## Usage\n\nTwo entry paths:\n\n- **Workspace (IDE):** run `ai-first-project-planning` in the **host\n  project**. It analyzes the tree, shows a readiness report, **asks\n  before planning**, then drafts a phased or full-shot plan. It does not\n  create files.\n- **Chat-web / greenfield talk:** use `ai-first-chat`. It interviews and\n  advises from what you say. It does not read files. If you have a local\n  repo, install this package in an IDE and run the flow there.\n\nStandalone workspace agents:\n\n- `ai-readiness-analyst` — inspect the host tree; write a readiness\n  report. Does not plan.\n- `improvement-planner` — plan only after `planning-consent` is true.\n  Requires a `readiness-report` and `plan-mode` (`phased` or\n  `full-shot`).\n\n`ai-first-chat` is not part of the flow. Informal chat outlines are\n**conversation-only** and are not file-backed plans.\n\n## Package contents\n\n- `ai-readiness-analyst` — host-tree readiness report\n- `improvement-planner` — ask-first phased or full-shot plan\n- `ai-first-chat` — talk-only conversation (chat-web catalog)\n- `ai-first-project-planning` (flow) — analyze, ask, plan\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` with `{ \"id\": \"chat-web\", \"status\": \"supported\" }`.\n\nOnly `ai-first-chat` sets `chatWeb: \"included\"`. `ai-readiness-analyst`,\n`improvement-planner`, and `ai-first-project-planning` set\n`chatWeb: \"excluded\"`. Exclusion affects `instructions.json` only.\nDeployment ZIPs still contain every agent and the flow.\n\nAfter `package:build`, the instruction manifest for a released version\nlives at:\n\n```text\npackages/maiconfz/ai-first-project-readiness/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp consumers\njoin the registry-proxy origin with those paths per\n[`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):\n\n- **Origin:** `https://registry-proxy.maiconfz.workers.dev`\n\nIllustrative absolute fetch URLs for version `1.0.0`:\n\n```text\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.0.0/instructions.json\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.0.0/agents/ai-first-chat.agent.md\n```\n\nThe excluded flow is not listed in `instructions.json`, so chat-web does\nnot receive `agentInstructions` for the filesystem agents.\n\n## Validate and build\n\nFrom the registry repository root:\n\n```bash\nPKG=maiconfz/ai-first-project-readiness\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n",
+  "readmeMarkdown": "# ai-first-project-readiness\n\nAnalyze a project's AI-first readiness (architecture, docs, agents, skills,\ntooling) and, after user consent, draft a phased or full-shot improvement\nplan. Chat-web can analyze public URLs and uploads. Planning only; does not\nimplement.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nInstalled agents reply in the **language the user used** (English if mixed\nor unclear).\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@latest install maiconfz/ai-first-project-readiness\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/ai-first-project-readiness\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after install.\nAll four supported IDE targets receive the package content (rendered per\ntarget).\n\n## Usage\n\nTwo entry paths:\n\n- **Workspace (IDE):** run `ai-first-project-planning` in the **host\n  project**. It analyzes the tree, shows a readiness report, **asks\n  before planning**, then drafts a phased or full-shot plan. It does not\n  create files.\n- **Chat-web:** use `ai-first-chat`. It interviews from what you say, or\n  analyzes **public git-forge/project URLs** (not marketing pages),\n  **uploads**, and **pasted sources** into a structured readiness\n  report. It does not plan. For a full tree walk and ask-first planning,\n  install this package in an IDE and run the flow there.\n\nStandalone workspace agents:\n\n- `ai-readiness-analyst` — inspect the host tree; write a readiness\n  report. Does not plan.\n- `improvement-planner` — plan only after `planning-consent` is true.\n  Requires a `readiness-report` and `plan-mode` (`phased` or\n  `full-shot`).\n\n`ai-first-chat` is not part of the flow. Informal chat outlines without\nevidence are **conversation-only** and are not improvement plans. A\nchat-web readiness report is remote-or-upload evidence, not a host-tree\nplan.\n\n## Package contents\n\n- `ai-readiness-analyst` — host-tree readiness report\n- `improvement-planner` — ask-first phased or full-shot plan\n- `ai-first-chat` — chat-web analysis from URLs, uploads, or conversation\n- `ai-first-project-planning` (flow) — analyze, ask, plan\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` with `{ \"id\": \"chat-web\", \"status\": \"supported\" }`.\n\nOnly `ai-first-chat` sets `chatWeb: \"included\"`. `ai-readiness-analyst`,\n`improvement-planner`, and `ai-first-project-planning` set\n`chatWeb: \"excluded\"`. Exclusion affects `instructions.json` only.\nDeployment ZIPs still contain every agent and the flow.\n\nAfter `package:build`, the instruction manifest for a released version\nlives at:\n\n```text\npackages/maiconfz/ai-first-project-readiness/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp consumers\njoin the registry-proxy origin with those paths per\n[`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):\n\n- **Origin:** `https://registry-proxy.maiconfz.workers.dev`\n\nIllustrative absolute fetch URLs for version `1.1.0`:\n\n```text\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.1.0/instructions.json\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.1.0/agents/ai-first-chat.agent.md\n```\n\nThe excluded flow is not listed in `instructions.json`, so chat-web does\nnot receive `agentInstructions` for the filesystem agents.\n\n## Validate and build\n\nFrom the registry repository root:\n\n```bash\nPKG=maiconfz/ai-first-project-readiness\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.1.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n",
   "chatWeb": true,
-  "instructionsPath": "/pkg/maiconfz/ai-first-project-readiness/1.0.0/instructions.json"
+  "instructionsPath": "/pkg/maiconfz/ai-first-project-readiness/1.1.0/instructions.json"
 }
