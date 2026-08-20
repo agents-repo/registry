@@ -23,14 +23,14 @@ deployment ZIPs unless a future spec revision requires it.
 
 WebApp consumers resolve **absolute fetch URLs** by joining:
 
-- **Origin:** `https://registry-proxy.maiconfz.workers.dev`
+- **Origin:** `https://registry.agents-repo.org`
 - **Path:** path-only strings from `instructions.json` and related contracts
   below (MUST NOT include a scheme or host in registry-built artifacts).
 
 Example absolute URL (illustrative):
 
 ```text
-https://registry-proxy.maiconfz.workers.dev/pkg/agents-repo/hello-agent/1.0.0/agents/planner.agent.md
+https://registry.agents-repo.org/pkg/agents-repo/hello-agent/1.0.0/agents/planner.agent.md
 ```
 
 ## `/pkg/` path contract
@@ -212,5 +212,5 @@ See `index-schema.md`.
 Absolute WebApp fetch (illustrative):
 
 ```text
-https://registry-proxy.maiconfz.workers.dev/pkg/agents-repo/hello-agent/1.0.0/instructions.json
+https://registry.agents-repo.org/pkg/agents-repo/hello-agent/1.0.0/instructions.json
 ```

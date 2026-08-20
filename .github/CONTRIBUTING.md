@@ -404,7 +404,7 @@ Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
 #### Registry workflow packages (CLI)
 
 Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli).
-`agents.json` points at `https://registry-proxy.maiconfz.workers.dev` (organization
+`agents.json` points at `https://registry.agents-repo.org` (organization
 catalog proxy).
 
 Bootstrap only when `agents.json` is missing (one-time; use a published CLI
