@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-19T22:51:29.074Z",
+  "updatedAt": "2026-08-20T00:04:34.080Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -270,9 +270,9 @@
       "package": "roast-my-project",
       "path": "packages/maiconfz/roast-my-project",
       "name": "roast-my-project",
-      "description": "Mean comedy roast of a project, its architecture, code, and tests, grounded in real findings. IDE specialists plus dual-mode kitchen-style personas for local trees and chat-web. Original parody; not affiliated with any chef or show. Replies match the user's language.",
+      "description": "Mean comedy roast of a codebase, website, or app, grounded in real findings. IDE specialists for local trees; chat-web roasts public repos, sites, and store listings. Original parody; not affiliated with any chef or show. Replies match the user's language.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.1.0",
       "tags": [
         "roast",
         "satire",
@@ -281,7 +281,9 @@
         "architecture",
         "analysis",
         "testing",
-        "chat"
+        "chat",
+        "website",
+        "app"
       ],
       "status": "active",
       "category": "humor",

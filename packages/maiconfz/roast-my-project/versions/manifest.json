@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.2.0",
   "name": "roast-my-project",
-  "latest": "1.0.0",
+  "latest": "1.1.0",
   "versions": [
     {
       "version": "1.0.0",
@@ -32,6 +32,36 @@
       "createdAt": "2026-08-19T22:51:29.073Z",
       "instructionsArtifact": "instructions.json",
       "instructionsSha256": "a43b65b7bc92ba545b06ea907802827d64322881fec3ac631b6564b072abb49f"
+    },
+    {
+      "version": "1.1.0",
+      "srcArtifact": "1.1.0-src.zip",
+      "srcSha256": "cfdb49048ec72b12e2b1aaf0534da41a95b0566d3e88bd6f207801a535583941",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.1.0-github-copilot.zip",
+          "sha256": "0fa0c4b1300067a8555b4753ee85535396e942a0942e123d7710e5008a3c75f6"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.1.0-claude-code.zip",
+          "sha256": "598c82d8c675013f37c3e4ac87276a2316d715910f3819dc4baca4c5ca7a3355"
+        },
+        {
+          "target": "cursor",
+          "file": "1.1.0-cursor.zip",
+          "sha256": "8bfa164843c9a1955ed926e9b918aedeb884346d0187c350cf10584b779157be"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.1.0-openai-codex.zip",
+          "sha256": "0ebf24f296c509869a3ca1d3ac757c362f2e129a1e3f00c1b12d0314649db7f7"
+        }
+      ],
+      "createdAt": "2026-08-20T00:04:34.080Z",
+      "instructionsArtifact": "instructions.json",
+      "instructionsSha256": "91c1b7e35b93cdccb01a01bb08807080a0786284041c7e186773441876fef6ac"
     }
   ]
 }
