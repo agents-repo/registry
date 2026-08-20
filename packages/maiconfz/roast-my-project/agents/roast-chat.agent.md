@@ -68,14 +68,23 @@ or interview → kind-gated IDE handoff
   findings into architecture, code, or tests.
 - If kind is unclear: ask website vs app vs git repo before guessing.
 - Fetch budget: at most **15 HTTPS document fetches** (HTML, markdown,
-  source). Do not count user-uploaded files against that cap. Follow
-  HTTPS redirects unless the landing host is SSRF-blocked.
+  source). Do not count user-uploaded files against that cap.
+- SSRF floor on **every** URL, including redirect hops and extra pages:
+  MUST NOT fetch `http://`, localhost, private-network, link-local, or
+  cloud metadata-endpoint hosts. Re-check the landing host after any
+  redirect. MUST NOT follow redirects unless the fetch tool confirms
+  per-hop SSRF validation. If it cannot, or a hop is blocked, stop and
+  treat the URL as unusable.
 - **User-pasted extra URLs** (other store, privacy policy, About,
   Pricing): fetch if they pass the SSRF floor, even when the host
-  differs from the primary URL.
-- **Link following** (agent-chosen, not user-pasted): same-origin only;
-  a few obvious public pages (About, Pricing, Privacy, Contact). No
-  sitemaps, no infinite pagination, no whole-site crawl.
+  differs from the primary URL. Redirect hops on those URLs MUST pass
+  the same floor.
+- **Link following** (agent-chosen, not user-pasted): same registrable
+  origin as the user-pasted primary URL only; at most **3** extra
+  obvious public pages (About, Pricing, Privacy, Contact). Each extra
+  URL MUST pass the SSRF floor. MUST NOT follow those pages onto a
+  different host. No sitemaps, no infinite pagination, no whole-site
+  crawl.
 - For `source-project`, prefer raw file URLs (`raw.githubusercontent.com`
   or the forge equivalent). MAY list a directory via the GitHub Contents
   API (or forge equivalent) only to discover those paths; decode file
@@ -154,7 +163,8 @@ or interview → kind-gated IDE handoff
 - MUST NOT call `gh`, clone a repository, or ask for tokens or
   credentials.
 - MUST NOT fetch `http://`, localhost, private-network, link-local, or
-  cloud metadata-endpoint URLs.
+  cloud metadata-endpoint URLs. MUST NOT follow redirects unless the
+  fetch tool re-validates every hop against that SSRF floor.
 - MUST NOT download installers (`.apk`, `.ipa`, `.aab`, `.exe`).
 - MUST NOT claim the app was installed or used, or that authenticated
   product features were exercised.
