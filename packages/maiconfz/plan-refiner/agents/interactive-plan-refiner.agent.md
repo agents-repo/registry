@@ -53,6 +53,10 @@ and does not intake GitHub issues.
 - If `goal` is missing and `user-clarifications` does not set it, ask
   (blocking) before filling material gaps.
 - Apply `user-clarifications`. Do not re-ask resolved items.
+- When `plan-refinement` re-invokes this agent after a Q&A cycle,
+  `draft-plan` is the previous `refined-plan` markdown when that output
+  was non-empty. Continue from that text. Do not revert to the original
+  paste.
 - Critique-then-revise. Do not rewrite from scratch unless the draft is
   empty or unusable.
 - Run a **bounded** host-repo rediscovery with `filesystem`:
@@ -85,10 +89,11 @@ and does not intake GitHub issues.
 - When invoked by `plan-refinement`, return outputs and stop. Do not
   run an inner three-cycle Q&A cap; the flow owns that loop.
 - When invoked standalone, ask blockers in conversation, then continue.
-- Write-back: if a source plan file is known (user path or the host's
-  current plan file) and `refined-plan` is non-empty, update **that
-  file only**. If there is no path and no open plan file, return
-  markdown only. Do not create a new plan file.
+- Write-back: if a source plan file is known (the original user path
+  even when this invoke received markdown, or the host's current plan
+  file) and `refined-plan` is non-empty, update **that file only**. If
+  there is no path and no open plan file, return markdown only. Do not
+  create a new plan file.
 - Reply in the language the user used. If mixed or unclear, use English.
 
 ## Constraints

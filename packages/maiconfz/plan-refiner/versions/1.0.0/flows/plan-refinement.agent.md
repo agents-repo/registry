@@ -42,7 +42,7 @@ bounded host-repo pass. Planning only.
 
 ```text
 check draft-plan → resolve refine-mode → invoke one agent →
-(interactive loop) → write-back → handoff
+(interactive loop: carry refined-plan) → write-back → handoff
 ```
 
 This flow does not draft a first plan and does not intake GitHub issues.
@@ -55,16 +55,21 @@ This flow does not draft a first plan and does not intake GitHub issues.
 2. **Mode** — If `refine-mode` is not `interactive` or `automatic`, ask
    which to use. Do not default.
 
-3. **Refine** — Invoke the matching agent with `draft-plan`, `goal`, and
-   `user-clarifications`.
+3. **Refine** — Invoke the matching agent with the working `draft-plan`,
+   `goal`, and `user-clarifications`. On the first pass, that working
+   value is the user input.
 
 4. **Interactive loop** — Only for `interactive-plan-refiner`. If
    `open-questions` has **blockers**, ask the user, append answers to
-   `user-clarifications`, and repeat step 3. Max **three** Q&A cycles.
-   Then copy leftover questions into `open-questions`. Do not loop
-   `automatic-plan-refiner`.
+   `user-clarifications`, and repeat step 3. On each repeat, pass the
+   latest `refined-plan` as `draft-plan` when it is non-empty; do not
+   re-feed the original pasted markdown. Remember the original workspace
+   path, if `draft-plan` started as a path, for write-back. Max
+   **three** Q&A cycles. Then copy leftover questions into
+   `open-questions`. Do not loop `automatic-plan-refiner`.
 
-5. **Write-back** — If a source plan file is known and `refined-plan` is
+5. **Write-back** — If a source plan file is known (remembered original
+   path or the host's current plan file) and `refined-plan` is
    non-empty, update that file only. The invoked agent also performs
    write-back; do not write any other host files.
 

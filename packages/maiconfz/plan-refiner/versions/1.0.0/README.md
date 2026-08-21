@@ -66,6 +66,8 @@ Invoke the **`plan-refinement`** flow after a plan already exists
 (Cursor Plan mode, a markdown plan, or a prior planner).
 
 - Use `refine-mode: interactive` when you want to be asked about gaps.
+  Later Q&A rounds continue from the latest `refined-plan`, not the
+  original paste.
 - Use `refine-mode: automatic` when you want a finished revision with an
   assumption log.
 
