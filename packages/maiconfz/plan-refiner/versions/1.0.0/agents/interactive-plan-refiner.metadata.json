@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "interactive-plan-refiner",
+  "description": "Ask-first quality pass on an existing plan: full repo check for gaps and inconsistencies. Prefers questions over assumptions. Does not implement.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "draft-plan",
+      "type": "string",
+      "description": "Draft plan as markdown text or a workspace path to a markdown file."
+    },
+    {
+      "name": "goal",
+      "type": "string",
+      "description": "Optional stated goal or acceptance text to check the plan against."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "refined-plan",
+      "type": "string",
+      "description": "Revised markdown plan; may be partial when blockers remain."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Markdown list of open questions; blocking items first."
+    },
+    {
+      "name": "assumption-log",
+      "type": "string",
+      "description": "Always empty for this agent; do not log unverified guesses."
+    }
+  ]
+}

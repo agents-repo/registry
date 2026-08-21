@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "plan-refiner",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "a88ca796c2a490b688f49eef9e22c8909d942aaf874bd5d6cade1fb03bae3d09",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "bdf166f4c88b60cd6a24174e396d35bc3031e086d6941f97a350e32dd097d2a0"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "d1071365daaa70a91213203486df1fa3a30dba2e16b1b37136751e32f3d19981"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "9ac974a3325e36ed7bb38e9dcdf2a636d611cb36b096ef617db06a402139ca68"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "1ae951df84cc015d026f54b08f3d6ab99d7f7ac59093ea3dda76ff72168db0b4"
+        }
+      ],
+      "createdAt": "2026-08-21T02:04:34.074Z"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-08-20T00:32:28.737Z",
+  "updatedAt": "2026-08-21T02:04:34.075Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -14,6 +14,7 @@
         "chorume",
         "github-interactive-issue-implementation-planner",
         "github-pr-review-triage",
+        "plan-refiner",
         "roast-my-project",
         "xgh"
       ]

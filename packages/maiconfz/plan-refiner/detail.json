@@ -1,0 +1,129 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/plan-refiner",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "plan-refiner",
+    "description": "Refine an existing feature or implementation plan against the current repository: find gaps and inconsistencies. Interactive ask-first or automatic assumption-first. Planning only; does not implement.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/plan-refiner",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "planning",
+      "refinement",
+      "review",
+      "consistency",
+      "interactive",
+      "automation"
+    ],
+    "createdAt": "2026-08-21T01:31:55.026Z",
+    "updatedAt": "2026-08-21T02:55:00.000Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 7,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/plan-refiner/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "automatic-plan-refiner",
+      "name": "automatic-plan-refiner",
+      "description": "Assumption-first quality pass on an existing plan: full repo check, fills gaps with documented assumptions. One-shot refined plan. Does not implement.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/plan-refiner/versions/1.0.0/agents/automatic-plan-refiner.agent.md"
+    },
+    {
+      "id": "interactive-plan-refiner",
+      "name": "interactive-plan-refiner",
+      "description": "Ask-first quality pass on an existing plan: full repo check for gaps and inconsistencies. Prefers questions over assumptions. Does not implement.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/plan-refiner/versions/1.0.0/agents/interactive-plan-refiner.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "plan-refinement",
+      "name": "plan-refinement",
+      "description": "Route an existing plan to interactive (ask-first) or automatic (assumption-first) refinement with a full repository pass. Planning only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/plan-refiner/versions/1.0.0/flows/plan-refinement.agent.md",
+      "agents": [
+        "interactive-plan-refiner",
+        "automatic-plan-refiner"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-08-21T02:04:34.074Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "readmeMarkdown": "# plan-refiner\n\nRefine an existing feature or implementation plan against the current\nrepository: find gaps and inconsistencies. Interactive ask-first or\nautomatic assumption-first. Planning only; does not implement.\n\nThis is a `maiconfz` community package, not an official agents-repo\nproduct. Installed agents reply in the **language the user used**\n(English if mixed or unclear).\n\n## Objective\n\nQuality-pass an **already written** plan against the **host** repository.\nChoose ask-first questions or a one-shot revision with labeled\nassumptions. Bounded rediscovery (project rules, cited files, related\nmodules and tests). Not a first-pass planner.\n\nIf you have a GitHub issue number and no plan yet, use\n`maiconfz/github-interactive-issue-implementation-planner` instead. This\npackage does not call `gh` and does not invoke that package.\n\n## Workflow\n\n```mermaid\nflowchart LR\n  draft[draft-plan]\n  mode[refine-mode]\n  interactive[interactive-plan-refiner]\n  automatic[automatic-plan-refiner]\n  draft --> mode\n  mode --> interactive\n  mode --> automatic\n```\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets cursor\nnpx agents-repo@latest install maiconfz/plan-refiner\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/plan-refiner\n```\n\n- Choose `--targets` for your IDE: `github-copilot`, `cursor`,\n  `claude-code`, or `openai-codex` (pass one or more).\n- After install, commit `agents.json`, `agents-lock.json`, and the\n  extracted install paths when they change.\n- Extract paths follow the install target (see\n  [install-targets](https://github.com/agents-repo/registry/blob/main/specs/install-targets.md));\n  invoke the flow or agents by name below.\n\nThis README is catalog documentation on `main`; installed content comes\nfrom the versioned deployment ZIPs pinned in your `agents-lock.json`.\n\n## Usage\n\nInvoke the **`plan-refinement`** flow after a plan already exists\n(Cursor Plan mode, a markdown plan, or a prior planner).\n\n- Use `refine-mode: interactive` when you want to be asked about gaps.\n  Later Q&A rounds continue from the latest `refined-plan`, not the\n  original paste.\n- Use `refine-mode: automatic` when you want a finished revision with an\n  assumption log.\n\n`draft-plan` may be pasted markdown or a workspace path to a markdown\nplan file. If a source plan file is known (the path you gave, or the\nhost's current plan file), the selected agent **updates that file\nonly**. It does not create `refined-plan.md` and does not change product\ncode.\n\nOptional: invoke a single agent when you need one policy only.\n\n### Inputs\n\n| Input | Required | Description |\n| --- | --- | --- |\n| `draft-plan` | yes | Markdown body or a workspace path to a plan file |\n| `refine-mode` | no | `interactive` or `automatic`; the flow asks if missing |\n| `goal` | no | Stated goal or acceptance text |\n| `user-clarifications` | no | Answers accumulated across clarification loops |\n\n### Outputs\n\n- `refined-plan` — revised markdown after the selected refiner\n- `open-questions` — remaining questions (blocking items first)\n- `assumption-log` — labeled assumptions (empty in interactive mode)\n\n### After refinement\n\nThis package stops at the flow outputs above. Product implementation\nneeds an explicit request or a different agent.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `plan-refinement` (flow) | Primary entry: route by `refine-mode` |\n| `interactive-plan-refiner` | Ask-first refine; blockers over guesses |\n| `automatic-plan-refiner` | Assumption-first one-shot refine |\n\n## Maintainers\n\nFrom the registry repository root (package authors / registry\ncontributors):\n\n```bash\nPKG=maiconfz/plan-refiner\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n"
+}
