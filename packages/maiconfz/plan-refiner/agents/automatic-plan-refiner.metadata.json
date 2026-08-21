@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "automatic-plan-refiner",
+  "description": "Assumption-first quality pass on an existing plan: full repo check, fills gaps with documented assumptions. One-shot refined plan. Does not implement.",
+  "license": "MIT",
+  "status": "active",
+  "category": "general",
+  "estimateCost": {
+    "estimatedCost": 1,
+    "band": "minimal"
+  }
+}

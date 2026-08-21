@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "plan-refiner",
+  "description": "Refine an existing feature or implementation plan against the current repository: find gaps and inconsistencies. Interactive ask-first or automatic assumption-first. Planning only; does not implement.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/plan-refiner",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "planning",
+    "refinement",
+    "review",
+    "consistency",
+    "interactive",
+    "automation"
+  ],
+  "createdAt": "2026-08-21T01:31:55.026Z",
+  "updatedAt": "2026-08-21T01:31:55.026Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "general",
+  "estimateOverallCost": {
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/plan-refiner/README.md",
+  "maintainers": [
+    "maiconfz"
+  ]
+}

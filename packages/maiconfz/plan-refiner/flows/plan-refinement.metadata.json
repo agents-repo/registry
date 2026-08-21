@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "plan-refinement",
+  "description": "Route an existing plan to interactive (ask-first) or automatic (assumption-first) refinement with a full repository pass. Planning only.",
+  "license": "MIT",
+  "status": "active",
+  "category": "general",
+  "estimateCost": {
+    "estimatedCost": 1,
+    "band": "minimal"
+  }
+}
