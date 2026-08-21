@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-20T00:32:28.736Z",
+  "updatedAt": "2026-08-21T01:36:19.132Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -265,6 +265,49 @@
       ]
     },
     {
+      "id": "maiconfz/plan-refiner",
+      "namespace": "maiconfz",
+      "package": "plan-refiner",
+      "path": "packages/maiconfz/plan-refiner",
+      "name": "plan-refiner",
+      "description": "Refine an existing feature or implementation plan against the current repository: find gaps and inconsistencies. Interactive ask-first or automatic assumption-first. Planning only; does not implement.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "planning",
+        "refinement",
+        "review",
+        "consistency",
+        "interactive",
+        "automation"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 7,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/plan-refiner/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    },
+    {
       "id": "maiconfz/roast-my-project",
       "namespace": "maiconfz",
       "package": "roast-my-project",
@@ -365,6 +408,7 @@
     "chorume": "maiconfz/chorume",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
+    "plan-refiner": "maiconfz/plan-refiner",
     "roast-my-project": "maiconfz/roast-my-project",
     "xgh": "maiconfz/xgh"
   }
