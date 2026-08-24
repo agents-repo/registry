@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "review-fix-ship",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "8702311fda29fb171d5864a5bab94b63da9588d826ddba10b47c9edb315e59ae",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "de4edf149b62b50ee4d3c8e19e3f82d3a38b64c4f7db26c7dfebe1c032faa736"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "3398c3b74441860be2c6d1213bba64756057fc00541e5c513266348a642eee1d"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "793ceb45545c2372914c133aef1f9c9c23361eaf419d924ebfa733ac0db23f1d"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "783d696d2d2154aff63bf36dc594133f16bca92e1aa0ce06df8673efb523f2af"
+        }
+      ],
+      "createdAt": "2026-08-24T23:51:39.031Z",
+      "instructionsArtifact": "instructions.json",
+      "instructionsSha256": "a9c40eabaf84c8f8ad183abf516538492c9e76af86bb4568ae0f553576af2ece"
+    }
+  ]
+}

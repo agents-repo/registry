@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "review-fix-ship",
+  "description": "Local diff review then ship: code, bug, and security reviews (Cursor Bugbot and Security Review subagents when available; portable fallbacks otherwise), then triage, fix, commit, and push. Complements GitHub PR thread triage.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/review-fix-ship",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "review",
+    "code-review",
+    "security",
+    "bugs",
+    "cursor",
+    "workflow",
+    "git"
+  ],
+  "createdAt": "2026-08-24T23:47:04.955Z",
+  "updatedAt": "2026-08-25T00:00:00.000Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/review-fix-ship/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      {
+        "id": "github-copilot",
+        "status": "supported"
+      },
+      {
+        "id": "claude-code",
+        "status": "supported"
+      },
+      {
+        "id": "cursor",
+        "status": "supported"
+      },
+      {
+        "id": "openai-codex",
+        "status": "supported"
+      }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported"
+      }
+    ]
+  }
+}

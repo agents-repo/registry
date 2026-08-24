@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "review-fix-ship",
+  "description": "Runs code, bug, and security reviews (Cursor skills when available), merges findings, then fixes, commits, and pushes. Complements GitHub PR thread triage.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "agents": [
+    "code-reviewer",
+    "bug-reviewer",
+    "security-reviewer",
+    "findings-fixer"
+  ],
+  "inputs": [
+    {
+      "name": "dry-run",
+      "type": "boolean",
+      "description": "When true, review, triage, fix, and validate only — no commit or push. Defaults to false (full automation)."
+    },
+    {
+      "name": "diff",
+      "type": "string",
+      "description": "branch-changes (default, merge-base with the default branch) or uncommitted-changes."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional extra review notes passed to each reviewer."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "findings-table",
+      "type": "string",
+      "description": "Merged Severity, Source, Location, Finding table after the three reviews."
+    },
+    {
+      "name": "handoff-summary",
+      "type": "string",
+      "description": "Branch, commit SHA when pushed, what shipped or why ship was skipped."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-21T02:04:34.075Z",
+  "updatedAt": "2026-08-24T23:51:39.033Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -308,6 +308,51 @@
       ]
     },
     {
+      "id": "maiconfz/review-fix-ship",
+      "namespace": "maiconfz",
+      "package": "review-fix-ship",
+      "path": "packages/maiconfz/review-fix-ship",
+      "name": "review-fix-ship",
+      "description": "Local diff review then ship: code, bug, and security reviews (Cursor Bugbot and Security Review subagents when available; portable fallbacks otherwise), then triage, fix, commit, and push. Complements GitHub PR thread triage.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "review",
+        "code-review",
+        "security",
+        "bugs",
+        "cursor",
+        "workflow",
+        "git"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/review-fix-ship/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
       "id": "maiconfz/roast-my-project",
       "namespace": "maiconfz",
       "package": "roast-my-project",
@@ -409,6 +454,7 @@
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
     "plan-refiner": "maiconfz/plan-refiner",
+    "review-fix-ship": "maiconfz/review-fix-ship",
     "roast-my-project": "maiconfz/roast-my-project",
     "xgh": "maiconfz/xgh"
   }

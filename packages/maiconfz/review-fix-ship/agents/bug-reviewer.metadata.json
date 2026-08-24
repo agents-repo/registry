@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "bug-reviewer",
+  "description": "Bug-focused review of the scoped git diff. On Cursor launches the Bugbot subagent; otherwise an equivalent in-package pass. Does not edit files.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "diff",
+      "type": "string",
+      "description": "branch-changes (default, merge-base with the default branch) or uncommitted-changes."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional extra review notes from the caller."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "findings-table",
+      "type": "string",
+      "description": "Markdown table of Severity, Location, and Finding, or a one-line no-findings status."
+    }
+  ]
+}

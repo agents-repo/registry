@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "code-reviewer",
+  "description": "General-quality review of the scoped git diff: design, maintainability, missing tests. Does not edit files. Does not replace bug or security specialists.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "diff",
+      "type": "string",
+      "description": "branch-changes (default, merge-base with the default branch) or uncommitted-changes."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional extra review notes from the caller."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "findings-table",
+      "type": "string",
+      "description": "Markdown table of Severity, Location, and Finding, or a one-line no-findings status."
+    }
+  ]
+}
