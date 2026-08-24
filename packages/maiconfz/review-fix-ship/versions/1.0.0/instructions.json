@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/review-fix-ship",
+  "version": "1.0.0",
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "bug-reviewer",
+      "path": "/pkg/maiconfz/review-fix-ship/1.0.0/agents/bug-reviewer.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "code-reviewer",
+      "path": "/pkg/maiconfz/review-fix-ship/1.0.0/agents/code-reviewer.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "findings-fixer",
+      "path": "/pkg/maiconfz/review-fix-ship/1.0.0/agents/findings-fixer.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "security-reviewer",
+      "path": "/pkg/maiconfz/review-fix-ship/1.0.0/agents/security-reviewer.agent.md"
+    },
+    {
+      "kind": "flow",
+      "id": "review-fix-ship",
+      "path": "/pkg/maiconfz/review-fix-ship/1.0.0/flows/review-fix-ship.agent.md",
+      "agentInstructions": [
+        "/pkg/maiconfz/review-fix-ship/1.0.0/agents/code-reviewer.agent.md",
+        "/pkg/maiconfz/review-fix-ship/1.0.0/agents/bug-reviewer.agent.md",
+        "/pkg/maiconfz/review-fix-ship/1.0.0/agents/security-reviewer.agent.md",
+        "/pkg/maiconfz/review-fix-ship/1.0.0/agents/findings-fixer.agent.md"
+      ]
+    }
+  ]
+}

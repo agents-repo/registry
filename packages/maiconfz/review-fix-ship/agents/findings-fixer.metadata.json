@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "findings-fixer",
+  "description": "Triages merged review findings, applies minimal fixes, runs project checks, then commits and pushes the feature branch unless dry-run is true.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "findings-table",
+      "type": "string",
+      "description": "Merged review findings table from the calling flow."
+    },
+    {
+      "name": "dry-run",
+      "type": "boolean",
+      "description": "When true, triage, fix, and validate only — no commit or push. Defaults to false (full automation)."
+    },
+    {
+      "name": "diff",
+      "type": "string",
+      "description": "branch-changes (default, merge-base with the default branch) or uncommitted-changes."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional extra notes from the caller."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "triage-table",
+      "type": "string",
+      "description": "Markdown table with source, location, outcome, and rationale per finding."
+    },
+    {
+      "name": "handoff-summary",
+      "type": "string",
+      "description": "Branch, commit SHA when pushed, what shipped or why ship was skipped."
+    }
+  ]
+}

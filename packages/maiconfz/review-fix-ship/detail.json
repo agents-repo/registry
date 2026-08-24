@@ -1,0 +1,165 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/review-fix-ship",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "review-fix-ship",
+    "description": "Local diff review then ship: code, bug, and security reviews (Cursor Bugbot and Security Review subagents when available; portable fallbacks otherwise), then triage, fix, commit, and push. Complements GitHub PR thread triage.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/review-fix-ship",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "review",
+      "code-review",
+      "security",
+      "bugs",
+      "cursor",
+      "workflow",
+      "git"
+    ],
+    "createdAt": "2026-08-24T23:47:04.955Z",
+    "updatedAt": "2026-08-25T00:00:00.000Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 6,
+      "band": "moderate"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/review-fix-ship/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "bug-reviewer",
+      "name": "bug-reviewer",
+      "description": "Bug-focused review of the scoped git diff. On Cursor launches the Bugbot subagent; otherwise an equivalent in-package pass. Does not edit files.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/review-fix-ship/versions/1.0.0/agents/bug-reviewer.agent.md"
+    },
+    {
+      "id": "code-reviewer",
+      "name": "code-reviewer",
+      "description": "General-quality review of the scoped git diff: design, maintainability, missing tests. Does not edit files. Does not replace bug or security specialists.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/review-fix-ship/versions/1.0.0/agents/code-reviewer.agent.md"
+    },
+    {
+      "id": "findings-fixer",
+      "name": "findings-fixer",
+      "description": "Triages merged review findings, applies minimal fixes, runs project checks, then commits and pushes the feature branch unless dry-run is true.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/review-fix-ship/versions/1.0.0/agents/findings-fixer.agent.md"
+    },
+    {
+      "id": "security-reviewer",
+      "name": "security-reviewer",
+      "description": "Security review of the scoped git diff. On Cursor launches the Security Review subagent; otherwise an equivalent in-package pass. No exploits or PoCs. Does not edit files.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/review-fix-ship/versions/1.0.0/agents/security-reviewer.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "review-fix-ship",
+      "name": "review-fix-ship",
+      "description": "Runs code, bug, and security reviews (Cursor skills when available), merges findings, then fixes, commits, and pushes. Complements GitHub PR thread triage.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/review-fix-ship/versions/1.0.0/flows/review-fix-ship.agent.md",
+      "agents": [
+        "code-reviewer",
+        "bug-reviewer",
+        "security-reviewer",
+        "findings-fixer"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-08-24T23:51:39.031Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# review-fix-ship\n\nLocal diff review then ship: run code, bug, and security reviews (Cursor\nBugbot and Security Review subagents when available; portable fallbacks\notherwise), then triage, fix, commit, and push findings.\n\nThis is a `maiconfz` community package, not an official agents-repo\nproduct. It complements `maiconfz/github-pr-review-triage` (GitHub PR\ncomment threads). This package reviews the **local git diff**, then\nships code on the current feature branch.\n\n## Objective\n\nDrop-in replacement for the chat habit `/code-review`, `/review-bugbot`,\n`/review-security`, then “fix, commit and push findings.”\n\nOn Cursor, `bug-reviewer` and `security-reviewer` launch the official\nTask subagents when the host can. On other IDEs they run equivalent\nin-package reviews. `code-reviewer` always runs in-package (`/code-review`\nis not a Task subagent). Only `findings-fixer` edits, commits, and\npushes.\n\nInvoking the **`review-fix-ship`** flow grants ship-mode on the current\n**feature branch** by default. Pass `dry-run: true` to skip commit and\npush. The flow stops if the checkout is the default branch.\n\nHosts without Cursor Task types still get the three reviews; those\nfallback passes are weaker than Bugbot and the Security Review\nsubagent. The README and agents say so.\n\n## Workflow\n\n```mermaid\nflowchart TD\n  flow[review-fix-ship]\n  detect[Preflight]\n  code[code-reviewer]\n  bug[bug-reviewer]\n  sec[security-reviewer]\n  merge[Merge findings]\n  fixer[findings-fixer]\n  ship[Validate commit push]\n\n  flow --> detect\n  detect --> code\n  detect --> bug\n  detect --> sec\n  code --> merge\n  bug --> merge\n  sec --> merge\n  merge --> fixer\n  fixer --> ship\n```\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets cursor\nnpx agents-repo@latest install maiconfz/review-fix-ship\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/review-fix-ship\n```\n\n- Choose `--targets` for your IDE: `github-copilot`, `cursor`,\n  `claude-code`, or `openai-codex` (pass one or more).\n- After install, commit `agents.json`, `agents-lock.json`, and the\n  extracted install paths when they change.\n- Extract paths follow the install target (see install-targets in this\n  registry's `specs/`); invoke the flow or agents by name below.\n\nThis README is catalog documentation on `main`; installed content comes\nfrom the versioned deployment ZIPs pinned in your `agents-lock.json`.\n\n## Usage\n\nInvoke the **`review-fix-ship`** flow when you want local reviews, then\nfixes shipped on the feature branch.\n\nOptional: invoke a single reviewer when you need one pass only. Review\nagents do not edit files. Invoke `findings-fixer` only with a findings\ntable from those reviews.\n\n### Inputs\n\n| Input | Required | Description |\n| --- | --- | --- |\n| `dry-run` | no | When `true`, review/triage/fix/validate only — no commit or push. Defaults to `false` |\n| `diff` | no | `branch-changes` (default) or `uncommitted-changes` |\n| `custom-instructions` | no | Extra review notes; Cursor `Custom Instructions` when subagents run |\n\n### Outputs\n\n- `findings-table` — merged `Severity | Source | Location | Finding`\n- `handoff-summary` — branch, commit SHA when pushed, what shipped or why\n  not\n\nDo not re-run reviews after a fix pass unless asked. This package does\nnot reply to GitHub review threads; use\n`maiconfz/github-pr-review-triage` after push if a PR already exists.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `review-fix-ship` (flow) | Primary entry: review, merge, fix, ship |\n| `code-reviewer` | General-quality review; no file edits |\n| `bug-reviewer` | Bug-focused review; Cursor Bugbot when available |\n| `security-reviewer` | Security review; Cursor Security Review when available |\n| `findings-fixer` | Triage, fix, validate, commit, push |\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` (`chat-web` status `supported`). Every\nagent and the flow sets `chatWeb: \"included\"`. None are excluded.\n\nAfter `package:build`, the instruction manifest for a released version\nlives at:\n\n```text\npackages/maiconfz/review-fix-ship/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp consumers\njoin the registry origin with those paths per\n`specs/chat-consumption.md`:\n\n- **Origin:** `https://registry.agents-repo.org`\n\nIllustrative absolute fetch URLs for version `1.0.0`:\n\n```text\nhttps://registry.agents-repo.org/pkg/maiconfz/review-fix-ship/1.0.0/instructions.json\nhttps://registry.agents-repo.org/pkg/maiconfz/review-fix-ship/1.0.0/agents/code-reviewer.agent.md\nhttps://registry.agents-repo.org/pkg/maiconfz/review-fix-ship/1.0.0/flows/review-fix-ship.agent.md\n```\n\nThe `review-fix-ship` flow lists step agents in frontmatter/metadata\n`agents[]`; `package:build` maps that ordered list to `agentInstructions`\nin `instructions.json`.\n\n## Maintainers\n\nFrom the registry repository root (package authors / registry\ncontributors):\n\n```bash\nPKG=maiconfz/review-fix-ship\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/review-fix-ship/1.0.0/instructions.json"
+}
