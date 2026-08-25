@@ -7,7 +7,8 @@
   "packages": {
     "agents-repo/agents-repo-package-creation": "^1.0.0",
     "maiconfz/github-interactive-issue-implementation-planner": "^1.1.0",
-    "maiconfz/github-pr-review-triage": "^1.1.0"
+    "maiconfz/github-pr-review-triage": "^1.1.0",
+    "maiconfz/review-fix-ship": "^1.0.0"
   },
   "targets": [
     "github-copilot",
