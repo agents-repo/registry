@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "token-reduction-advisor",
+  "description": "Ask-first drafts of an ordered context-token reduction plan from a footprint report. Plan-only; does not edit files.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "footprint-report",
+      "type": "string",
+      "description": "Markdown footprint report from token-footprint-analyst."
+    },
+    {
+      "name": "planning-consent",
+      "type": "boolean",
+      "description": "True only when the user consented to reduction planning."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reduction-plan",
+      "type": "string",
+      "description": "Markdown reduction plan; empty when consent is missing."
+    },
+    {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Markdown list of blocking questions; empty when none."
+    }
+  ]
+}

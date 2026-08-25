@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "reduce-context-tokens",
+  "description": "Inventory host-tree context-token waste, ask consent, then draft an ordered reduction plan. Planning only; does not implement.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "agents": [
+    "token-footprint-analyst",
+    "token-reduction-advisor"
+  ],
+  "inputs": [
+    {
+      "name": "planning-consent",
+      "type": "boolean",
+      "description": "Optional prior consent to run reduction planning."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "footprint-report",
+      "type": "string",
+      "description": "Markdown footprint report from token-footprint-analyst."
+    },
+    {
+      "name": "reduction-plan",
+      "type": "string",
+      "description": "Markdown plan; empty if the user declined planning."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Remaining blockers or follow-ups at handoff; copy from advisor blocking-questions when present."
+    }
+  ]
+}
