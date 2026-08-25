@@ -58,6 +58,13 @@ test('pr-baseline.yml turns every extra this job defines on', () => {
   assert.equal(matches.zips, true);
 });
 
+test('path-filter matcher turns every extra this job defines on', () => {
+  const matches = matchPathGroups(['scripts/ci-pr-path-filters.mjs']);
+  assert.equal(matches.slides, true);
+  assert.equal(matches.agents, true);
+  assert.equal(matches.zips, true);
+});
+
 test('rename previous_filename is collected for matching', () => {
   const paths = collectChangedPaths([
     { filename: 'packages/new/metadata.json', previous_filename: 'specs/old.md' },

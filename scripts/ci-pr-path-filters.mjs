@@ -5,6 +5,7 @@ import { pathToFileURL } from 'node:url';
 
 const NPM_LOCKFILES = ['package.json', 'package-lock.json'];
 const PR_BASELINE_WORKFLOW = '.github/workflows/pr-baseline.yml';
+const PATH_FILTER_MATCHER = 'scripts/ci-pr-path-filters.mjs';
 
 /**
  * Repo-specific extra groups for PR baseline.
@@ -17,6 +18,7 @@ export const PATH_GROUPS = {
       'scripts/slides.mjs',
       ...NPM_LOCKFILES,
       PR_BASELINE_WORKFLOW,
+      PATH_FILTER_MATCHER,
     ],
     exclude: [],
   },
@@ -29,6 +31,7 @@ export const PATH_GROUPS = {
       '.claude/agents/**',
       '.agents/skills/**',
       PR_BASELINE_WORKFLOW,
+      PATH_FILTER_MATCHER,
     ],
     exclude: [],
   },
@@ -39,6 +42,7 @@ export const PATH_GROUPS = {
       'specs/**',
       ...NPM_LOCKFILES,
       PR_BASELINE_WORKFLOW,
+      PATH_FILTER_MATCHER,
     ],
     exclude: ['scripts/slides.mjs'],
   },
