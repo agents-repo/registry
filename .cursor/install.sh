@@ -7,11 +7,24 @@ NVM_INSTALL_VERSION="v0.40.3"
 DEFAULT_NODE_VERSION="24.18.0"
 PINNED_NPM_VERSION="12.0.1"
 
-activate_pinned_node() {
+ensure_nvm() {
   export NVM_DIR="${NVM_DIR:-${HOME}/.nvm}"
-  if [[ ! -s "${NVM_DIR}/nvm.sh" ]]; then
-    curl -fsSL "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_INSTALL_VERSION}/install.sh" | bash
+  if [[ -s "${NVM_DIR}/nvm.sh" ]]; then
+    return 0
   fi
+
+  local installer
+  installer="$(mktemp)"
+  # shellcheck disable=SC2064
+  trap 'rm -f "${installer}"' RETURN
+  curl --proto '=https' --tlsv1.2 -fsSL \
+    "https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_INSTALL_VERSION}/install.sh" \
+    --output "${installer}"
+  bash "${installer}"
+}
+
+activate_pinned_node() {
+  ensure_nvm
   # shellcheck disable=SC1091
   source "${NVM_DIR}/nvm.sh"
 
@@ -35,17 +48,11 @@ activate_pinned_node() {
   corepack prepare "npm@${PINNED_NPM_VERSION}" --activate
 }
 
-install_repo() {
-  local repo_root="$1"
-  echo "Cloud install: ${repo_root}"
-  (
-    cd "${repo_root}"
-    activate_pinned_node
-    export HUSKY=0
-    npm ci
-  )
-}
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-install_repo "${REPO_ROOT}"
+
+echo "Cloud install: ${REPO_ROOT}"
+cd "${REPO_ROOT}"
+activate_pinned_node
+export HUSKY=0
+npm ci
