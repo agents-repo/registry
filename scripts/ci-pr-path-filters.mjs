@@ -140,7 +140,7 @@ async function listPullRequestFiles({ token, repository, pullNumber }) {
   if (!token) {
     throw new Error('missing GITHUB_TOKEN');
   }
-  if (!repository || !repository.includes('/')) {
+  if (!repository?.includes('/')) {
     throw new Error('missing GITHUB_REPOSITORY');
   }
   if (!pullNumber) {
@@ -165,7 +165,7 @@ async function listPullRequestFiles({ token, repository, pullNumber }) {
     }
     const batch = await response.json();
     if (!Array.isArray(batch)) {
-      throw new Error('Pulls Files API returned a non-array payload');
+      throw new TypeError('Pulls Files API returned a non-array payload');
     }
     paths.push(...collectChangedPaths(batch));
     if (batch.length < 100) {
