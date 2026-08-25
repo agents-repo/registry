@@ -5,8 +5,33 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
 
 jobs:
-  baseline:
+  changes:
+    name: Path filters
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      slides: ${{ steps.match.outputs.slides }}
+      agents: ${{ steps.match.outputs.agents }}
+      zips: ${{ steps.match.outputs.zips }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Match changed paths
+        id: match
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node scripts/ci-pr-path-filters.mjs
+
+  baseline:
+    name: baseline
+    needs: changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -24,16 +49,23 @@ jobs:
         run: npm run sync:ide-instructions -- --check
 
       - name: Setup Chrome for Marp PDF
+        if: needs.changes.outputs.slides == 'true'
         uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
         id: setup-chrome
 
       - name: Check slide PDF drift
+        if: needs.changes.outputs.slides == 'true'
         env:
           PUPPETEER_EXECUTABLE_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
           CHROME_NO_SANDBOX: '1'
         run: npm run slides:check
 
+      - name: Skip slide PDF check
+        if: needs.changes.outputs.slides != 'true'
+        run: echo "Skipping slides:check; PR paths do not match the slides group (docs/slides/**, scripts/slides.mjs, npm lockfiles, or .github/workflows/pr-baseline.yml)."
+
       - name: Verify registry package installs from lock
+        if: needs.changes.outputs.agents == 'true'
         run: |
           rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
           npm run agents:ci
@@ -48,6 +80,10 @@ jobs:
           git diff --exit-code -- "${drift_paths[@]}"
           test -z "$(git status --porcelain -- "${drift_paths[@]}")"
 
+      - name: Skip registry package checksum
+        if: needs.changes.outputs.agents != 'true'
+        run: echo "Skipping agents:ci checksum; PR paths do not match agents definition files (agents.json, agents-lock.json, extracted agent paths, or pr-baseline.yml). npm lockfiles alone do not trigger this step."
+
       - name: Run unit tests
         run: npm run test:run
 
@@ -55,4 +91,9 @@ jobs:
         run: npm run typecheck
 
       - name: Scan package ZIPs
+        if: needs.changes.outputs.zips == 'true'
         run: npm run package:scan-zips
+
+      - name: Skip package ZIP scan
+        if: needs.changes.outputs.zips != 'true'
+        run: echo "Skipping package:scan-zips; PR paths do not match the zips group (packages/**, scripts/** except slides.mjs, specs/**, npm lockfiles, or pr-baseline.yml)."

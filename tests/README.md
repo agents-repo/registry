@@ -36,6 +36,10 @@ Examples:
 - Run in watch mode: `npm test`
 - Run coverage: `npm run test:coverage`
 
+Tooling scripts at `scripts/*.mjs` that are not under `scripts/lib/` MAY use
+`test/*.test.mjs` with `node:test` (wired through `test:sync`), matching
+`test/sync-ide-instructions.test.mjs`.
+
 ## Scope Guidance
 
 Use unit tests for isolated module behavior and deterministic edge cases.
