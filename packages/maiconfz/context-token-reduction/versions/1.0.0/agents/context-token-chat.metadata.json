@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "context-token-chat",
+  "description": "Analyze agent-context token waste from public project URLs, uploads, or pasted sources. Emits a footprint report when evidence exists. Does not plan.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include a project URL, attached or uploaded files, or pasted sources."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "footprint-report",
+      "type": "string",
+      "description": "Structured footprint report; empty when there is no usable evidence."
+    }
+  ]
+}

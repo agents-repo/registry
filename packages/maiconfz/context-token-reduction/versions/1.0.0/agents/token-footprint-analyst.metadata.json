@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "token-footprint-analyst",
+  "description": "Inventory always-on rules, IDE instruction files, docs, skills, and tree shape that inflate agent context; report evidence-backed token-waste findings.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "footprint-report",
+      "type": "string",
+      "description": "Markdown footprint report with evidence-backed token-waste findings."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "context-token-reduction",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "dfbee0fa50c217446028a9cb7f644a60f1a38f28d781446fc37393b7fd33d9a3",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "fd8b5d38b4bb090e4ac90305f862a4d3697d50d7dbbea7ea5a087ecac5edf244"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "1010e9d2851254899f107c4f2b239c6da87c2a22ffd689fae7cc191cff6728dc"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "c5a12a66e4b751da451e958e934bafb7e2b75260a5727a380d632e7720f9bb81"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "669c4b73fda3a5a0f853088241fdfb0ff17ab0add3d6672acf03e2dd518a8393"
+        }
+      ],
+      "createdAt": "2026-08-25T16:29:20.699Z",
+      "instructionsArtifact": "instructions.json",
+      "instructionsSha256": "4f4663160bc39855260bfa05aa9c7be99d1559d448dbacb929bddb91f7798cac"
+    }
+  ]
+}

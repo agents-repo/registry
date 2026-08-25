@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/context-token-reduction",
+  "version": "1.0.0",
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "context-token-chat",
+      "path": "/pkg/maiconfz/context-token-reduction/1.0.0/agents/context-token-chat.agent.md"
+    }
+  ]
+}
