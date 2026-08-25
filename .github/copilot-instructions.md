@@ -86,6 +86,11 @@ For review tasks, run:
 4. `npm run typecheck`
 5. `npm run package:scan-zips`
 
+Local handoff keeps this full set. PR baseline CI path-filters Chrome/`slides:check`,
+`agents:ci`, and `package:scan-zips`. npm lockfiles do **not** trigger `agents:ci`.
+See the organization
+[PR baseline extras (path filters)](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pr-baseline-extras-path-filters).
+
 When adding or updating tests, follow `tests/README.md` for test layout,
 path mirroring conventions, and scope guidance.
 

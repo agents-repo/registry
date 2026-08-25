@@ -18,7 +18,7 @@
     "agents:install": "agents-repo install",
     "agents:update": "agents-repo update",
     "agents:ci": "agents-repo ci",
-    "test:sync": "node --test test/sync-ide-instructions.test.mjs",
+    "test:sync": "node --test test/sync-ide-instructions.test.mjs test/ci-pr-path-filters.test.mjs",
     "test": "vitest",
     "test:run": "npm run test:sync && vitest run",
     "test:coverage": "vitest run --coverage",

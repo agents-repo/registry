@@ -421,7 +421,7 @@ Use the npm scripts for bulk install, update, and CI (CLI version is pinned in
 ```bash
 npm run agents:install   # bulk sync from agents.json
 npm run agents:update    # refresh within semver ranges
-npm run agents:ci        # same command pr-baseline uses after npm ci
+npm run agents:ci        # checksum extra in pr-baseline when agents paths change
 ```
 
 Commit `agents.json`, `agents-lock.json`, and extracted paths (`.github/agents/`,
@@ -435,9 +435,14 @@ Dogfooded packages:
 - `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
 
 Local pre-commit checks project guideline mirrors (`sync:ide-instructions
---check`). CI runs `npm run agents:ci` to reinstall registry packages
-from the committed lock and fail on extract or lock drift (not semver-max
-`install`).
+--check`). PR baseline CI runs `npm run agents:ci` only when agents definition
+files change (not npm lockfiles); see the organization
+[PR baseline extras (path filters)](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pr-baseline-extras-path-filters).
+That extra reinstalls registry packages from the committed lock and fails on
+extract or lock drift (not semver-max `install`). Chrome/`slides:check` and
+`package:scan-zips` are also path-filtered extras. Local validation still runs
+the full ZIP scan. `pr-package-validation.yml` is unchanged. Release validate
+keeps ZIP scan as the skip safety net.
 
 Changes under `.github/workflows/` MUST pass `npm run lint:workflows`
 (included in `npm run lint:all`). See the organization
@@ -502,6 +507,7 @@ Before requesting review:
 3. Run unit tests (`npm run test:run`).
 4. Run type checks (`npm run typecheck`).
 5. Run the repo-wide package ZIP scan (`npm run package:scan-zips`).
+   PR baseline CI path-filters this extra; local handoff still runs it.
 6. When IDE mirror sources change, run:
 
    ```bash
