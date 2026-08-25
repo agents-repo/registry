@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "context-token-reduction",
+  "description": "Analyze a host project for agent-context token waste in always-on rules, duplicated IDE instructions, docs, skills, and tree shape, then suggest ordered reductions. Plan-only; does not implement.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/context-token-reduction",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "tokens",
+    "context",
+    "analysis",
+    "rules",
+    "documentation",
+    "agents",
+    "planning",
+    "efficiency",
+    "chat"
+  ],
+  "createdAt": "2026-08-25T16:26:27.601Z",
+  "updatedAt": "2026-08-25T16:26:27.601Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 6,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/context-token-reduction/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      { "id": "chat-web", "status": "supported" }
+    ]
+  }
+}
