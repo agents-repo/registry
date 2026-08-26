@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "cost-appraiser",
+  "description": "Score refactor-and-upgrade, strangler, and greenfield cost from an audit. Dry numbers only; no comedy and no verdict. Does not implement. Matches the user's language.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "audit-report",
+      "type": "string",
+      "description": "Markdown audit from project-auditor."
+    },
+    {
+      "name": "task",
+      "type": "string",
+      "description": "Optional focus passed through from the flow."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "cost-report",
+      "type": "string",
+      "description": "Dry three-path scores and viability; no verdict."
+    }
+  ]
+}
