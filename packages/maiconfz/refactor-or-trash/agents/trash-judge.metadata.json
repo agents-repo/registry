@@ -1,12 +1,40 @@
 {
   "schemaVersion": "1.0.0",
   "name": "trash-judge",
-  "description": "Take dry cost scores and deliver a Refactor, Strangler, or Trash verdict with comedy. Grounded in evidence. Does not delete or rewrite. Matches the user language.",
+  "description": "Take dry cost scores and deliver a Refactor, Strangler, or Trash verdict with comedy. Grounded in evidence. Does not delete or rewrite. Matches the user's language.",
   "license": "MIT",
   "status": "active",
-  "category": "general",
+  "category": "humor",
   "estimateCost": {
-    "estimatedCost": 1,
-    "band": "minimal"
-  }
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "audit-report",
+      "type": "string",
+      "description": "Markdown audit from project-auditor."
+    },
+    {
+      "name": "cost-report",
+      "type": "string",
+      "description": "Dry three-path scores from cost-appraiser."
+    },
+    {
+      "name": "task",
+      "type": "string",
+      "description": "Optional focus passed through from the flow."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "verdict-report",
+      "type": "string",
+      "description": "Comedy verdict with quoted scores and one next step."
+    }
+  ]
 }

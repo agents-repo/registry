@@ -4,9 +4,39 @@
   "description": "Run project-auditor, cost-appraiser, then trash-judge for a host-tree Refactor, Strangler, or Trash verdict. Advisory only; does not implement, delete, or start a rewrite.",
   "license": "MIT",
   "status": "active",
-  "category": "general",
+  "category": "humor",
   "estimateCost": {
-    "estimatedCost": 1,
-    "band": "minimal"
-  }
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "agents": [
+    "project-auditor",
+    "cost-appraiser",
+    "trash-judge"
+  ],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "Optional focus passed through to each specialist."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "audit-report",
+      "type": "string",
+      "description": "Host-tree evidence report from project-auditor."
+    },
+    {
+      "name": "cost-report",
+      "type": "string",
+      "description": "Dry three-path scores from cost-appraiser."
+    },
+    {
+      "name": "verdict-report",
+      "type": "string",
+      "description": "Comedy verdict from trash-judge."
+    }
+  ]
 }

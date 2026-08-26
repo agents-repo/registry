@@ -1,12 +1,30 @@
 {
   "schemaVersion": "1.0.0",
   "name": "project-auditor",
-  "description": "Survey the host tree for stack age, tests, coupling, docs, CI, upgrades, and infra. Evidence only; no scores or verdict. Does not implement. Matches the user language.",
+  "description": "Survey the host tree for stack age, tests, coupling, docs, CI, upgrades, and infra. Evidence only; no scores or verdict. Does not implement. Matches the user's language.",
   "license": "MIT",
   "status": "active",
-  "category": "general",
+  "category": "humor",
   "estimateCost": {
-    "estimatedCost": 1,
-    "band": "minimal"
-  }
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "Optional focus for the host-tree audit."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "audit-report",
+      "type": "string",
+      "description": "Host-tree evidence report; no scores or verdict."
+    }
+  ]
 }

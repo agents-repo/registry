@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "refactor-or-trash",
-  "description": "Funny-but-grounded call: refactor, strangler, or trash a codebase. Audits debt, scores salvage vs wrap vs rewrite, then delivers the verdict. Workspace flow for host trees; chat-web for public repos. Does not delete or rewrite. Replies match the user language.",
+  "description": "Funny-but-grounded call: refactor, strangler, or trash a codebase. Audits debt, scores salvage vs wrap vs rewrite, then delivers the verdict. Workspace flow for host trees; chat-web for public repos. Does not delete or rewrite. Replies match the user's language.",
   "owner": "maiconfz",
   "license": "MIT",
   "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/refactor-or-trash",
@@ -19,15 +19,28 @@
     "chat"
   ],
   "createdAt": "2026-08-26T21:14:08.767Z",
-  "updatedAt": "2026-08-26T21:14:08.767Z",
+  "updatedAt": "2026-08-26T21:20:00.000Z",
   "version": "1.0.0",
   "status": "active",
-  "category": "general",
+  "category": "humor",
   "estimateOverallCost": {
+    "estimatedCost": 6,
     "band": "mixed"
   },
   "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/refactor-or-trash/README.md",
   "maintainers": [
     "maiconfz"
-  ]
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      { "id": "chat-web", "status": "supported" }
+    ]
+  }
 }
