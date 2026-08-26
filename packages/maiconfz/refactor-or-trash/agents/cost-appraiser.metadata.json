@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "cost-appraiser",
+  "description": "Score refactor-and-upgrade, strangler, and greenfield cost from an audit. Dry numbers only; no comedy and no verdict. Does not implement. Matches the user language.",
+  "license": "MIT",
+  "status": "active",
+  "category": "general",
+  "estimateCost": {
+    "estimatedCost": 1,
+    "band": "minimal"
+  }
+}

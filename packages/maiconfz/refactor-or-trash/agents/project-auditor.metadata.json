@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "project-auditor",
+  "description": "Survey the host tree for stack age, tests, coupling, docs, CI, upgrades, and infra. Evidence only; no scores or verdict. Does not implement. Matches the user language.",
+  "license": "MIT",
+  "status": "active",
+  "category": "general",
+  "estimateCost": {
+    "estimatedCost": 1,
+    "band": "minimal"
+  }
+}

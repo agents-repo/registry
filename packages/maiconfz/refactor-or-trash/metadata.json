@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "refactor-or-trash",
+  "description": "Funny-but-grounded call: refactor, strangler, or trash a codebase. Audits debt, scores salvage vs wrap vs rewrite, then delivers the verdict. Workspace flow for host trees; chat-web for public repos. Does not delete or rewrite. Replies match the user language.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/refactor-or-trash",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "refactor",
+    "rewrite",
+    "strangler",
+    "tech-debt",
+    "analysis",
+    "humor",
+    "satire",
+    "architecture",
+    "upgrade",
+    "chat"
+  ],
+  "createdAt": "2026-08-26T21:14:08.767Z",
+  "updatedAt": "2026-08-26T21:14:08.767Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "general",
+  "estimateOverallCost": {
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/refactor-or-trash/README.md",
+  "maintainers": [
+    "maiconfz"
+  ]
+}

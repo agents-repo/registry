@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "refactor-or-trash",
+  "description": "Run project-auditor, cost-appraiser, then trash-judge for a host-tree Refactor, Strangler, or Trash verdict. Advisory only; does not implement, delete, or start a rewrite.",
+  "license": "MIT",
+  "status": "active",
+  "category": "general",
+  "estimateCost": {
+    "estimatedCost": 1,
+    "band": "minimal"
+  }
+}
