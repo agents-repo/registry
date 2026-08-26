@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-25T16:29:20.701Z",
+  "updatedAt": "2026-08-26T21:18:07.686Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -355,6 +355,54 @@
       ]
     },
     {
+      "id": "maiconfz/refactor-or-trash",
+      "namespace": "maiconfz",
+      "package": "refactor-or-trash",
+      "path": "packages/maiconfz/refactor-or-trash",
+      "name": "refactor-or-trash",
+      "description": "Funny-but-grounded call: refactor, strangler, or trash a codebase. Audits debt, scores salvage vs wrap vs rewrite, then delivers the verdict. Workspace flow for host trees; chat-web for public repos. Does not delete or rewrite. Replies match the user's language.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "refactor",
+        "rewrite",
+        "strangler",
+        "tech-debt",
+        "analysis",
+        "humor",
+        "satire",
+        "architecture",
+        "upgrade",
+        "chat"
+      ],
+      "status": "active",
+      "category": "humor",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/refactor-or-trash/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
       "id": "maiconfz/review-fix-ship",
       "namespace": "maiconfz",
       "package": "review-fix-ship",
@@ -502,6 +550,7 @@
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
     "plan-refiner": "maiconfz/plan-refiner",
+    "refactor-or-trash": "maiconfz/refactor-or-trash",
     "review-fix-ship": "maiconfz/review-fix-ship",
     "roast-my-project": "maiconfz/roast-my-project",
     "xgh": "maiconfz/xgh"
