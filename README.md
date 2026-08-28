@@ -133,6 +133,9 @@ npm run sync:ide-instructions
 
 Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
 
+AI contributors: see [docs/ai-onboarding.md](docs/ai-onboarding.md) for
+first-5-minutes commands, skill routing, and validation expectations.
+
 ### Registry workflow packages (CLI)
 
 Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli).

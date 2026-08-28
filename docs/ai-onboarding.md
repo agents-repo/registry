@@ -14,7 +14,11 @@ npm run env:check
 Review tasks:
 
 ```bash
-npm run lint:all && npm run test:run && npm run typecheck && npm run package:scan-zips
+npm run lint:md
+npm run lint:sonar
+npm run test:run
+npm run typecheck
+npm run package:scan-zips
 npm run sync:ide-instructions -- --check
 ```
 
@@ -49,7 +53,13 @@ For package submissions, local handoff before ready-for-review MUST include:
 
 CI `pr-package-validation` runs `package:validate` only — artifact build and
 verification remain contributor responsibility before marking ready for review.
-See [CONTRIBUTING.md — Workflow exceptions](../.github/CONTRIBUTING.md).
+See [.github/CONTRIBUTING.md — Package Submission Expectations](../.github/CONTRIBUTING.md#package-submission-expectations).
+
+## Package create smoke test
+
+The package golden path (scaffold → validate → build → verify) is covered by
+[`tests/integration/package-create-flow.test.ts`](../tests/integration/package-create-flow.test.ts).
+See [`tests/README.md`](../tests/README.md) for layout conventions.
 
 ## Specs
 
