@@ -107,6 +107,27 @@
         }
       }
     },
+    "maiconfz/plan-refiner": {
+      "version": "1.0.0",
+      "byTarget": {
+        "github-copilot": {
+          "integrity": "sha256-bdf166f4c88b60cd6a24174e396d35bc3031e086d6941f97a350e32dd097d2a0",
+          "artifact": "1.0.0-github-copilot.zip"
+        },
+        "claude-code": {
+          "integrity": "sha256-d1071365daaa70a91213203486df1fa3a30dba2e16b1b37136751e32f3d19981",
+          "artifact": "1.0.0-claude-code.zip"
+        },
+        "cursor": {
+          "integrity": "sha256-9ac974a3325e36ed7bb38e9dcdf2a636d611cb36b096ef617db06a402139ca68",
+          "artifact": "1.0.0-cursor.zip"
+        },
+        "openai-codex": {
+          "integrity": "sha256-1ae951df84cc015d026f54b08f3d6ab99d7f7ac59093ea3dda76ff72168db0b4",
+          "artifact": "1.0.0-openai-codex.zip"
+        }
+      }
+    },
     "maiconfz/review-fix-ship": {
       "version": "1.0.0",
       "byTarget": {
