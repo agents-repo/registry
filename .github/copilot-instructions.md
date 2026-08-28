@@ -18,6 +18,10 @@ All normative rules live in `specs/`. Defer to these before inventing rules.
 - `specs/chat-consumption.md` — chat-web channel, `instructions.json`, `/pkg/` paths
 - `specs/package-detail-schema.md` — generated `detail.json` for latest snapshot
 - `specs/versioning-rules.md` — semver policy, immutability, deprecation
+- `specs/index-schema.md` — catalog `index.json` schema
+- `specs/tree-schema.md` — package tree listing schema
+- `specs/install-targets.md` — supported install target identifiers
+- `specs/schema-versions.json` — schema family version lifecycle (JSON, not markdown)
 
 ## Critical Conventions
 
@@ -43,6 +47,7 @@ Minimum required dependency checks:
 - `specs/agent-format.md`, `specs/flow-format.md`, and
   `specs/metadata-schema.md` for duplicated field contracts and
   name/version/license alignment
+- `specs/schema-versions.json` when schema family versions change
 - `.github/CONTRIBUTING.md`, `.github/pull_request_template.md`,
   `.github/ISSUE_TEMPLATE/`, and `README.md` for workflow and documentation
   consistency
@@ -209,6 +214,12 @@ agents MUST follow the organization
 [Pre-ready agent handoff](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pre-ready-agent-handoff)
 norm and the validation commands in **Runtime Environment**, **For review
 tasks**, and **For package tasks** (when the change touches `packages/`) above.
+
+**Package PRs:** run `package:validate`, then `package:build`, then
+`package:validate-artifacts` locally before ready-for-review. CI
+`pr-package-validation` runs validate only.
+
+See [docs/ai-onboarding.md](../docs/ai-onboarding.md) for first-5-minutes routing.
 
 Record validation evidence in the draft PR description. Agents MUST NOT mark pull
 requests ready for review.
