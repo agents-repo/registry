@@ -113,218 +113,47 @@ See `.github/CONTRIBUTING.md` for the full workflow.
 
 ## Release Workflow
 
-Pushes to `main` run release validation checks and then execute
-`semantic-release`. Release jobs run only when `github.repository` is
-`agents-repo/registry`; on forks they skip. A release is published only when
-commit history includes releasable changes per the commit-to-version mapping
-below.
-
-Commit-to-version mapping for automated releases. Custom release rules in
-`.releaserc.json` map all `feat(package)` and `fix(package)` commits—including
-`!` and `BREAKING CHANGE:` footers—to `PATCH`. Platform breaking changes use
-commit-analyzer built-in default rules when no custom rule matches:
-
-- `type!:` or `BREAKING CHANGE:` (without `package` scope) => `MAJOR`
-- `feat(package):` and `feat(package)!:` => `PATCH`
-  (catalog addition or new package version)
-- `fix(package):` and `fix(package)!:` => `PATCH` (package correction)
-- `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
-- `fix:`, `perf:`, and `revert:` with any scope except `package` => `PATCH`
-
-Registry Git tags version the catalog snapshot; package `manifest.json` `latest`
-values version individual package compatibility. All package squash-merge titles
-publish a registry **PATCH** so `v2.x` consumers receive updates. The `!` on
-package commits emphasizes breaking package content in release notes only.
-
-Package submission PRs MUST squash-merge with `feat(package):` or
-`fix(package):` titles (or the optional `feat(package)!:` / `fix(package)!:`
-form) so registry release tags are published. CI enforces the PR title in
-`pr-package-validation` via `package:validate`; local runs do not unless CI
-env vars are set. See `.github/CONTRIBUTING.md` for the full squash-merge rule.
+See `.github/CONTRIBUTING.md` and `.releaserc.json` for commit-to-version
+mapping, package squash-merge titles (`feat(package):` / `fix(package):`),
+and semantic-release behavior. Package PRs: run `package:validate`, then
+`package:build`, then `package:validate-artifacts` locally before
+ready-for-review.
 
 ## Commit Message Convention
 
-Before creating a commit, the agent MUST inspect staged changes and determine
-the dominant change intent.
-
-The agent MUST use a commit category prefix that matches that intent from this
-set: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`,
-`ci`, `chore`, `revert`.
-
-Commit messages MUST follow this format:
-
-- `category(subset): summary`
-
-Where `subset` is optional and SHOULD be used when it improves clarity (for
-example, `docs(specs): clarify manifest checksum wording`).
-
-Breaking changes are not limited to `feat`; any category in the allowed set MAY
-be breaking when the staged changes introduce incompatible behavior.
-
-For breaking commits, `!` MUST appear immediately after `category` or
-`category(subset)` in the header (for example, `fix!: ...` or
-`refactor(parser)!: ...`). Breaking commits SHOULD include a `BREAKING CHANGE:`
-footer that describes migration impact.
-
-The agent MUST NOT use a category that does not match the dominant intent of
-the staged changes.
-
-If staged changes contain mixed intents, the agent SHOULD split them into
-separate commits by intent. If splitting is not practical, the agent MUST use
-the primary intent category and explicitly explain that choice in the handoff
-or PR summary.
+See `.github/CONTRIBUTING.md` for conventional commit prefixes and breaking
+change rules.
 
 ## Required Workflow (Task Start)
 
-Before implementation, agents MUST:
-
-1. Open a tracking issue (matching issue form when available), except for
-   package submissions and corrections when a tracking issue is omitted per
-   workflow exception #3—then branch `package/<slug>` without an issue number.
-2. Create a branch named `<prefix>/<issue-number>-<slug>` (or `package/<slug>`
-   for package submissions and corrections without a tracking issue, or
-   `package/<issue-number>-<slug>` when a tracking issue exists).
-3. Push the branch and open a draft pull request targeting `main` before
-   implementation commits. Pull requests MUST be created as drafts
-   (`gh pr create --draft`). In `## Related Issues`, include
-   `Closes #<issue-number>` when a tracking issue exists, or follow the
-   security-advisory format defined in the **Workflow exceptions** section of
-   `.github/CONTRIBUTING.md` when applicable. Package submissions without an
-   issue SHOULD describe the package in `## Related Issues`.
-   GitHub cannot open a PR when head and base are identical; push a scaffolding
-   commit on the task branch first if needed (see `.github/CONTRIBUTING.md`).
-
-External package contributors SHOULD fork **agents-repo/registry**, work on the
-fork, and open a draft pull request from `FORK_USER:branch` to upstream `main`.
-See `.github/CONTRIBUTING.md` **Fork contributions** and the [Submit a package](https://agents-repo.org/docs/submitting-a-package)
-guide on agents-repo.org.
-
-Agents MAY push additional commits to the task branch when requested.
-Agents MUST NOT push to `main`, merge PRs into `main`, or mark pull requests
-ready for review.
-After validation, the developer manually marks the pull request ready for
-review; agents MUST NOT perform that step.
-Agents MUST complete requested implementation work on the task branch, then
-hand off. Ready-for-review and merge are for a human maintainer.
+Follow `.github/CONTRIBUTING.md` **Required Workflow** (issue form → branch →
+draft PR before implementation). Package submissions may omit a tracking issue
+per workflow exception #3. Agents MUST NOT push to `main`, merge PRs into
+`main`, or mark pull requests ready for review.
 
 ## Pre-ready handoff
 
-Before handoff on a task branch (while the pull request remains a **draft**),
-agents MUST follow the organization
+Follow the organization
 [Pre-ready agent handoff](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pre-ready-agent-handoff)
-norm and the validation commands in **Runtime Environment**, **For review
-tasks**, and **For package tasks** (when the change touches `packages/`) above.
-
-**Package PRs:** run `package:validate`, then `package:build`, then
-`package:validate-artifacts` locally before ready-for-review. CI
-`pr-package-validation` runs validate only.
-
-See [docs/ai-onboarding.md](../docs/ai-onboarding.md) for first-5-minutes routing.
-
-Record validation evidence in the draft PR description. Agents MUST NOT mark pull
-requests ready for review.
-
-Task start in this organization authorizes workflow scaffolding (issue,
-branch, draft PR) even when generic tooling rules defer commits until
-requested. Repo-level agent instructions govern this workspace and supersede
-generic commit or pull request timing rules for workflow setup steps.
+and validation commands in **Runtime Environment** and **For review tasks**
+above. See [docs/ai-onboarding.md](../docs/ai-onboarding.md) for routing.
 
 ## Default Branch Integration (Agents)
 
-- AI agents and coding assistants MUST NOT merge pull requests into `main`
-  (including `gh pr merge`, squash/rebase merge, or local `git merge` followed
-  by push).
-- AI agents MUST NOT push commits directly to `main`.
-- Integration to `main` is a human-only, manual step performed by maintainers
-  after review. All contributors MUST deliver changes to `main` only through
-  merged pull requests.
-- Agents MUST complete requested implementation work on the task branch, then
-  hand off and state that merge is for a human maintainer.
+Agents MUST NOT merge or push to `main`. Integration is human-only after review.
 
-## GitHub Communication Method (gh CLI Preferred)
+## GitHub Communication (gh CLI)
 
-For GitHub communication in this repository, agents and contributors SHOULD use
-`gh` CLI as the preferred interface for issue and pull request operations.
-
-Preferred command patterns:
-
-- view issue context: `gh issue view <number> --repo agents-repo/registry`
-- update issue title/body:
-  `gh issue edit <number> --repo agents-repo/registry --title "..." \
-  --body-file <file>`
-- create issue:
-  `gh issue create --repo agents-repo/registry --title "..." \
-  --body-file <file>`
-- create draft PR (MUST use `--draft`):
-  `gh pr create --repo agents-repo/registry --draft --title "..." \
-  --body-file <file>`
-- inspect PR status:
-  `gh pr view <number> --repo agents-repo/registry --json state,url,title`
-
-For long issue or PR bodies, agents MUST prefer `--body-file` over inline
-quoted text to avoid shell escaping and truncation issues.
-
-If `gh` is unavailable in a task environment, agents MAY use the available
-tooling path, but MUST explicitly note that limitation in the handoff summary.
+Prefer `gh` for issues and draft PRs. See `.github/CONTRIBUTING.md`.
 
 ## Issue and PR Template Enforcement
 
-When opening tracking issues, the agent MUST use the issue form under
-`.github/ISSUE_TEMPLATE/` that matches the task type:
-
-- bug or inconsistency: `.github/ISSUE_TEMPLATE/bug-inconsistency.yml`
-- spec change: `.github/ISSUE_TEMPLATE/spec-change.yml`
-- feature proposal: `.github/ISSUE_TEMPLATE/feature-proposal.yml`
-- task or chore: `.github/ISSUE_TEMPLATE/task-chore.yml`
-- package submission: `.github/ISSUE_TEMPLATE/package-submission.yml`
-- package correction: `.github/ISSUE_TEMPLATE/package-correction.yml`
-
-When opening a pull request, the agent MUST follow
-`.github/pull_request_template.md`.
-
-The agent MUST report template usage in its final PR handoff summary,
-including which issue form was used and confirmation that the PR body
-follows `.github/pull_request_template.md`.
-
-If the available tool path cannot programmatically apply a template, the
-agent MUST explicitly state that limitation and MUST include all required
-sections from the intended template in the issue or PR body.
-
-Branch names MUST follow `<prefix>/<issue-number>-<slug>`, where `<slug>` is
-short lowercase kebab-case. Package submissions without a tracking issue MAY
-use `package/<slug>` instead of `package/<issue-number>-<slug>`.
-
-Use the prefix that matches the work category:
-
-- bug or inconsistency: `fix/`
-- spec change (normative `specs/`): `spec/`
-- feature proposal: `feat/`
-- task or chore: `chore/`
-- documentation-only work (non-`specs/`): `docs/`
-- package submission or correction: `package/`
-
-See `.github/CONTRIBUTING.md` **Branch Naming** and the organization
-[branch prefix reference](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#branch-prefix-reference).
-Branch prefix categorizes work; conventional **commit** (or squash-merge)
-prefix determines automated release bumps.
+Use the matching `.github/ISSUE_TEMPLATE/` form and
+`.github/pull_request_template.md`. See `.github/CONTRIBUTING.md` for branch
+prefixes and package branch exceptions.
 
 ## Cursor Cloud environment
 
-This repository commits `.cursor/environment.json`. Cloud Agent builds run
-`.cursor/install.sh` (nvm Node `24.18.0` from `.nvmrc`, npm `12.0.1` from
-`packageManager`, then `HUSKY=0 npm ci`). `npm run env:check` requires the
-exact Node patch.
-
-`/exec-daemon/node` (Node 22) may precede nvm on `PATH`. Before running
-repo scripts, prepend the pinned Node bin:
-
-```bash
-export NVM_DIR="$HOME/.nvm"
-. "$NVM_DIR/nvm.sh"
-nvm use
-export PATH="$(dirname "$(nvm which 24.18.0)"):$PATH"
-```
-
-Do not start long-running servers from `install`. This repository has no
-dev server; validate with `env:check`, `lint:all`, `test:run`, and
-`typecheck`.
+See [agents-repo/.github docs/cursor-cloud.md](https://github.com/agents-repo/.github/blob/main/docs/cursor-cloud.md).
+Validate with `env:check`, `lint:all`, `test:run`, and `typecheck`. No dev
+server in this repository.
