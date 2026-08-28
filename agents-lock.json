@@ -1,6 +1,6 @@
 {
   "lockfileVersion": 2,
-  "resolvedRef": "v2.2.14",
+  "resolvedRef": "v2.2.16",
   "packages": {
     "agents-repo/agents-repo-package-creation": {
       "version": "1.0.1",
@@ -20,6 +20,48 @@
         "openai-codex": {
           "integrity": "sha256-4cc2bbdb6a6eb7609398788495d172140afd240f0194e85c19e1b577fb79fc75",
           "artifact": "1.0.1-openai-codex.zip"
+        }
+      }
+    },
+    "maiconfz/ai-first-project-readiness": {
+      "version": "1.1.0",
+      "byTarget": {
+        "github-copilot": {
+          "integrity": "sha256-e05ae0703b0de36bd5c9305bc21ba0954dde1def133d43d09a2c31d6076de737",
+          "artifact": "1.1.0-github-copilot.zip"
+        },
+        "claude-code": {
+          "integrity": "sha256-33467496112ea8b0f73511030e89bb9349a5bef2ce244965bdf081b08f316494",
+          "artifact": "1.1.0-claude-code.zip"
+        },
+        "cursor": {
+          "integrity": "sha256-f320c12a384251cd0f0422a87c2e99e8083e57fd3d727c1bf77b77a70ba9e6d4",
+          "artifact": "1.1.0-cursor.zip"
+        },
+        "openai-codex": {
+          "integrity": "sha256-5480ed44a58e101a96e63de901e41d9d7b8f1f0285a7229bbc488a5abc41f240",
+          "artifact": "1.1.0-openai-codex.zip"
+        }
+      }
+    },
+    "maiconfz/context-token-reduction": {
+      "version": "1.0.0",
+      "byTarget": {
+        "github-copilot": {
+          "integrity": "sha256-fd8b5d38b4bb090e4ac90305f862a4d3697d50d7dbbea7ea5a087ecac5edf244",
+          "artifact": "1.0.0-github-copilot.zip"
+        },
+        "claude-code": {
+          "integrity": "sha256-1010e9d2851254899f107c4f2b239c6da87c2a22ffd689fae7cc191cff6728dc",
+          "artifact": "1.0.0-claude-code.zip"
+        },
+        "cursor": {
+          "integrity": "sha256-c5a12a66e4b751da451e958e934bafb7e2b75260a5727a380d632e7720f9bb81",
+          "artifact": "1.0.0-cursor.zip"
+        },
+        "openai-codex": {
+          "integrity": "sha256-669c4b73fda3a5a0f853088241fdfb0ff17ab0add3d6672acf03e2dd518a8393",
+          "artifact": "1.0.0-openai-codex.zip"
         }
       }
     },
