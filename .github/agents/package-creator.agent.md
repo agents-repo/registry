@@ -3,7 +3,7 @@ name: package-creator
 description: Authors and revises registry package source definitions
   after scaffolding, producing agent and flow files with
   matching metadata sidecars and package-root README.md.
-version: 1.0.1
+version: 1.0.2
 license: MIT
 inputs:
   - name: package-blueprint
@@ -51,6 +51,12 @@ validation feedback.
   or flow `.agent.md` and its `.metadata.json` sidecar exactly.
 - Ensure all root `.agent.md` files across `agents/` and `flows/`
   share the same frontmatter `version`.
+- Set `estimateCost` on every agent and flow `.metadata.json` sidecar from
+  the blueprint; `band` MUST match `estimatedCost` per registry ranges:
+  `minimal` 1–2, `low` 3–4, `moderate` 5–6, `high` 7–8, `critical` 9–10.
+- Set package `estimateOverallCost` from the blueprint; use `band: "mixed"`
+  when child assets span multiple bands, otherwise align `band` with
+  `estimatedCost` when present.
 - Apply correction requests identified by `package-submission-reviewer`,
   `package-script-runner` (`package:validate` stage),
   or `package-release-gate` (`package:validate-artifacts` stage).
@@ -76,6 +82,11 @@ validation feedback.
   and writes `detail.json`.
 - Do not use qualified or namespaced agent or flow IDs;
   IDs remain leaf kebab-case within the package.
+- `estimateCost.band` MUST correspond to `estimateCost.estimatedCost`
+  per `metadata-schema.md` band ranges on every agent and flow sidecar.
+- When package `estimateOverallCost.band` is not `mixed` and
+  `estimatedCost` is present, `band` MUST match that integer per the
+  same ranges.
 
 ## Interaction Contract
 

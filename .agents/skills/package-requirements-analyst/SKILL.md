@@ -32,6 +32,13 @@ arguments and definition plan before any files are authored.
   Scaffold always creates package-root `README.md`; `quickstart` SHOULD
   point at that file. `package-creator` MAY revise the README after scaffold.
 - Define an ordered authoring plan for agent and flow definitions after scaffolding.
+- Propose per-agent and per-flow `estimateCost` values using the registry
+  relative-effort scale (integer 1–10, not tokens or API credits) and matching
+  `band` labels: `minimal` 1–2, `low` 3–4, `moderate` 5–6, `high` 7–8,
+  `critical` 9–10.
+- Propose package-level `estimateOverallCost`: use `band: "mixed"` when planned
+  agents or flows span multiple bands; otherwise set `band` and optional
+  `estimatedCost` from the same ranges.
 - List open questions and assumptions that must be resolved
   before the creator begins drafting files.
 - Output a structured package blueprint as the handoff artifact
@@ -60,9 +67,11 @@ Output: a structured package blueprint containing `namespace`
 `qualifiedId` (`<namespace>/<packageId>`), package description,
 owner slug, license (`MIT`), homepage and repository URLs,
 tag suggestions, package-create scaffold arguments,
-an ordered list of agent IDs with their proposed descriptions
-and tool hints, an ordered list of flow IDs with their proposed
-descriptions and agent references, an authoring order,
+an ordered list of agent IDs with their proposed descriptions,
+`estimateCost` (`estimatedCost` and `band`), and tool hints,
+an ordered list of flow IDs with their proposed descriptions,
+`estimateCost`, and agent references, package-level
+`estimateOverallCost`, an authoring order,
 and a list of open questions or assumptions requiring
 confirmation before implementation begins.
 
@@ -76,4 +85,4 @@ confirmation before implementation begins.
 
 - `package-blueprint` (object): Structured blueprint with namespace, package-id, qualified package ref, scaffold arguments, definition plan, metadata values, and open questions.
 
-<!-- agents-repo package version: 1.0.1 -->
+<!-- agents-repo package version: 1.0.2 -->

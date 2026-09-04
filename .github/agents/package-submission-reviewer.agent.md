@@ -3,7 +3,7 @@ name: package-submission-reviewer
 description: Reviews a drafted package for human-facing quality,
   usability, and submission readiness,
   producing structured feedback and a readiness verdict.
-version: 1.0.1
+version: 1.0.2
 license: MIT
 inputs:
   - name: package-source-tree
@@ -49,6 +49,11 @@ are executed by script orchestration agents.
   to catalog readers.
 - Flag hand-authored `detail.json` or any hand-edited files under
   `versions/`.
+- Flag `estimateCost` or `estimateOverallCost` entries where `band` does
+  not match `estimatedCost` per registry band ranges (`minimal` 1–2,
+  `low` 3–4, `moderate` 5–6, `high` 7–8, `critical` 9–10), except
+  package-level `band: "mixed"` which may pair with any optional
+  aggregate `estimatedCost`.
 - Assess whether the package as a whole represents a coherent,
   useful, and self-contained unit of functionality.
 - Produce a prioritized list of revision requests

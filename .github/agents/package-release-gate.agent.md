@@ -2,7 +2,7 @@
 name: package-release-gate
 description: Executes artifact validation scripts and decides release
   gate pass or fail with blocking issue summaries.
-version: 1.0.1
+version: 1.0.2
 license: MIT
 inputs:
   - name: release-gate-request

@@ -55,4 +55,4 @@ and recommended next step.
 
 - `release-gate-report` (object): Structured artifact gate report including command details, result, blockers, and next action.
 
-<!-- agents-repo package version: 1.0.1 -->
+<!-- agents-repo package version: 1.0.2 -->

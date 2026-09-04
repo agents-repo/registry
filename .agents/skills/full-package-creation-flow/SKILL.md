@@ -32,7 +32,8 @@ structural validation, build, and artifact validation.
   and retry this step.
 
 3. **Definition authoring and review** — Invoke `package-creator`
-  to author package definitions, then invoke
+  to author package definitions (including aligned `estimateCost` and
+  `estimateOverallCost` metadata), then invoke
   `package-submission-reviewer` for quality review.
   If reviewer verdict is `needs-clarification`, ask the user
   and repeat this step. If verdict is `needs-revision`,
@@ -129,4 +130,4 @@ and `package-release-gate` for artifact gate execution.
 - package-script-runner
 - package-release-gate
 
-<!-- agents-repo package version: 1.0.1 -->
+<!-- agents-repo package version: 1.0.2 -->
