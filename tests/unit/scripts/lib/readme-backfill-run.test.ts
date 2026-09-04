@@ -77,7 +77,7 @@ describe('backfillPackages', (): void => {
       license: 'MIT',
       status: 'active',
       category: 'assistant',
-      estimateCost: { estimatedCost: 2, band: 'low' },
+      estimateCost: { estimatedCost: 2, band: 'minimal' },
     });
     fs.writeFileSync(path.join(snapshotDir, 'agents', 'planner.agent.md'), '# planner\n', 'utf-8');
 

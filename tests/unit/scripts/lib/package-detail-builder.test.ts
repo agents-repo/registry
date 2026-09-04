@@ -85,7 +85,7 @@ function writeSidecar(
     license: 'MIT',
     status: 'active',
     category: 'assistant',
-    estimateCost: { estimatedCost: 2, band: 'low' },
+    estimateCost: { estimatedCost: 2, band: 'minimal' },
   };
   if (extras?.agents !== undefined) {
     meta['agents'] = extras.agents;
@@ -132,7 +132,7 @@ describe('buildPackageDetailDocument', (): void => {
         description: 'agent planner for tests.',
         status: 'active',
         category: 'assistant',
-        estimateCost: { estimatedCost: 2, band: 'low' },
+        estimateCost: { estimatedCost: 2, band: 'minimal' },
         instructionPath: 'packages/agents-repo/demo/versions/1.0.1/agents/planner.agent.md',
       },
     ]);

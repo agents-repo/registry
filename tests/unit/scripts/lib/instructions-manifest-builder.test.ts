@@ -63,7 +63,7 @@ license: MIT
     license: 'MIT',
     status: 'active',
     category: 'assistant',
-    estimateCost: { estimatedCost: 2, band: 'low' },
+    estimateCost: { estimatedCost: 2, band: 'minimal' },
   };
   if (chatWeb !== undefined) {
     meta['chatWeb'] = chatWeb;
@@ -140,7 +140,7 @@ agents:
         license: 'MIT',
         status: 'active',
         category: 'assistant',
-        estimateCost: { estimatedCost: 2, band: 'low' },
+        estimateCost: { estimatedCost: 2, band: 'minimal' },
         agents: ['../evil'],
       }),
       'utf-8',

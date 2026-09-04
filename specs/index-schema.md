@@ -87,6 +87,11 @@ Each entry in `packages` MUST be an object with:
 | `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` |
 | `estimatedCost` | integer | no | Relative effort as an integer on a 1–10 scale (inclusive) |
 
+When `band` is `mixed`, child agents or flows span multiple cost bands; see
+`metadata-schema.md` `EstimateOverallCost` for alignment rules. When `band` is not
+`mixed` and `estimatedCost` is present, `band` MUST match the integer per the
+band ranges in `metadata-schema.md`.
+
 ## Aliases
 
 When present (schema 1.3.0+), `aliases` MUST be an object mapping leaf package-id

@@ -5,9 +5,63 @@ export const STATUS_VALUES = ['active', 'deprecated', 'archived', 'yanked'] as c
 export const COST_BANDS = ['minimal', 'low', 'moderate', 'high', 'critical'] as const;
 export const PACKAGE_COST_BANDS = ['minimal', 'low', 'moderate', 'high', 'critical', 'mixed'] as const;
 
+export type CostBandValue = (typeof COST_BANDS)[number];
+
 // --- Estimated cost range (1–10 relative effort scale) ---
 export const ESTIMATED_COST_MIN = 1;
 export const ESTIMATED_COST_MAX = 10;
+
+/** Map an integer 1–10 effort score to the corresponding cost band. */
+export function costBandForEstimatedCost(estimatedCost: number): CostBandValue {
+  if (
+    !Number.isInteger(estimatedCost) ||
+    estimatedCost < ESTIMATED_COST_MIN ||
+    estimatedCost > ESTIMATED_COST_MAX
+  ) {
+    throw new RangeError(
+      `estimatedCost must be an integer between ${ESTIMATED_COST_MIN} and ${ESTIMATED_COST_MAX}, got: ${estimatedCost}`,
+    );
+  }
+
+  if (estimatedCost <= 2) {
+    return 'minimal';
+  }
+  if (estimatedCost <= 4) {
+    return 'low';
+  }
+  if (estimatedCost <= 6) {
+    return 'moderate';
+  }
+  if (estimatedCost <= 8) {
+    return 'high';
+  }
+  return 'critical';
+}
+
+/**
+ * Return whether `band` matches `estimatedCost` per the registry band-range table.
+ * When `allowMixed` is true (package-level), `mixed` always aligns.
+ */
+export function isBandAlignedWithCost(
+  band: string,
+  estimatedCost: number,
+  allowMixed = false,
+): boolean {
+  if (allowMixed && band === 'mixed') {
+    return true;
+  }
+  if (!COST_BANDS.includes(band as CostBandValue)) {
+    return false;
+  }
+  if (
+    !Number.isInteger(estimatedCost) ||
+    estimatedCost < ESTIMATED_COST_MIN ||
+    estimatedCost > ESTIMATED_COST_MAX
+  ) {
+    return false;
+  }
+  return costBandForEstimatedCost(estimatedCost) === band;
+}
 
 // --- Description length constraints ---
 export const DESCRIPTION_MIN_LENGTH = 1;

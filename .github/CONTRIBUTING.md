@@ -469,7 +469,12 @@ A package submission should include:
     and optional integer `estimatedCost` on a 1–10 scale)
   - Agent and flow metadata: `status`, `category`, and `estimateCost`
     (object with required `band` — one of `minimal`, `low`, `moderate`,
-    `high`, `critical` — and required integer `estimatedCost` on a 1–10 scale)
+    `high`, `critical` — and required integer `estimatedCost` on a 1–10 scale;
+    `band` MUST match `estimatedCost` per the ranges below)
+  - Cost band ranges (`estimatedCost` → `band`): `minimal` 1–2, `low` 3–4,
+    `moderate` 5–6, `high` 7–8, `critical` 9–10. Package-level `mixed` is
+    valid when agents or flows span multiple bands; when `band` is not `mixed`
+    and `estimatedCost` is set, the same ranges apply.
 - `quickstart`, when present, should point to package root `README.md`
 - supported `schemaVersion` values in `metadata.json` and in every
   `.metadata.json` sidecar (agent and flow), per `specs/schema-versions.json`

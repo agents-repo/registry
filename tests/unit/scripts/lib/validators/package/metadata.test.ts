@@ -40,6 +40,42 @@ describe('validateMetadata', (): void => {
     expect(issues).toHaveLength(0);
   });
 
+  it('rejects estimateOverallCost band that does not match estimatedCost', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['estimateOverallCost'] = { band: 'low', estimatedCost: 1 };
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(false);
+    expect(hasErrorCode(issues, 'ERR_METADATA_INVALID')).toBe(true);
+    expect(
+      issues.some((issue) => issue.message.includes('estimateOverallCost.band')),
+    ).toBe(true);
+  });
+
+  it('accepts estimateOverallCost mixed without estimatedCost', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['estimateOverallCost'] = { band: 'mixed' };
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(true);
+    expect(issues).toHaveLength(0);
+  });
+
+  it('accepts estimateOverallCost mixed with estimatedCost present', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['estimateOverallCost'] = { band: 'mixed', estimatedCost: 5 };
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(true);
+    expect(issues).toHaveLength(0);
+  });
+
   it('rejects invalid estimateOverallCost values', (): void => {
     const issues: ValidationIssue[] = [];
     const metadata = makeBaseMetadata();
@@ -55,6 +91,9 @@ describe('validateMetadata', (): void => {
     expect(
       issues.some((issue) => issue.message.includes('estimateOverallCost.estimatedCost')),
     ).toBe(true);
+    expect(
+      issues.some((issue) => issue.message.includes('does not match estimateOverallCost.estimatedCost')),
+    ).toBe(false);
   });
 
   it('rejects duplicate tags and invalid maintainers', (): void => {

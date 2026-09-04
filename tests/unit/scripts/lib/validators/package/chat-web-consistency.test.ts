@@ -28,7 +28,7 @@ describe('validateChatWebIncludedRequiresSupportedChannel', (): void => {
         license: 'MIT',
         status: 'active',
         category: 'assistant',
-        estimateCost: { estimatedCost: 2, band: 'low' },
+        estimateCost: { estimatedCost: 2, band: 'minimal' },
         chatWeb: 'included',
       }),
       'utf-8',

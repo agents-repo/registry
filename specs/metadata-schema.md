@@ -132,6 +132,26 @@ Additional optional fields:
 | `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, `critical`, or `mixed` |
 | `estimatedCost` | integer | no | Aggregate relative effort as an integer on a 1–10 scale (not tokens or credits) |
 
+`estimatedCost` is a relative effort rating (integer 1–10). It is not denominated
+in tokens or API credits. `band` is a categorical label for that effort level.
+
+When `band` is not `mixed` and `estimatedCost` is present, `band` MUST correspond
+to `estimatedCost` per the band ranges below. When `band` is not `mixed` and
+`estimatedCost` is omitted, only `band` is required. When `band` is `mixed`,
+`estimatedCost` MAY be omitted or MAY be an indicative aggregate (for example a
+typical or average value) that need not match a single band — use `mixed` when
+child agents or flows span multiple bands.
+
+| Band | `estimatedCost` Range |
+| --- | --- |
+| `minimal` | 1–2 |
+| `low` | 3–4 |
+| `moderate` | 5–6 |
+| `high` | 7–8 |
+| `critical` | 9–10 |
+
+`mixed` is package-only. It does not map to a numeric range.
+
 ### Validation Rules
 
 - `name` MUST match the package directory name exactly.
@@ -147,6 +167,9 @@ Additional optional fields:
   `high`, `critical`, or `mixed`.
 - `estimateOverallCost.estimatedCost`, when present, MUST be an integer in the
   range 1–10 inclusive.
+- When `estimateOverallCost.band` is not `mixed` and `estimatedCost` is present,
+  `estimateOverallCost.band` MUST correspond to `estimatedCost` per the
+  [EstimateOverallCost band ranges](#estimateoverallcost-object-schema).
 - `owner` MUST be a non-empty GitHub owner or organization slug.
 - `maintainers`, when present, MUST be an array of unique GitHub usernames or
   team slugs.
@@ -252,7 +275,8 @@ flow metadata `estimateCost`.
 | `band` | string | yes | MUST be `minimal`, `low`, `moderate`, `high`, or `critical` |
 
 `estimatedCost` is a relative effort rating (integer 1–10). It is not denominated
-in tokens or API credits.
+in tokens or API credits. `band` is a categorical label that MUST correspond to
+`estimatedCost` per the band ranges below.
 
 | Band | `estimatedCost` Range |
 | --- | --- |
@@ -283,6 +307,8 @@ in tokens or API credits.
 - `estimateCost.estimatedCost` MUST be an integer in the range 1–10 inclusive.
 - `estimateCost.band` MUST be one of `minimal`, `low`, `moderate`, `high`,
   or `critical`.
+- `estimateCost.band` MUST correspond to `estimateCost.estimatedCost` per the
+  [EstimateCost band ranges](#estimatecost-object-schema-shared-agent-and-flow).
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
@@ -386,6 +412,8 @@ Additional required fields:
 - `estimateCost.estimatedCost` MUST be an integer in the range 1–10 inclusive.
 - `estimateCost.band` MUST be one of `minimal`, `low`, `moderate`, `high`,
   or `critical`.
+- `estimateCost.band` MUST correspond to `estimateCost.estimatedCost` per the
+  [EstimateCost band ranges](#estimatecost-object-schema-shared-agent-and-flow).
 - `customAttributes`, when present, MUST be an object.
 - Unknown fields SHOULD use the `x-` prefix.
 
