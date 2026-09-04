@@ -1,0 +1,165 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/dev-emocionado",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "dev-emocionado",
+    "description": "Satirical Dev Emocionado toolkit: over-engineered architecture, bleeding-edge stacks, and hype-driven reviews. Original parody of Brazilian dev culture. Not real engineering advice.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/dev-emocionado",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "dev-emocionado",
+      "satire",
+      "meme",
+      "humor",
+      "coding",
+      "architecture",
+      "review",
+      "chat"
+    ],
+    "createdAt": "2026-09-04T05:37:14.653Z",
+    "updatedAt": "2026-09-04T05:37:14.653Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "humor",
+    "estimateOverallCost": {
+      "estimatedCost": 5,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/dev-emocionado/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "dev-emocionado-architect",
+      "name": "dev-emocionado-architect",
+      "description": "Read-only architecture proposals: event-driven microservices and bleeding-edge stacks for trivial tasks. PT-BR with English jargon. Refuses force-push, secrets, and data destruction.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/agents/dev-emocionado-architect.agent.md"
+    },
+    {
+      "id": "dev-emocionado-chat",
+      "name": "dev-emocionado-chat",
+      "description": "Conversational Dev Emocionado persona for hype and over-engineering pep talks. PT-BR with English jargon. Does not edit the working tree unless the user insists. Original parody; not real engineering advice.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 3,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/agents/dev-emocionado-chat.agent.md"
+    },
+    {
+      "id": "dev-emocionado-coder",
+      "name": "dev-emocionado-coder",
+      "description": "Over-engineered implementation with factories, DI, and bleeding-edge stacks. PT-BR with English jargon. Refuses force-push, secrets, and data destruction.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/agents/dev-emocionado-coder.agent.md"
+    },
+    {
+      "id": "dev-emocionado-reviewer",
+      "name": "dev-emocionado-reviewer",
+      "description": "Rejects simple readable code as legacy tech. Approves only over-engineered diffs. PT-BR with English jargon. Still blocks secrets, force-push, and data destruction.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/agents/dev-emocionado-reviewer.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "dev-emocionado-overbuild",
+      "name": "dev-emocionado-overbuild",
+      "description": "Chains dev-emocionado-architect, dev-emocionado-coder, then dev-emocionado-reviewer for maximum over-engineering. Does not invoke dev-emocionado-chat.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/flows/dev-emocionado-overbuild.agent.md",
+      "agents": [
+        "dev-emocionado-architect",
+        "dev-emocionado-coder",
+        "dev-emocionado-reviewer"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-09-04T05:58:32.208Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# dev-emocionado\n\nSatirical Dev Emocionado toolkit: over-engineered architecture, bleeding-edge\nstacks, and hype-driven reviews. Original parody of Brazilian developer hype\nculture. Not a real methodology and **not affiliated** with any influencer or\nbrand.\n\nCatalog copy is English. Installed agents reply, comment, and summarize\nprimarily in **PT-BR with excessive English tech jargon**.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\n\n## Disclaimer\n\nDefinitions in this package are original parody. They do not copy third-party\nmanifesto text. Do not treat the instructions as permission to force-push\nprotected branches, leak secrets, destroy data, disable security, rewrite git\nhistory, or turn off CI and git hooks. Host-agent safety rules still win.\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@latest install maiconfz/dev-emocionado\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/dev-emocionado\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after install.\nAll four supported IDE targets receive the package content (rendered per\ntarget). Installed content comes from the versioned ZIPs pinned in your\n`agents-lock.json`.\n\n## Usage\n\n- `dev-emocionado-chat` — talk only: hype, pep talks, mock dinosaur tech.\n- `dev-emocionado-architect` — read-only; proposes microservices for everything.\n- `dev-emocionado-coder` — over-engineered implementation with hype stacks.\n- `dev-emocionado-reviewer` — local review; rejects simple readable code.\n- `dev-emocionado-overbuild` — architect → coder → reviewer. Does not call chat.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `dev-emocionado-chat` | Conversational persona |\n| `dev-emocionado-architect` | Bleeding-edge architecture proposals |\n| `dev-emocionado-coder` | Over-engineered implementation |\n| `dev-emocionado-reviewer` | Hype-driven local review |\n| `dev-emocionado-overbuild` (flow) | Architect, code, review |\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` with `{ \"id\": \"chat-web\", \"status\": \"supported\" }`.\nEvery agent and the flow sets `chatWeb: \"included\"`. None are excluded.\n\nAfter `package:build`, the instruction manifest for a released version lives\nat:\n\n```text\npackages/maiconfz/dev-emocionado/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp consumers\njoin the registry origin with those paths per\n[`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):\n\n- **Origin:** `https://registry.agents-repo.org`\n\nIllustrative absolute fetch URLs for version `1.0.0`:\n\n```text\nhttps://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.0/instructions.json\nhttps://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-chat.agent.md\nhttps://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.0/flows/dev-emocionado-overbuild.agent.md\n```\n\nThe `dev-emocionado-overbuild` flow lists step agents in frontmatter/metadata\n`agents[]`; `package:build` maps that ordered list to `agentInstructions` in\n`instructions.json`.\n\n## Validate and build\n\nFrom the registry repository root:\n\n```bash\nPKG=maiconfz/dev-emocionado\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/dev-emocionado/1.0.0/instructions.json"
+}

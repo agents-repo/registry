@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/dev-emocionado",
+  "version": "1.0.0",
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "dev-emocionado-architect",
+      "path": "/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-architect.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "dev-emocionado-chat",
+      "path": "/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-chat.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "dev-emocionado-coder",
+      "path": "/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-coder.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "dev-emocionado-reviewer",
+      "path": "/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-reviewer.agent.md"
+    },
+    {
+      "kind": "flow",
+      "id": "dev-emocionado-overbuild",
+      "path": "/pkg/maiconfz/dev-emocionado/1.0.0/flows/dev-emocionado-overbuild.agent.md",
+      "agentInstructions": [
+        "/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-architect.agent.md",
+        "/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-coder.agent.md",
+        "/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-reviewer.agent.md"
+      ]
+    }
+  ]
+}
