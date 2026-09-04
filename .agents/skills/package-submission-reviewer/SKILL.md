@@ -34,6 +34,11 @@ are executed by script orchestration agents.
   to catalog readers.
 - Flag hand-authored `detail.json` or any hand-edited files under
   `versions/`.
+- Flag `estimateCost` or `estimateOverallCost` entries where `band` does
+  not match `estimatedCost` per registry band ranges (`minimal` 1–2,
+  `low` 3–4, `moderate` 5–6, `high` 7–8, `critical` 9–10), except
+  package-level `band: "mixed"` which may pair with any optional
+  aggregate `estimatedCost`.
 - Assess whether the package as a whole represents a coherent,
   useful, and self-contained unit of functionality.
 - Produce a prioritized list of revision requests
@@ -78,4 +83,4 @@ a prioritized and actionable list of revision requests addressed to
 
 - `review-report` (object): Structured feedback report with per-file findings, overall readiness verdict, and prioritized revision requests for the creator.
 
-<!-- agents-repo package version: 1.0.1 -->
+<!-- agents-repo package version: 1.0.2 -->

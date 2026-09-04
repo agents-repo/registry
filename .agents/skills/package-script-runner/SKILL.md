@@ -61,4 +61,4 @@ classified failure type, and recommended next routing step.
 
 - `script-stage-report` (object): Structured report with command executed, exit status, key output, and recommended next step.
 
-<!-- agents-repo package version: 1.0.1 -->
+<!-- agents-repo package version: 1.0.2 -->

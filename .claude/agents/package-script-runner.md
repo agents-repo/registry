@@ -3,7 +3,7 @@ name: package-script-runner
 description: >-
   Executes package creation, source validation, and build scripts, returning
   structured command results and next actions.
-version: 1.0.1
+version: 1.0.2
 inputs:
   - name: script-stage-request
     type: object

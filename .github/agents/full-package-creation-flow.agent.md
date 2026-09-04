@@ -2,7 +2,7 @@
 name: full-package-creation-flow
 description: Orchestrates package creation through script-driven scaffold,
   authoring, validation, build, and artifact gate stages.
-version: 1.0.1
+version: 1.0.2
 license: MIT
 agents:
   - package-requirements-analyst
@@ -49,7 +49,8 @@ structural validation, build, and artifact validation.
   and retry this step.
 
 3. **Definition authoring and review** — Invoke `package-creator`
-  to author package definitions, then invoke
+  to author package definitions (including aligned `estimateCost` and
+  `estimateOverallCost` metadata), then invoke
   `package-submission-reviewer` for quality review.
   If reviewer verdict is `needs-clarification`, ask the user
   and repeat this step. If verdict is `needs-revision`,
