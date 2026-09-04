@@ -7,7 +7,7 @@
   "category": "humor",
   "estimateCost": {
     "estimatedCost": 3,
-    "band": "minimal"
+    "band": "low"
   },
   "chatWeb": "included",
   "inputs": [

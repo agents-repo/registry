@@ -70,7 +70,7 @@
       "category": "humor",
       "estimateCost": {
         "estimatedCost": 5,
-        "band": "low"
+        "band": "moderate"
       },
       "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/agents/dev-emocionado-architect.agent.md"
     },
@@ -82,7 +82,7 @@
       "category": "humor",
       "estimateCost": {
         "estimatedCost": 3,
-        "band": "minimal"
+        "band": "low"
       },
       "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/agents/dev-emocionado-chat.agent.md"
     },
@@ -94,7 +94,7 @@
       "category": "humor",
       "estimateCost": {
         "estimatedCost": 7,
-        "band": "moderate"
+        "band": "high"
       },
       "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/agents/dev-emocionado-coder.agent.md"
     },
@@ -106,7 +106,7 @@
       "category": "humor",
       "estimateCost": {
         "estimatedCost": 5,
-        "band": "low"
+        "band": "moderate"
       },
       "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/agents/dev-emocionado-reviewer.agent.md"
     }
@@ -120,7 +120,7 @@
       "category": "humor",
       "estimateCost": {
         "estimatedCost": 8,
-        "band": "moderate"
+        "band": "high"
       },
       "instructionPath": "packages/maiconfz/dev-emocionado/versions/1.0.0/flows/dev-emocionado-overbuild.agent.md",
       "agents": [
@@ -135,7 +135,7 @@
     "entries": [
       {
         "version": "1.0.0",
-        "createdAt": "2026-09-04T05:37:59.189Z",
+        "createdAt": "2026-09-04T05:50:03.898Z",
         "srcArtifact": "1.0.0-src.zip",
         "artifacts": [
           {

@@ -6,7 +6,7 @@
     {
       "version": "1.0.0",
       "srcArtifact": "1.0.0-src.zip",
-      "srcSha256": "8ad22cc5c63e149f0f1453b126314c17ab1fea6ece23b280b88edc938bb8fdd2",
+      "srcSha256": "f7cfb3ee65ea3b72ec38fb64a25bcf710ff13985f1b0f088ed8dcff3ba26e105",
       "artifacts": [
         {
           "target": "github-copilot",
@@ -29,7 +29,7 @@
           "sha256": "b8fdd6c275e0838e6398909403e875b63fe559b8ad2ab80ed8c4ce8be240c3b9"
         }
       ],
-      "createdAt": "2026-09-04T05:37:59.189Z",
+      "createdAt": "2026-09-04T05:50:03.898Z",
       "instructionsArtifact": "instructions.json",
       "instructionsSha256": "ea8b805a32bcc06916715b44e77ef1d0d4e1c08a6488ee1d12ac605fac66e69a"
     }
