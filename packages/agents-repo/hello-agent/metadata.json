@@ -17,7 +17,7 @@
   "category": "assistant",
   "estimateOverallCost": {
     "estimatedCost": 1,
-    "band": "minimal"
+    "band": "low"
   },
   "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/hello-agent/README.md",
   "compatibility": {
