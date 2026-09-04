@@ -53,6 +53,13 @@ export function isBandAlignedWithCost(
   if (!COST_BANDS.includes(band as CostBandValue)) {
     return false;
   }
+  if (
+    !Number.isInteger(estimatedCost) ||
+    estimatedCost < ESTIMATED_COST_MIN ||
+    estimatedCost > ESTIMATED_COST_MAX
+  ) {
+    return false;
+  }
   return costBandForEstimatedCost(estimatedCost) === band;
 }
 

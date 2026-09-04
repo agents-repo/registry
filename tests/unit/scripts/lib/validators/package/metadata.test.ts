@@ -80,6 +80,9 @@ describe('validateMetadata', (): void => {
     expect(
       issues.some((issue) => issue.message.includes('estimateOverallCost.estimatedCost')),
     ).toBe(true);
+    expect(
+      issues.some((issue) => issue.message.includes('does not match estimateOverallCost.estimatedCost')),
+    ).toBe(false);
   });
 
   it('rejects duplicate tags and invalid maintainers', (): void => {

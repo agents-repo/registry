@@ -44,4 +44,10 @@ describe('isBandAlignedWithCost', (): void => {
   it('does not allow mixed when allowMixed is false', (): void => {
     expect(isBandAlignedWithCost('mixed', 5, false)).toBe(false);
   });
+
+  it('returns false for out-of-range or non-integer estimatedCost', (): void => {
+    expect(isBandAlignedWithCost('low', 0)).toBe(false);
+    expect(isBandAlignedWithCost('low', 11)).toBe(false);
+    expect(isBandAlignedWithCost('low', 3.5)).toBe(false);
+  });
 });

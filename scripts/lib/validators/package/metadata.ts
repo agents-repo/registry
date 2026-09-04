@@ -184,7 +184,7 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
   } else if (
     typeof estimatedCost === 'number' &&
     Number.isInteger(estimatedCost) &&
-    typeof cost['band'] === 'string' &&
+    isPackageCostBand(cost['band']) &&
     cost['band'] !== 'mixed' &&
     !isBandAlignedWithCost(cost['band'], estimatedCost)
   ) {

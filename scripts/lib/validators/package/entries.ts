@@ -359,6 +359,8 @@ function validateEntryMetadataRequiredFields(
     } else if (
       typeof cost['estimatedCost'] === 'number' &&
       Number.isInteger(cost['estimatedCost']) &&
+      cost['estimatedCost'] >= ESTIMATED_COST_MIN &&
+      cost['estimatedCost'] <= ESTIMATED_COST_MAX &&
       !isBandAlignedWithCost(cost['band'], cost['estimatedCost'])
     ) {
       issues.push(
