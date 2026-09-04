@@ -99,6 +99,8 @@ Body sections required in order:
   `metadata-schema.md`.
 - `<agent-id>.metadata.json` MUST include `status`, `category`, and
   `estimateCost`.
+- `estimateCost.band` MUST correspond to `estimateCost.estimatedCost` per the
+  band ranges in `metadata-schema.md`.
 - For package root `agents/<agent-id>.agent.md`, frontmatter `version`
   MUST follow the root working-copy consistency rules defined in
   `versioning-rules.md`.

@@ -11,6 +11,7 @@ import { validateSchemaVersion } from './schema-version';
 import {
   ESTIMATED_COST_MIN,
   ESTIMATED_COST_MAX,
+  isBandAlignedWithCost,
   DESCRIPTION_MIN_LENGTH,
   DESCRIPTION_MAX_LENGTH,
   CONTRACT_NAME_MIN_LENGTH,
@@ -353,6 +354,17 @@ function validateEntryMetadataRequiredFields(
         err(
           'ERR_METADATA_INVALID',
           `${context}: estimateCost.band must be one of "minimal", "low", "moderate", "high", "critical"`,
+        ),
+      );
+    } else if (
+      typeof cost['estimatedCost'] === 'number' &&
+      Number.isInteger(cost['estimatedCost']) &&
+      !isBandAlignedWithCost(cost['band'], cost['estimatedCost'])
+    ) {
+      issues.push(
+        err(
+          'ERR_METADATA_INVALID',
+          `${context}: estimateCost.band "${cost['band']}" does not match estimateCost.estimatedCost ${cost['estimatedCost']} (expected band for that value per metadata-schema.md band ranges)`,
         ),
       );
     }

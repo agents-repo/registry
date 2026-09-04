@@ -11,6 +11,7 @@ import {
   GITHUB_USER_OR_TEAM_SLUG_PATTERN,
   ESTIMATED_COST_MIN,
   ESTIMATED_COST_MAX,
+  isBandAlignedWithCost,
   INSTALL_TARGET_IDS,
   SCHEMA_FAMILY_PACKAGE,
   CONSUMPTION_CHANNEL_IDS,
@@ -165,18 +166,32 @@ function validateEstimateOverallCost(m: Record<string, unknown>, issues: Validat
       ),
     );
   }
+  const estimatedCost = cost['estimatedCost'];
   if (
-    cost['estimatedCost'] !== undefined &&
-    (typeof cost['estimatedCost'] !== 'number' ||
-      !Number.isFinite(cost['estimatedCost']) ||
-      !Number.isInteger(cost['estimatedCost']) ||
-      cost['estimatedCost'] < ESTIMATED_COST_MIN ||
-      cost['estimatedCost'] > ESTIMATED_COST_MAX)
+    estimatedCost !== undefined &&
+    (typeof estimatedCost !== 'number' ||
+      !Number.isFinite(estimatedCost) ||
+      !Number.isInteger(estimatedCost) ||
+      estimatedCost < ESTIMATED_COST_MIN ||
+      estimatedCost > ESTIMATED_COST_MAX)
   ) {
     issues.push(
       err(
         'ERR_METADATA_INVALID',
         'estimateOverallCost.estimatedCost must be an integer between 1 and 10 when provided',
+      ),
+    );
+  } else if (
+    typeof estimatedCost === 'number' &&
+    Number.isInteger(estimatedCost) &&
+    typeof cost['band'] === 'string' &&
+    cost['band'] !== 'mixed' &&
+    !isBandAlignedWithCost(cost['band'], estimatedCost)
+  ) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `estimateOverallCost.band "${cost['band']}" does not match estimateOverallCost.estimatedCost ${estimatedCost} (expected band for that value per metadata-schema.md band ranges, or use band "mixed")`,
       ),
     );
   }
