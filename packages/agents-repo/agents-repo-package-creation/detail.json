@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "package": "agents-repo/agents-repo-package-creation",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "metadata": {
     "schemaVersion": "1.0.0",
     "name": "agents-repo-package-creation",
@@ -18,8 +18,8 @@
       "registry"
     ],
     "createdAt": "2026-05-04T00:00:00Z",
-    "updatedAt": "2026-08-17T00:00:00Z",
-    "version": "1.0.1",
+    "updatedAt": "2026-09-04T00:00:00Z",
+    "version": "1.0.2",
     "status": "active",
     "category": "assistant",
     "estimateOverallCost": {
@@ -60,7 +60,7 @@
         "estimatedCost": 4,
         "band": "low"
       },
-      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.1/agents/package-creator.agent.md"
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.2/agents/package-creator.agent.md"
     },
     {
       "id": "package-release-gate",
@@ -72,7 +72,7 @@
         "estimatedCost": 3,
         "band": "low"
       },
-      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.1/agents/package-release-gate.agent.md"
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.2/agents/package-release-gate.agent.md"
     },
     {
       "id": "package-requirements-analyst",
@@ -84,7 +84,7 @@
         "estimatedCost": 3,
         "band": "low"
       },
-      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.1/agents/package-requirements-analyst.agent.md"
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.2/agents/package-requirements-analyst.agent.md"
     },
     {
       "id": "package-script-runner",
@@ -96,7 +96,7 @@
         "estimatedCost": 4,
         "band": "low"
       },
-      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.1/agents/package-script-runner.agent.md"
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.2/agents/package-script-runner.agent.md"
     },
     {
       "id": "package-submission-reviewer",
@@ -108,7 +108,7 @@
         "estimatedCost": 4,
         "band": "low"
       },
-      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.1/agents/package-submission-reviewer.agent.md"
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.2/agents/package-submission-reviewer.agent.md"
     }
   ],
   "flows": [
@@ -122,7 +122,7 @@
         "estimatedCost": 6,
         "band": "moderate"
       },
-      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.1/flows/full-package-creation-flow.agent.md",
+      "instructionPath": "packages/agents-repo/agents-repo-package-creation/versions/1.0.2/flows/full-package-creation-flow.agent.md",
       "agents": [
         "package-requirements-analyst",
         "package-creator",
@@ -133,7 +133,7 @@
     }
   ],
   "versions": {
-    "latest": "1.0.1",
+    "latest": "1.0.2",
     "entries": [
       {
         "version": "1.0.0",
@@ -180,8 +180,31 @@
             "file": "1.0.1-openai-codex.zip"
           }
         ]
+      },
+      {
+        "version": "1.0.2",
+        "createdAt": "2026-09-04T06:13:15.553Z",
+        "srcArtifact": "1.0.2-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.2-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.2-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.2-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.2-openai-codex.zip"
+          }
+        ]
       }
     ]
   },
-  "readmeMarkdown": "# agents-repo-package-creation\n\nAgents and a flow for creating, reviewing, and validating new registry packages\nfor agents-repo from requirements to submission-ready source.\n\n## Install\n\nInstall with the [agents-repo CLI](https://github.com/agents-repo/cli):\n\n```bash\nnpx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@1.13.0 install agents-repo/agents-repo-package-creation\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after install.\nAll four supported IDE targets receive the package content (rendered per target).\n\nThis README documents the package on the registry catalog. Installed content\ncomes from the versioned ZIPs pinned in your `agents-lock.json`.\n\n## Usage\n\nInvoke the **`full-package-creation-flow`** flow when you need end-to-end package\nscaffolding, authoring, validation, build, and submission review. Individual\nagents are available for single steps (requirements analysis, script execution,\nrelease gate, and submission review).\n\nDo not author `detail.json` or any files under `versions/`. `package:build`\ncopies package-root `README.md` into the new snapshot when present and writes\ngenerated `detail.json`.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `full-package-creation-flow` (flow) | End-to-end package creation pipeline |\n| `package-requirements-analyst` | Blueprint from user intent |\n| `package-creator` | Author agent and flow source files and revise README |\n| `package-script-runner` | Run registry package scripts |\n| `package-release-gate` | Artifact validation gate |\n| `package-submission-reviewer` | Human-facing submission readiness review |\n\n## Validate and build\n\nFrom the registry repository root:\n\n```bash\nPKG=agents-repo/agents-repo-package-creation\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.1\n```\n"
+  "readmeMarkdown": "# agents-repo-package-creation\n\nAgents and a flow for creating, reviewing, and validating new registry packages\nfor agents-repo from requirements to submission-ready source.\n\n## Install\n\nInstall with the [agents-repo CLI](https://github.com/agents-repo/cli):\n\n```bash\nnpx agents-repo@1.13.0 init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@1.13.0 install agents-repo/agents-repo-package-creation\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after install.\nAll four supported IDE targets receive the package content (rendered per target).\n\nThis README documents the package on the registry catalog. Installed content\ncomes from the versioned ZIPs pinned in your `agents-lock.json`.\n\n## Usage\n\nInvoke the **`full-package-creation-flow`** flow when you need end-to-end package\nscaffolding, authoring, validation, build, and submission review. Individual\nagents are available for single steps (requirements analysis, script execution,\nrelease gate, and submission review).\n\nDo not author `detail.json` or any files under `versions/`. `package:build`\ncopies package-root `README.md` into the new snapshot when present and writes\ngenerated `detail.json`.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `full-package-creation-flow` (flow) | End-to-end package creation pipeline |\n| `package-requirements-analyst` | Blueprint from user intent |\n| `package-creator` | Author agent and flow source files and revise README |\n| `package-script-runner` | Run registry package scripts |\n| `package-release-gate` | Artifact validation gate |\n| `package-submission-reviewer` | Human-facing submission readiness review |\n\n## Validate and build\n\nFrom the registry repository root:\n\n```bash\nPKG=agents-repo/agents-repo-package-creation\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.2\n```\n"
 }
