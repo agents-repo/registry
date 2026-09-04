@@ -17,6 +17,12 @@ describe('costBandForEstimatedCost', (): void => {
     expect(costBandForEstimatedCost(9)).toBe('critical');
     expect(costBandForEstimatedCost(10)).toBe('critical');
   });
+
+  it('throws when estimatedCost is out of range or not an integer', (): void => {
+    expect(() => costBandForEstimatedCost(0)).toThrow(RangeError);
+    expect(() => costBandForEstimatedCost(11)).toThrow(RangeError);
+    expect(() => costBandForEstimatedCost(3.5)).toThrow(RangeError);
+  });
 });
 
 describe('isBandAlignedWithCost', (): void => {

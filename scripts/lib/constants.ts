@@ -13,6 +13,16 @@ export const ESTIMATED_COST_MAX = 10;
 
 /** Map an integer 1–10 effort score to the corresponding cost band. */
 export function costBandForEstimatedCost(estimatedCost: number): CostBandValue {
+  if (
+    !Number.isInteger(estimatedCost) ||
+    estimatedCost < ESTIMATED_COST_MIN ||
+    estimatedCost > ESTIMATED_COST_MAX
+  ) {
+    throw new RangeError(
+      `estimatedCost must be an integer between ${ESTIMATED_COST_MIN} and ${ESTIMATED_COST_MAX}, got: ${estimatedCost}`,
+    );
+  }
+
   if (estimatedCost <= 2) {
     return 'minimal';
   }

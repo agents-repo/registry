@@ -135,10 +135,12 @@ Additional optional fields:
 `estimatedCost` is a relative effort rating (integer 1–10). It is not denominated
 in tokens or API credits. `band` is a categorical label for that effort level.
 
-When `band` is not `mixed`, `band` MUST correspond to `estimatedCost` per the
-band ranges below. When `band` is `mixed`, `estimatedCost` MAY be omitted or MAY
-be an indicative aggregate (for example a typical or average value) that need not
-match a single band — use `mixed` when child agents or flows span multiple bands.
+When `band` is not `mixed` and `estimatedCost` is present, `band` MUST correspond
+to `estimatedCost` per the band ranges below. When `band` is not `mixed` and
+`estimatedCost` is omitted, only `band` is required. When `band` is `mixed`,
+`estimatedCost` MAY be omitted or MAY be an indicative aggregate (for example a
+typical or average value) that need not match a single band — use `mixed` when
+child agents or flows span multiple bands.
 
 | Band | `estimatedCost` Range |
 | --- | --- |
