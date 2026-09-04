@@ -54,7 +54,18 @@ describe('validateMetadata', (): void => {
     ).toBe(true);
   });
 
-  it('accepts estimateOverallCost mixed with any estimatedCost', (): void => {
+  it('accepts estimateOverallCost mixed without estimatedCost', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['estimateOverallCost'] = { band: 'mixed' };
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(true);
+    expect(issues).toHaveLength(0);
+  });
+
+  it('accepts estimateOverallCost mixed with estimatedCost present', (): void => {
     const issues: ValidationIssue[] = [];
     const metadata = makeBaseMetadata();
     metadata['estimateOverallCost'] = { band: 'mixed', estimatedCost: 5 };
