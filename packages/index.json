@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-08-26T21:18:07.686Z",
+  "updatedAt": "2026-09-04T05:37:59.191Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -203,6 +203,52 @@
         "band": "mixed"
       },
       "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/context-token-reduction/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
+      "id": "maiconfz/dev-emocionado",
+      "namespace": "maiconfz",
+      "package": "dev-emocionado",
+      "path": "packages/maiconfz/dev-emocionado",
+      "name": "dev-emocionado",
+      "description": "Satirical Dev Emocionado toolkit: over-engineered architecture, bleeding-edge stacks, and hype-driven reviews. Original parody of Brazilian dev culture. Not real engineering advice.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "dev-emocionado",
+        "satire",
+        "meme",
+        "humor",
+        "coding",
+        "architecture",
+        "review",
+        "chat"
+      ],
+      "status": "active",
+      "category": "humor",
+      "estimateOverallCost": {
+        "estimatedCost": 5,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/dev-emocionado/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
@@ -547,6 +593,7 @@
     "ai-first-project-readiness": "maiconfz/ai-first-project-readiness",
     "chorume": "maiconfz/chorume",
     "context-token-reduction": "maiconfz/context-token-reduction",
+    "dev-emocionado": "maiconfz/dev-emocionado",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
     "plan-refiner": "maiconfz/plan-refiner",

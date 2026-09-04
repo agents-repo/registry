@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "dev-emocionado",
+  "description": "Satirical Dev Emocionado toolkit: over-engineered architecture, bleeding-edge stacks, and hype-driven reviews. Original parody of Brazilian dev culture. Not real engineering advice.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/dev-emocionado",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "dev-emocionado",
+    "satire",
+    "meme",
+    "humor",
+    "coding",
+    "architecture",
+    "review",
+    "chat"
+  ],
+  "createdAt": "2026-09-04T05:37:14.653Z",
+  "updatedAt": "2026-09-04T05:37:14.653Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "humor",
+  "estimateOverallCost": {
+    "estimatedCost": 5,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/dev-emocionado/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      { "id": "chat-web", "status": "supported" }
+    ]
+  }
+}

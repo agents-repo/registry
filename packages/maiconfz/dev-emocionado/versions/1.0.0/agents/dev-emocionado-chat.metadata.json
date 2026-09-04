@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "dev-emocionado-chat",
+  "description": "Conversational Dev Emocionado persona for hype and over-engineering pep talks. PT-BR with English jargon. Does not edit the working tree unless the user insists. Original parody; not real engineering advice.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 3,
+    "band": "minimal"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "The user's question, hype request, or over-engineering prompt."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "Satirical Dev Emocionado reply in PT-BR with English jargon."
+    }
+  ]
+}

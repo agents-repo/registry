@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "dev-emocionado-architect",
+  "description": "Read-only architecture proposals: event-driven microservices and bleeding-edge stacks for trivial tasks. PT-BR with English jargon. Refuses force-push, secrets, and data destruction.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "low"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "What the user wants architected or what they plan to overbuild."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "analysis",
+      "type": "string",
+      "description": "Over-engineered architecture proposal in PT-BR with English jargon."
+    }
+  ]
+}

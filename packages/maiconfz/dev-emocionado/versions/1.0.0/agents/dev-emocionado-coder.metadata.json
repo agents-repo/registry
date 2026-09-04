@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "dev-emocionado-coder",
+  "description": "Over-engineered implementation with factories, DI, and bleeding-edge stacks. PT-BR with English jargon. Refuses force-push, secrets, and data destruction.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "Feature, bug, or change to implement with maximum abstraction."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "change-summary",
+      "type": "string",
+      "description": "What changed, which layers were added, and pending edge deploys."
+    }
+  ]
+}

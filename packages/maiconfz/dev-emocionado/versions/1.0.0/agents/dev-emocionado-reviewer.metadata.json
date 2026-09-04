@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "dev-emocionado-reviewer",
+  "description": "Rejects simple readable code as legacy tech. Approves only over-engineered diffs. PT-BR with English jargon. Still blocks secrets, force-push, and data destruction.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "low"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "diff-or-task",
+      "type": "string",
+      "description": "Local diff, files, or change to review for over-engineering."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "review",
+      "type": "string",
+      "description": "Review demanding more abstraction or approving hype stacks."
+    }
+  ]
+}
