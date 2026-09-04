@@ -71,17 +71,17 @@ packages/maiconfz/dev-emocionado/versions/<version>/instructions.json
 ```
 
 Registry artifacts use **path-only** `/pkg/...` strings. WebApp consumers
-join the registry-proxy origin with those paths per
+join the registry origin with those paths per
 [`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):
 
-- **Origin:** `https://registry-proxy.maiconfz.workers.dev`
+- **Origin:** `https://registry.agents-repo.org`
 
 Illustrative absolute fetch URLs for version `1.0.0`:
 
 ```text
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/dev-emocionado/1.0.0/instructions.json
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-chat.agent.md
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/dev-emocionado/1.0.0/flows/dev-emocionado-overbuild.agent.md
+https://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.0/instructions.json
+https://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-chat.agent.md
+https://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.0/flows/dev-emocionado-overbuild.agent.md
 ```
 
 The `dev-emocionado-overbuild` flow lists step agents in frontmatter/metadata
