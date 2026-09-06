@@ -93,4 +93,11 @@ describe('catalog-release workflow canonical-repo guard', () => {
     const expression = jobIfExpression(jobBlock(catalogReleaseYaml, jobId));
     expect(expression).toContain(canonicalRepoGuard);
   });
+
+  it('restricts catalog-release workflow_dispatch to main', () => {
+    const expression = jobIfExpression(jobBlock(catalogReleaseYaml, 'catalog-release'));
+    expect(expression).toBe(
+      `${canonicalRepoGuard} && (github.event_name == 'schedule' || github.ref == 'refs/heads/main')`,
+    );
+  });
 });

@@ -1,6 +1,5 @@
 import { readFileSync } from 'node:fs';
-
-const PACKAGE_PR_TITLE_PATTERN = /^(feat|fix)\(package\)!?: ?/;
+import { PACKAGE_SQUASH_MERGE_TITLE_PATTERN } from './catalog-release-check.js';
 
 interface PullRequestEventPayload {
   readonly pull_request?: {
@@ -9,7 +8,7 @@ interface PullRequestEventPayload {
 }
 
 export const isValidPackagePrTitle = (title: string): boolean =>
-  PACKAGE_PR_TITLE_PATTERN.test(title);
+  PACKAGE_SQUASH_MERGE_TITLE_PATTERN.test(title);
 
 export const validatePackagePrTitleFromEventPath = (
   eventPath: string | undefined,

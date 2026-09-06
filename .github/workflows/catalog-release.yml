@@ -15,7 +15,9 @@ concurrency:
 jobs:
   catalog-release:
     name: Publish Catalog Release
-    if: github.repository == 'agents-repo/registry'
+    if: >-
+      github.repository == 'agents-repo/registry' &&
+      (github.event_name == 'schedule' || github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     permissions:
       contents: write
