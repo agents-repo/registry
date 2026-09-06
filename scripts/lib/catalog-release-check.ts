@@ -30,7 +30,7 @@ export const getLatestVersionTag = async (
   }
 };
 
-/** Paths under `packages/` changed between `fromRef` and `toRef` (inclusive range). */
+/** Paths under `packages/` changed on commits reachable from `toRef` but not from `fromRef`. */
 export const listChangedPackagePathsSinceRef = async (
   fromRef: string,
   toRef: string = 'HEAD',
@@ -95,23 +95,29 @@ export const evaluateCatalogReleaseCheck = async (
   };
 };
 
-/** CLI entry: exit 0 when catalog release is needed, 1 otherwise. */
+/** CLI entry: exit 0 when catalog release is needed, 1 when none, 2 on failure. */
 export const runCatalogReleaseCheckCli = async (argv: readonly string[]): Promise<void> => {
-  const json = argv.includes('--json');
-  const cwd = path.resolve(process.cwd());
-  const result = await evaluateCatalogReleaseCheck(cwd);
+  try {
+    const json = argv.includes('--json');
+    const cwd = path.resolve(process.cwd());
+    const result = await evaluateCatalogReleaseCheck(cwd);
 
-  if (json) {
-    process.stdout.write(`${JSON.stringify(result)}\n`);
-  } else if (result.hasUnreleasedChanges) {
-    const tagLabel = result.latestTag ?? '(no prior tag)';
-    process.stdout.write(
-      `Catalog release needed since ${tagLabel}: ${result.changedPaths.length} path(s) under packages/\n`,
-    );
-  } else {
-    const tagLabel = result.latestTag ?? '(no prior tag)';
-    process.stdout.write(`No unreleased package changes since ${tagLabel}\n`);
+    if (json) {
+      process.stdout.write(`${JSON.stringify(result)}\n`);
+    } else if (result.hasUnreleasedChanges) {
+      const tagLabel = result.latestTag ?? '(no prior tag)';
+      process.stdout.write(
+        `Catalog release needed since ${tagLabel}: ${result.changedPaths.length} path(s) under packages/\n`,
+      );
+    } else {
+      const tagLabel = result.latestTag ?? '(no prior tag)';
+      process.stdout.write(`No unreleased package changes since ${tagLabel}\n`);
+    }
+
+    process.exit(result.hasUnreleasedChanges ? 0 : 1);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    process.stderr.write(`catalog-release-check failed: ${message}\n`);
+    process.exit(2);
   }
-
-  process.exit(result.hasUnreleasedChanges ? 0 : 1);
 };

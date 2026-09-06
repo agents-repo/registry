@@ -19,8 +19,18 @@ export async function analyzeCommits(_pluginConfig, context) {
     });
     context.logger.log('Catalog batch plugin: unreleased package changes detected; releasing PATCH.');
     return 'patch';
-  } catch {
-    context.logger.log('Catalog batch plugin: no unreleased package changes; skipping release.');
-    return null;
+  } catch (error) {
+    const exitCode =
+      error !== null && typeof error === 'object' && 'status' in error ? error.status : undefined;
+    if (exitCode === 1) {
+      context.logger.log('Catalog batch plugin: no unreleased package changes; skipping release.');
+      return null;
+    }
+
+    const message = error instanceof Error ? error.message : String(error);
+    context.logger.error(
+      `Catalog batch plugin: catalog-release-check failed (exit ${exitCode ?? 'unknown'}): ${message}`,
+    );
+    throw error;
   }
 }

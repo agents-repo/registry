@@ -8,6 +8,7 @@
  * Exit codes:
  *   0 — unreleased package changes exist (catalog release should run)
  *   1 — no unreleased package changes
+ *   2 — unexpected failure (git errors, thrown exceptions)
  */
 
 import { runCatalogReleaseCheckCli } from './lib/catalog-release-check';

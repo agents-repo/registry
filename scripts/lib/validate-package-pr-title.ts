@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { PACKAGE_SQUASH_MERGE_TITLE_PATTERN } from './catalog-release-check.js';
+import { PACKAGE_SQUASH_MERGE_TITLE_PATTERN } from './catalog-release-check';
 
 interface PullRequestEventPayload {
   readonly pull_request?: {

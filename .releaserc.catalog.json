@@ -6,24 +6,6 @@
   "plugins": [
     "./scripts/semantic-release/catalog-batch-plugin.mjs",
     [
-      "@semantic-release/commit-analyzer",
-      {
-        "preset": "conventionalcommits",
-        "releaseRules": [
-          {
-            "type": "feat",
-            "scope": "package",
-            "release": false
-          },
-          {
-            "type": "fix",
-            "scope": "package",
-            "release": false
-          }
-        ]
-      }
-    ],
-    [
       "@semantic-release/release-notes-generator",
       {
         "preset": "conventionalcommits"
