@@ -153,15 +153,15 @@ describe('commit-analyzer release rules (.releaserc.json)', () => {
     expect(hasBlanketBreakingMajor).toBe(false);
   });
 
-  it('includes explicit feat(package) and fix(package) patch rules', () => {
+  it('includes explicit feat(package) and fix(package) no-release rules', () => {
     expect(
       customRules.some(
-        (rule) => rule.type === 'feat' && rule.scope === 'package' && rule.release === 'patch',
+        (rule) => rule.type === 'feat' && rule.scope === 'package' && rule.release === false,
       ),
     ).toBe(true);
     expect(
       customRules.some(
-        (rule) => rule.type === 'fix' && rule.scope === 'package' && rule.release === 'patch',
+        (rule) => rule.type === 'fix' && rule.scope === 'package' && rule.release === false,
       ),
     ).toBe(true);
   });
@@ -173,46 +173,22 @@ describe('commit-analyzer release rules (.releaserc.json)', () => {
     expect(hasUnscopedFeatMinor).toBe(false);
   });
 
-  it('maps feat(package): to patch', () => {
-    expect(resolveReleaseType({ type: 'feat', scope: 'package' }, customRules)).toBe('patch');
+  it('maps feat(package): to no release via analyzeCommits', async () => {
+    await expect(analyzeCommitMessage('feat(package): add agents-repo/foo')).resolves.toBeNull();
   });
 
-  it('maps breaking feat(package)!: to patch', () => {
-    expect(
-      resolveReleaseType(
-        {
-          type: 'feat',
-          scope: 'package',
-          notes: [...breakingFooter],
-        },
-        customRules,
-      ),
-    ).toBe('patch');
+  it('maps breaking feat(package)!: to no release via analyzeCommits', async () => {
+    await expect(
+      analyzeCommitMessage('feat(package)!: publish agents-repo/foo 2.0.0'),
+    ).resolves.toBeNull();
   });
 
-  it('maps breaking fix(package)!: to patch', () => {
-    expect(
-      resolveReleaseType(
-        {
-          type: 'fix',
-          scope: 'package',
-          notes: [...breakingFooter],
-        },
-        customRules,
-      ),
-    ).toBe('patch');
+  it('maps breaking fix(package)!: to no release via analyzeCommits', async () => {
+    await expect(analyzeCommitMessage('fix(package)!: correct agents-repo/foo')).resolves.toBeNull();
   });
 
-  it('short-circuits default breaking=>major when custom package rules match', () => {
-    const commit = {
-      type: 'feat',
-      scope: 'package',
-      notes: [...breakingFooter],
-    } as const;
-
-    expect(analyzeCommitForRelease(customRules, commit)).toBe('patch');
-    expect(analyzeCommitForRelease(DEFAULT_RELEASE_RULES, commit)).toBe('major');
-    expect(resolveReleaseType(commit, customRules)).toBe('patch');
+  it('maps fix(package): to no release via analyzeCommits', async () => {
+    await expect(analyzeCommitMessage('fix(package): correct agents-repo/foo')).resolves.toBeNull();
   });
 
   it('maps unscoped feat: to minor via built-in defaults', () => {
@@ -248,10 +224,6 @@ describe('commit-analyzer release rules (.releaserc.json)', () => {
     expect(resolveReleaseType({ type: 'feat', scope: 'release' }, customRules)).toBe('minor');
   });
 
-  it('maps fix(package): to patch via custom rules', () => {
-    expect(resolveReleaseType({ type: 'fix', scope: 'package' }, customRules)).toBe('patch');
-  });
-
   it('maps chore: to no release', () => {
     expect(resolveReleaseType({ type: 'chore' }, customRules)).toBeUndefined();
   });
@@ -260,24 +232,6 @@ describe('commit-analyzer release rules (.releaserc.json)', () => {
 describe('commit-analyzer analyzeCommits integration (.releaserc.json)', () => {
   it('uses the conventionalcommits preset parser with custom releaseRules only', () => {
     expect(loadCommitAnalyzerPluginConfig().preset).toBe('conventionalcommits');
-  });
-
-  it('maps feat(package)!: commit messages to patch via analyzeCommits', async () => {
-    await expect(
-      analyzeCommitMessage('feat(package)!: publish agents-repo/foo 2.0.0'),
-    ).resolves.toBe('patch');
-  });
-
-  it('maps fix(package)!: commit messages to patch via analyzeCommits', async () => {
-    await expect(analyzeCommitMessage('fix(package)!: correct agents-repo/foo')).resolves.toBe(
-      'patch',
-    );
-  });
-
-  it('maps feat(package): commit messages to patch via analyzeCommits', async () => {
-    await expect(analyzeCommitMessage('feat(package): add agents-repo/foo')).resolves.toBe(
-      'patch',
-    );
   });
 
   it('maps unscoped feat!: commit messages to major via analyzeCommits', async () => {

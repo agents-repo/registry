@@ -7,6 +7,7 @@ const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../
 const workflowsDir = path.join(repoRoot, '.github', 'workflows');
 const canonicalRepoGuard = "github.repository == 'agents-repo/registry'";
 const releaseJobIds = ['validate', 'release-dry-run', 'release-publish'] as const;
+const catalogReleaseJobIds = ['catalog-release'] as const;
 const prWorkflowFiles = [
   'pr-baseline.yml',
   'pr-package-validation.yml',
@@ -69,15 +70,27 @@ describe('release workflow canonical-repo guard', () => {
     expect(expression).toContain(canonicalRepoGuard);
   });
 
-  it('wraps release-publish push/dispatch OR after the repo check', () => {
+  it('wraps release-publish push/dispatch OR after the repo check and skips package squash merges', () => {
     const expression = jobIfExpression(jobBlock(releaseYaml, 'release-publish'));
     expect(expression).toBe(
-      `${canonicalRepoGuard} && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false && github.ref == 'refs/heads/main'))`,
+      `${canonicalRepoGuard} && ((github.event_name == 'workflow_dispatch' && inputs.dry_run == false && github.ref == 'refs/heads/main') || (github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.event.head_commit.message, 'feat(package):') && !startsWith(github.event.head_commit.message, 'feat(package)!:') && !startsWith(github.event.head_commit.message, 'fix(package):') && !startsWith(github.event.head_commit.message, 'fix(package)!:')))`,
     );
   });
 
   it.each(prWorkflowFiles)('does not gate %s on the canonical repository', (fileName) => {
     const yaml = readFileSync(path.join(workflowsDir, fileName), 'utf8');
     expect(yaml).not.toContain('github.repository ==');
+  });
+});
+
+describe('catalog-release workflow canonical-repo guard', () => {
+  const catalogReleaseYaml = readFileSync(
+    path.join(workflowsDir, 'catalog-release.yml'),
+    'utf8',
+  );
+
+  it.each(catalogReleaseJobIds)('gates %s on agents-repo/registry', (jobId) => {
+    const expression = jobIfExpression(jobBlock(catalogReleaseYaml, jobId));
+    expect(expression).toContain(canonicalRepoGuard);
   });
 });

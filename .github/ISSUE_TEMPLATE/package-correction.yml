@@ -26,12 +26,12 @@ body:
 
         **Example:** `package/56-my-package-id` or `package/my-package-id`
 
-        **PR title:** MUST use `fix(package):` so squash-merge publishes a
-        registry release tag. You MAY use `fix(package)!:` when the correction
-        includes a breaking package semver bump; this still publishes a registry
-        PATCH tag. GitHub uses the PR title as the default squash-merge commit
-        message, which MUST match this format so semantic-release publishes a
-        registry release tag.
+        **PR title:** MUST use `fix(package):` for package corrections. You MAY
+        use `fix(package)!:` when the correction includes a breaking package
+        semver bump. GitHub uses the PR title as the default squash-merge commit
+        message, which MUST match this format. Catalog registry tags publish
+        daily (~00:05 UTC) when `packages/` has unreleased changes; package
+        titles classify intent only.
 
         **Draft PR:** Open with `gh pr create --draft` before implementation
         commits. Author package source on the task branch, then run

@@ -1,0 +1,65 @@
+name: Catalog Release
+
+on:
+  schedule:
+    - cron: '5 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: catalog-release
+  cancel-in-progress: false
+
+jobs:
+  catalog-release:
+    name: Publish Catalog Release
+    if: github.repository == 'agents-repo/registry'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node and pinned npm
+        uses: ./.github/actions/setup-node-pinned-npm
+
+      - name: Validate runtime
+        run: npm run env:check
+
+      - name: Check for unreleased package changes
+        id: catalog-check
+        run: npm run catalog:release:check
+        continue-on-error: true
+
+      - name: Run markdown lint
+        if: steps.catalog-check.outcome == 'success'
+        run: npm run lint:md
+
+      - name: Run Sonar lint
+        if: steps.catalog-check.outcome == 'success'
+        run: npm run lint:sonar
+
+      - name: Run typecheck
+        if: steps.catalog-check.outcome == 'success'
+        run: npm run typecheck
+
+      - name: Run unit tests
+        if: steps.catalog-check.outcome == 'success'
+        run: npm run test:run
+
+      - name: Scan package ZIPs
+        if: steps.catalog-check.outcome == 'success'
+        run: npm run package:scan-zips
+
+      - name: Publish catalog release
+        if: steps.catalog-check.outcome == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run release:catalog

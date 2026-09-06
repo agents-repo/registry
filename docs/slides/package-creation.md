@@ -120,8 +120,8 @@ MUST use:
 
 - `feat(package):` or `fix(package):`
 
-Optional `!` emphasizes breaking **package** content in notes only. All package
-titles publish a registry **PATCH** so `v2.x` consumers update.
+Optional `!` emphasizes breaking **package** content in notes only. Catalog
+registry tags publish daily (~00:05 UTC) when `packages/` has unreleased changes.
 
 ---
 

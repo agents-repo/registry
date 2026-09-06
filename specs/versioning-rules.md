@@ -169,9 +169,9 @@ supported spec document version in this table.
 
 Package release versions in this document are independent from registry Git
 distribution tags (for example `v2.0.1`) that version the catalog snapshot
-consumed via refs like `v2.x`. Squash-merge commit titles for package
-submissions map to registry PATCH releases regardless of `!` emphasis; see
-`.github/CONTRIBUTING.md` for the commit-to-version mapping.
+consumed via refs like `v2.x`. Catalog registry tags are published daily when
+`packages/` has unreleased changes; package squash-merge titles classify intent
+only. See `.github/CONTRIBUTING.md` for the commit-to-version mapping.
 
 ## Immutability Rules
 

@@ -112,9 +112,10 @@ If relevant, describe impact on:
   manually authored or modified outside of `package-build` script output.
 - [ ] If this is a package submission: PR title uses `feat(package):` or
   `fix(package):` (or the optional `feat(package)!:` / `fix(package)!:` form
-  for breaking package semver emphasis). All package titles publish a registry
-  PATCH tag so `v2.x` consumers receive the update. CI validates this title in
-  `pr-package-validation` when package directories change.
+  for breaking package semver emphasis). Titles classify package intent; catalog
+  registry tags publish daily (~00:05 UTC) when `packages/` has unreleased
+  changes. CI validates this title in `pr-package-validation` when package
+  directories change.
 
 ## Risk and Rollback
 

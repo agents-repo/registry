@@ -117,9 +117,9 @@ See `.github/CONTRIBUTING.md` for the full workflow.
 
 See `.github/CONTRIBUTING.md` and `.releaserc.json` for commit-to-version
 mapping, package squash-merge titles (`feat(package):` / `fix(package):`),
-and semantic-release behavior. Package PRs: run `package:validate`, then
-`package:build`, then `package:validate-artifacts` locally before
-ready-for-review.
+daily catalog release train, and semantic-release behavior. Package PRs: run
+`package:validate`, then `package:build`, then `package:validate-artifacts`
+locally before ready-for-review.
 
 ## Commit Message Convention
 

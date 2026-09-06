@@ -166,7 +166,8 @@ See `.github/CONTRIBUTING.md` for the full edit workflow.
     <https://semver.org>.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
 - Pushes to `main` (post-merge integration via pull request, not direct push)
-    run the release validation checks and then execute `semantic-release`.
+    run release validation checks. Platform merges may execute `semantic-release`
+    immediately; package merges do not (see **Catalog release train** below).
 - Release jobs run only on `agents-repo/registry`. On forks they skip (the
     workflow run still appears; jobs are skipped, not disabled). Sync `main`
     from upstream to pick up the skip.
@@ -185,16 +186,34 @@ The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. The leading
 
 The release workflow uses Conventional Commit semantics. Custom release
 rules in `.releaserc.json` map all `feat(package)` and `fix(package)`
-commits—including `!` and `BREAKING CHANGE:` footers—to `PATCH`. Platform
-breaking changes use commit-analyzer built-in default rules when no custom
-rule matches:
+commits—including `!` and `BREAKING CHANGE:` footers—to **no immediate
+registry release**. Platform breaking changes use commit-analyzer built-in
+default rules when no custom rule matches:
 
 - `type!:` or `BREAKING CHANGE:` (without `package` scope) => `MAJOR`
-- `feat(package):` and `feat(package)!:` => `PATCH`
-  (catalog addition or new package version)
-- `fix(package):` and `fix(package)!:` => `PATCH` (package correction)
+- `feat(package):` and `feat(package)!:` => no immediate registry release
+  (catalog addition or new package version; batched daily)
+- `fix(package):` and `fix(package)!:` => no immediate registry release
+  (package correction; batched daily)
 - `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
 - `fix:`, `perf:`, and `revert:` with any scope except `package` => `PATCH`
+
+### Catalog release train
+
+Registry **catalog** Git tags (for `v2.x` consumers) are published by
+`.github/workflows/catalog-release.yml`:
+
+- **Schedule:** daily at **00:05 UTC**.
+- **Condition:** at most one registry **PATCH** when `packages/` has unreleased
+  changes since the latest `v*` tag.
+- **Manual:** `workflow_dispatch` on the same workflow.
+
+Package merges land on `main` immediately. `v2.x` pins may lag by up to ~24
+hours until the next catalog release when `packages/` changed. The
+[agents-repo CLI](https://github.com/agents-repo/cli) and `agents.json` refs
+like `v2.x` resolve catalog snapshots from registry Git tags; versioned
+`/pkg/.../<package-version>/...` paths on `registry.agents-repo.org` are
+independent of the catalog tag cadence.
 
 ### Registry distribution tags vs package versions
 
@@ -202,10 +221,11 @@ Registry Git tags (for example `v2.0.1`) version the **catalog snapshot**
 consumed via refs like `v2.x`. Package `versions/manifest.json` `latest` values
 version individual package compatibility. These layers are independent.
 
-All package squash-merge titles publish a registry **PATCH** so `v2.x` consumers
-receive catalog updates. Express breaking package compatibility in the package's
-own semver (for example `1.0.0` → `2.0.0`). Registry **MAJOR** is reserved for
-platform, tooling, or spec breaking commits without the `package` scope.
+Package squash-merge titles classify package intent; catalog registry tags are
+published on the daily catalog release train when `packages/` has unreleased
+changes. Express breaking package compatibility in the package's own semver
+(for example `1.0.0` → `2.0.0`). Registry **MAJOR** is reserved for platform,
+tooling, or spec breaking commits without the `package` scope.
 
 Commit types not listed above do not trigger an automated release.
 
@@ -214,9 +234,12 @@ Examples:
 - `feat!: remove legacy manifest field` => major bump
 - `feat: add release dashboard metadata` => minor bump
 - `feat(release): add scoped rules` => minor bump
-- `feat(package): add agents-repo/hello-agent` => patch bump
-- `feat(package)!: publish agents-repo/hello-agent 2.0.0` => patch bump
-- `fix(package): correct hello-agent metadata` => patch bump
+- `feat(package): add agents-repo/hello-agent` => no immediate registry release
+  (catalog batched daily)
+- `feat(package)!: publish agents-repo/hello-agent 2.0.0` => no immediate
+  registry release (catalog batched daily)
+- `fix(package): correct hello-agent metadata` => no immediate registry release
+  (catalog batched daily)
 - `fix: adjust lint config` => patch bump
 
 ## VS Code Workspace Settings

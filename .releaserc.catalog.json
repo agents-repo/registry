@@ -4,6 +4,7 @@
   ],
   "tagFormat": "v${version}",
   "plugins": [
+    "./scripts/semantic-release/catalog-batch-plugin.mjs",
     [
       "@semantic-release/commit-analyzer",
       {
