@@ -127,7 +127,8 @@ disclosure.
   <https://semver.org>.
 - `PATCH` is the canonical term for backward-compatible bugfix releases.
 - Pushes to `main` (post-merge integration via pull request, not direct push)
-  run release validation checks and then execute `semantic-release`.
+  run release validation checks. Platform merges may execute `semantic-release`
+  immediately; package merges do not (see **Catalog release train** below).
 - Release jobs run only when `github.repository` is `agents-repo/registry`.
   On forks and other copies, `validate`, `release-dry-run`, and
   `release-publish` skip. GitHub still starts the workflow; skipped jobs are
@@ -144,17 +145,38 @@ The semantic version value remains `<MAJOR>.<MINOR>.<PATCH>`. Release tags may
 use the common `v<MAJOR>.<MINOR>.<PATCH>` convention without changing the
 underlying version value.
 
-Commit-to-version mapping for automated releases. Custom release rules in
-`.releaserc.json` map all `feat(package)` and `fix(package)` commits—including
-`!` and `BREAKING CHANGE:` footers—to `PATCH`. Platform breaking changes use
-commit-analyzer built-in default rules when no custom rule matches:
+Commit-to-version mapping for automated **platform** releases on merge to
+`main`. Custom release rules in `.releaserc.json` map all `feat(package)` and
+`fix(package)` commits—including `!` and `BREAKING CHANGE:` footers—to **no
+immediate registry release**. Platform breaking changes use commit-analyzer
+built-in default rules when no custom rule matches:
 
 - `type!:` or `BREAKING CHANGE:` (without `package` scope) => `MAJOR`
-- `feat(package):` and `feat(package)!:` => `PATCH`
-  (catalog addition or new package version)
-- `fix(package):` and `fix(package)!:` => `PATCH` (package correction)
+- `feat(package):` and `feat(package)!:` => no immediate registry release
+  (catalog addition or new package version; batched daily)
+- `fix(package):` and `fix(package)!:` => no immediate registry release
+  (package correction; batched daily)
 - `feat:` with any other or no scope => `MINOR` (platform or tooling changes)
 - `fix:`, `perf:`, and `revert:` with any scope except `package` => `PATCH`
+
+### Catalog release train
+
+Registry **catalog** Git tags (for `v2.x` consumers) are published by
+[`.github/workflows/catalog-release.yml`](../workflows/catalog-release.yml):
+
+- **Schedule:** daily at **00:05 UTC** (`cron: '5 0 * * *'`).
+- **Condition:** publish at most one registry **PATCH** when `packages/` has
+  file changes since the latest `v*` tag.
+- **Manual:** `workflow_dispatch` on the same workflow for urgent catalog
+  publishes.
+- **Implementation:** `npm run catalog:release:check` gates the job;
+  `npm run release:catalog` runs catalog semantic-release in-place (no bot
+  commits on `main`).
+
+Package merges land on `main` immediately. `v2.x` pins may lag by up to
+~24 hours until the next catalog release when `packages/` changed. The
+[agents-repo CLI](https://github.com/agents-repo/cli) and `agents.json` refs
+like `v2.x` resolve catalog snapshots from registry Git tags.
 
 ### Registry distribution tags vs package versions
 
@@ -162,10 +184,11 @@ Registry Git tags (for example `v2.0.1`) version the **catalog snapshot**
 consumed via refs like `v2.x`. Package `versions/manifest.json` `latest` values
 version individual package compatibility. These layers are independent.
 
-All package squash-merge titles publish a registry **PATCH** so `v2.x` consumers
-receive catalog updates. Express breaking package compatibility in the package's
-own semver (for example `1.0.0` → `2.0.0`). Registry **MAJOR** is reserved for
-platform, tooling, or spec breaking commits without the `package` scope.
+Package squash-merge titles classify package intent; catalog registry tags are
+published on the daily catalog release train when `packages/` has unreleased
+changes. Express breaking package compatibility in the package's own semver
+(for example `1.0.0` → `2.0.0`). Registry **MAJOR** is reserved for platform,
+tooling, or spec breaking commits without the `package` scope.
 
 Commit types not listed above do not trigger an automated release.
 
@@ -355,24 +378,25 @@ generate it from the latest snapshot. Do not author files under `versions/`.
 All `versions/` artifacts are produced by `package-build`, except the
 one-time README backfill described in `specs/versioning-rules.md`.
 
-### Squash-merge title for registry release
+### Squash-merge title for package classification
 
 When squash-merging a package submission PR, the resulting commit title
 MUST use `feat(package):` for new packages or new package versions, or
 `fix(package):` for corrections to published package content. You MAY use
 `feat(package)!:` or `fix(package)!:` to emphasize breaking **package**
-content in release notes when the published package semver is a breaking bump
-(for example `1.x` → `2.x`). The `!` does **not** trigger a registry MAJOR;
-all package-scoped titles publish a registry **PATCH** per `.releaserc.json`.
+content when the published package semver is a breaking bump (for example
+`1.x` → `2.x`). The `!` does **not** trigger a registry MAJOR.
 
 The PR title should match, since GitHub uses it as the default squash-merge
 message. Maintainers MUST NOT edit the squash-merge message away from the
 validated PR title when merging package PRs.
 
-This format triggers a registry release tag so `v2.x` consumers receive the
-updated `packages/index.json`. Registry-line breaking changes (layout, index
-schema, namespace contract) MUST use platform commits (`feat!:`, spec changes),
-not `feat(package)!:`.
+These titles classify package intent for history and release notes. Catalog
+registry tags for `v2.x` consumers are published on the daily catalog release
+train when `packages/` has unreleased changes (see **Catalog release train**
+above). Registry-line breaking changes (layout, index schema, namespace
+contract) MUST use platform commits (`feat!:`, spec changes), not
+`feat(package)!:`.
 
 CI enforces the PR title in the `pr-package-validation` workflow via
 `npm run package:validate` when package directories change. Local

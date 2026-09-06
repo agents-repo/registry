@@ -33,7 +33,10 @@
     "prepare": "husky",
     "typecheck": "tsc --noEmit",
     "release": "semantic-release",
-    "release:dry-run": "semantic-release --dry-run"
+    "release:dry-run": "semantic-release --dry-run",
+    "release:catalog": "semantic-release --extends .releaserc.catalog.json",
+    "release:catalog:dry-run": "semantic-release --extends .releaserc.catalog.json --dry-run",
+    "catalog:release:check": "tsx scripts/catalog-release-check.ts"
   },
   "engines": {
     "node": "24.18.0"

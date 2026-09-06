@@ -34,10 +34,10 @@ body:
         **PR title:** use `feat(package):` for new packages or new package
         versions. When the published package semver is a breaking bump (for
         example `1.x` → `2.x`), you MAY use `feat(package)!:` to emphasize
-        breaking package content in release notes; this still publishes a
-        registry PATCH tag. GitHub uses the PR title as the default
-        squash-merge commit message, which MUST match this format so
-        semantic-release publishes a registry release tag.
+        breaking package content in release notes. GitHub uses the PR title as
+        the default squash-merge commit message, which MUST match this format.
+        Catalog registry tags publish daily (~00:05 UTC) when `packages/` has
+        unreleased changes; package titles classify intent only.
 
         **Draft PR:** Open with `gh pr create --draft` before implementation
         commits. The suggested authoring path is `full-package-creation-flow`

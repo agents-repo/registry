@@ -1,0 +1,74 @@
+name: Catalog Release
+
+on:
+  schedule:
+    - cron: '5 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: catalog-release
+  cancel-in-progress: false
+
+jobs:
+  catalog-release:
+    name: Publish Catalog Release
+    if: >-
+      github.repository == 'agents-repo/registry' &&
+      (github.event_name == 'schedule' || github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node and pinned npm
+        uses: ./.github/actions/setup-node-pinned-npm
+
+      - name: Validate runtime
+        run: npm run env:check
+
+      - name: Check for unreleased package changes
+        id: catalog-check
+        run: |
+          set +e
+          npm run catalog:release:check
+          EXIT_CODE=$?
+          echo "exitcode=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          if [ "$EXIT_CODE" -eq 2 ]; then
+            exit 2
+          fi
+          exit 0
+
+      - name: Run markdown lint
+        if: steps.catalog-check.outputs.exitcode == '0'
+        run: npm run lint:md
+
+      - name: Run Sonar lint
+        if: steps.catalog-check.outputs.exitcode == '0'
+        run: npm run lint:sonar
+
+      - name: Run typecheck
+        if: steps.catalog-check.outputs.exitcode == '0'
+        run: npm run typecheck
+
+      - name: Run unit tests
+        if: steps.catalog-check.outputs.exitcode == '0'
+        run: npm run test:run
+
+      - name: Scan package ZIPs
+        if: steps.catalog-check.outputs.exitcode == '0'
+        run: npm run package:scan-zips
+
+      - name: Publish catalog release
+        if: steps.catalog-check.outputs.exitcode == '0'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm run release:catalog

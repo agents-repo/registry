@@ -12,12 +12,12 @@
           {
             "type": "feat",
             "scope": "package",
-            "release": "patch"
+            "release": false
           },
           {
             "type": "fix",
             "scope": "package",
-            "release": "patch"
+            "release": false
           }
         ]
       }

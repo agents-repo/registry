@@ -1,6 +1,5 @@
 import { readFileSync } from 'node:fs';
-
-const PACKAGE_PR_TITLE_PATTERN = /^(feat|fix)\(package\)!?: ?/;
+import { PACKAGE_SQUASH_MERGE_TITLE_PATTERN } from './catalog-release-check';
 
 interface PullRequestEventPayload {
   readonly pull_request?: {
@@ -9,7 +8,7 @@ interface PullRequestEventPayload {
 }
 
 export const isValidPackagePrTitle = (title: string): boolean =>
-  PACKAGE_PR_TITLE_PATTERN.test(title);
+  PACKAGE_SQUASH_MERGE_TITLE_PATTERN.test(title);
 
 export const validatePackagePrTitleFromEventPath = (
   eventPath: string | undefined,
@@ -38,7 +37,10 @@ export const validatePackagePrTitleFromEventPath = (
       'Package PR title must start with feat(package): or fix(package):.',
     );
     console.error(
-      'Optional feat(package)!: / fix(package)!: forms emphasize breaking package content; registry release stays PATCH.',
+      'Optional feat(package)!: / fix(package)!: forms emphasize breaking package content in package semver.',
+    );
+    console.error(
+      'Catalog registry tags are published daily when packages/ has unreleased changes; package titles classify intent only.',
     );
     console.error(`Current title: ${title}`);
     process.exit(1);
