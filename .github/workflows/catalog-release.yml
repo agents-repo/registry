@@ -37,31 +37,38 @@ jobs:
 
       - name: Check for unreleased package changes
         id: catalog-check
-        run: npm run catalog:release:check
-        continue-on-error: true
+        run: |
+          set +e
+          npm run catalog:release:check
+          EXIT_CODE=$?
+          echo "exitcode=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          if [ "$EXIT_CODE" -eq 2 ]; then
+            exit 2
+          fi
+          exit 0
 
       - name: Run markdown lint
-        if: steps.catalog-check.outcome == 'success'
+        if: steps.catalog-check.outputs.exitcode == '0'
         run: npm run lint:md
 
       - name: Run Sonar lint
-        if: steps.catalog-check.outcome == 'success'
+        if: steps.catalog-check.outputs.exitcode == '0'
         run: npm run lint:sonar
 
       - name: Run typecheck
-        if: steps.catalog-check.outcome == 'success'
+        if: steps.catalog-check.outputs.exitcode == '0'
         run: npm run typecheck
 
       - name: Run unit tests
-        if: steps.catalog-check.outcome == 'success'
+        if: steps.catalog-check.outputs.exitcode == '0'
         run: npm run test:run
 
       - name: Scan package ZIPs
-        if: steps.catalog-check.outcome == 'success'
+        if: steps.catalog-check.outputs.exitcode == '0'
         run: npm run package:scan-zips
 
       - name: Publish catalog release
-        if: steps.catalog-check.outcome == 'success'
+        if: steps.catalog-check.outputs.exitcode == '0'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run release:catalog

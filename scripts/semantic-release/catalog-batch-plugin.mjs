@@ -20,8 +20,10 @@ export async function analyzeCommits(_pluginConfig, context) {
     context.logger.log('Catalog batch plugin: unreleased package changes detected; releasing PATCH.');
     return 'patch';
   } catch (error) {
-    const exitCode =
+    const rawStatus =
       error !== null && typeof error === 'object' && 'status' in error ? error.status : undefined;
+    const exitCode =
+      typeof rawStatus === 'number' && Number.isFinite(rawStatus) ? rawStatus : undefined;
     if (exitCode === 1) {
       context.logger.log('Catalog batch plugin: no unreleased package changes; skipping release.');
       return null;
