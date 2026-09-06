@@ -8,46 +8,23 @@ export interface DeploymentAgentFile {
   content: string;
 }
 
-function collectIdsFromDir(
-  packageDir: string,
-  dirName: string,
-  seenIds: Set<string>,
-  ids: string[],
-): void {
-  const dirPath = path.join(packageDir, dirName);
-  if (!fs.existsSync(dirPath)) {
-    return;
-  }
-
-  for (const fileName of fs.readdirSync(dirPath)) {
-    if (!fileName.endsWith(AGENT_FILE_EXT)) {
-      continue;
-    }
-
-    const id = fileName.slice(0, -AGENT_FILE_EXT.length);
-    if (seenIds.has(id)) {
-      throw new PackageError(
-        ErrorCode.ERR_ZIP_COLLISION,
-        `Collision building deployment listing: "${dirName}/${fileName}" conflicts with an existing agent or flow id`,
-      );
-    }
-
-    seenIds.add(id);
-    ids.push(id);
-  }
+interface DeploymentAgentEntry {
+  id: string;
+  dirPath: string;
+  fileName: string;
 }
 
-function collectFromDir(
+function collectAgentEntries(
   packageDir: string,
   dirName: string,
   seenIds: Set<string>,
-  files: DeploymentAgentFile[],
-): void {
+): DeploymentAgentEntry[] {
   const dirPath = path.join(packageDir, dirName);
   if (!fs.existsSync(dirPath)) {
-    return;
+    return [];
   }
 
+  const entries: DeploymentAgentEntry[] = [];
   for (const fileName of fs.readdirSync(dirPath)) {
     if (!fileName.endsWith(AGENT_FILE_EXT)) {
       continue;
@@ -62,29 +39,31 @@ function collectFromDir(
     }
 
     seenIds.add(id);
-    files.push({
-      id,
-      content: fs.readFileSync(path.join(dirPath, fileName), 'utf-8'),
-    });
+    entries.push({ id, dirPath, fileName });
   }
+
+  return entries;
+}
+
+function collectAllAgentEntries(packageDir: string): DeploymentAgentEntry[] {
+  const seenIds = new Set<string>();
+  return [
+    ...collectAgentEntries(packageDir, AGENTS_DIR, seenIds),
+    ...collectAgentEntries(packageDir, FLOWS_DIR, seenIds),
+  ];
 }
 
 export function listDeploymentAgentFileIds(packageDir: string): string[] {
-  const seenIds = new Set<string>();
-  const ids: string[] = [];
-
-  collectIdsFromDir(packageDir, AGENTS_DIR, seenIds, ids);
-  collectIdsFromDir(packageDir, FLOWS_DIR, seenIds, ids);
-
-  return ids.sort((left, right) => left.localeCompare(right));
+  return collectAllAgentEntries(packageDir)
+    .map((entry) => entry.id)
+    .sort((left, right) => left.localeCompare(right));
 }
 
 export function listDeploymentAgentFiles(packageDir: string): DeploymentAgentFile[] {
-  const seenIds = new Set<string>();
-  const files: DeploymentAgentFile[] = [];
-
-  collectFromDir(packageDir, AGENTS_DIR, seenIds, files);
-  collectFromDir(packageDir, FLOWS_DIR, seenIds, files);
-
-  return files.sort((left, right) => left.id.localeCompare(right.id));
+  return collectAllAgentEntries(packageDir)
+    .map((entry) => ({
+      id: entry.id,
+      content: fs.readFileSync(path.join(entry.dirPath, entry.fileName), 'utf-8'),
+    }))
+    .sort((left, right) => left.id.localeCompare(right.id));
 }

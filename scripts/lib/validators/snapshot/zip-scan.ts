@@ -137,19 +137,16 @@ function validateFrontmatterVersion(
   }
 }
 
-function validateDeploymentEntry(
+function validatePatternedFrontmatterEntry(
   entry: AdmZip.IZipEntry,
   name: string,
   expectedVersion: string,
   issues: ValidationIssue[],
+  pattern: RegExp,
+  unexpectedMessage: string,
 ): void {
-  if (!DEPLOYMENT_ZIP_ENTRY_PATTERN.test(name)) {
-    issues.push(
-      err(
-        'ERR_ZIP_UNEXPECTED_ENTRY',
-        `Unexpected entry in deployment ZIP: "${name}" — only agents/<id>.agent.md is allowed`,
-      ),
-    );
+  if (!pattern.test(name)) {
+    issues.push(err('ERR_ZIP_UNEXPECTED_ENTRY', unexpectedMessage));
     return;
   }
 
@@ -227,23 +224,43 @@ function validateSkillEntry(entry: AdmZip.IZipEntry, name: string, issues: Valid
   }
 }
 
-function validateClaudeEntry(
+type ZipEntryVisitor = (
   entry: AdmZip.IZipEntry,
   name: string,
-  expectedVersion: string,
   issues: ValidationIssue[],
-): void {
-  if (!CLAUDE_AGENT_ENTRY_PATTERN.test(name)) {
-    issues.push(
-      err(
-        'ERR_ZIP_UNEXPECTED_ENTRY',
-        `Unexpected entry in Claude target ZIP: "${name}"`,
-      ),
-    );
-    return;
+) => void;
+
+function scanZipEntries(zipPath: string, visit: ZipEntryVisitor): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+  let zip: AdmZip;
+  try {
+    zip = new AdmZip(zipPath);
+  } catch (error) {
+    return [err('ERR_ZIP_MALFORMED_ENTRY', `Cannot open ZIP: ${zipPath} — ${error}`)];
   }
 
-  validateFrontmatterVersion(entry, name, expectedVersion, issues, 'deployment');
+  const seenExact = new Set<string>();
+  const seenLower = new Map<string, string>();
+
+  for (const entry of zip.getEntries()) {
+    const name = entry.entryName;
+    if (name.endsWith('/')) {
+      continue;
+    }
+
+    if (!validateEntryPath(name, issues)) {
+      continue;
+    }
+
+    if (!validateNotSymlink(entry, name, issues)) {
+      continue;
+    }
+
+    trackEntryCollisions(name, issues, seenExact, seenLower);
+    visit(entry, name, issues);
+  }
+
+  return issues;
 }
 
 export function scanTargetArtifactZip(
@@ -255,86 +272,40 @@ export function scanTargetArtifactZip(
     return scanSnapshotZip(zipPath, { type: 'deployment', expectedVersion });
   }
 
-  const issues: ValidationIssue[] = [];
-  let zip: AdmZip;
-  try {
-    zip = new AdmZip(zipPath);
-  } catch (error) {
-    return [err('ERR_ZIP_MALFORMED_ENTRY', `Cannot open ZIP: ${zipPath} — ${error}`)];
-  }
-
-  const entries = zip.getEntries();
-  const seenExact = new Set<string>();
-  const seenLower = new Map<string, string>();
-
-  for (const entry of entries) {
-    const name = entry.entryName;
-    if (name.endsWith('/')) {
-      continue;
-    }
-
-    if (!validateEntryPath(name, issues)) {
-      continue;
-    }
-
-    if (!validateNotSymlink(entry, name, issues)) {
-      continue;
-    }
-
-    trackEntryCollisions(name, issues, seenExact, seenLower);
-
+  return scanZipEntries(zipPath, (entry, name, issues) => {
     if (targetId === 'claude-code') {
-      validateClaudeEntry(entry, name, expectedVersion, issues);
-      continue;
+      validatePatternedFrontmatterEntry(
+        entry,
+        name,
+        expectedVersion,
+        issues,
+        CLAUDE_AGENT_ENTRY_PATTERN,
+        `Unexpected entry in Claude target ZIP: "${name}"`,
+      );
+      return;
     }
 
     validateSkillEntry(entry, name, issues);
-  }
-
-  return issues;
+  });
 }
 
 export function scanSnapshotZip(
   zipPath: string,
   opts: { type: 'deployment' | 'source'; expectedVersion: string },
 ): ValidationIssue[] {
-  const issues: ValidationIssue[] = [];
-
-  let zip: AdmZip;
-  try {
-    zip = new AdmZip(zipPath);
-  } catch (error) {
-    return [err('ERR_ZIP_MALFORMED_ENTRY', `Cannot open ZIP: ${zipPath} — ${error}`)];
-  }
-
-  const entries = zip.getEntries();
-  const seenExact = new Set<string>();
-  const seenLower = new Map<string, string>();
-
-  for (const entry of entries) {
-    const name = entry.entryName;
-
-    if (name.endsWith('/')) {
-      continue;
-    }
-
-    if (!validateEntryPath(name, issues)) {
-      continue;
-    }
-
-    if (!validateNotSymlink(entry, name, issues)) {
-      continue;
-    }
-
-    trackEntryCollisions(name, issues, seenExact, seenLower);
-
+  return scanZipEntries(zipPath, (entry, name, issues) => {
     if (opts.type === 'deployment') {
-      validateDeploymentEntry(entry, name, opts.expectedVersion, issues);
-      continue;
+      validatePatternedFrontmatterEntry(
+        entry,
+        name,
+        opts.expectedVersion,
+        issues,
+        DEPLOYMENT_ZIP_ENTRY_PATTERN,
+        `Unexpected entry in deployment ZIP: "${name}" — only agents/<id>.agent.md is allowed`,
+      );
+      return;
     }
 
     validateSourceEntry(entry, name, opts.expectedVersion, issues);
-  }
-
-  return issues;
+  });
 }
