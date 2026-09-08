@@ -136,6 +136,60 @@ function parseDefaultInstruction(
   return { kind, id };
 }
 
+function parseConsumptionChannelEntry(
+  entry: unknown,
+  seen: Set<string>,
+): ConsumptionChannel {
+  if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      'metadata.json compatibility.consumption entries must be objects',
+    );
+  }
+
+  const record = entry as Record<string, unknown>;
+  const id = record['id'];
+  const status = record['status'];
+
+  if (!isConsumptionChannelId(id)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `metadata.json compatibility.consumption id must be one of: ${CHAT_WEB_CONSUMPTION_ID}`,
+    );
+  }
+
+  if (!isConsumptionChannelStatus(status)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      'metadata.json compatibility.consumption status must be supported or planned',
+    );
+  }
+
+  if (seen.has(id)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `metadata.json compatibility.consumption contains duplicate id: ${id}`,
+    );
+  }
+
+  seen.add(id);
+  const channelContext = `metadata.json compatibility.consumption entry "${id}"`;
+  const defaultInstruction = parseConsumptionDefaultInstruction(id, record, channelContext);
+
+  if (defaultInstruction !== undefined && status === 'planned') {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `${channelContext}: defaultInstruction requires chat-web status supported`,
+    );
+  }
+
+  return {
+    id,
+    status,
+    ...(defaultInstruction === undefined ? {} : { defaultInstruction }),
+  };
+}
+
 function parseConsumptionChannels(value: unknown): ConsumptionChannel[] | undefined {
   if (value === undefined) {
     return undefined;
@@ -152,54 +206,7 @@ function parseConsumptionChannels(value: unknown): ConsumptionChannel[] | undefi
   const seen = new Set<string>();
 
   for (const entry of value) {
-    if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
-      throw new PackageError(
-        ErrorCode.ERR_METADATA_INVALID,
-        'metadata.json compatibility.consumption entries must be objects',
-      );
-    }
-
-    const record = entry as Record<string, unknown>;
-    const id = record['id'];
-    const status = record['status'];
-
-    if (!isConsumptionChannelId(id)) {
-      throw new PackageError(
-        ErrorCode.ERR_METADATA_INVALID,
-        `metadata.json compatibility.consumption id must be one of: ${CHAT_WEB_CONSUMPTION_ID}`,
-      );
-    }
-
-    if (!isConsumptionChannelStatus(status)) {
-      throw new PackageError(
-        ErrorCode.ERR_METADATA_INVALID,
-        'metadata.json compatibility.consumption status must be supported or planned',
-      );
-    }
-
-    if (seen.has(id)) {
-      throw new PackageError(
-        ErrorCode.ERR_METADATA_INVALID,
-        `metadata.json compatibility.consumption contains duplicate id: ${id}`,
-      );
-    }
-
-    seen.add(id);
-    const channelContext = `metadata.json compatibility.consumption entry "${id}"`;
-    const defaultInstruction = parseConsumptionDefaultInstruction(id, record, channelContext);
-
-    if (defaultInstruction !== undefined && status === 'planned') {
-      throw new PackageError(
-        ErrorCode.ERR_METADATA_INVALID,
-        `${channelContext}: defaultInstruction requires chat-web status supported`,
-      );
-    }
-
-    channels.push({
-      id,
-      status,
-      ...(defaultInstruction === undefined ? {} : { defaultInstruction }),
-    });
+    channels.push(parseConsumptionChannelEntry(entry, seen));
   }
 
   return channels;

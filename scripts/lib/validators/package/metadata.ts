@@ -1,6 +1,12 @@
 import { ValidationUtils } from '../../validation-utils';
 import type { PackageMetadata, ValidationIssue } from '../../types';
-import { isInstallTargetId, isInstallTargetStatus, isPackageCostBand, isStatus } from '../../types';
+import {
+  isInstallTargetId,
+  isInstallTargetStatus,
+  isPackageCostBand,
+  isStatus,
+  isInstructionKind,
+} from '../../types';
 import { err } from '../common/issues';
 import { validateSchemaVersion } from './schema-version';
 import {
@@ -19,7 +25,6 @@ import {
   CHAT_WEB_CONSUMPTION_ID,
   ID_PATTERN,
 } from '../../constants';
-import { isInstructionKind } from '../../types';
 
 function validateName(
   m: Record<string, unknown>,
