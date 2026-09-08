@@ -1,6 +1,12 @@
 import { ValidationUtils } from '../../validation-utils';
 import type { PackageMetadata, ValidationIssue } from '../../types';
-import { isInstallTargetId, isInstallTargetStatus, isPackageCostBand, isStatus } from '../../types';
+import {
+  isInstallTargetId,
+  isInstallTargetStatus,
+  isPackageCostBand,
+  isStatus,
+  isInstructionKind,
+} from '../../types';
 import { err } from '../common/issues';
 import { validateSchemaVersion } from './schema-version';
 import {
@@ -16,6 +22,8 @@ import {
   SCHEMA_FAMILY_PACKAGE,
   CONSUMPTION_CHANNEL_IDS,
   CONSUMPTION_CHANNEL_STATUSES,
+  CHAT_WEB_CONSUMPTION_ID,
+  ID_PATTERN,
 } from '../../constants';
 
 function validateName(
@@ -338,6 +346,61 @@ function validateCompatibilityField(m: Record<string, unknown>, issues: Validati
   validateConsumptionField(record, issues);
 }
 
+function validateDefaultInstructionField(
+  channel: Record<string, unknown>,
+  channelId: string,
+  status: unknown,
+  issues: ValidationIssue[],
+): void {
+  const defaultInstruction = channel['defaultInstruction'];
+  if (defaultInstruction === undefined) {
+    return;
+  }
+
+  const context = `compatibility.consumption entry "${channelId}"`;
+
+  if (channelId !== CHAT_WEB_CONSUMPTION_ID) {
+    issues.push(
+      err('ERR_METADATA_INVALID', `${context}: defaultInstruction is only allowed on chat-web entries`),
+    );
+    return;
+  }
+
+  if (status === 'planned') {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `${context}: defaultInstruction requires chat-web status supported`,
+      ),
+    );
+    return;
+  }
+
+  if (typeof defaultInstruction !== 'object' || defaultInstruction === null || Array.isArray(defaultInstruction)) {
+    issues.push(err('ERR_METADATA_INVALID', `${context}: defaultInstruction must be an object when provided`));
+    return;
+  }
+
+  const record = defaultInstruction as Record<string, unknown>;
+  const kind = record['kind'];
+  const id = record['id'];
+
+  if (!isInstructionKind(kind)) {
+    issues.push(
+      err('ERR_METADATA_INVALID', `${context}: defaultInstruction.kind must be agent or flow`),
+    );
+  }
+
+  if (typeof id !== 'string' || !ID_PATTERN.test(id)) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `${context}: defaultInstruction.id must be lowercase kebab-case`,
+      ),
+    );
+  }
+}
+
 function validateConsumptionField(record: Record<string, unknown>, issues: ValidationIssue[]): void {
   if (record['consumption'] === undefined) {
     return;
@@ -391,6 +454,10 @@ function validateConsumptionField(record: Record<string, unknown>, issues: Valid
           'compatibility.consumption status must be supported or planned',
         ),
       );
+    }
+
+    if (typeof id === 'string') {
+      validateDefaultInstructionField(channel, id, status, issues);
     }
   }
 }

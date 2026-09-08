@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { isChatWebEntryIncluded, isChatWebSupported, projectChatWebForIndex } from '../../../../scripts/lib/compatibility';
+import {
+  getChatWebDefaultInstruction,
+  isChatWebEntryIncluded,
+  isChatWebSupported,
+  parsePackageCompatibility,
+  projectChatWebForIndex,
+} from '../../../../scripts/lib/compatibility';
 import type { ManifestVersionEntry, PackageMetadata } from '../../../../scripts/lib/types';
 
 function baseMetadata(): PackageMetadata {
@@ -45,5 +51,29 @@ describe('chat-web compatibility', (): void => {
       instructionsSha256: 'b'.repeat(64),
     };
     expect(projectChatWebForIndex(baseMetadata(), entry)).toBe(true);
+  });
+
+  it('parses defaultInstruction on the chat-web consumption entry', (): void => {
+    const metadata = baseMetadata();
+    metadata.compatibility = {
+      targets: [{ id: 'cursor', status: 'supported' }],
+      consumption: [
+        {
+          id: 'chat-web',
+          status: 'supported',
+          defaultInstruction: { kind: 'flow', id: 'main-flow' },
+        },
+      ],
+    };
+
+    const compatibility = parsePackageCompatibility(metadata);
+    expect(compatibility.consumption?.[0]?.defaultInstruction).toEqual({
+      kind: 'flow',
+      id: 'main-flow',
+    });
+    expect(getChatWebDefaultInstruction(metadata)).toEqual({
+      kind: 'flow',
+      id: 'main-flow',
+    });
   });
 });

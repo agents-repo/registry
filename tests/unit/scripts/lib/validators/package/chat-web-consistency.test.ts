@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { validateChatWebIncludedRequiresSupportedChannel } from '../../../../../../scripts/lib/validators/package/chat-web-consistency';
+import { validateChatWebDefaultInstruction, validateChatWebIncludedRequiresSupportedChannel } from '../../../../../../scripts/lib/validators/package/chat-web-consistency';
 import type { PackageMetadata, ValidationIssue } from '../../../../../../scripts/lib/types';
 
 const createdDirs: string[] = [];
@@ -57,5 +57,75 @@ describe('validateChatWebIncludedRequiresSupportedChannel', (): void => {
     const issues: ValidationIssue[] = [];
     validateChatWebIncludedRequiresSupportedChannel(packageDir, metadata, issues);
     expect(issues.some((issue) => issue.message.includes('chatWeb "included"'))).toBe(true);
+  });
+});
+
+describe('validateChatWebDefaultInstruction', (): void => {
+  it('errors when defaultInstruction references an excluded agent', (): void => {
+    const packageDir = fs.mkdtempSync(path.join(os.tmpdir(), 'chat-web-val-'));
+    createdDirs.push(packageDir);
+    const agentsDir = path.join(packageDir, 'agents');
+    fs.mkdirSync(agentsDir, { recursive: true });
+
+    for (const [id, chatWeb] of [['keep', undefined], ['skip', 'excluded']] as const) {
+      fs.writeFileSync(
+        path.join(agentsDir, `${id}.agent.md`),
+        `---
+name: ${id}
+version: 1.0.0
+description: Agent ${id} for tests.
+license: MIT
+---
+
+# ${id}
+`,
+        'utf-8',
+      );
+      fs.writeFileSync(
+        path.join(agentsDir, `${id}.metadata.json`),
+        JSON.stringify({
+          schemaVersion: '1.0.0',
+          name: id,
+          description: `Agent ${id} for tests.`,
+          license: 'MIT',
+          status: 'active',
+          category: 'assistant',
+          estimateCost: { estimatedCost: 2, band: 'minimal' },
+          ...(chatWeb === undefined ? {} : { chatWeb }),
+        }),
+        'utf-8',
+      );
+    }
+
+    const metadata = {
+      schemaVersion: '1.0.0',
+      name: 'pkg',
+      description: 'Package',
+      owner: 'agents-repo',
+      license: 'MIT',
+      homepage: 'https://example.com',
+      repository: 'https://example.com',
+      tags: [],
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+      version: '1.0.0',
+      status: 'active',
+      category: 'assistant',
+      estimateOverallCost: { band: 'low' },
+      compatibility: {
+        targets: [{ id: 'cursor', status: 'supported' }],
+        consumption: [
+          {
+            id: 'chat-web',
+            status: 'supported',
+            defaultInstruction: { kind: 'agent', id: 'skip' },
+          },
+        ],
+      },
+    } as PackageMetadata;
+
+    const issues: ValidationIssue[] = [];
+    validateChatWebDefaultInstruction(packageDir, metadata, issues);
+    expect(issues.some((issue) => issue.message.includes('defaultInstruction'))).toBe(true);
   });
 });

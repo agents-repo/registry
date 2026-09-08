@@ -7,6 +7,7 @@ import {
   AGENTS_DIR,
   DETAIL_FILENAME,
   FLOWS_DIR,
+  INSTRUCTIONS_FILENAME,
   METADATA_FILENAME,
   README_FILENAME,
   SCHEMA_FAMILY_PACKAGE_DETAIL,
@@ -15,7 +16,7 @@ import {
 import { ErrorCode, PackageError } from './errors';
 import { readJsonFile, readTextFileIfExists, writeJsonFile } from './io/json';
 import { getSchemaCurrentVersion } from './schema-versions';
-import type { EstimateCost, Manifest, PackageMetadata, PackageRef, StatusValue } from './types';
+import type { DefaultInstructionRef, EstimateCost, Manifest, PackageMetadata, PackageRef, StatusValue } from './types';
 import { isCostBand, isStatus } from './types';
 
 export interface PackageDetailEntry {
@@ -51,6 +52,7 @@ export interface PackageDetailDocument {
   };
   chatWeb?: true;
   instructionsPath?: string;
+  defaultInstruction?: DefaultInstructionRef;
 }
 
 function requireString(value: unknown, field: string, context: string): string {
@@ -204,6 +206,28 @@ export function buildPackageDetailDocument(
   if (latestEntry !== undefined && projectChatWebForIndex(metadata, latestEntry)) {
     document.chatWeb = true;
     document.instructionsPath = `/pkg/${ref.namespace}/${ref.packageId}/${latest}/instructions.json`;
+
+    const instructionsPath = path.join(snapshotDir, INSTRUCTIONS_FILENAME);
+    if (fs.existsSync(instructionsPath)) {
+      const instructionsManifest = readJsonFile<Record<string, unknown>>(instructionsPath);
+      const defaultInstruction = instructionsManifest['defaultInstruction'];
+      if (
+        typeof defaultInstruction === 'object' &&
+        defaultInstruction !== null &&
+        !Array.isArray(defaultInstruction)
+      ) {
+        const record = defaultInstruction as Record<string, unknown>;
+        const kind = record['kind'];
+        const id = record['id'];
+        if (
+          (kind === 'agent' || kind === 'flow') &&
+          typeof id === 'string' &&
+          id.trim().length > 0
+        ) {
+          document.defaultInstruction = { kind, id };
+        }
+      }
+    }
   }
 
   return document;

@@ -1,7 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { isChatWebSupported } from '../../compatibility';
+import { getChatWebDefaultInstruction, isChatWebSupported } from '../../compatibility';
+import {
+  collectChatWebInclusions,
+  isChatWebIncludedInstruction,
+} from '../../chat-web-inclusions';
 import { AGENT_METADATA_EXT, AGENTS_DIR, FLOWS_DIR } from '../../constants';
+import { PackageError } from '../../errors';
 import { readJsonFile } from '../../io/json';
 import type { PackageMetadata, ValidationIssue } from '../../types';
 import { err } from '../common/issues';
@@ -66,4 +71,36 @@ export function validateChatWebIncludedRequiresSupportedChannel(
 
   scanEntryDir(packageDir, AGENTS_DIR, issues);
   scanEntryDir(packageDir, FLOWS_DIR, issues);
+}
+
+export function validateChatWebDefaultInstruction(
+  packageDir: string,
+  metadata: PackageMetadata,
+  issues: ValidationIssue[],
+): void {
+  const defaultRef = getChatWebDefaultInstruction(metadata);
+  if (defaultRef === undefined || !isChatWebSupported(metadata)) {
+    return;
+  }
+
+  let included;
+  try {
+    included = collectChatWebInclusions(packageDir, metadata);
+  } catch (error) {
+    if (error instanceof PackageError) {
+      issues.push(err(error.code, error.message));
+      return;
+    }
+    throw error;
+  }
+
+  if (!isChatWebIncludedInstruction(included, defaultRef)) {
+    issues.push(
+      err(
+        'ERR_METADATA_INVALID',
+        `compatibility.consumption defaultInstruction (${defaultRef.kind}/${defaultRef.id}) ` +
+          'must reference an included chat-web instruction',
+      ),
+    );
+  }
 }

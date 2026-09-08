@@ -77,6 +77,18 @@ export function isChatWebEntryValue(value: unknown): value is ChatWebEntryValue 
 export interface ConsumptionChannel {
   id: ConsumptionChannelId;
   status: ConsumptionChannelStatus;
+  defaultInstruction?: DefaultInstructionRef;
+}
+
+export type InstructionKind = 'agent' | 'flow';
+
+export interface DefaultInstructionRef {
+  kind: InstructionKind;
+  id: string;
+}
+
+export function isInstructionKind(value: unknown): value is InstructionKind {
+  return value === 'agent' || value === 'flow';
 }
 
 export interface CompatibilityTarget {

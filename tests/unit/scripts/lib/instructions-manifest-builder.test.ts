@@ -95,11 +95,55 @@ describe('buildInstructionsManifest', (): void => {
     writeAgent(packageDir, 'planner');
     const result = buildInstructionsManifest(makeRef(), packageDir, makeMetadata(), '1.0.0');
     expect(result).not.toBeNull();
+    expect(result?.manifest.schemaVersion).toBe('1.1.0');
     expect(result?.manifest.instructions).toHaveLength(1);
     expect(result?.manifest.instructions[0].path).toBe(
       '/pkg/agents-repo/demo/1.0.0/agents/planner.agent.md',
     );
     expect(result?.manifest.instructions[0].path).not.toContain('https://');
+    expect(result?.manifest.defaultInstruction).toBeUndefined();
+  });
+
+  it('emits defaultInstruction when declared on the chat-web consumption entry', (): void => {
+    const packageDir = makeTempPackageDir();
+    writeAgent(packageDir, 'alpha');
+    writeAgent(packageDir, 'beta');
+    const metadata = makeMetadata({
+      compatibility: {
+        targets: [{ id: 'cursor', status: 'supported' }],
+        consumption: [
+          {
+            id: 'chat-web',
+            status: 'supported',
+            defaultInstruction: { kind: 'agent', id: 'beta' },
+          },
+        ],
+      },
+    });
+    const result = buildInstructionsManifest(makeRef(), packageDir, metadata, '1.0.0');
+    expect(result?.manifest.defaultInstruction).toEqual({ kind: 'agent', id: 'beta' });
+    expect(result?.manifest.instructions.map((entry) => entry.id)).toEqual(['alpha', 'beta']);
+  });
+
+  it('rejects defaultInstruction that points to an excluded agent', (): void => {
+    const packageDir = makeTempPackageDir();
+    writeAgent(packageDir, 'keep');
+    writeAgent(packageDir, 'skip', 'excluded');
+    const metadata = makeMetadata({
+      compatibility: {
+        targets: [{ id: 'cursor', status: 'supported' }],
+        consumption: [
+          {
+            id: 'chat-web',
+            status: 'supported',
+            defaultInstruction: { kind: 'agent', id: 'skip' },
+          },
+        ],
+      },
+    });
+    expect(() => buildInstructionsManifest(makeRef(), packageDir, metadata, '1.0.0')).toThrow(
+      /defaultInstruction/,
+    );
   });
 
   it('omits excluded agents', (): void => {

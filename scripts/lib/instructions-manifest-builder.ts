@@ -1,23 +1,17 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { parseFrontmatterData } from './frontmatter';
-import { readJsonFile } from './io/json';
-import { getSchemaCurrentVersion } from './schema-versions';
-import {
-  AGENT_FILE_EXT,
-  AGENT_METADATA_EXT,
-  AGENTS_DIR,
-  FLOWS_DIR,
-  ID_PATTERN,
-  SCHEMA_FAMILY_INSTRUCTIONS_MANIFEST,
-} from './constants';
-import { ErrorCode, PackageError } from './errors';
-import type { PackageMetadata, PackageRef } from './types';
-import { isChatWebEntryIncluded, isChatWebSupported } from './compatibility';
+import { getChatWebDefaultInstruction } from './compatibility';
 import {
   buildPkgAgentInstructionPath,
   buildPkgFlowInstructionPath,
 } from './chat-web-paths';
+import {
+  type ChatWebIncludedEntry,
+  collectChatWebInclusions,
+  isChatWebIncludedInstruction,
+} from './chat-web-inclusions';
+import { SCHEMA_FAMILY_INSTRUCTIONS_MANIFEST } from './constants';
+import { ErrorCode, PackageError } from './errors';
+import { getSchemaCurrentVersion } from './schema-versions';
+import type { DefaultInstructionRef, PackageMetadata, PackageRef } from './types';
 
 export interface InstructionsManifestInstruction {
   kind: 'agent' | 'flow';
@@ -30,6 +24,7 @@ export interface InstructionsManifest {
   schemaVersion: string;
   package: string;
   version: string;
+  defaultInstruction?: DefaultInstructionRef;
   instructions: InstructionsManifestInstruction[];
 }
 
@@ -38,101 +33,24 @@ export interface BuildInstructionsManifestResult {
   includedCount: number;
 }
 
-function assertInstructionId(id: string, context: string): void {
-  if (!ID_PATTERN.test(id)) {
+function resolveDefaultInstruction(
+  metadata: PackageMetadata,
+  included: ChatWebIncludedEntry[],
+): DefaultInstructionRef | undefined {
+  const defaultRef = getChatWebDefaultInstruction(metadata);
+  if (defaultRef === undefined) {
+    return undefined;
+  }
+
+  if (!isChatWebIncludedInstruction(included, defaultRef)) {
     throw new PackageError(
       ErrorCode.ERR_METADATA_INVALID,
-      `${context}: id "${id}" must be lowercase kebab-case (^[a-z0-9]+(?:-[a-z0-9]+)*$)`,
+      `compatibility.consumption defaultInstruction (${defaultRef.kind}/${defaultRef.id}) ` +
+        'must reference an included chat-web instruction',
     );
   }
-}
 
-function listInstructionMdFiles(dir: string): string[] {
-  if (!fs.existsSync(dir)) {
-    return [];
-  }
-  return fs
-    .readdirSync(dir)
-    .filter((name) => name.endsWith(AGENT_FILE_EXT))
-    .sort((a, b) => a.localeCompare(b));
-}
-
-function readSidecarMetadata(
-  entryDir: string,
-  stem: string,
-): Record<string, unknown> {
-  const metaPath = path.join(entryDir, `${stem}${AGENT_METADATA_EXT}`);
-  if (!fs.existsSync(metaPath)) {
-    return {};
-  }
-  return readJsonFile<Record<string, unknown>>(metaPath);
-}
-
-function readFlowAgentIds(entryDir: string, stem: string): string[] {
-  const metadata = readSidecarMetadata(entryDir, stem);
-  const fromMeta = metadata['agents'];
-  if (Array.isArray(fromMeta) && fromMeta.every((item) => typeof item === 'string')) {
-    for (const agentId of fromMeta) {
-      assertInstructionId(agentId, `flows/${stem}.metadata.json agents[]`);
-    }
-    return fromMeta;
-  }
-
-  const mdPath = path.join(entryDir, `${stem}${AGENT_FILE_EXT}`);
-  if (!fs.existsSync(mdPath)) {
-    return [];
-  }
-  const content = fs.readFileSync(mdPath, 'utf-8');
-  const frontmatter = parseFrontmatterData(content);
-  const fromFm = frontmatter['agents'];
-  if (Array.isArray(fromFm) && fromFm.every((item) => typeof item === 'string')) {
-    for (const agentId of fromFm) {
-      assertInstructionId(agentId, `flows/${stem}.agent.md frontmatter agents[]`);
-    }
-    return fromFm;
-  }
-  return [];
-}
-
-function collectIncludedEntries(
-  packageDir: string,
-  metadata: PackageMetadata,
-): Array<{ kind: 'agent' | 'flow'; id: string; agentIds?: string[] }> {
-  if (!isChatWebSupported(metadata)) {
-    return [];
-  }
-
-  const included: Array<{ kind: 'agent' | 'flow'; id: string; agentIds?: string[] }> = [];
-
-  for (const mdFile of listInstructionMdFiles(path.join(packageDir, AGENTS_DIR))) {
-    const stem = mdFile.slice(0, -AGENT_FILE_EXT.length);
-    const sidecar = readSidecarMetadata(path.join(packageDir, AGENTS_DIR), stem);
-    if (isChatWebEntryIncluded(metadata, sidecar['chatWeb'])) {
-      assertInstructionId(stem, `agents/${stem}.agent.md`);
-      included.push({ kind: 'agent', id: stem });
-    }
-  }
-
-  for (const mdFile of listInstructionMdFiles(path.join(packageDir, FLOWS_DIR))) {
-    const stem = mdFile.slice(0, -AGENT_FILE_EXT.length);
-    const flowsDir = path.join(packageDir, FLOWS_DIR);
-    const sidecar = readSidecarMetadata(flowsDir, stem);
-    if (isChatWebEntryIncluded(metadata, sidecar['chatWeb'])) {
-      assertInstructionId(stem, `flows/${stem}.agent.md`);
-      const agentIds = readFlowAgentIds(flowsDir, stem);
-      included.push({ kind: 'flow', id: stem, agentIds });
-    }
-  }
-
-  included.sort((a, b) => {
-    const kindOrder = a.kind.localeCompare(b.kind);
-    if (kindOrder !== 0) {
-      return kindOrder;
-    }
-    return a.id.localeCompare(b.id);
-  });
-
-  return included;
+  return defaultRef;
 }
 
 export function buildInstructionsManifest(
@@ -141,7 +59,7 @@ export function buildInstructionsManifest(
   metadata: PackageMetadata,
   version: string,
 ): BuildInstructionsManifestResult | null {
-  const included = collectIncludedEntries(packageDir, metadata);
+  const included = collectChatWebInclusions(packageDir, metadata);
   if (included.length === 0) {
     return null;
   }
@@ -166,12 +84,15 @@ export function buildInstructionsManifest(
     return { kind: entry.kind, id: entry.id, path: base };
   });
 
+  const defaultInstruction = resolveDefaultInstruction(metadata, included);
+
   return {
     includedCount: included.length,
     manifest: {
       schemaVersion: getSchemaCurrentVersion(SCHEMA_FAMILY_INSTRUCTIONS_MANIFEST),
       package: ref.qualifiedId,
       version,
+      ...(defaultInstruction === undefined ? {} : { defaultInstruction }),
       instructions,
     },
   };

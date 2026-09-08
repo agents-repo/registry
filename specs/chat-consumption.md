@@ -69,7 +69,14 @@ Packages MAY declare consumption channels under `compatibility.consumption`:
       { "id": "cursor", "status": "supported" }
     ],
     "consumption": [
-      { "id": "chat-web", "status": "supported" }
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "hello-agent"
+        }
+      }
     ]
   }
 }
@@ -80,6 +87,16 @@ Packages MAY declare consumption channels under `compatibility.consumption`:
 | `consumption` | array | no | Unique `id` values |
 | `consumption[].id` | string | yes | MUST be `chat-web` (MVP) |
 | `consumption[].status` | string | yes | `supported` or `planned` |
+| `consumption[].defaultInstruction` | object | no | Only on `chat-web` entries with `status: "supported"` |
+| `consumption[].defaultInstruction.kind` | string | yes (when parent present) | `agent` or `flow` |
+| `consumption[].defaultInstruction.id` | string | yes (when parent present) | Lowercase kebab-case; MUST match an included instruction for that version |
+
+When `defaultInstruction` is omitted, consumers MUST fall back to the first
+entry in `instructions[]` (see [Consumer behavior](#consumer-behavior)).
+
+`defaultInstruction` MUST NOT appear when chat-web is absent or `status` is
+`planned`. Tooling MUST fail validation when `defaultInstruction` references
+an agent or flow that is missing or excluded from `instructions.json`.
 
 When `compatibility` is omitted, tooling MUST NOT emit chat-web artifacts.
 `planned` MUST NOT produce `instructions.json` or index `chatWeb`.
@@ -126,7 +143,8 @@ included for that version.
 
 | Version | Status | Notes |
 | --- | --- | --- |
-| `1.0.0` | current | Initial chat-web manifest |
+| `1.0.0` | supported | Initial chat-web manifest |
+| `1.1.0` | current | Optional `defaultInstruction` |
 
 Tooling MUST use `specs/schema-versions.json` family `instructions.manifest`.
 
@@ -137,6 +155,7 @@ Tooling MUST use `specs/schema-versions.json` family `instructions.manifest`.
 | `schemaVersion` | string | yes | Supported `instructions.manifest` version |
 | `package` | string | yes | Qualified id `namespace/package-id` |
 | `version` | string | yes | MUST equal snapshot version |
+| `defaultInstruction` | object | no | Same shape as authoring; MUST match an entry in `instructions[]` when present |
 | `instructions` | array | yes | Sorted ascending by `kind` then `id` |
 
 ### Instruction entry
@@ -156,26 +175,37 @@ omitted (Level-1 flow path only).
 
 ### Canonical example
 
-Package `agents-repo/hello-agent` version `1.0.0` with one agent and one
-flow:
+Package `agents-repo/hello-agent` version `1.0.2` with two agents and one
+flow; `hello-agent` is the declared default (not `hello-again`, which sorts
+first in `instructions[]`):
 
 ```json
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "package": "agents-repo/hello-agent",
-  "version": "1.0.0",
+  "version": "1.0.2",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "hello-agent"
+  },
   "instructions": [
     {
       "kind": "agent",
-      "id": "planner",
-      "path": "/pkg/agents-repo/hello-agent/1.0.0/agents/planner.agent.md"
+      "id": "hello-again",
+      "path": "/pkg/agents-repo/hello-agent/1.0.2/agents/hello-again.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "hello-agent",
+      "path": "/pkg/agents-repo/hello-agent/1.0.2/agents/hello-agent.agent.md"
     },
     {
       "kind": "flow",
-      "id": "review-flow",
-      "path": "/pkg/agents-repo/hello-agent/1.0.0/flows/review-flow.agent.md",
+      "id": "hello-agents",
+      "path": "/pkg/agents-repo/hello-agent/1.0.2/flows/hello-agents.agent.md",
       "agentInstructions": [
-        "/pkg/agents-repo/hello-agent/1.0.0/agents/planner.agent.md"
+        "/pkg/agents-repo/hello-agent/1.0.2/agents/hello-agent.agent.md",
+        "/pkg/agents-repo/hello-agent/1.0.2/agents/hello-again.agent.md"
       ]
     }
   ]
@@ -201,6 +231,20 @@ When the package declares `chat-web` as `supported` and the **latest**
 manifest version entry includes `instructionsArtifact`, the index entry
 MUST include `"chatWeb": true`. Otherwise `chatWeb` MUST be omitted.
 See `index-schema.md`.
+
+## Consumer behavior
+
+When opening chat for a package version, consumers SHOULD resolve the
+initial instruction as follows:
+
+1. When `defaultInstruction` is present in `instructions.json` (or the
+   top-level `defaultInstruction` field in `detail.json` when already
+   loaded), select the matching `instructions[]` entry by `kind` and `id`.
+2. When `defaultInstruction` is absent, select `instructions[0]` (first
+   entry after the canonical sort order).
+
+Consumers MUST NOT change `instructions[]` sort order based on
+`defaultInstruction`.
 
 ## End-to-end example (paths)
 
