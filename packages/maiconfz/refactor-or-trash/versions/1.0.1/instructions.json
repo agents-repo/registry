@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/refactor-or-trash",
+  "version": "1.0.1",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "refactor-or-trash-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "refactor-or-trash-chat",
+      "path": "/pkg/maiconfz/refactor-or-trash/1.0.1/agents/refactor-or-trash-chat.agent.md"
+    }
+  ]
+}

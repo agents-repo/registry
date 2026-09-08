@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "ai-first-project-planning",
+  "description": "Analyze readiness, ask consent, then draft a phased or full-shot improvement plan.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "agents": [
+    "ai-readiness-analyst",
+    "improvement-planner"
+  ],
+  "inputs": [
+    {
+      "name": "planning-consent",
+      "type": "boolean",
+      "description": "Optional prior consent to run improvement planning."
+    },
+    {
+      "name": "plan-mode",
+      "type": "string",
+      "description": "Optional plan shape; phased or full-shot when already known."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "readiness-report",
+      "type": "string",
+      "description": "Markdown readiness report from ai-readiness-analyst."
+    },
+    {
+      "name": "improvement-plan",
+      "type": "string",
+      "description": "Markdown plan; empty if the user declined planning."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Remaining blockers or follow-ups at handoff; copy from planner blocking-questions when present."
+    }
+  ]
+}

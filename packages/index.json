@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-04T06:13:15.554Z",
+  "updatedAt": "2026-09-08T05:44:47.218Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -92,7 +92,7 @@
       "name": "ai-first-project-readiness",
       "description": "Analyze a project's AI-first readiness (architecture, docs, agents, skills, tooling) and, after user consent, draft a phased or full-shot improvement plan. Chat-web can analyze public URLs and uploads. Planning only; does not implement.",
       "owner": "maiconfz",
-      "latest": "1.1.0",
+      "latest": "1.1.1",
       "tags": [
         "ai",
         "readiness",
@@ -139,7 +139,7 @@
       "name": "chorume",
       "description": "Satirical chorume toolkit: roast messy projects, implement more sludge, rubber-stamp if it still runs. Original parody of Brazilian tech slang. Not affiliated with any influencer; does not impersonate anyone. Replies match the user's language.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "chorume",
         "satire",
@@ -184,7 +184,7 @@
       "name": "context-token-reduction",
       "description": "Analyze a host project for agent-context token waste in always-on rules, duplicated IDE instructions, docs, skills, and tree shape, then suggest ordered reductions. Plan-only; does not implement.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "tokens",
         "context",
@@ -231,7 +231,7 @@
       "name": "dev-emocionado",
       "description": "Satirical Dev Emocionado toolkit: over-engineered architecture, bleeding-edge stacks, and hype-driven reviews. Original parody of Brazilian dev culture. Not real engineering advice.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "dev-emocionado",
         "satire",
@@ -408,7 +408,7 @@
       "name": "refactor-or-trash",
       "description": "Funny-but-grounded call: refactor, strangler, or trash a codebase. Audits debt, scores salvage vs wrap vs rewrite, then delivers the verdict. Workspace flow for host trees; chat-web for public repos. Does not delete or rewrite. Replies match the user's language.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "refactor",
         "rewrite",
@@ -456,7 +456,7 @@
       "name": "review-fix-ship",
       "description": "Local diff review then ship: code, bug, and security reviews (Cursor Bugbot and Security Review subagents when available; portable fallbacks otherwise), then triage, fix, commit, and push. Complements GitHub PR thread triage.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "review",
         "code-review",
@@ -490,8 +490,7 @@
           "id": "openai-codex",
           "status": "supported"
         }
-      ],
-      "chatWeb": true
+      ]
     },
     {
       "id": "maiconfz/roast-my-project",
@@ -501,7 +500,7 @@
       "name": "roast-my-project",
       "description": "Mean comedy roast of a codebase, website, or app, grounded in real findings. IDE specialists for local trees; chat-web roasts public repos, sites, and store listings. Original parody; not affiliated with any chef or show. Replies match the user's language.",
       "owner": "maiconfz",
-      "latest": "1.1.0",
+      "latest": "1.1.1",
       "tags": [
         "roast",
         "satire",
@@ -549,7 +548,7 @@
       "name": "xgh",
       "description": "Satirical XGH toolkit: first-idea coding, rubber-stamp review, and ship-it pep talks. Original parody of Brazilian developer folklore. Not affiliated with any XGH brand. Replies match the user's language.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "xgh",
         "satire",

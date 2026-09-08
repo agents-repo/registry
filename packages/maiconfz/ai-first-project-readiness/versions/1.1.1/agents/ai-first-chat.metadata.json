@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "ai-first-chat",
+  "description": "Analyze AI-first readiness from public project URLs, uploads, or conversation. Emits a structured report when evidence exists. Does not plan.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include a project URL, attached or uploaded files, or pasted sources."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "readiness-report",
+      "type": "string",
+      "description": "Structured readiness report; empty when there is no usable evidence."
+    }
+  ]
+}
