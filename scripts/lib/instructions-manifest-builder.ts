@@ -3,7 +3,11 @@ import {
   buildPkgAgentInstructionPath,
   buildPkgFlowInstructionPath,
 } from './chat-web-paths';
-import { collectChatWebInclusions, isChatWebIncludedInstruction } from './chat-web-inclusions';
+import {
+  type ChatWebIncludedEntry,
+  collectChatWebInclusions,
+  isChatWebIncludedInstruction,
+} from './chat-web-inclusions';
 import { SCHEMA_FAMILY_INSTRUCTIONS_MANIFEST } from './constants';
 import { ErrorCode, PackageError } from './errors';
 import { getSchemaCurrentVersion } from './schema-versions';
@@ -31,14 +35,13 @@ export interface BuildInstructionsManifestResult {
 
 function resolveDefaultInstruction(
   metadata: PackageMetadata,
-  packageDir: string,
+  included: ChatWebIncludedEntry[],
 ): DefaultInstructionRef | undefined {
   const defaultRef = getChatWebDefaultInstruction(metadata);
   if (defaultRef === undefined) {
     return undefined;
   }
 
-  const included = collectChatWebInclusions(packageDir, metadata);
   if (!isChatWebIncludedInstruction(included, defaultRef)) {
     throw new PackageError(
       ErrorCode.ERR_METADATA_INVALID,
@@ -81,7 +84,7 @@ export function buildInstructionsManifest(
     return { kind: entry.kind, id: entry.id, path: base };
   });
 
-  const defaultInstruction = resolveDefaultInstruction(metadata, packageDir);
+  const defaultInstruction = resolveDefaultInstruction(metadata, included);
 
   return {
     includedCount: included.length,

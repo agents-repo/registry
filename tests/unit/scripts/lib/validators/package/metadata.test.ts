@@ -171,4 +171,70 @@ describe('validateMetadata', (): void => {
       issues.some((issue) => issue.message.includes('updatedAt must be greater than')),
     ).toBe(true);
   });
+
+  it('rejects defaultInstruction on chat-web entries with planned status', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['compatibility'] = {
+      targets: [{ id: 'cursor', status: 'supported' }],
+      consumption: [
+        {
+          id: 'chat-web',
+          status: 'planned',
+          defaultInstruction: { kind: 'agent', id: 'hello-agent' },
+        },
+      ],
+    };
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(false);
+    expect(
+      issues.some((issue) => issue.message.includes('defaultInstruction requires chat-web status supported')),
+    ).toBe(true);
+  });
+
+  it('rejects defaultInstruction with invalid id format', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['compatibility'] = {
+      targets: [{ id: 'cursor', status: 'supported' }],
+      consumption: [
+        {
+          id: 'chat-web',
+          status: 'supported',
+          defaultInstruction: { kind: 'agent', id: 'Invalid_ID' },
+        },
+      ],
+    };
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(false);
+    expect(
+      issues.some((issue) => issue.message.includes('defaultInstruction.id must be lowercase kebab-case')),
+    ).toBe(true);
+  });
+
+  it('rejects defaultInstruction with invalid kind', (): void => {
+    const issues: ValidationIssue[] = [];
+    const metadata = makeBaseMetadata();
+    metadata['compatibility'] = {
+      targets: [{ id: 'cursor', status: 'supported' }],
+      consumption: [
+        {
+          id: 'chat-web',
+          status: 'supported',
+          defaultInstruction: { kind: 'skill', id: 'hello-agent' },
+        },
+      ],
+    };
+
+    const valid = validateMetadata(metadata, 'hello-agent', issues);
+
+    expect(valid).toBe(false);
+    expect(
+      issues.some((issue) => issue.message.includes('defaultInstruction.kind must be agent or flow')),
+    ).toBe(true);
+  });
 });
