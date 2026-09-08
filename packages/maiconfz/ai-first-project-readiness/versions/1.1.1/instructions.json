@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/ai-first-project-readiness",
+  "version": "1.1.1",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "ai-first-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "ai-first-chat",
+      "path": "/pkg/maiconfz/ai-first-project-readiness/1.1.1/agents/ai-first-chat.agent.md"
+    }
+  ]
+}

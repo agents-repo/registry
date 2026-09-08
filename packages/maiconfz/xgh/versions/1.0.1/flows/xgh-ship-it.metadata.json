@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "xgh-ship-it",
+  "description": "Chains xgh-project-analyzer, xgh-coder, then xgh-reviewer to ship the first compiling idea. Does not invoke xgh-chat or xgh-ai.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "agents": [
+    "xgh-project-analyzer",
+    "xgh-coder",
+    "xgh-reviewer"
+  ],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "What to analyze, implement the first compiling way, and stamp."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "ship-result",
+      "type": "string",
+      "description": "Combined analysis, change summary, and rubber-stamp review."
+    }
+  ]
+}

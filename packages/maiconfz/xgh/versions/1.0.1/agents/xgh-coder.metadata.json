@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "xgh-coder",
+  "description": "Implements the first idea that compiles. Skips tests, leaves TODOs, and does not clean working mess. Matches the user's language. Refuses force-push, secrets, and data destruction.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "Feature, bug, or change to implement the first compiling way."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "change-summary",
+      "type": "string",
+      "description": "What changed, which tests were skipped, and leftover TODOs."
+    }
+  ]
+}

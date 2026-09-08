@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "ai-readiness-analyst",
+  "description": "Analyze architecture, docs, agents, skills, and tooling; report what helps or blocks AI-first work.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "readiness-report",
+      "type": "string",
+      "description": "Markdown readiness report with findings and suggestions."
+    }
+  ]
+}

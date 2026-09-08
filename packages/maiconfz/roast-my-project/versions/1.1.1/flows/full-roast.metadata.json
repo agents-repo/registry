@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "full-roast",
+  "description": "Run project, architecture, code, and tests roasters, then one combined plate plus a constructive sting.",
+  "license": "MIT",
+  "status": "active",
+  "category": "humor",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "agents": [
+    "project-roaster",
+    "architecture-roaster",
+    "code-roaster",
+    "tests-roaster"
+  ],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "Optional focus passed through to each specialist."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "roast-report",
+      "type": "string",
+      "description": "Combined host-tree roast plate in the user's language."
+    }
+  ]
+}
