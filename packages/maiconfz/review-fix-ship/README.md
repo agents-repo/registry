@@ -116,37 +116,6 @@ not reply to GitHub review threads; use
 | `security-reviewer` | Security review; Cursor Security Review when available |
 | `findings-fixer` | Triage, fix, validate, commit, push |
 
-## Chat-web consumption
-
-This package opts into the chat-web channel via
-`compatibility.consumption` (`chat-web` status `supported`). Every
-agent and the flow sets `chatWeb: "included"`. None are excluded.
-
-After `package:build`, the instruction manifest for a released version
-lives at:
-
-```text
-packages/maiconfz/review-fix-ship/versions/<version>/instructions.json
-```
-
-Registry artifacts use **path-only** `/pkg/...` strings. WebApp consumers
-join the registry origin with those paths per
-`specs/chat-consumption.md`:
-
-- **Origin:** `https://registry.agents-repo.org`
-
-Illustrative absolute fetch URLs for version `1.0.0`:
-
-```text
-https://registry.agents-repo.org/pkg/maiconfz/review-fix-ship/1.0.0/instructions.json
-https://registry.agents-repo.org/pkg/maiconfz/review-fix-ship/1.0.0/agents/code-reviewer.agent.md
-https://registry.agents-repo.org/pkg/maiconfz/review-fix-ship/1.0.0/flows/review-fix-ship.agent.md
-```
-
-The `review-fix-ship` flow lists step agents in frontmatter/metadata
-`agents[]`; `package:build` maps that ordered list to `agentInstructions`
-in `instructions.json`.
-
 ## Maintainers
 
 From the registry repository root (package authors / registry
@@ -156,7 +125,7 @@ contributors):
 PKG=maiconfz/review-fix-ship
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.0.0
+npm run package:validate-artifacts -- --package "$PKG" --version 1.0.1
 ```
 
 Do not author `detail.json` or any files under `versions/`.

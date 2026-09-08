@@ -96,6 +96,8 @@ host-tree plate, unless a kitchen agent actually inspected a local tree.
 This package opts into the chat-web channel via
 `compatibility.consumption` with `{ "id": "chat-web", "status": "supported" }`.
 
+Chat-web opens `roast-chat` by default via `defaultInstruction`.
+
 `roast-chat`, `fiery-head-chef`, and `brigade-chef` set
 `chatWeb: "included"`. The four specialists and `full-roast` set
 `chatWeb: "excluded"`. Exclusion affects `instructions.json` only.
@@ -114,13 +116,13 @@ join the registry-proxy origin with those paths per
 
 - **Origin:** `https://registry-proxy.maiconfz.workers.dev`
 
-Illustrative absolute fetch URLs for version `1.1.0`:
+Illustrative absolute fetch URLs for version `1.1.1`:
 
 ```text
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.1.0/instructions.json
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.1.0/agents/roast-chat.agent.md
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.1.0/agents/fiery-head-chef.agent.md
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.1.0/agents/brigade-chef.agent.md
+https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.1.1/instructions.json
+https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.1.1/agents/roast-chat.agent.md
+https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.1.1/agents/fiery-head-chef.agent.md
+https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/roast-my-project/1.1.1/agents/brigade-chef.agent.md
 ```
 
 The excluded flow is not listed in `instructions.json`, so chat-web does
@@ -134,7 +136,7 @@ From the registry repository root:
 PKG=maiconfz/roast-my-project
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.1.0
+npm run package:validate-artifacts -- --package "$PKG" --version 1.1.1
 ```
 
 Do not author `detail.json` or any files under `versions/`.

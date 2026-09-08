@@ -63,6 +63,8 @@ This package opts into the chat-web channel via
 `compatibility.consumption` with `{ "id": "chat-web", "status": "supported" }`.
 Every agent and the flow sets `chatWeb: "included"`. None are excluded.
 
+Chat-web opens `dev-emocionado-chat` by default via `defaultInstruction`.
+
 After `package:build`, the instruction manifest for a released version lives
 at:
 
@@ -76,12 +78,12 @@ join the registry origin with those paths per
 
 - **Origin:** `https://registry.agents-repo.org`
 
-Illustrative absolute fetch URLs for version `1.0.0`:
+Illustrative absolute fetch URLs for version `1.0.1`:
 
 ```text
-https://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.0/instructions.json
-https://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.0/agents/dev-emocionado-chat.agent.md
-https://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.0/flows/dev-emocionado-overbuild.agent.md
+https://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.1/instructions.json
+https://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.1/agents/dev-emocionado-chat.agent.md
+https://registry.agents-repo.org/pkg/maiconfz/dev-emocionado/1.0.1/flows/dev-emocionado-overbuild.agent.md
 ```
 
 The `dev-emocionado-overbuild` flow lists step agents in frontmatter/metadata
@@ -96,7 +98,7 @@ From the registry repository root:
 PKG=maiconfz/dev-emocionado
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.0.0
+npm run package:validate-artifacts -- --package "$PKG" --version 1.0.1
 ```
 
 Do not author `detail.json` or any files under `versions/`.

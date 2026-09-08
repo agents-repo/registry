@@ -70,6 +70,8 @@ This package opts into the chat-web channel via
 `compatibility.consumption` with `{ "id": "chat-web", "status": "supported" }`.
 Every agent and the flow sets `chatWeb: "included"`. None are excluded.
 
+Chat-web opens `chorume-chat` by default via `defaultInstruction`.
+
 After `package:build`, the instruction manifest for a released version lives
 at:
 
@@ -83,12 +85,12 @@ join the registry-proxy origin with those paths per
 
 - **Origin:** `https://registry-proxy.maiconfz.workers.dev`
 
-Illustrative absolute fetch URLs for version `1.0.0`:
+Illustrative absolute fetch URLs for version `1.0.1`:
 
 ```text
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/chorume/1.0.0/instructions.json
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/chorume/1.0.0/agents/chorume-chat.agent.md
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/chorume/1.0.0/flows/chorume-ship-it.agent.md
+https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/chorume/1.0.1/instructions.json
+https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/chorume/1.0.1/agents/chorume-chat.agent.md
+https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/chorume/1.0.1/flows/chorume-ship-it.agent.md
 ```
 
 The `chorume-ship-it` flow lists step agents in frontmatter/metadata
@@ -103,7 +105,7 @@ From the registry repository root:
 PKG=maiconfz/chorume
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.0.0
+npm run package:validate-artifacts -- --package "$PKG" --version 1.0.1
 ```
 
 Do not author `detail.json` or any files under `versions/`.

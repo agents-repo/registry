@@ -111,6 +111,8 @@ score). Ugly code alone is not **Trash!**.
 This package opts into the chat-web channel via
 `compatibility.consumption` with `{ "id": "chat-web", "status": "supported" }`.
 
+Chat-web opens `refactor-or-trash-chat` by default via `defaultInstruction`.
+
 Only `refactor-or-trash-chat` sets `chatWeb: "included"`.
 `project-auditor`, `cost-appraiser`, `trash-judge`, and
 `refactor-or-trash` set `chatWeb: "excluded"`. Exclusion affects
@@ -130,11 +132,11 @@ consumers join the registry origin with those paths per
 
 - **Origin:** `https://registry.agents-repo.org`
 
-Illustrative absolute fetch URLs for version `1.0.0`:
+Illustrative absolute fetch URLs for version `1.0.1`:
 
 ```text
-https://registry.agents-repo.org/pkg/maiconfz/refactor-or-trash/1.0.0/instructions.json
-https://registry.agents-repo.org/pkg/maiconfz/refactor-or-trash/1.0.0/agents/refactor-or-trash-chat.agent.md
+https://registry.agents-repo.org/pkg/maiconfz/refactor-or-trash/1.0.1/instructions.json
+https://registry.agents-repo.org/pkg/maiconfz/refactor-or-trash/1.0.1/agents/refactor-or-trash-chat.agent.md
 ```
 
 The excluded flow is not listed in `instructions.json`, so chat-web
@@ -148,7 +150,7 @@ From the registry repository root:
 PKG=maiconfz/refactor-or-trash
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.0.0
+npm run package:validate-artifacts -- --package "$PKG" --version 1.0.1
 ```
 
 Do not author `detail.json` or any files under `versions/`.

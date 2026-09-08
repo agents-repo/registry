@@ -9,7 +9,6 @@
     "estimatedCost": 6,
     "band": "moderate"
   },
-  "chatWeb": "included",
   "agents": [
     "code-reviewer",
     "bug-reviewer",

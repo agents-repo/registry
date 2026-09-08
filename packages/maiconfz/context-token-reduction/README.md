@@ -75,6 +75,8 @@ host-tree plan.
 This package opts into the chat-web channel via
 `compatibility.consumption` with `{ "id": "chat-web", "status": "supported" }`.
 
+Chat-web opens `context-token-chat` by default via `defaultInstruction`.
+
 Only `context-token-chat` sets `chatWeb: "included"`.
 `token-footprint-analyst`, `token-reduction-advisor`, and
 `reduce-context-tokens` set `chatWeb: "excluded"`. Exclusion affects
@@ -94,11 +96,11 @@ consumers join the registry origin with those paths per
 
 - **Origin:** `https://registry.agents-repo.org`
 
-Illustrative absolute fetch URLs for version `1.0.0`:
+Illustrative absolute fetch URLs for version `1.0.1`:
 
 ```text
-https://registry.agents-repo.org/pkg/maiconfz/context-token-reduction/1.0.0/instructions.json
-https://registry.agents-repo.org/pkg/maiconfz/context-token-reduction/1.0.0/agents/context-token-chat.agent.md
+https://registry.agents-repo.org/pkg/maiconfz/context-token-reduction/1.0.1/instructions.json
+https://registry.agents-repo.org/pkg/maiconfz/context-token-reduction/1.0.1/agents/context-token-chat.agent.md
 ```
 
 The excluded flow is not listed in `instructions.json`, so chat-web does
@@ -112,7 +114,7 @@ From the registry repository root:
 PKG=maiconfz/context-token-reduction
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.0.0
+npm run package:validate-artifacts -- --package "$PKG" --version 1.0.1
 ```
 
 Do not author `detail.json` or any files under `versions/`.
