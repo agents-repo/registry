@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { DETAIL_FILENAME, README_FILENAME, VERSIONS_DIR } from '../../../../scripts/lib/constants';
+import { DETAIL_FILENAME, INSTRUCTIONS_FILENAME, README_FILENAME, VERSIONS_DIR } from '../../../../scripts/lib/constants';
 import {
   buildPackageDetailDocument,
   writePackageDetailJson,
@@ -142,6 +142,7 @@ describe('buildPackageDetailDocument', (): void => {
     );
     expect(document.chatWeb).toBe(true);
     expect(document.instructionsPath).toBe('/pkg/agents-repo/demo/1.0.1/instructions.json');
+    expect(document.defaultInstruction).toBeUndefined();
     expect(document.versions.latest).toBe('1.0.1');
     expect(document.versions.entries[1]).toEqual({
       version: '1.0.1',
@@ -171,6 +172,30 @@ describe('buildPackageDetailDocument', (): void => {
     const document = buildPackageDetailDocument(makeRef(), packageDir, '1.0.1', makeManifest());
 
     expect(document.readmeMarkdown).toBe('   \n');
+  });
+
+  it('projects defaultInstruction from the latest snapshot instructions.json', (): void => {
+    const packageDir = makeTempPackageDir();
+    writeLatestSnapshot(packageDir, false);
+    fs.writeFileSync(
+      path.join(packageDir, VERSIONS_DIR, '1.0.1', INSTRUCTIONS_FILENAME),
+      `${JSON.stringify(
+        {
+          schemaVersion: '1.1.0',
+          package: 'agents-repo/demo',
+          version: '1.0.1',
+          defaultInstruction: { kind: 'agent', id: 'planner' },
+          instructions: [],
+        },
+        null,
+        2,
+      )}\n`,
+      'utf-8',
+    );
+
+    const document = buildPackageDetailDocument(makeRef(), packageDir, '1.0.1', makeManifest());
+
+    expect(document.defaultInstruction).toEqual({ kind: 'agent', id: 'planner' });
   });
 
   it('omits chatWeb unless the latest manifest entry has an instructions artifact', (): void => {

@@ -174,7 +174,8 @@ child agents or flows span multiple bands.
 - `maintainers`, when present, MUST be an array of unique GitHub usernames or
   team slugs.
 - `compatibility`, when present, MUST be an object with `targets` per
-  `install-targets.md` and optional `consumption` per `chat-consumption.md`.
+  `install-targets.md` and optional `consumption` per `chat-consumption.md`
+  (including optional `defaultInstruction` on `chat-web` consumption entries).
 - `documentation`, when present, MUST be an HTTPS URL.
 - `keywords`, when present, MUST be an array of unique non-empty strings.
 - `quickstart`, when present, MUST be an HTTPS URL.

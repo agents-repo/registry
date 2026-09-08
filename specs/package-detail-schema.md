@@ -52,6 +52,8 @@ Tooling MUST build `detail.json` from the latest published snapshot:
 - Agent summaries from `versions/<latest>/agents/*.metadata.json`
 - Flow summaries from `versions/<latest>/flows/*.metadata.json`
 - Version list from `versions/manifest.json`
+- `defaultInstruction` from `versions/<latest>/instructions.json` when present
+  (see `chat-consumption.md`)
 
 Tooling MUST NOT use package-root working-state files as the source for
 these fields, except that `package-build` copies package-root `README.md`
@@ -71,6 +73,7 @@ into the new snapshot before generating detail.
 | `versions` | object | yes | See [Versions object](#versions-object) |
 | `chatWeb` | boolean | no | `true` when chat-web is enabled for latest |
 | `instructionsPath` | string | no | Path-only `/pkg/.../instructions.json` when `chatWeb` is `true` |
+| `defaultInstruction` | object | no | Copied from latest snapshot `instructions.json` when `chatWeb` is `true`; see `chat-consumption.md` |
 
 ## Agent and flow entries
 
@@ -146,6 +149,10 @@ copy that field.
     ]
   },
   "chatWeb": true,
-  "instructionsPath": "/pkg/agents-repo/hello-agent/1.0.1/instructions.json"
+  "instructionsPath": "/pkg/agents-repo/hello-agent/1.0.1/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "hello-agent"
+  }
 }
 ```

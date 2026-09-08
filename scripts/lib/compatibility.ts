@@ -3,11 +3,13 @@ import {
   INSTALL_TARGET_IDS,
   CHAT_WEB_CONSUMPTION_ID,
   INSTRUCTIONS_FILENAME,
+  ID_PATTERN,
   SHA256_PATTERN,
 } from './constants';
 import type {
   CompatibilityTarget,
   ConsumptionChannel,
+  DefaultInstructionRef,
   InstallTargetIndexEntry,
   ManifestArtifactEntry,
   ManifestVersionEntry,
@@ -20,6 +22,7 @@ import {
   isConsumptionChannelId,
   isConsumptionChannelStatus,
   isChatWebEntryValue,
+  isInstructionKind,
 } from './types';
 
 const DEFAULT_CANONICAL_FORMAT = 'agents-repo.agent-instruction@1.0.0';
@@ -97,6 +100,42 @@ function parseCompatibilityObject(value: unknown): PackageCompatibility {
   return { canonicalFormat, targets };
 }
 
+function parseDefaultInstruction(
+  value: unknown,
+  context: string,
+): DefaultInstructionRef | undefined {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `${context} defaultInstruction must be an object when provided`,
+    );
+  }
+
+  const record = value as Record<string, unknown>;
+  const kind = record['kind'];
+  const id = record['id'];
+
+  if (!isInstructionKind(kind)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `${context} defaultInstruction.kind must be agent or flow`,
+    );
+  }
+
+  if (typeof id !== 'string' || !ID_PATTERN.test(id)) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `${context} defaultInstruction.id must be lowercase kebab-case`,
+    );
+  }
+
+  return { kind, id };
+}
+
 function parseConsumptionChannels(value: unknown): ConsumptionChannel[] | undefined {
   if (value === undefined) {
     return undefined;
@@ -146,10 +185,43 @@ function parseConsumptionChannels(value: unknown): ConsumptionChannel[] | undefi
     }
 
     seen.add(id);
-    channels.push({ id, status });
+    const channelContext = `metadata.json compatibility.consumption entry "${id}"`;
+    const defaultInstruction = parseConsumptionDefaultInstruction(id, record, channelContext);
+
+    if (defaultInstruction !== undefined && status === 'planned') {
+      throw new PackageError(
+        ErrorCode.ERR_METADATA_INVALID,
+        `${channelContext}: defaultInstruction requires chat-web status supported`,
+      );
+    }
+
+    channels.push({
+      id,
+      status,
+      ...(defaultInstruction === undefined ? {} : { defaultInstruction }),
+    });
   }
 
   return channels;
+}
+
+function parseConsumptionDefaultInstruction(
+  channelId: ConsumptionChannel['id'],
+  record: Record<string, unknown>,
+  channelContext: string,
+): DefaultInstructionRef | undefined {
+  if (record['defaultInstruction'] === undefined) {
+    return undefined;
+  }
+
+  if (channelId !== CHAT_WEB_CONSUMPTION_ID) {
+    throw new PackageError(
+      ErrorCode.ERR_METADATA_INVALID,
+      `${channelContext}: defaultInstruction is only allowed on chat-web entries`,
+    );
+  }
+
+  return parseDefaultInstruction(record['defaultInstruction'], channelContext);
 }
 
 function parseConsumptionFromObject(compatibility: Record<string, unknown>): ConsumptionChannel[] | undefined {
@@ -184,6 +256,14 @@ export function isChatWebSupported(metadata: PackageMetadata): boolean {
   const compatibility = parsePackageCompatibility(metadata);
   const channel = compatibility.consumption?.find((entry) => entry.id === CHAT_WEB_CONSUMPTION_ID);
   return channel?.status === 'supported';
+}
+
+export function getChatWebDefaultInstruction(
+  metadata: PackageMetadata,
+): DefaultInstructionRef | undefined {
+  const compatibility = parsePackageCompatibility(metadata);
+  const channel = compatibility.consumption?.find((entry) => entry.id === CHAT_WEB_CONSUMPTION_ID);
+  return channel?.defaultInstruction;
 }
 
 export function isChatWebEntryIncluded(
