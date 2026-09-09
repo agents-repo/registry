@@ -18,7 +18,19 @@ export interface CatalogReleaseOptions extends CatalogReleaseConfig {
  */
 export function loadCatalogReleaseConfig(repoRoot: string): CatalogReleaseConfig {
   const configPath = path.join(repoRoot, '.releaserc.catalog.json');
-  return JSON.parse(readFileSync(configPath, 'utf8')) as CatalogReleaseConfig;
+
+  let rawConfig: string;
+  try {
+    rawConfig = readFileSync(configPath, 'utf8');
+  } catch (error) {
+    throw new Error(`Failed to read catalog release config at ${configPath}`, { cause: error });
+  }
+
+  try {
+    return JSON.parse(rawConfig) as CatalogReleaseConfig;
+  } catch (error) {
+    throw new Error(`Failed to parse catalog release config at ${configPath}`, { cause: error });
+  }
 }
 
 /**

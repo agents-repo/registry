@@ -4,7 +4,7 @@ import semanticRelease, { type Options } from 'semantic-release';
 import {
   buildCatalogReleaseOptions,
   loadCatalogReleaseConfig,
-} from './lib/load-catalog-release-config.ts';
+} from './lib/load-catalog-release-config';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const catalogConfig = loadCatalogReleaseConfig(repoRoot);
