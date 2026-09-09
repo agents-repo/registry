@@ -1,13 +1,12 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import semanticRelease, { type Options } from 'semantic-release';
-import {
-  buildCatalogReleaseOptions,
-  loadCatalogReleaseConfig,
-} from './lib/load-catalog-release-config';
+#!/usr/bin/env tsx
+/**
+ * release-catalog — Run catalog semantic-release using `.releaserc.catalog.json`.
+ *
+ * Usage:
+ *   npm run release:catalog
+ *   npm run release:catalog:dry-run
+ */
 
-const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const catalogConfig = loadCatalogReleaseConfig(repoRoot);
-const dryRun = process.argv.includes('--dry-run');
+import { runCatalogRelease } from './lib/release-catalog';
 
-await semanticRelease(buildCatalogReleaseOptions(catalogConfig, { dryRun }) as Options);
+await runCatalogRelease(import.meta.url, process.argv.slice(2));
