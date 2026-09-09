@@ -36,6 +36,9 @@ describe('runCatalogRelease', () => {
 
       expect(getCwd()).toBe(repoRoot);
       expect(semanticRelease).toHaveBeenCalledOnce();
+      expect(semanticRelease).toHaveBeenCalledWith(expect.objectContaining({ dryRun: true }), {
+        cwd: repoRoot,
+      });
     } finally {
       process.chdir(previousCwd);
     }
@@ -61,6 +64,9 @@ describe('runCatalogRelease', () => {
 
       expect(getCwd()).toBe(customRepoRoot);
       expect(semanticRelease).toHaveBeenCalledOnce();
+      expect(semanticRelease).toHaveBeenCalledWith(expect.objectContaining({ dryRun: true }), {
+        cwd: customRepoRoot,
+      });
     } finally {
       process.chdir(previousCwd);
       delete process.env.REGISTRY_REPO_ROOT;

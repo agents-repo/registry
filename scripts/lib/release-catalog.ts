@@ -19,5 +19,7 @@ export async function runCatalogRelease(
   const catalogConfig = loadCatalogReleaseConfig(repoRoot);
   const dryRun = argv.includes('--dry-run');
 
-  await semanticRelease(buildCatalogReleaseOptions(catalogConfig, { dryRun }) as Options);
+  await semanticRelease(buildCatalogReleaseOptions(catalogConfig, { dryRun }) as Options, {
+    cwd: repoRoot,
+  });
 }
