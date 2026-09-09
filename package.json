@@ -34,8 +34,8 @@
     "typecheck": "tsc --noEmit",
     "release": "semantic-release",
     "release:dry-run": "semantic-release --dry-run",
-    "release:catalog": "semantic-release --extends .releaserc.catalog.json",
-    "release:catalog:dry-run": "semantic-release --extends .releaserc.catalog.json --dry-run",
+    "release:catalog": "tsx scripts/release-catalog.ts",
+    "release:catalog:dry-run": "tsx scripts/release-catalog.ts --dry-run",
     "catalog:release:check": "tsx scripts/catalog-release-check.ts"
   },
   "engines": {
