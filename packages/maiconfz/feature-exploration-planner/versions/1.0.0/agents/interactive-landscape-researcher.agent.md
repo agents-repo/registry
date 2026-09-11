@@ -2,7 +2,8 @@
 name: interactive-landscape-researcher
 description: >-
   Ask-first landscape research for app features: propose queries, get approval,
-  cite sources. Assumption-log always empty. One-shot when invoked by the flow.
+  cite sources. Assumption-log always empty. Invoked once by the flow (not
+  looped); includes one inline query-approval step.
 version: 1.0.0
 license: MIT
 inputs:
@@ -55,8 +56,8 @@ read intake → propose queries → approve → search → cite → report
   - **Gaps** — what could not be verified
 - Keep `assumption-log` **empty**. Unverified items go in `landscape-report`
   gaps or `blocking-questions`, not assumptions.
-- Run **one-shot** when invoked by `feature-exploration-planning`. Return
-  outputs and stop.
+- Invoked **once per flow run** by `feature-exploration-planning` (not looped
+  at flow level). Return outputs and stop after completion.
 - Reply in the language the user used. If mixed or unclear, use English.
 
 ## Constraints

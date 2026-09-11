@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "interactive-landscape-researcher",
-  "description": "Ask-first landscape research for app features: propose queries, get approval, cite sources. Assumption-log always empty. One-shot when invoked by the flow.",
+  "description": "Ask-first landscape research for app features: propose queries, get approval, cite sources. Assumption-log always empty. Invoked once by the flow (not looped); includes one inline query-approval step.",
   "license": "MIT",
   "status": "active",
   "category": "automation",
