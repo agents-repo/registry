@@ -334,6 +334,7 @@ function validateQualifiedOrLegacyTargetEntry(
   issues: ValidationIssue[],
   config: QualifiedTargetEntryConfig,
   pathEncoding?: number,
+  expectedVersion?: string,
 ): void {
   const qualified = usesQualifiedPathEncoding(pathEncoding);
   const legacyMatch = config.legacyPattern.test(name);
@@ -401,6 +402,10 @@ function validateQualifiedOrLegacyTargetEntry(
       ),
     );
   }
+
+  if (expectedVersion !== undefined) {
+    validateFrontmatterVersion(entry, name, expectedVersion, issues, 'deployment');
+  }
 }
 
 function validateSkillEntry(
@@ -431,6 +436,7 @@ function validateClaudeAgentEntry(
   name: string,
   issues: ValidationIssue[],
   pathEncoding?: number,
+  expectedVersion?: string,
 ): void {
   validateQualifiedOrLegacyTargetEntry(entry, name, issues, {
     legacyPattern: LEGACY_CLAUDE_AGENT_ENTRY_PATTERN,
@@ -438,7 +444,7 @@ function validateClaudeAgentEntry(
     targetZipLabel: 'Claude target ZIP',
     entryLabel: 'Claude',
     extractInstallLeaf: extractInstallLeafFromClaudePath,
-  }, pathEncoding);
+  }, pathEncoding, expectedVersion);
 }
 
 type ZipEntryVisitor = (
@@ -492,8 +498,7 @@ export function scanTargetArtifactZip(
 
   return scanZipEntries(zipPath, (entry, name, issues) => {
     if (targetId === 'claude-code') {
-      validateFrontmatterVersion(entry, name, expectedVersion, issues, 'deployment');
-      validateClaudeAgentEntry(entry, name, issues, pathEncoding);
+      validateClaudeAgentEntry(entry, name, issues, pathEncoding, expectedVersion);
       return;
     }
 

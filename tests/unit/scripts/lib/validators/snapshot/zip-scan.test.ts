@@ -341,6 +341,21 @@ describe('scanTargetArtifactZip', (): void => {
     expect(issues).toHaveLength(0);
   });
 
+  it('flags unexpected Claude entries without duplicate version diagnostics', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'agents/hello-agent.agent.md',
+        attr: 0,
+        getData: () => Buffer.from('---\nname: hello-agent\nversion: 9.9.9\n---\n', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'claude-code', '1.0.0', 1);
+
+    expect(issues).toHaveLength(1);
+    expect(issues[0]?.code).toBe('ERR_ZIP_UNEXPECTED_ENTRY');
+  });
+
   it('flags unexpected entries in Cursor skill ZIPs', (): void => {
     mockEntries = [
       toZipEntry({
