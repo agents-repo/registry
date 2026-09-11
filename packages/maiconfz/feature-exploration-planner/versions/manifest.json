@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "feature-exploration-planner",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "ebb45de79c95ce3723259ca22979807c266b4a2e6c4135f1adbbba4566669c87",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "847f93ee9d71474c72c6db491a0d22e7f0994f3f177e599f76e821d204d69172"
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "ab3a8da1a24f0bef880ade4f376e65de61cd7c1b0e599ed205e1c8ea6b083678"
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "c56aec450f12c358ff1d2ff5ad3fa2f5e9bd64d18a50c35c1cbb88e45faa0fbb"
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "9d85bbbcb42dfe1bf0864e3de2ce916445b5c72f875d92b3dce92e1be8bf2f2b"
+        }
+      ],
+      "createdAt": "2026-09-11T02:55:39.360Z",
+      "instructionsArtifact": "instructions.json",
+      "instructionsSha256": "771a1d86f013ce014ecca09280d9f40a204bd0657addfd72ff542e964cd7cd31"
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "options-analyst",
+  "description": "Compare feature implementation options, trade-offs, risks, and non-goals against intake and landscape context. One-shot; no Q&A loop.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "intake-summary",
+      "type": "string",
+      "description": "Structured intake from feature-intake."
+    },
+    {
+      "name": "landscape-report",
+      "type": "string",
+      "description": "Landscape research report; may be empty when research skipped."
+    },
+    {
+      "name": "feature-idea",
+      "type": "string",
+      "description": "Original feature idea text or path reference."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "options-summary",
+      "type": "string",
+      "description": "Markdown comparison of approaches with recommendation."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Non-blocking follow-ups only; empty when none."
+    }
+  ]
+}

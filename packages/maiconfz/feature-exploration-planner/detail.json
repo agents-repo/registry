@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/feature-exploration-planner",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "feature-exploration-planner",
+    "description": "Explore app feature ideas with ask-first intake, optional landscape research, options analysis, and a structured feature brief. Chat-web for early brainstorming. Planning only.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/feature-exploration-planner",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "planning",
+      "feature",
+      "exploration",
+      "product",
+      "research",
+      "interactive",
+      "chat"
+    ],
+    "createdAt": "2026-09-11T02:39:10.014Z",
+    "updatedAt": "2026-09-11T02:39:10.014Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 7,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/feature-exploration-planner/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported",
+          "defaultInstruction": {
+            "kind": "agent",
+            "id": "feature-exploration-chat"
+          }
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "automatic-landscape-researcher",
+      "name": "automatic-landscape-researcher",
+      "description": "Assumption-first landscape research: proactive search for patterns and competitors, cite sources, label gaps in assumption-log. One-shot.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/feature-exploration-planner/versions/1.0.0/agents/automatic-landscape-researcher.agent.md"
+    },
+    {
+      "id": "feature-definition-planner",
+      "name": "feature-definition-planner",
+      "description": "Synthesize a feature-brief text output from intake, landscape, and options artifacts. Preserves original user intent. One-shot; planning only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/feature-exploration-planner/versions/1.0.0/agents/feature-definition-planner.agent.md"
+    },
+    {
+      "id": "feature-exploration-chat",
+      "name": "feature-exploration-chat",
+      "description": "Early brainstorming for app feature ideas from conversation, public URLs, uploads, or pasted sources. Emits idea-brief when evidence exists. Does not produce a full feature-brief or inspect a host tree.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/feature-exploration-planner/versions/1.0.0/agents/feature-exploration-chat.agent.md"
+    },
+    {
+      "id": "feature-intake",
+      "name": "feature-intake",
+      "description": "Ask-first framing of app feature ideas against the host repository. Emits intake-summary and blocking questions only. Does not research or define the full feature brief.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/feature-exploration-planner/versions/1.0.0/agents/feature-intake.agent.md"
+    },
+    {
+      "id": "interactive-landscape-researcher",
+      "name": "interactive-landscape-researcher",
+      "description": "Ask-first landscape research for app features: propose queries, get approval, cite sources. Assumption-log always empty. Invoked once by the flow (not looped); includes one inline query-approval step.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/feature-exploration-planner/versions/1.0.0/agents/interactive-landscape-researcher.agent.md"
+    },
+    {
+      "id": "options-analyst",
+      "name": "options-analyst",
+      "description": "Compare feature implementation options, trade-offs, risks, and non-goals against intake and landscape context. One-shot; no Q&A loop.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/feature-exploration-planner/versions/1.0.0/agents/options-analyst.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "feature-exploration-planning",
+      "name": "feature-exploration-planning",
+      "description": "Orchestrate ask-first feature intake, routed landscape research, options analysis, and feature-brief synthesis. Planning only; does not implement.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/feature-exploration-planner/versions/1.0.0/flows/feature-exploration-planning.agent.md",
+      "agents": [
+        "feature-intake",
+        "interactive-landscape-researcher",
+        "automatic-landscape-researcher",
+        "options-analyst",
+        "feature-definition-planner"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-09-11T02:55:39.360Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# feature-exploration-planner\n\nExplore app feature ideas with ask-first intake, optional landscape\nresearch, options analysis, and a structured **feature-brief** text output.\nChat-web supports early brainstorming. Planning only; does not implement.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nInstalled agents reply in the **language the user used** (English if mixed\nor unclear).\n\n## Objective\n\nTurn a fuzzy app feature idea into a structured **feature-brief** you can\npaste into a GitHub issue or feed downstream planning. Sits **upstream** of:\n\n- `maiconfz/github-interactive-issue-implementation-planner` (issue exists)\n- `maiconfz/plan-refiner` (implementation plan exists)\n\nPrimary output is **text in the conversation** — no markdown file required.\nOptional `output-path` writes `feature-brief` to a host file when provided.\n\n## Workflow\n\n```mermaid\nflowchart LR\n  chat[feature-exploration-chat]\n  intake[feature-intake]\n  mode[research-mode]\n  interactive[interactive-landscape-researcher]\n  automatic[automatic-landscape-researcher]\n  options[options-analyst]\n  define[feature-definition-planner]\n  chat -->|\"idea-brief\"| intake\n  intake --> mode\n  mode --> interactive\n  mode --> automatic\n  mode -->|skip| options\n  interactive --> options\n  automatic --> options\n  options --> define\n```\n\n**Q&A policy:** one clarification cycle at intake only (blocking questions).\nAll other agents run one-shot.\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets cursor\nnpx agents-repo@latest install maiconfz/feature-exploration-planner\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/feature-exploration-planner\n```\n\n- Choose `--targets` for your IDE: `github-copilot`, `cursor`,\n  `claude-code`, or `openai-codex` (pass one or more).\n- After install, commit `agents.json`, `agents-lock.json`, and the\n  extracted install paths when they change.\n\nThis README is catalog documentation on `main`; installed content comes\nfrom the versioned deployment ZIPs pinned in your `agents-lock.json`.\n\n## Usage\n\nTwo entry paths:\n\n- **Workspace (IDE):** run **`feature-exploration-planning`** in the host\n  project with your feature idea as `feature-idea` (prompt text or pasted\n  `idea-brief` from chat).\n- **Chat-web:** use **`feature-exploration-chat`** for early brainstorming.\n  It emits `idea-brief` when evidence exists. For full repo-grounded\n  exploration, install in an IDE and run the flow there.\n\n### Inputs\n\n| Input | Required | Description |\n| --- | --- | --- |\n| `feature-idea` | yes | Prompt text or workspace path to an idea file |\n| `research-mode` | no | `interactive`, `automatic`, or `skip`; flow asks if missing |\n| `user-clarifications` | no | Answers from the one intake clarification cycle |\n| `output-path` | no | Optional path to write `feature-brief`; omit for text only |\n\n### Outputs\n\n| Output | Description |\n| --- | --- |\n| `feature-brief` | Primary handoff text (markdown-formatted string) |\n| `intake-summary` | Framed problem, users, constraints |\n| `landscape-report` | Research with citations (empty when skipped) |\n| `options-summary` | Options, trade-offs, recommendation |\n| `open-questions` | Leftover blockers and non-blocking follow-ups |\n| `assumption-log` | From automatic research only |\n\n### After exploration\n\nThis package stops at the flow outputs above. Suggested next steps:\n\n1. Copy `feature-brief` into a **new GitHub issue**\n2. Run `maiconfz/github-interactive-issue-implementation-planner` with that\n   issue number\n3. Or draft an implementation plan and run `maiconfz/plan-refiner`\n\nImplementation requires an explicit user request or a different agent.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `feature-exploration-planning` (flow) | Primary IDE entry |\n| `feature-exploration-chat` | Chat-web early brainstorming |\n| `feature-intake` | Ask-first framing against host repo |\n| `interactive-landscape-researcher` | Ask-first landscape research |\n| `automatic-landscape-researcher` | Assumption-first landscape research |\n| `options-analyst` | Compare approaches and trade-offs |\n| `feature-definition-planner` | Synthesize `feature-brief` text |\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` with `{ \"id\": \"chat-web\", \"status\": \"supported\" }`.\n\nChat-web opens `feature-exploration-chat` by default via `defaultInstruction`.\n\nOnly `feature-exploration-chat` sets `chatWeb: \"included\"`. All workspace\nagents and the flow set `chatWeb: \"excluded\"`. Exclusion affects\n`instructions.json` only. Deployment ZIPs still contain every agent and the\nflow.\n\nAfter `package:build`, the instruction manifest for a released version\nlives at:\n\n```text\npackages/maiconfz/feature-exploration-planner/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp consumers\njoin the registry-proxy origin with those paths per\n[`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):\n\n- **Origin:** `https://registry-proxy.maiconfz.workers.dev`\n\nIllustrative absolute fetch URLs for version `1.0.0`:\n\n```text\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/feature-exploration-planner/1.0.0/instructions.json\nhttps://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/feature-exploration-planner/1.0.0/agents/feature-exploration-chat.agent.md\n```\n\n## Maintainers\n\nFrom the registry repository root (package authors / registry contributors):\n\n```bash\nPKG=maiconfz/feature-exploration-planner\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/feature-exploration-planner/1.0.0/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "feature-exploration-chat"
+  }
+}

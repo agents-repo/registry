@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "automatic-landscape-researcher",
+  "description": "Assumption-first landscape research: proactive search for patterns and competitors, cite sources, label gaps in assumption-log. One-shot.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "inputs": [
+    {
+      "name": "intake-summary",
+      "type": "string",
+      "description": "Structured intake from feature-intake."
+    },
+    {
+      "name": "feature-idea",
+      "type": "string",
+      "description": "Original feature idea text or path reference."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "landscape-report",
+      "type": "string",
+      "description": "Markdown research summary with citations."
+    },
+    {
+      "name": "assumption-log",
+      "type": "string",
+      "description": "Labeled assumptions and unverified gaps from research."
+    },
+    {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Empty unless search is impossible."
+    }
+  ]
+}
