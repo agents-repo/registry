@@ -33,6 +33,29 @@ describe('transformAgentMdForDeployment', () => {
     expect(parsed.data.agents).toEqual(['agents-repo--target-layouts--alpha']);
   });
 
+  it('rejects duplicate source ids across agents and flows', () => {
+    const duplicateIdFiles: AgentInstructionFile[] = [
+      {
+        id: 'shared-id',
+        sourcePath: '/pkg/agents/shared-id.agent.md',
+        relativePath: 'agents/shared-id.agent.md',
+        content: '---\nname: shared-id\nversion: 1.0.0\n---\n',
+        isFlow: false,
+      },
+      {
+        id: 'shared-id',
+        sourcePath: '/pkg/flows/shared-id.agent.md',
+        relativePath: 'flows/shared-id.agent.md',
+        content: '---\nname: shared-id\nversion: 1.0.0\n---\n',
+        isFlow: true,
+      },
+    ];
+
+    expect(() =>
+      createDeploymentTransformContext('agents-repo', 'target-layouts', duplicateIdFiles),
+    ).toThrow(/Duplicate source id "shared-id"/);
+  });
+
   it('rejects flow agents[] entries that reference flow ids', () => {
     const flowFile = files[1];
     const flowReferencingFlow = matter.stringify('body', {

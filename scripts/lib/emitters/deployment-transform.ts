@@ -17,6 +17,11 @@ export function createDeploymentTransformContext(
   const installLeafBySourceId = new Map<string, string>();
   const agentSourceIds = new Set<string>();
   for (const file of files) {
+    if (installLeafBySourceId.has(file.id)) {
+      throw new Error(
+        `Duplicate source id "${file.id}" in package ${namespace}/${packageId}; IDs must be unique across agents/ and flows/`,
+      );
+    }
     installLeafBySourceId.set(file.id, computeInstallLeaf(namespace, packageId, file.id));
     if (!file.isFlow) {
       agentSourceIds.add(file.id);
