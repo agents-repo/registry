@@ -2,8 +2,7 @@
 name: feature-exploration-planning
 description: >-
   Orchestrate ask-first feature intake, routed landscape research, options
-  analysis, and feature-brief synthesis. Planning only unless the user
-  explicitly requests implementation.
+  analysis, and feature-brief synthesis. Planning only; does not implement.
 version: 1.0.0
 license: MIT
 agents:
