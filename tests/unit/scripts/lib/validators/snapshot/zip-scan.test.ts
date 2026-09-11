@@ -247,6 +247,82 @@ describe('scanSnapshotZip', (): void => {
       issues.some((issue) => issue.code === 'ERR_FRONTMATTER_VERSION_MISMATCH'),
     ).toBe(true);
   });
+
+  it('flags qualified deployment frontmatter name mismatches', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `agents/${installLeaf}.agent.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(
+            `---\nname: wrong-name\nversion: 1.0.0\ndescription: hello\n---\n`,
+            'utf-8',
+          ),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'deployment',
+      expectedVersion: '1.0.0',
+      pathEncoding: 1,
+    });
+
+    expect(
+      issues.some(
+        (issue) =>
+          issue.code === 'ERR_ZIP_MALFORMED_ENTRY' &&
+          issue.message.includes('frontmatter name must equal'),
+      ),
+    ).toBe(true);
+  });
+
+  it('flags legacy deployment frontmatter name mismatches', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'agents/planner.agent.md',
+        attr: 0,
+        getData: () =>
+          Buffer.from('---\nname: wrong-name\nversion: 1.0.0\n---\n', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'deployment',
+      expectedVersion: '1.0.0',
+    });
+
+    expect(
+      issues.some(
+        (issue) =>
+          issue.code === 'ERR_ZIP_MALFORMED_ENTRY' &&
+          issue.message.includes('frontmatter name must equal "planner"'),
+      ),
+    ).toBe(true);
+  });
+
+  it('accepts qualified deployment entries with matching frontmatter name', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `agents/${installLeaf}.agent.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(
+            `---\nname: ${installLeaf}\nversion: 1.0.0\ndescription: hello\n---\n`,
+            'utf-8',
+          ),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'deployment',
+      expectedVersion: '1.0.0',
+      pathEncoding: 1,
+    });
+
+    expect(issues).toHaveLength(0);
+  });
 });
 
 describe('scanTargetArtifactZip', (): void => {

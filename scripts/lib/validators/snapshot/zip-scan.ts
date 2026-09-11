@@ -140,6 +140,14 @@ function validateFrontmatterVersion(
   }
 }
 
+function extractDeploymentAgentStem(name: string): string | undefined {
+  if (!name.startsWith(`${AGENTS_DIR}/`) || !name.endsWith(AGENT_FILE_EXT)) {
+    return undefined;
+  }
+  const baseName = name.slice(`${AGENTS_DIR}/`.length);
+  return baseName.slice(0, -AGENT_FILE_EXT.length);
+}
+
 function validatePatternedFrontmatterEntry(
   entry: AdmZip.IZipEntry,
   name: string,
@@ -151,6 +159,28 @@ function validatePatternedFrontmatterEntry(
   if (!pattern.test(name)) {
     issues.push(err('ERR_ZIP_UNEXPECTED_ENTRY', unexpectedMessage));
     return;
+  }
+
+  try {
+    const content = entry.getData().toString('utf-8');
+    const frontmatter = parseFrontmatterData(content);
+    const expectedName = extractDeploymentAgentStem(name);
+    if (typeof frontmatter.name !== 'string' || frontmatter.name.trim().length === 0) {
+      issues.push(
+        err('ERR_ZIP_MALFORMED_ENTRY', `Deployment ZIP entry "${name}" must include frontmatter name`),
+      );
+    } else if (expectedName !== undefined && frontmatter.name !== expectedName) {
+      issues.push(
+        err(
+          'ERR_ZIP_MALFORMED_ENTRY',
+          `Deployment ZIP entry "${name}" frontmatter name must equal "${expectedName}"`,
+        ),
+      );
+    }
+  } catch {
+    issues.push(
+      err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of deployment ZIP entry: "${name}"`),
+    );
   }
 
   validateFrontmatterVersion(entry, name, expectedVersion, issues, 'deployment');

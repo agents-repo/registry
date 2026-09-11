@@ -1,8 +1,7 @@
 import type { PackageRef } from './namespace';
 import type { AgentInstructionFile } from './emitters/agent-instruction';
 
-/** Current deployment path encoding for install-target ZIP artifacts. */
-export const PATH_ENCODING_VERSION = 1;
+export { PATH_ENCODING_VERSION } from './constants';
 
 /** Delimiter between install-leaf segments; MUST NOT appear inside kebab-case ids. */
 export const INSTALL_LEAF_SEGMENT_DELIMITER = '--';
