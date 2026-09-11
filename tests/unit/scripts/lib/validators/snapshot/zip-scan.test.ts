@@ -417,4 +417,47 @@ describe('scanTargetArtifactZip', (): void => {
 
     expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
   });
+
+  it('rejects qualified Cursor skill entries when install leaf namespace/package do not match path', (): void => {
+    const installLeaf = 'acme--other--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `.cursor/skills/agents-repo/hello-agent/${installLeaf}/SKILL.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(`---\nname: ${installLeaf}\ndescription: hello\n---\n`, 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'cursor', '1.0.0', 1);
+
+    expect(
+      issues.some(
+        (issue) =>
+          issue.code === 'ERR_ZIP_MALFORMED_ENTRY' &&
+          issue.message.includes('must match path namespace'),
+      ),
+    ).toBe(true);
+  });
+
+  it('rejects qualified Claude entries when install leaf namespace/package do not match path', (): void => {
+    const installLeaf = 'acme--other--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `.claude/agents/agents-repo/hello-agent/${installLeaf}.md`,
+        attr: 0,
+        getData: () => Buffer.from(`---\nname: ${installLeaf}\nversion: 1.0.0\n---\n`, 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'claude-code', '1.0.0', 1);
+
+    expect(
+      issues.some(
+        (issue) =>
+          issue.code === 'ERR_ZIP_MALFORMED_ENTRY' &&
+          issue.message.includes('must match path namespace'),
+      ),
+    ).toBe(true);
+  });
 });

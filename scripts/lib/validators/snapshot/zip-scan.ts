@@ -275,6 +275,50 @@ function extractInstallLeafFromClaudePath(name: string): string | undefined {
   return fileName.slice(0, -'.md'.length);
 }
 
+function extractNamespacePackageFromQualifiedPath(name: string): { namespace: string; packageId: string } | undefined {
+  const segments = name.split('/');
+  if (segments.length < 5) {
+    return undefined;
+  }
+
+  const namespace = segments.at(2);
+  const packageId = segments.at(3);
+  if (namespace === undefined || packageId === undefined) {
+    return undefined;
+  }
+
+  return { namespace, packageId };
+}
+
+function validateInstallLeafMatchesPathSegments(
+  pathNamespace: string,
+  pathPackageId: string,
+  installLeaf: string,
+  entryName: string,
+  issues: ValidationIssue[],
+): void {
+  const leafSegments = installLeaf.split('--');
+  if (leafSegments.length !== 3) {
+    issues.push(
+      err(
+        'ERR_ZIP_MALFORMED_ENTRY',
+        `Qualified ZIP entry "${entryName}" install leaf "${installLeaf}" must contain exactly three segments separated by "--"`,
+      ),
+    );
+    return;
+  }
+
+  const [leafNamespace, leafPackageId] = leafSegments;
+  if (leafNamespace !== pathNamespace || leafPackageId !== pathPackageId) {
+    issues.push(
+      err(
+        'ERR_ZIP_MALFORMED_ENTRY',
+        `Qualified ZIP entry "${entryName}" install leaf "${installLeaf}" must match path namespace "${pathNamespace}" and package id "${pathPackageId}"`,
+      ),
+    );
+  }
+}
+
 function validateSkillEntry(
   entry: AdmZip.IZipEntry,
   name: string,
@@ -328,6 +372,18 @@ function validateSkillEntry(
         ),
       );
     }
+    if (expectedLeaf !== undefined) {
+      const pathSegments = extractNamespacePackageFromQualifiedPath(name);
+      if (pathSegments !== undefined) {
+        validateInstallLeafMatchesPathSegments(
+          pathSegments.namespace,
+          pathSegments.packageId,
+          expectedLeaf,
+          name,
+          issues,
+        );
+      }
+    }
     if (typeof frontmatter.description !== 'string' || frontmatter.description.trim().length === 0) {
       issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Skill ZIP entry "${name}" must include frontmatter description`));
     }
@@ -369,6 +425,18 @@ function validateClaudeAgentEntry(
           `Claude ZIP entry "${name}" frontmatter name must equal install leaf "${expectedLeaf}"`,
         ),
       );
+    }
+    if (expectedLeaf !== undefined) {
+      const pathSegments = extractNamespacePackageFromQualifiedPath(name);
+      if (pathSegments !== undefined) {
+        validateInstallLeafMatchesPathSegments(
+          pathSegments.namespace,
+          pathSegments.packageId,
+          expectedLeaf,
+          name,
+          issues,
+        );
+      }
     }
   } catch {
     issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of Claude ZIP entry: "${name}"`));
