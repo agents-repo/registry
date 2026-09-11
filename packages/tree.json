@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-09-08T05:44:47.218Z",
+  "updatedAt": "2026-09-11T02:40:35.366Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -14,6 +14,7 @@
         "chorume",
         "context-token-reduction",
         "dev-emocionado",
+        "feature-exploration-planner",
         "github-interactive-issue-implementation-planner",
         "github-pr-review-triage",
         "plan-refiner",

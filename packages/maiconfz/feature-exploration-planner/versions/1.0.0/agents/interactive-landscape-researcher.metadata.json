@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "interactive-landscape-researcher",
+  "description": "Ask-first landscape research for app features: propose queries, get approval, cite sources. Assumption-log always empty. One-shot when invoked by the flow.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "inputs": [
+    {
+      "name": "intake-summary",
+      "type": "string",
+      "description": "Structured intake from feature-intake."
+    },
+    {
+      "name": "feature-idea",
+      "type": "string",
+      "description": "Original feature idea text or path reference."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "landscape-report",
+      "type": "string",
+      "description": "Markdown research summary with citations."
+    },
+    {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Markdown list; empty unless search cannot proceed."
+    },
+    {
+      "name": "assumption-log",
+      "type": "string",
+      "description": "Always empty for this agent."
+    }
+  ]
+}
