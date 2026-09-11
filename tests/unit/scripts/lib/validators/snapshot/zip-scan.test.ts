@@ -385,4 +385,36 @@ describe('scanTargetArtifactZip', (): void => {
 
     expect(issues).toHaveLength(0);
   });
+
+  it('rejects OpenAI Codex skill paths in Cursor ZIPs', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `.agents/skills/agents-repo/hello-agent/${installLeaf}/SKILL.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(`---\nname: ${installLeaf}\ndescription: hello\n---\n`, 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'cursor', '1.0.0', 1);
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
+  });
+
+  it('rejects Cursor skill paths in OpenAI Codex ZIPs', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `.cursor/skills/agents-repo/hello-agent/${installLeaf}/SKILL.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(`---\nname: ${installLeaf}\ndescription: hello\n---\n`, 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'openai-codex', '1.0.0', 1);
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
+  });
 });

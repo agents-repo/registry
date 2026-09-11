@@ -46,7 +46,10 @@ ids). Source snapshots under `versions/<version>/` MUST keep source ids.
 `manifest.json` `artifacts[]` entries for artifacts built with this layout MUST
 include `pathEncoding: 1`.
 
-Tooling MUST treat these IDs as the canonical install target identifiers.
+Install target IDs in the [table above](#install-target-ids) are the canonical
+identifiers for artifact naming and ZIP layout. Install leaves are qualified
+deployment identities distinct from install target IDs.
+
 Full ZIP-to-disk mapping rules are defined in [Extract mapping](#extract-mapping).
 
 ## Artifact Naming

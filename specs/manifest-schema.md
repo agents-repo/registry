@@ -74,7 +74,7 @@ Each `artifacts[]` entry MUST be an object with:
 | `target` | string | yes | Install target id per `install-targets.md` |
 | `file` | string | yes | `<version>-<target-id>.zip` in `versions/<version>/` |
 | `sha256` | string | yes | Lowercase hex, exactly 64 characters |
-| `pathEncoding` | integer | no | When present MUST be `1` (qualified install-leaf layout per `install-targets.md`) |
+| `pathEncoding` | integer | no (1.2.0+) | When present MUST be `1` (qualified install-leaf layout per `install-targets.md`); artifacts built with qualified install leaves MUST include this field |
 
 ## Validation Rules
 
@@ -108,7 +108,7 @@ Each `artifacts[]` entry MUST be an object with:
 
 ```json
 {
-    "schemaVersion": "1.1.0",
+    "schemaVersion": "1.2.0",
     "name": "my-package",
     "latest": "1.1.0",
     "versions": [
@@ -118,12 +118,14 @@ Each `artifacts[]` entry MUST be an object with:
                 {
                     "target": "github-copilot",
                     "file": "1.0.0-github-copilot.zip",
-                    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+                    "pathEncoding": 1
                 },
                 {
                     "target": "cursor",
                     "file": "1.0.0-cursor.zip",
-                    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+                    "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+                    "pathEncoding": 1
                 }
             ],
             "srcArtifact": "1.0.0-src.zip",
@@ -136,7 +138,8 @@ Each `artifacts[]` entry MUST be an object with:
                 {
                     "target": "github-copilot",
                     "file": "1.1.0-github-copilot.zip",
-                    "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+                    "sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                    "pathEncoding": 1
                 }
             ],
             "srcArtifact": "1.1.0-src.zip",

@@ -237,11 +237,17 @@ const LEGACY_CLAUDE_AGENT_ENTRY_PATTERN = new RegExp(
 const QUALIFIED_CLAUDE_AGENT_ENTRY_PATTERN = new RegExp(
   String.raw`^\.claude/agents/${ID_SEGMENT}/${ID_SEGMENT}/${INSTALL_LEAF_PATTERN}\.md$`,
 );
-const LEGACY_SKILL_ENTRY_PATTERN = new RegExp(
-  String.raw`^(?:\.cursor/skills|\.agents/skills)/${ID_SEGMENT}/SKILL\.md$`,
+const LEGACY_CURSOR_SKILL_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.cursor/skills/${ID_SEGMENT}/SKILL\.md$`,
 );
-const QUALIFIED_SKILL_ENTRY_PATTERN = new RegExp(
-  String.raw`^(?:\.cursor/skills|\.agents/skills)/${ID_SEGMENT}/${ID_SEGMENT}/${INSTALL_LEAF_PATTERN}/SKILL\.md$`,
+const LEGACY_OPENAI_CODEX_SKILL_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.agents/skills/${ID_SEGMENT}/SKILL\.md$`,
+);
+const QUALIFIED_CURSOR_SKILL_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.cursor/skills/${ID_SEGMENT}/${ID_SEGMENT}/${INSTALL_LEAF_PATTERN}/SKILL\.md$`,
+);
+const QUALIFIED_OPENAI_CODEX_SKILL_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.agents/skills/${ID_SEGMENT}/${ID_SEGMENT}/${INSTALL_LEAF_PATTERN}/SKILL\.md$`,
 );
 
 const usesQualifiedPathEncoding = (pathEncoding?: number): boolean => {
@@ -273,11 +279,20 @@ function validateSkillEntry(
   entry: AdmZip.IZipEntry,
   name: string,
   issues: ValidationIssue[],
+  targetId: 'cursor' | 'openai-codex',
   pathEncoding?: number,
 ): void {
   const qualified = usesQualifiedPathEncoding(pathEncoding);
-  const legacyMatch = LEGACY_SKILL_ENTRY_PATTERN.test(name);
-  const qualifiedMatch = QUALIFIED_SKILL_ENTRY_PATTERN.test(name);
+  const legacyPattern =
+    targetId === 'cursor'
+      ? LEGACY_CURSOR_SKILL_ENTRY_PATTERN
+      : LEGACY_OPENAI_CODEX_SKILL_ENTRY_PATTERN;
+  const qualifiedPattern =
+    targetId === 'cursor'
+      ? QUALIFIED_CURSOR_SKILL_ENTRY_PATTERN
+      : QUALIFIED_OPENAI_CODEX_SKILL_ENTRY_PATTERN;
+  const legacyMatch = legacyPattern.test(name);
+  const qualifiedMatch = qualifiedPattern.test(name);
 
   if (qualified && !qualifiedMatch) {
     issues.push(
@@ -416,7 +431,7 @@ export function scanTargetArtifactZip(
       return;
     }
 
-    validateSkillEntry(entry, name, issues, pathEncoding);
+    validateSkillEntry(entry, name, issues, targetId, pathEncoding);
   });
 }
 
