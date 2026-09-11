@@ -6,6 +6,7 @@ export interface DeploymentTransformContext {
   readonly namespace: string;
   readonly packageId: string;
   readonly installLeafBySourceId: ReadonlyMap<string, string>;
+  readonly agentSourceIds: ReadonlySet<string>;
 }
 
 export function createDeploymentTransformContext(
@@ -14,10 +15,14 @@ export function createDeploymentTransformContext(
   files: readonly AgentInstructionFile[],
 ): DeploymentTransformContext {
   const installLeafBySourceId = new Map<string, string>();
+  const agentSourceIds = new Set<string>();
   for (const file of files) {
     installLeafBySourceId.set(file.id, computeInstallLeaf(namespace, packageId, file.id));
+    if (!file.isFlow) {
+      agentSourceIds.add(file.id);
+    }
   }
-  return { namespace, packageId, installLeafBySourceId };
+  return { namespace, packageId, installLeafBySourceId, agentSourceIds };
 }
 
 export function transformAgentMdForDeployment(
@@ -37,6 +42,11 @@ export function transformAgentMdForDeployment(
   if (file.isFlow && Array.isArray(data.agents)) {
     data.agents = data.agents.map((agent) => {
       const sourceAgentId = String(agent);
+      if (!context.agentSourceIds.has(sourceAgentId)) {
+        throw new Error(
+          `Flow ${file.id} references non-agent id ${sourceAgentId} in package ${context.namespace}/${context.packageId}`,
+        );
+      }
       const referencedLeaf = context.installLeafBySourceId.get(sourceAgentId);
       if (referencedLeaf === undefined) {
         throw new Error(

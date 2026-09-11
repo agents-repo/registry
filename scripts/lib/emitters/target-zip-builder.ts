@@ -16,8 +16,8 @@ import {
   listAgentInstructionFiles,
 } from './agent-instruction';
 import { resolveDeclaredInstallTargets } from '../compatibility';
-import { PATH_ENCODING_VERSION } from '../install-leaf';
 import {
+  PATH_ENCODING_VERSION,
   claudeAgentZipEntry,
   codexSkillZipEntry,
   cursorSkillZipEntry,

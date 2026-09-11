@@ -4,12 +4,15 @@ import type { AgentInstructionFile } from './emitters/agent-instruction';
 /** Current deployment path encoding for install-target ZIP artifacts. */
 export const PATH_ENCODING_VERSION = 1;
 
+/** Delimiter between install-leaf segments; MUST NOT appear inside kebab-case ids. */
+export const INSTALL_LEAF_SEGMENT_DELIMITER = '--';
+
 export function computeInstallLeaf(
   namespace: string,
   packageId: string,
   sourceId: string,
 ): string {
-  return `${namespace}-${packageId}-${sourceId}`;
+  return [namespace, packageId, sourceId].join(INSTALL_LEAF_SEGMENT_DELIMITER);
 }
 
 export function buildInstallRef(
@@ -61,7 +64,7 @@ export function copilotAgentZipEntry(installLeaf: string): string {
 }
 
 export function packageRefFromDir(packageDir: string): PackageRef {
-  const normalized = packageDir.replace(/\\/g, '/');
+  const normalized = packageDir.replaceAll('\\', '/');
   const segments = normalized.split('/').filter((segment) => segment.length > 0);
   if (segments.length < 2) {
     throw new Error(`Cannot derive package ref from directory: ${packageDir}`);

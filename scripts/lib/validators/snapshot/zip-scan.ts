@@ -5,9 +5,11 @@ import { err } from '../common/issues';
 import {
   AGENTS_DIR,
   AGENT_FILE_EXT,
-  DEPLOYMENT_ZIP_ENTRY_PATTERN,
+  LEGACY_DEPLOYMENT_ZIP_ENTRY_PATTERN,
+  QUALIFIED_DEPLOYMENT_ZIP_ENTRY_PATTERN,
   FLOWS_DIR,
   ALLOWED_ZIP_EXTENSIONS,
+  INSTALL_LEAF_PATTERN_BODY,
   PATH_ENCODING_VERSION,
   ZIP_MAX_ENTRY_NAME_LENGTH,
   ZIP_SYMLINK_TYPE,
@@ -198,24 +200,27 @@ function validateSourceEntry(
 }
 
 const ID_SEGMENT = '[a-z0-9]+(?:-[a-z0-9]+)*';
+const INSTALL_LEAF_PATTERN = INSTALL_LEAF_PATTERN_BODY;
 const LEGACY_CLAUDE_AGENT_ENTRY_PATTERN = new RegExp(
-  `^\\.claude/agents/${ID_SEGMENT}\\.md$`,
+  String.raw`^\.claude/agents/${ID_SEGMENT}\.md$`,
 );
 const QUALIFIED_CLAUDE_AGENT_ENTRY_PATTERN = new RegExp(
-  `^\\.claude/agents/${ID_SEGMENT}/${ID_SEGMENT}/${ID_SEGMENT}\\.md$`,
+  String.raw`^\.claude/agents/${ID_SEGMENT}/${ID_SEGMENT}/${INSTALL_LEAF_PATTERN}\.md$`,
 );
 const LEGACY_SKILL_ENTRY_PATTERN = new RegExp(
-  `^(?:\\.cursor/skills|\\.agents/skills)/${ID_SEGMENT}/SKILL\\.md$`,
+  String.raw`^(?:\.cursor/skills|\.agents/skills)/${ID_SEGMENT}/SKILL\.md$`,
 );
 const QUALIFIED_SKILL_ENTRY_PATTERN = new RegExp(
-  `^(?:\\.cursor/skills|\\.agents/skills)/${ID_SEGMENT}/${ID_SEGMENT}/${ID_SEGMENT}/SKILL\\.md$`,
+  String.raw`^(?:\.cursor/skills|\.agents/skills)/${ID_SEGMENT}/${ID_SEGMENT}/${INSTALL_LEAF_PATTERN}/SKILL\.md$`,
 );
 
 const usesQualifiedPathEncoding = (pathEncoding?: number): boolean => {
   return pathEncoding === PATH_ENCODING_VERSION;
 };
 
-const SKILL_LEAF_SUFFIX_PATTERN = new RegExp(`/${ID_SEGMENT}/SKILL\\.md$`);
+const SKILL_LEAF_SUFFIX_PATTERN = new RegExp(
+  String.raw`/${INSTALL_LEAF_PATTERN}/SKILL\.md$`,
+);
 
 function extractInstallLeafFromSkillPath(name: string): string | undefined {
   if (!SKILL_LEAF_SUFFIX_PATTERN.test(name)) {
@@ -228,7 +233,7 @@ function extractInstallLeafFromSkillPath(name: string): string | undefined {
 function extractInstallLeafFromClaudePath(name: string): string | undefined {
   const segments = name.split('/');
   const fileName = segments.at(-1);
-  if (fileName === undefined || !fileName.endsWith('.md')) {
+  if (fileName?.endsWith('.md') !== true) {
     return undefined;
   }
   return fileName.slice(0, -'.md'.length);
@@ -371,7 +376,7 @@ export function scanTargetArtifactZip(
   pathEncoding?: number,
 ): ValidationIssue[] {
   if (targetId === 'github-copilot') {
-    return scanSnapshotZip(zipPath, { type: 'deployment', expectedVersion });
+    return scanSnapshotZip(zipPath, { type: 'deployment', expectedVersion, pathEncoding });
   }
 
   return scanZipEntries(zipPath, (entry, name, issues) => {
@@ -387,17 +392,22 @@ export function scanTargetArtifactZip(
 
 export function scanSnapshotZip(
   zipPath: string,
-  opts: { type: 'deployment' | 'source'; expectedVersion: string },
+  opts: { type: 'deployment' | 'source'; expectedVersion: string; pathEncoding?: number },
 ): ValidationIssue[] {
   return scanZipEntries(zipPath, (entry, name, issues) => {
     if (opts.type === 'deployment') {
+      const qualified = usesQualifiedPathEncoding(opts.pathEncoding);
       validatePatternedFrontmatterEntry(
         entry,
         name,
         opts.expectedVersion,
         issues,
-        DEPLOYMENT_ZIP_ENTRY_PATTERN,
-        `Unexpected entry in deployment ZIP: "${name}" — only agents/<id>.agent.md is allowed`,
+        qualified
+          ? QUALIFIED_DEPLOYMENT_ZIP_ENTRY_PATTERN
+          : LEGACY_DEPLOYMENT_ZIP_ENTRY_PATTERN,
+        qualified
+          ? `Unexpected entry in deployment ZIP: "${name}" — only agents/<install-leaf>.agent.md is allowed`
+          : `Unexpected entry in deployment ZIP: "${name}" — only agents/<id>.agent.md is allowed`,
       );
       return;
     }

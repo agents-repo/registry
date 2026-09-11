@@ -32,11 +32,12 @@ IDE discovery.
 | --- | --- | --- |
 | Source id | `<agent-id>` or `<flow-id>` | `planner` |
 | Install ref | `namespace/package-id/source-id` | `acme/hello-agent/planner` |
-| Install leaf | `{namespace}-{package-id}-{source-id}` | `acme-hello-agent-planner` |
+| Install leaf | `{namespace}--{package-id}--{source-id}` | `acme--hello-agent--planner` |
 
 Install leaf MUST be formed by joining `namespace`, `package-id`, and
-`source-id` with single `-` separators. Each segment MUST satisfy package id
-rules in `package-format.md`.
+`source-id` with `--` separators. Each segment MUST satisfy package id
+rules in `package-format.md`. Segments MUST NOT contain `--`, which is
+guaranteed by kebab-case id rules and makes the mapping injective.
 
 Deployment artifacts MUST rewrite agent and flow frontmatter `name` to the
 install leaf. Deployment flow `agents[]` MUST list install leaves (not source

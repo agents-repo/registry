@@ -220,9 +220,10 @@ describe('scanSnapshotZip', (): void => {
   });
 
   it('flags deployment frontmatter version mismatches', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--hello-agent';
     const content = [
       '---',
-      'name: hello-agent',
+      `name: ${installLeaf}`,
       'version: 0.9.0',
       'description: hello',
       'license: MIT',
@@ -230,7 +231,7 @@ describe('scanSnapshotZip', (): void => {
     ].join('\n');
     mockEntries = [
       toZipEntry({
-        entryName: 'agents/hello-agent.agent.md',
+        entryName: `agents/${installLeaf}.agent.md`,
         attr: 0,
         getData: () => Buffer.from(content, 'utf-8'),
       }),
@@ -239,6 +240,7 @@ describe('scanSnapshotZip', (): void => {
     const issues = scanSnapshotZip('mock.zip', {
       type: 'deployment',
       expectedVersion: '1.0.0',
+      pathEncoding: 1,
     });
 
     expect(
@@ -249,7 +251,7 @@ describe('scanSnapshotZip', (): void => {
 
 describe('scanTargetArtifactZip', (): void => {
   it('accepts Claude Code agent entries with matching frontmatter version', (): void => {
-    const installLeaf = 'agents-repo-hello-agent-planner';
+    const installLeaf = 'agents-repo--hello-agent--planner';
     mockEntries = [
       toZipEntry({
         entryName: `.claude/agents/agents-repo/hello-agent/${installLeaf}.md`,
@@ -278,7 +280,7 @@ describe('scanTargetArtifactZip', (): void => {
   });
 
   it('accepts OpenAI Codex skill entries with required frontmatter', (): void => {
-    const installLeaf = 'agents-repo-hello-agent-planner';
+    const installLeaf = 'agents-repo--hello-agent--planner';
     mockEntries = [
       toZipEntry({
         entryName: `.agents/skills/agents-repo/hello-agent/${installLeaf}/SKILL.md`,
