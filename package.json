@@ -53,7 +53,7 @@
     "@types/semver": "^7.7.1",
     "@typescript-eslint/eslint-plugin": "^8.63.0",
     "@typescript-eslint/parser": "^8.63.0",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/coverage-v8": "^5.0.0",
     "adm-zip": "^0.6.0",
     "agents-repo": "1.20.1",
     "conventional-changelog-conventionalcommits": "^8.0.0",
@@ -70,7 +70,7 @@
     "simple-git": "^3.36.0",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.0"
   },
   "overrides": {
     "brace-expansion@^1": "1.1.18",
