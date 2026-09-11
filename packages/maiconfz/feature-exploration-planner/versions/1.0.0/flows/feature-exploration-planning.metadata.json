@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "feature-exploration-planning",
+  "description": "Orchestrate ask-first feature intake, routed landscape research, options analysis, and feature-brief synthesis. Planning only; does not implement.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "agents": [
+    "feature-intake",
+    "interactive-landscape-researcher",
+    "automatic-landscape-researcher",
+    "options-analyst",
+    "feature-definition-planner"
+  ],
+  "inputs": [
+    {
+      "name": "feature-idea",
+      "type": "string",
+      "description": "Prompt text or workspace path to an idea file."
+    },
+    {
+      "name": "research-mode",
+      "type": "string",
+      "description": "interactive, automatic, or skip; ask which to use when missing."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers accumulated across clarification loops."
+    },
+    {
+      "name": "output-path",
+      "type": "string",
+      "description": "Optional workspace path to write feature-brief; omit for text only."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "feature-brief",
+      "type": "string",
+      "description": "Primary handoff markdown text from feature-definition-planner."
+    },
+    {
+      "name": "intake-summary",
+      "type": "string",
+      "description": "Structured intake from feature-intake."
+    },
+    {
+      "name": "landscape-report",
+      "type": "string",
+      "description": "Research report; empty when research-mode is skip."
+    },
+    {
+      "name": "options-summary",
+      "type": "string",
+      "description": "Options comparison from options-analyst."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Remaining questions at handoff; blocking items first."
+    },
+    {
+      "name": "assumption-log",
+      "type": "string",
+      "description": "From automatic landscape research only; empty otherwise."
+    }
+  ]
+}

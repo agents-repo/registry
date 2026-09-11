@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-08T05:44:47.218Z",
+  "updatedAt": "2026-09-11T02:55:39.360Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -249,6 +249,51 @@
         "band": "mixed"
       },
       "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/dev-emocionado/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
+      "id": "maiconfz/feature-exploration-planner",
+      "namespace": "maiconfz",
+      "package": "feature-exploration-planner",
+      "path": "packages/maiconfz/feature-exploration-planner",
+      "name": "feature-exploration-planner",
+      "description": "Explore app feature ideas with ask-first intake, optional landscape research, options analysis, and a structured feature brief. Chat-web for early brainstorming. Planning only.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "planning",
+        "feature",
+        "exploration",
+        "product",
+        "research",
+        "interactive",
+        "chat"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 7,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/feature-exploration-planner/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
@@ -593,6 +638,7 @@
     "chorume": "maiconfz/chorume",
     "context-token-reduction": "maiconfz/context-token-reduction",
     "dev-emocionado": "maiconfz/dev-emocionado",
+    "feature-exploration-planner": "maiconfz/feature-exploration-planner",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
     "plan-refiner": "maiconfz/plan-refiner",

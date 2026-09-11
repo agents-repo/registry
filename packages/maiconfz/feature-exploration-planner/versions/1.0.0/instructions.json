@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/feature-exploration-planner",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "feature-exploration-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "feature-exploration-chat",
+      "path": "/pkg/maiconfz/feature-exploration-planner/1.0.0/agents/feature-exploration-chat.agent.md"
+    }
+  ]
+}
