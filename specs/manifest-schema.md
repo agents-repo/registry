@@ -74,7 +74,7 @@ Each `artifacts[]` entry MUST be an object with:
 | `target` | string | yes | Install target id per `install-targets.md` |
 | `file` | string | yes | `<version>-<target-id>.zip` in `versions/<version>/` |
 | `sha256` | string | yes | Lowercase hex, exactly 64 characters |
-| `pathEncoding` | integer | no (1.2.0+) | When present MUST be `1` (qualified install-leaf layout per `install-targets.md`); artifacts built with qualified install leaves MUST include this field |
+| `pathEncoding` | integer | no (1.2.0+) | When present MUST be `1` (qualified install-leaf layout per `install-targets.md`); artifacts built with qualified install leaves MUST include this field; when absent, validators accept legacy ZIP layouts per `install-targets.md` |
 
 ## Validation Rules
 

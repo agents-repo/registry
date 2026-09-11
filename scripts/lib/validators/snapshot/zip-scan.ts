@@ -319,40 +319,31 @@ function validateInstallLeafMatchesPathSegments(
   }
 }
 
-function validateSkillEntry(
+type QualifiedTargetEntryConfig = {
+  legacyPattern: RegExp;
+  qualifiedPattern: RegExp;
+  targetZipLabel: string;
+  entryLabel: string;
+  extractInstallLeaf: (name: string) => string | undefined;
+  requireDescription?: boolean;
+};
+
+function validateQualifiedOrLegacyTargetEntry(
   entry: AdmZip.IZipEntry,
   name: string,
   issues: ValidationIssue[],
-  targetId: 'cursor' | 'openai-codex',
+  config: QualifiedTargetEntryConfig,
   pathEncoding?: number,
 ): void {
   const qualified = usesQualifiedPathEncoding(pathEncoding);
-  const legacyPattern =
-    targetId === 'cursor'
-      ? LEGACY_CURSOR_SKILL_ENTRY_PATTERN
-      : LEGACY_OPENAI_CODEX_SKILL_ENTRY_PATTERN;
-  const qualifiedPattern =
-    targetId === 'cursor'
-      ? QUALIFIED_CURSOR_SKILL_ENTRY_PATTERN
-      : QUALIFIED_OPENAI_CODEX_SKILL_ENTRY_PATTERN;
-  const legacyMatch = legacyPattern.test(name);
-  const qualifiedMatch = qualifiedPattern.test(name);
+  const legacyMatch = config.legacyPattern.test(name);
+  const qualifiedMatch = config.qualifiedPattern.test(name);
 
-  if (qualified && !qualifiedMatch) {
+  if ((qualified && !qualifiedMatch) || (!qualified && !legacyMatch)) {
     issues.push(
       err(
         'ERR_ZIP_UNEXPECTED_ENTRY',
-        `Unexpected entry in skill target ZIP: "${name}"`,
-      ),
-    );
-    return;
-  }
-
-  if (!qualified && !legacyMatch) {
-    issues.push(
-      err(
-        'ERR_ZIP_UNEXPECTED_ENTRY',
-        `Unexpected entry in skill target ZIP: "${name}"`,
+        `Unexpected entry in ${config.targetZipLabel}: "${name}"`,
       ),
     );
     return;
@@ -361,17 +352,23 @@ function validateSkillEntry(
   try {
     const content = entry.getData().toString('utf-8');
     const frontmatter = parseFrontmatterData(content);
-    const expectedLeaf = qualified ? extractInstallLeafFromSkillPath(name) : undefined;
+    const expectedLeaf = qualified ? config.extractInstallLeaf(name) : undefined;
     if (typeof frontmatter.name !== 'string' || frontmatter.name.trim().length === 0) {
-      issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Skill ZIP entry "${name}" must include frontmatter name`));
+      issues.push(
+        err(
+          'ERR_ZIP_MALFORMED_ENTRY',
+          `${config.entryLabel} ZIP entry "${name}" must include frontmatter name`,
+        ),
+      );
     } else if (expectedLeaf !== undefined && frontmatter.name !== expectedLeaf) {
       issues.push(
         err(
           'ERR_ZIP_MALFORMED_ENTRY',
-          `Skill ZIP entry "${name}" frontmatter name must equal install leaf "${expectedLeaf}"`,
+          `${config.entryLabel} ZIP entry "${name}" frontmatter name must equal install leaf "${expectedLeaf}"`,
         ),
       );
     }
+
     if (expectedLeaf !== undefined) {
       const pathSegments = extractNamespacePackageFromQualifiedPath(name);
       if (pathSegments !== undefined) {
@@ -384,12 +381,49 @@ function validateSkillEntry(
         );
       }
     }
-    if (typeof frontmatter.description !== 'string' || frontmatter.description.trim().length === 0) {
-      issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Skill ZIP entry "${name}" must include frontmatter description`));
+
+    if (
+      config.requireDescription === true &&
+      (typeof frontmatter.description !== 'string' || frontmatter.description.trim().length === 0)
+    ) {
+      issues.push(
+        err(
+          'ERR_ZIP_MALFORMED_ENTRY',
+          `${config.entryLabel} ZIP entry "${name}" must include frontmatter description`,
+        ),
+      );
     }
   } catch {
-    issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of skill ZIP entry: "${name}"`));
+    issues.push(
+      err(
+        'ERR_ZIP_MALFORMED_ENTRY',
+        `Cannot read content of ${config.entryLabel.toLowerCase()} ZIP entry: "${name}"`,
+      ),
+    );
   }
+}
+
+function validateSkillEntry(
+  entry: AdmZip.IZipEntry,
+  name: string,
+  issues: ValidationIssue[],
+  targetId: 'cursor' | 'openai-codex',
+  pathEncoding?: number,
+): void {
+  validateQualifiedOrLegacyTargetEntry(entry, name, issues, {
+    legacyPattern:
+      targetId === 'cursor'
+        ? LEGACY_CURSOR_SKILL_ENTRY_PATTERN
+        : LEGACY_OPENAI_CODEX_SKILL_ENTRY_PATTERN,
+    qualifiedPattern:
+      targetId === 'cursor'
+        ? QUALIFIED_CURSOR_SKILL_ENTRY_PATTERN
+        : QUALIFIED_OPENAI_CODEX_SKILL_ENTRY_PATTERN,
+    targetZipLabel: 'skill target ZIP',
+    entryLabel: 'Skill',
+    extractInstallLeaf: extractInstallLeafFromSkillPath,
+    requireDescription: true,
+  }, pathEncoding);
 }
 
 function validateClaudeAgentEntry(
@@ -398,49 +432,13 @@ function validateClaudeAgentEntry(
   issues: ValidationIssue[],
   pathEncoding?: number,
 ): void {
-  const qualified = usesQualifiedPathEncoding(pathEncoding);
-  const legacyMatch = LEGACY_CLAUDE_AGENT_ENTRY_PATTERN.test(name);
-  const qualifiedMatch = QUALIFIED_CLAUDE_AGENT_ENTRY_PATTERN.test(name);
-
-  if (qualified && !qualifiedMatch) {
-    issues.push(err('ERR_ZIP_UNEXPECTED_ENTRY', `Unexpected entry in Claude target ZIP: "${name}"`));
-    return;
-  }
-
-  if (!qualified && !legacyMatch) {
-    issues.push(err('ERR_ZIP_UNEXPECTED_ENTRY', `Unexpected entry in Claude target ZIP: "${name}"`));
-    return;
-  }
-
-  try {
-    const content = entry.getData().toString('utf-8');
-    const frontmatter = parseFrontmatterData(content);
-    const expectedLeaf = qualified ? extractInstallLeafFromClaudePath(name) : undefined;
-    if (typeof frontmatter.name !== 'string' || frontmatter.name.trim().length === 0) {
-      issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Claude ZIP entry "${name}" must include frontmatter name`));
-    } else if (expectedLeaf !== undefined && frontmatter.name !== expectedLeaf) {
-      issues.push(
-        err(
-          'ERR_ZIP_MALFORMED_ENTRY',
-          `Claude ZIP entry "${name}" frontmatter name must equal install leaf "${expectedLeaf}"`,
-        ),
-      );
-    }
-    if (expectedLeaf !== undefined) {
-      const pathSegments = extractNamespacePackageFromQualifiedPath(name);
-      if (pathSegments !== undefined) {
-        validateInstallLeafMatchesPathSegments(
-          pathSegments.namespace,
-          pathSegments.packageId,
-          expectedLeaf,
-          name,
-          issues,
-        );
-      }
-    }
-  } catch {
-    issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of Claude ZIP entry: "${name}"`));
-  }
+  validateQualifiedOrLegacyTargetEntry(entry, name, issues, {
+    legacyPattern: LEGACY_CLAUDE_AGENT_ENTRY_PATTERN,
+    qualifiedPattern: QUALIFIED_CLAUDE_AGENT_ENTRY_PATTERN,
+    targetZipLabel: 'Claude target ZIP',
+    entryLabel: 'Claude',
+    extractInstallLeaf: extractInstallLeafFromClaudePath,
+  }, pathEncoding);
 }
 
 type ZipEntryVisitor = (

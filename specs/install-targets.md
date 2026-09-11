@@ -46,6 +46,14 @@ ids). Source snapshots under `versions/<version>/` MUST keep source ids.
 `manifest.json` `artifacts[]` entries for artifacts built with this layout MUST
 include `pathEncoding: 1`.
 
+When `pathEncoding` is omitted on an `artifacts[]` entry, validators and
+install tooling MUST accept the legacy (unqualified) ZIP entry paths for that
+target (for example `.cursor/skills/<skill-id>/SKILL.md` or
+`.claude/agents/<agent-id>.md`). Omission does not require qualified
+install-leaf paths. When `pathEncoding` is present, it MUST be `1` and the
+artifact ZIP MUST use the qualified layouts in the [table
+above](#install-target-ids).
+
 Install target IDs in the [table above](#install-target-ids) are the canonical
 identifiers for artifact naming and ZIP layout. Install leaves are qualified
 deployment identities distinct from install target IDs.

@@ -94,25 +94,36 @@ function validateArtifactEntry(
     );
   }
 
-  if (Object.hasOwn(record, 'pathEncoding')) {
-    if (!manifestSchemaSupportsPathEncoding(manifestSchemaVersion)) {
-      issues.push(
-        err(
-          'ERR_VALIDATION_FAILED',
-          `manifest.json version ${ver}: artifact pathEncoding requires manifest.json schemaVersion ${MANIFEST_PATH_ENCODING_MIN_SCHEMA} or newer`,
-        ),
-      );
-      return;
-    }
+  validateArtifactPathEncoding(record, ver, issues, manifestSchemaVersion);
+}
 
-    if (record['pathEncoding'] !== PATH_ENCODING_VERSION) {
-      issues.push(
-        err(
-          'ERR_VALIDATION_FAILED',
-          `manifest.json version ${ver}: artifact pathEncoding must be ${PATH_ENCODING_VERSION}`,
-        ),
-      );
-    }
+function validateArtifactPathEncoding(
+  record: Record<string, unknown>,
+  ver: string,
+  issues: ValidationIssue[],
+  manifestSchemaVersion: unknown,
+): void {
+  if (!Object.hasOwn(record, 'pathEncoding')) {
+    return;
+  }
+
+  if (!manifestSchemaSupportsPathEncoding(manifestSchemaVersion)) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: artifact pathEncoding requires manifest.json schemaVersion ${MANIFEST_PATH_ENCODING_MIN_SCHEMA} or newer`,
+      ),
+    );
+    return;
+  }
+
+  if (record['pathEncoding'] !== PATH_ENCODING_VERSION) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: artifact pathEncoding must be ${PATH_ENCODING_VERSION}`,
+      ),
+    );
   }
 }
 
