@@ -6,6 +6,7 @@ import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
 import {
+  PATH_ENCODING_VERSION,
   SHA256_PATTERN,
   SCHEMA_FAMILY_MANIFEST,
   SOURCE_ARCHIVE_SUFFIX,
@@ -32,7 +33,7 @@ function validateArtifactEntry(
   }
 
   const record = artifact as Record<string, unknown>;
-  const allowedKeys = new Set(['target', 'file', 'sha256']);
+  const allowedKeys = new Set(['target', 'file', 'sha256', 'pathEncoding']);
   for (const key of Object.keys(record)) {
     if (!allowedKeys.has(key)) {
       issues.push(
@@ -90,6 +91,17 @@ function validateArtifactEntry(
         `manifest.json version ${ver}: artifact sha256 must be 64 lowercase hex characters`,
       ),
     );
+  }
+
+  if (Object.hasOwn(record, 'pathEncoding')) {
+    if (record['pathEncoding'] !== PATH_ENCODING_VERSION) {
+      issues.push(
+        err(
+          'ERR_VALIDATION_FAILED',
+          `manifest.json version ${ver}: artifact pathEncoding must be ${PATH_ENCODING_VERSION}`,
+        ),
+      );
+    }
   }
 }
 

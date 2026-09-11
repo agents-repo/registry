@@ -81,6 +81,7 @@ describe('adm-zip write/read roundtrip with zip-scan', (): void => {
         artifact.absoluteFilePath,
         artifact.target,
         '1.0.0',
+        1,
       );
       expect(issues).toEqual([]);
     }

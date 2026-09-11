@@ -258,7 +258,7 @@ describe('scanTargetArtifactZip', (): void => {
       }),
     ];
 
-    const issues = scanTargetArtifactZip('mock.zip', 'claude-code', '1.0.0');
+    const issues = scanTargetArtifactZip('mock.zip', 'claude-code', '1.0.0', 1);
 
     expect(issues).toHaveLength(0);
   });
@@ -288,7 +288,22 @@ describe('scanTargetArtifactZip', (): void => {
       }),
     ];
 
-    const issues = scanTargetArtifactZip('mock.zip', 'openai-codex', '1.0.0');
+    const issues = scanTargetArtifactZip('mock.zip', 'openai-codex', '1.0.0', 1);
+
+    expect(issues).toHaveLength(0);
+  });
+
+  it('accepts legacy flat Cursor skill entries without pathEncoding', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: '.cursor/skills/hello-agent/SKILL.md',
+        attr: 0,
+        getData: () =>
+          Buffer.from('---\nname: hello-agent\ndescription: hello\n---\n', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'cursor', '1.0.0');
 
     expect(issues).toHaveLength(0);
   });
