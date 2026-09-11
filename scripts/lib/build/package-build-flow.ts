@@ -128,13 +128,13 @@ export async function buildPackageSnapshot(options: BuildPackageOptions): Promis
 
   try {
     logMessage(log, '[5/7] Building install-target deployment ZIPs');
-    artifacts = buildTargetArtifacts(pkg.packageDir, versionDir, version, metadata);
+    artifacts = buildTargetArtifacts(pkg.packageDir, versionDir, version, metadata, pkg.ref);
     for (const artifact of artifacts) {
       logMessage(log, `       ${artifact.file} sha256: ${artifact.sha256}`);
     }
 
     logMessage(log, `[6/7] Building source archive: ${version}${SOURCE_ARCHIVE_SUFFIX}`);
-    const zipBuilder = new ZipBuilder(pkg.packageDir, version);
+    const zipBuilder = new ZipBuilder(pkg.packageDir, version, pkg.ref);
     zipBuilder.buildSourceZip(srcZipPath);
 
     const srcZipSha256 = Checksum.sha256(srcZipPath);

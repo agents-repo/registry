@@ -5,6 +5,7 @@ import AdmZip from 'adm-zip';
 import { afterEach, describe, expect, it } from 'vitest';
 import { AGENTS_DIR, VERSIONS_DIR } from '../../../../scripts/lib/constants';
 import { Checksum } from '../../../../scripts/lib/checksum';
+import { computeInstallLeaf } from '../../../../scripts/lib/install-leaf';
 import { compareUtf16CodeUnits, ZipBuilder } from '../../../../scripts/lib/zip-builder';
 import { createDummyPackage } from '../../../helpers/package-factory';
 
@@ -45,9 +46,9 @@ describe('ZipBuilder.buildDeploymentZip', (): void => {
       .filter((entryName) => entryName.endsWith('.agent.md'));
 
     expect(entries).toEqual([
-      `${AGENTS_DIR}/alpha.agent.md`,
-      `${AGENTS_DIR}/beta-flow.agent.md`,
-      `${AGENTS_DIR}/zebra.agent.md`,
+      `${AGENTS_DIR}/${computeInstallLeaf('agents-repo', 'zip-deploy', 'alpha')}.agent.md`,
+      `${AGENTS_DIR}/${computeInstallLeaf('agents-repo', 'zip-deploy', 'beta-flow')}.agent.md`,
+      `${AGENTS_DIR}/${computeInstallLeaf('agents-repo', 'zip-deploy', 'zebra')}.agent.md`,
     ]);
   });
 
@@ -63,9 +64,10 @@ describe('ZipBuilder.buildDeploymentZip', (): void => {
     const zipPath = path.join(repoRoot, 'deployment.zip');
     new ZipBuilder(packageDir, '1.0.0').buildDeploymentZip(zipPath);
 
-    const entry = new AdmZip(zipPath).getEntry(`${AGENTS_DIR}/only-flow.agent.md`);
+    const onlyFlowLeaf = computeInstallLeaf('agents-repo', 'zip-flow', 'only-flow');
+    const entry = new AdmZip(zipPath).getEntry(`${AGENTS_DIR}/${onlyFlowLeaf}.agent.md`);
     expect(entry).not.toBeNull();
-    expect(entry?.getData().toString('utf-8')).toContain('name: only-flow');
+    expect(entry?.getData().toString('utf-8')).toContain(`name: ${onlyFlowLeaf}`);
   });
 
   it('produces identical deployment ZIP bytes on repeated builds', (): void => {

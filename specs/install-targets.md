@@ -16,10 +16,34 @@ defined in `install-targets.md`.
 
 | ID | Consumer | ZIP layout / on-disk path |
 | --- | --- | --- |
-| `github-copilot` | GitHub Copilot | `agents/<id>.agent.md` in ZIP → `.github/agents/<id>.agent.md` on disk (flows flattened) |
-| `claude-code` | Claude Code | `.claude/agents/<id>.md` (ZIP entry equals on-disk path) |
-| `cursor` | Cursor | `.cursor/skills/<id>/SKILL.md` (ZIP entry equals on-disk path) |
-| `openai-codex` | OpenAI Codex | `.agents/skills/<id>/SKILL.md` (ZIP entry equals on-disk path) |
+| `github-copilot` | GitHub Copilot | `agents/<install-leaf>.agent.md` in ZIP → `.github/agents/<install-leaf>.agent.md` on disk (flows flattened) |
+| `claude-code` | Claude Code | `.claude/agents/<namespace>/<package-id>/<install-leaf>.md` |
+| `cursor` | Cursor | `.cursor/skills/<namespace>/<package-id>/<install-leaf>/SKILL.md` |
+| `openai-codex` | OpenAI Codex | `.agents/skills/<namespace>/<package-id>/<install-leaf>/SKILL.md` |
+
+### Install identity (deployment artifacts)
+
+Package **source** agent and flow ids remain short and package-local (see
+`agent-format.md` and `flow-format.md`). **Deployment** target ZIPs MUST use
+qualified **install leaves** to avoid cross-package collisions on disk and in
+IDE discovery.
+
+| Concept | Format | Example |
+| --- | --- | --- |
+| Source id | `<agent-id>` or `<flow-id>` | `planner` |
+| Install ref | `namespace/package-id/source-id` | `acme/hello-agent/planner` |
+| Install leaf | `{namespace}-{package-id}-{source-id}` | `acme-hello-agent-planner` |
+
+Install leaf MUST be formed by joining `namespace`, `package-id`, and
+`source-id` with single `-` separators. Each segment MUST satisfy package id
+rules in `package-format.md`.
+
+Deployment artifacts MUST rewrite agent and flow frontmatter `name` to the
+install leaf. Deployment flow `agents[]` MUST list install leaves (not source
+ids). Source snapshots under `versions/<version>/` MUST keep source ids.
+
+`manifest.json` `artifacts[]` entries for artifacts built with this layout MUST
+include `pathEncoding: 1`.
 
 Tooling MUST treat these IDs as the canonical install target identifiers.
 Full ZIP-to-disk mapping rules are defined in [Extract mapping](#extract-mapping).

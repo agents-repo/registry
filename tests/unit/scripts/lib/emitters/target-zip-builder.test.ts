@@ -2,9 +2,11 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import AdmZip from 'adm-zip';
+import matter from 'gray-matter';
 import { afterEach, describe, expect, it } from 'vitest';
 import { INSTALL_TARGET_IDS } from '../../../../../scripts/lib/constants';
 import { Checksum } from '../../../../../scripts/lib/checksum';
+import { computeInstallLeaf } from '../../../../../scripts/lib/install-leaf';
 import { buildTargetArtifacts } from '../../../../../scripts/lib/emitters/target-zip-builder';
 import type { PackageMetadata } from '../../../../../scripts/lib/types';
 import { createDummyPackage } from '../../../../helpers/package-factory';
@@ -59,18 +61,35 @@ describe('buildTargetArtifacts', (): void => {
     expect(checksumsAfterSecondBuild).toEqual(checksumsAfterFirstBuild);
   });
 
-  it('writes Claude and skill layout entries for non-github-copilot targets', (): void => {
+  it('writes qualified install-leaf paths for non-github-copilot targets', (): void => {
     const repoRoot = makeRepoRoot();
     const packageDir = createDummyPackage(repoRoot, 'target-layouts', {
       agents: [
         { id: 'alpha', name: 'alpha', description: 'Alpha agent for install-target layout checks.' },
       ],
+      flows: [
+        {
+          id: 'alpha-flow',
+          name: 'alpha-flow',
+          description: 'Flow referencing alpha for deployment rewrite checks in artifacts.',
+        },
+      ],
     });
+    const flowPath = path.join(packageDir, 'flows', 'alpha-flow.agent.md');
+    const flowParsed = matter(fs.readFileSync(flowPath, 'utf-8'));
+    fs.writeFileSync(
+      flowPath,
+      matter.stringify(flowParsed.content, { ...flowParsed.data, agents: ['alpha'] }),
+      'utf-8',
+    );
     const metadata = JSON.parse(
       fs.readFileSync(path.join(packageDir, 'metadata.json'), 'utf-8'),
     ) as PackageMetadata;
     const versionDir = path.join(repoRoot, 'versions', '1.0.0');
     fs.mkdirSync(versionDir, { recursive: true });
+
+    const installLeaf = computeInstallLeaf('agents-repo', 'target-layouts', 'alpha');
+    const flowLeaf = computeInstallLeaf('agents-repo', 'target-layouts', 'alpha-flow');
 
     const artifacts = buildTargetArtifacts(packageDir, versionDir, '1.0.0', metadata);
     const byTarget = new Map(artifacts.map((artifact) => [artifact.target, artifact]));
@@ -78,17 +97,35 @@ describe('buildTargetArtifacts', (): void => {
     const claudeZip = new AdmZip(byTarget.get('claude-code')!.absoluteFilePath);
     expect(
       claudeZip.getEntries().map((entry) => entry.entryName).filter((name) => !name.endsWith('/')),
-    ).toEqual(['.claude/agents/alpha.md']);
+    ).toEqual([
+      `.claude/agents/agents-repo/target-layouts/${installLeaf}.md`,
+      `.claude/agents/agents-repo/target-layouts/${flowLeaf}.md`,
+    ]);
 
     const cursorZip = new AdmZip(byTarget.get('cursor')!.absoluteFilePath);
     expect(
       cursorZip.getEntries().map((entry) => entry.entryName).filter((name) => !name.endsWith('/')),
-    ).toEqual(['.cursor/skills/alpha/SKILL.md']);
+    ).toEqual([
+      `.cursor/skills/agents-repo/target-layouts/${installLeaf}/SKILL.md`,
+      `.cursor/skills/agents-repo/target-layouts/${flowLeaf}/SKILL.md`,
+    ]);
+
+    const flowEntry = cursorZip
+      .getEntries()
+      .find((entry) => entry.entryName.endsWith(`${flowLeaf}/SKILL.md`));
+    expect(flowEntry).toBeDefined();
+    const flowContent = flowEntry!.getData().toString('utf-8');
+    const flowSkillParsed = matter(flowContent);
+    expect(flowSkillParsed.data.name).toBe(flowLeaf);
+    expect(flowContent).toContain(`- ${installLeaf}`);
 
     const codexZip = new AdmZip(byTarget.get('openai-codex')!.absoluteFilePath);
     expect(
       codexZip.getEntries().map((entry) => entry.entryName).filter((name) => !name.endsWith('/')),
-    ).toEqual(['.agents/skills/alpha/SKILL.md']);
+    ).toEqual([
+      `.agents/skills/agents-repo/target-layouts/${installLeaf}/SKILL.md`,
+      `.agents/skills/agents-repo/target-layouts/${flowLeaf}/SKILL.md`,
+    ]);
 
     expect(Checksum.sha256(byTarget.get('github-copilot')!.absoluteFilePath)).toHaveLength(64);
   });

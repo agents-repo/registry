@@ -195,12 +195,15 @@ const getAnchoredPatternBody = (pattern: RegExp, patternName: string): string =>
 };
 
 /**
- * Valid entry path inside a deployment ZIP:
- * `agents/<id>.agent.md` where `<id>` is a lowercase kebab-case identifier.
+ * Valid entry path inside a github-copilot deployment ZIP:
+ * `agents/<install-leaf>.agent.md` where install-leaf is namespace-package-id-source-id.
  */
 export const DEPLOYMENT_ZIP_ENTRY_PATTERN = new RegExp(
   `^${escapeRegexLiteral(AGENTS_DIR)}/${getAnchoredPatternBody(ID_PATTERN, 'ID_PATTERN')}${escapeRegexLiteral(AGENT_FILE_EXT)}$`,
 );
+
+/** pathEncoding field value for qualified install-leaf deployment artifacts. */
+export const PATH_ENCODING_VERSION = 1;
 
 // --- Git branch constraints ---
 

@@ -249,11 +249,12 @@ describe('scanSnapshotZip', (): void => {
 
 describe('scanTargetArtifactZip', (): void => {
   it('accepts Claude Code agent entries with matching frontmatter version', (): void => {
+    const installLeaf = 'agents-repo-hello-agent-planner';
     mockEntries = [
       toZipEntry({
-        entryName: '.claude/agents/hello-agent.md',
+        entryName: `.claude/agents/agents-repo/hello-agent/${installLeaf}.md`,
         attr: 0,
-        getData: () => Buffer.from('---\nname: hello-agent\nversion: 1.0.0\n---\n', 'utf-8'),
+        getData: () => Buffer.from(`---\nname: ${installLeaf}\nversion: 1.0.0\n---\n`, 'utf-8'),
       }),
     ];
 
@@ -277,11 +278,13 @@ describe('scanTargetArtifactZip', (): void => {
   });
 
   it('accepts OpenAI Codex skill entries with required frontmatter', (): void => {
+    const installLeaf = 'agents-repo-hello-agent-planner';
     mockEntries = [
       toZipEntry({
-        entryName: '.agents/skills/hello-agent/SKILL.md',
+        entryName: `.agents/skills/agents-repo/hello-agent/${installLeaf}/SKILL.md`,
         attr: 0,
-        getData: () => Buffer.from('---\nname: hello-agent\ndescription: hello\n---\n', 'utf-8'),
+        getData: () =>
+          Buffer.from(`---\nname: ${installLeaf}\ndescription: hello\n---\n`, 'utf-8'),
       }),
     ];
 

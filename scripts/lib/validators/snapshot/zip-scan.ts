@@ -196,8 +196,32 @@ function validateSourceEntry(
   validateFrontmatterVersion(entry, name, expectedVersion, issues, 'source');
 }
 
-const CLAUDE_AGENT_ENTRY_PATTERN = /^\.claude\/agents\/[a-z0-9]+(?:-[a-z0-9]+)*\.md$/;
-const SKILL_ENTRY_PATTERN = /^(?:\.cursor\/skills|\.agents\/skills)\/[a-z0-9]+(?:-[a-z0-9]+)*\/SKILL\.md$/;
+const ID_SEGMENT = '[a-z0-9]+(?:-[a-z0-9]+)*';
+const CLAUDE_AGENT_ENTRY_PATTERN = new RegExp(
+  `^\\.claude/agents/${ID_SEGMENT}/${ID_SEGMENT}/${ID_SEGMENT}\\.md$`,
+);
+const SKILL_ENTRY_PATTERN = new RegExp(
+  `^(?:\\.cursor/skills|\\.agents/skills)/${ID_SEGMENT}/${ID_SEGMENT}/${ID_SEGMENT}/SKILL\\.md$`,
+);
+
+const SKILL_LEAF_SUFFIX_PATTERN = new RegExp(`/${ID_SEGMENT}/SKILL\\.md$`);
+
+function extractInstallLeafFromSkillPath(name: string): string | undefined {
+  if (!SKILL_LEAF_SUFFIX_PATTERN.test(name)) {
+    return undefined;
+  }
+  const segments = name.split('/');
+  return segments.at(-2);
+}
+
+function extractInstallLeafFromClaudePath(name: string): string | undefined {
+  const segments = name.split('/');
+  const fileName = segments.at(-1);
+  if (fileName === undefined || !fileName.endsWith('.md')) {
+    return undefined;
+  }
+  return fileName.slice(0, -'.md'.length);
+}
 
 function validateSkillEntry(entry: AdmZip.IZipEntry, name: string, issues: ValidationIssue[]): void {
   if (!SKILL_ENTRY_PATTERN.test(name)) {
@@ -213,14 +237,47 @@ function validateSkillEntry(entry: AdmZip.IZipEntry, name: string, issues: Valid
   try {
     const content = entry.getData().toString('utf-8');
     const frontmatter = parseFrontmatterData(content);
+    const expectedLeaf = extractInstallLeafFromSkillPath(name);
     if (typeof frontmatter.name !== 'string' || frontmatter.name.trim().length === 0) {
       issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Skill ZIP entry "${name}" must include frontmatter name`));
+    } else if (expectedLeaf !== undefined && frontmatter.name !== expectedLeaf) {
+      issues.push(
+        err(
+          'ERR_ZIP_MALFORMED_ENTRY',
+          `Skill ZIP entry "${name}" frontmatter name must equal install leaf "${expectedLeaf}"`,
+        ),
+      );
     }
     if (typeof frontmatter.description !== 'string' || frontmatter.description.trim().length === 0) {
       issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Skill ZIP entry "${name}" must include frontmatter description`));
     }
   } catch {
     issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of skill ZIP entry: "${name}"`));
+  }
+}
+
+function validateClaudeAgentEntry(entry: AdmZip.IZipEntry, name: string, issues: ValidationIssue[]): void {
+  if (!CLAUDE_AGENT_ENTRY_PATTERN.test(name)) {
+    issues.push(err('ERR_ZIP_UNEXPECTED_ENTRY', `Unexpected entry in Claude target ZIP: "${name}"`));
+    return;
+  }
+
+  try {
+    const content = entry.getData().toString('utf-8');
+    const frontmatter = parseFrontmatterData(content);
+    const expectedLeaf = extractInstallLeafFromClaudePath(name);
+    if (typeof frontmatter.name !== 'string' || frontmatter.name.trim().length === 0) {
+      issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Claude ZIP entry "${name}" must include frontmatter name`));
+    } else if (expectedLeaf !== undefined && frontmatter.name !== expectedLeaf) {
+      issues.push(
+        err(
+          'ERR_ZIP_MALFORMED_ENTRY',
+          `Claude ZIP entry "${name}" frontmatter name must equal install leaf "${expectedLeaf}"`,
+        ),
+      );
+    }
+  } catch {
+    issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of Claude ZIP entry: "${name}"`));
   }
 }
 
@@ -274,14 +331,12 @@ export function scanTargetArtifactZip(
 
   return scanZipEntries(zipPath, (entry, name, issues) => {
     if (targetId === 'claude-code') {
-      validatePatternedFrontmatterEntry(
-        entry,
-        name,
-        expectedVersion,
-        issues,
-        CLAUDE_AGENT_ENTRY_PATTERN,
-        `Unexpected entry in Claude target ZIP: "${name}"`,
-      );
+      if (!CLAUDE_AGENT_ENTRY_PATTERN.test(name)) {
+        issues.push(err('ERR_ZIP_UNEXPECTED_ENTRY', `Unexpected entry in Claude target ZIP: "${name}"`));
+        return;
+      }
+      validateFrontmatterVersion(entry, name, expectedVersion, issues, 'deployment');
+      validateClaudeAgentEntry(entry, name, issues);
       return;
     }
 
