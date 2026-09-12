@@ -1,5 +1,5 @@
 import AdmZip from 'adm-zip';
-import { parseFrontmatter, parseFrontmatterData } from '../../frontmatter';
+import { parseFrontmatterData } from '../../frontmatter';
 import type { InstallTargetId, ValidationIssue } from '../../types';
 import { err } from '../common/issues';
 import {
@@ -105,6 +105,48 @@ function trackEntryCollisions(
   }
 }
 
+function getFrontmatterScalarValue(
+  frontmatter: Record<string, unknown>,
+  key: string,
+): string | undefined {
+  const value = frontmatter[key];
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+
+  return undefined;
+}
+
+function validateFrontmatterVersionFromData(
+  frontmatter: Record<string, unknown>,
+  name: string,
+  expectedVersion: string,
+  issues: ValidationIssue[],
+  scope: 'deployment' | 'source',
+): void {
+  const frontmatterVersion = getFrontmatterScalarValue(frontmatter, 'version');
+  if (frontmatterVersion === expectedVersion) {
+    return;
+  }
+
+  const frontmatterVersionDisplay =
+    frontmatterVersion === undefined
+      ? '(missing)'
+      : (JSON.stringify(frontmatterVersion) ?? String(frontmatterVersion));
+
+  const prefix = scope === 'deployment' ? 'Deployment' : 'Source';
+  issues.push(
+    err(
+      'ERR_FRONTMATTER_VERSION_MISMATCH',
+      `${prefix} ZIP entry "${name}": frontmatter version ${frontmatterVersionDisplay} must be "${expectedVersion}"`,
+    ),
+  );
+}
+
 function validateFrontmatterVersion(
   entry: AdmZip.IZipEntry,
   name: string,
@@ -114,25 +156,12 @@ function validateFrontmatterVersion(
 ): void {
   try {
     const content = entry.getData().toString('utf-8');
-    const frontmatter = parseFrontmatter(content);
-    if (frontmatter['version'] === expectedVersion) {
-      return;
-    }
-
-    const frontmatterVersion = Object.hasOwn(frontmatter, 'version')
-      ? frontmatter['version']
-      : undefined;
-    const frontmatterVersionDisplay =
-      frontmatterVersion === undefined
-        ? '(missing)'
-        : (JSON.stringify(frontmatterVersion) ?? String(frontmatterVersion));
-
-    const prefix = scope === 'deployment' ? 'Deployment' : 'Source';
-    issues.push(
-      err(
-        'ERR_FRONTMATTER_VERSION_MISMATCH',
-        `${prefix} ZIP entry "${name}": frontmatter version ${frontmatterVersionDisplay} must be "${expectedVersion}"`,
-      ),
+    validateFrontmatterVersionFromData(
+      parseFrontmatterData(content),
+      name,
+      expectedVersion,
+      issues,
+      scope,
     );
   } catch {
     const prefix = scope === 'deployment' ? 'deployment' : 'source';
@@ -177,13 +206,13 @@ function validatePatternedFrontmatterEntry(
         ),
       );
     }
+
+    validateFrontmatterVersionFromData(frontmatter, name, expectedVersion, issues, 'deployment');
   } catch {
     issues.push(
       err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of deployment ZIP entry: "${name}"`),
     );
   }
-
-  validateFrontmatterVersion(entry, name, expectedVersion, issues, 'deployment');
 }
 
 function validateSourceEntry(
@@ -394,6 +423,10 @@ function validateQualifiedOrLegacyTargetEntry(
         ),
       );
     }
+
+    if (expectedVersion !== undefined) {
+      validateFrontmatterVersionFromData(frontmatter, name, expectedVersion, issues, 'deployment');
+    }
   } catch {
     issues.push(
       err(
@@ -401,10 +434,6 @@ function validateQualifiedOrLegacyTargetEntry(
         `Cannot read content of ${config.entryLabel.toLowerCase()} ZIP entry: "${name}"`,
       ),
     );
-  }
-
-  if (expectedVersion !== undefined) {
-    validateFrontmatterVersion(entry, name, expectedVersion, issues, 'deployment');
   }
 }
 
