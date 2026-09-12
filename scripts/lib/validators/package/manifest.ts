@@ -6,6 +6,7 @@ import { err } from '../common/issues';
 import { readJsonFile } from './json-reader';
 import { validateSchemaVersion } from './schema-version';
 import {
+  PATH_ENCODING_VERSION,
   SHA256_PATTERN,
   SCHEMA_FAMILY_MANIFEST,
   SOURCE_ARCHIVE_SUFFIX,
@@ -25,6 +26,7 @@ function validateArtifactEntry(
   ver: string,
   issues: ValidationIssue[],
   seenTargets: Set<string>,
+  manifestSchemaVersion: unknown,
 ): void {
   if (typeof artifact !== 'object' || artifact === null || Array.isArray(artifact)) {
     issues.push(err('ERR_VALIDATION_FAILED', `manifest.json version ${ver}: artifacts entries must be objects`));
@@ -32,7 +34,7 @@ function validateArtifactEntry(
   }
 
   const record = artifact as Record<string, unknown>;
-  const allowedKeys = new Set(['target', 'file', 'sha256']);
+  const allowedKeys = new Set(['target', 'file', 'sha256', 'pathEncoding']);
   for (const key of Object.keys(record)) {
     if (!allowedKeys.has(key)) {
       issues.push(
@@ -91,6 +93,38 @@ function validateArtifactEntry(
       ),
     );
   }
+
+  validateArtifactPathEncoding(record, ver, issues, manifestSchemaVersion);
+}
+
+function validateArtifactPathEncoding(
+  record: Record<string, unknown>,
+  ver: string,
+  issues: ValidationIssue[],
+  manifestSchemaVersion: unknown,
+): void {
+  if (!Object.hasOwn(record, 'pathEncoding')) {
+    return;
+  }
+
+  if (!manifestSchemaSupportsPathEncoding(manifestSchemaVersion)) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: artifact pathEncoding requires manifest.json schemaVersion ${MANIFEST_PATH_ENCODING_MIN_SCHEMA} or newer`,
+      ),
+    );
+    return;
+  }
+
+  if (record['pathEncoding'] !== PATH_ENCODING_VERSION) {
+    issues.push(
+      err(
+        'ERR_VALIDATION_FAILED',
+        `manifest.json version ${ver}: artifact pathEncoding must be ${PATH_ENCODING_VERSION}`,
+      ),
+    );
+  }
 }
 
 function validateVersionEntryFields(
@@ -129,7 +163,7 @@ function validateVersionEntryFields(
 
   const seenTargets = new Set<string>();
   for (const artifact of e['artifacts'] as unknown[]) {
-    validateArtifactEntry(artifact, ver, issues, seenTargets);
+    validateArtifactEntry(artifact, ver, issues, seenTargets, manifestSchemaVersion);
   }
 
   if (typeof e['createdAt'] !== 'string' || !ValidationUtils.isRfc3339(e['createdAt'])) {
@@ -145,12 +179,21 @@ function validateVersionEntryFields(
 }
 
 const MANIFEST_INSTRUCTIONS_FIELDS_MIN_SCHEMA = '1.2.0';
+const MANIFEST_PATH_ENCODING_MIN_SCHEMA = '1.2.0';
 
 function manifestSchemaSupportsInstructionsFields(manifestSchemaVersion: unknown): boolean {
   return (
     typeof manifestSchemaVersion === 'string' &&
     semver.valid(manifestSchemaVersion) !== null &&
     semver.gte(manifestSchemaVersion, MANIFEST_INSTRUCTIONS_FIELDS_MIN_SCHEMA)
+  );
+}
+
+function manifestSchemaSupportsPathEncoding(manifestSchemaVersion: unknown): boolean {
+  return (
+    typeof manifestSchemaVersion === 'string' &&
+    semver.valid(manifestSchemaVersion) !== null &&
+    semver.gte(manifestSchemaVersion, MANIFEST_PATH_ENCODING_MIN_SCHEMA)
   );
 }
 

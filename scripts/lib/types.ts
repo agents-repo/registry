@@ -145,6 +145,7 @@ export interface ManifestArtifactEntry {
   target: InstallTargetId;
   file: string;
   sha256: string;
+  pathEncoding?: number;
 }
 
 export interface ManifestVersionEntry {

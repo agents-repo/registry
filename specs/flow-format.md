@@ -108,6 +108,20 @@ Chat-web paths for flows are defined in `chat-consumption.md`
 (`/pkg/.../flows/<flow-id>.agent.md`). Declaring `agents[]` populates
 `agentInstructions` in `instructions.json` per that spec.
 
+## Deployment artifact rules (install targets)
+
+Source authoring rules above apply to package root and `versions/<version>/`
+snapshots. **Deployment** target ZIPs (built by `package:build`) MUST apply
+qualified install leaves per `install-targets.md`:
+
+- Agent and flow frontmatter `name` in deployment ZIPs MUST equal the install
+  leaf, not the source id.
+- When `agents[]` is present in a deployment flow file, each entry MUST list
+  install leaves for referenced agents in the same package.
+
+Source `agents[]` values remain short package-local ids. Only deployment
+artifacts are rewritten at build time.
+
 ## ZIP Bundle Rules
 
 - Each `versions/<version>/<version>-github-copilot.zip` is a

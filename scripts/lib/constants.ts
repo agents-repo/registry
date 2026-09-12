@@ -194,13 +194,26 @@ const getAnchoredPatternBody = (pattern: RegExp, patternName: string): string =>
   return source.slice(1, -1);
 };
 
-/**
- * Valid entry path inside a deployment ZIP:
- * `agents/<id>.agent.md` where `<id>` is a lowercase kebab-case identifier.
- */
-export const DEPLOYMENT_ZIP_ENTRY_PATTERN = new RegExp(
-  `^${escapeRegexLiteral(AGENTS_DIR)}/${getAnchoredPatternBody(ID_PATTERN, 'ID_PATTERN')}${escapeRegexLiteral(AGENT_FILE_EXT)}$`,
+const ID_SEGMENT_BODY = getAnchoredPatternBody(ID_PATTERN, 'ID_PATTERN');
+
+/** Regex body for qualified install leaves: `{namespace}--{package-id}--{source-id}`. */
+export const INSTALL_LEAF_PATTERN_BODY = `${ID_SEGMENT_BODY}--${ID_SEGMENT_BODY}--${ID_SEGMENT_BODY}`;
+
+/** Legacy github-copilot deployment ZIP entry: `agents/<source-id>.agent.md`. */
+export const LEGACY_DEPLOYMENT_ZIP_ENTRY_PATTERN = new RegExp(
+  `^${escapeRegexLiteral(AGENTS_DIR)}/${ID_SEGMENT_BODY}${escapeRegexLiteral(AGENT_FILE_EXT)}$`,
 );
+
+/**
+ * Qualified github-copilot deployment ZIP entry:
+ * `agents/<install-leaf>.agent.md` where install-leaf uses `--` segment delimiters.
+ */
+export const QUALIFIED_DEPLOYMENT_ZIP_ENTRY_PATTERN = new RegExp(
+  `^${escapeRegexLiteral(AGENTS_DIR)}/${INSTALL_LEAF_PATTERN_BODY}${escapeRegexLiteral(AGENT_FILE_EXT)}$`,
+);
+
+/** pathEncoding field value for qualified install-leaf deployment artifacts. */
+export const PATH_ENCODING_VERSION = 1;
 
 // --- Git branch constraints ---
 

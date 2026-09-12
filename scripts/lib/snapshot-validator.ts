@@ -150,7 +150,14 @@ export class SnapshotValidator {
         );
       }
 
-      issues.push(...scanTargetArtifactZip(artifactPath, artifact.target, this.version));
+      issues.push(
+        ...scanTargetArtifactZip(
+          artifactPath,
+          artifact.target,
+          this.version,
+          artifact.pathEncoding,
+        ),
+      );
     }
   }
 

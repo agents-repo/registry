@@ -1,13 +1,16 @@
 import AdmZip from 'adm-zip';
-import { parseFrontmatter, parseFrontmatterData } from '../../frontmatter';
+import { parseFrontmatterData } from '../../frontmatter';
 import type { InstallTargetId, ValidationIssue } from '../../types';
 import { err } from '../common/issues';
 import {
   AGENTS_DIR,
   AGENT_FILE_EXT,
-  DEPLOYMENT_ZIP_ENTRY_PATTERN,
+  LEGACY_DEPLOYMENT_ZIP_ENTRY_PATTERN,
+  QUALIFIED_DEPLOYMENT_ZIP_ENTRY_PATTERN,
   FLOWS_DIR,
   ALLOWED_ZIP_EXTENSIONS,
+  INSTALL_LEAF_PATTERN_BODY,
+  PATH_ENCODING_VERSION,
   ZIP_MAX_ENTRY_NAME_LENGTH,
   ZIP_SYMLINK_TYPE,
   ZIP_UNIX_MODE_MASK,
@@ -102,6 +105,48 @@ function trackEntryCollisions(
   }
 }
 
+function getFrontmatterScalarValue(
+  frontmatter: Record<string, unknown>,
+  key: string,
+): string | undefined {
+  const value = frontmatter[key];
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+
+  return undefined;
+}
+
+function validateFrontmatterVersionFromData(
+  frontmatter: Record<string, unknown>,
+  name: string,
+  expectedVersion: string,
+  issues: ValidationIssue[],
+  scope: 'deployment' | 'source',
+): void {
+  const frontmatterVersion = getFrontmatterScalarValue(frontmatter, 'version');
+  if (frontmatterVersion === expectedVersion) {
+    return;
+  }
+
+  const frontmatterVersionDisplay =
+    frontmatterVersion === undefined
+      ? '(missing)'
+      : (JSON.stringify(frontmatterVersion) ?? String(frontmatterVersion));
+
+  const prefix = scope === 'deployment' ? 'Deployment' : 'Source';
+  issues.push(
+    err(
+      'ERR_FRONTMATTER_VERSION_MISMATCH',
+      `${prefix} ZIP entry "${name}": frontmatter version ${frontmatterVersionDisplay} must be "${expectedVersion}"`,
+    ),
+  );
+}
+
 function validateFrontmatterVersion(
   entry: AdmZip.IZipEntry,
   name: string,
@@ -111,30 +156,25 @@ function validateFrontmatterVersion(
 ): void {
   try {
     const content = entry.getData().toString('utf-8');
-    const frontmatter = parseFrontmatter(content);
-    if (frontmatter['version'] === expectedVersion) {
-      return;
-    }
-
-    const frontmatterVersion = Object.hasOwn(frontmatter, 'version')
-      ? frontmatter['version']
-      : undefined;
-    const frontmatterVersionDisplay =
-      frontmatterVersion === undefined
-        ? '(missing)'
-        : (JSON.stringify(frontmatterVersion) ?? String(frontmatterVersion));
-
-    const prefix = scope === 'deployment' ? 'Deployment' : 'Source';
-    issues.push(
-      err(
-        'ERR_FRONTMATTER_VERSION_MISMATCH',
-        `${prefix} ZIP entry "${name}": frontmatter version ${frontmatterVersionDisplay} must be "${expectedVersion}"`,
-      ),
+    validateFrontmatterVersionFromData(
+      parseFrontmatterData(content),
+      name,
+      expectedVersion,
+      issues,
+      scope,
     );
   } catch {
     const prefix = scope === 'deployment' ? 'deployment' : 'source';
     issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of ${prefix} ZIP entry: "${name}"`));
   }
+}
+
+function extractDeploymentAgentStem(name: string): string | undefined {
+  if (!name.startsWith(`${AGENTS_DIR}/`) || !name.endsWith(AGENT_FILE_EXT)) {
+    return undefined;
+  }
+  const baseName = name.slice(`${AGENTS_DIR}/`.length);
+  return baseName.slice(0, -AGENT_FILE_EXT.length);
 }
 
 function validatePatternedFrontmatterEntry(
@@ -150,7 +190,29 @@ function validatePatternedFrontmatterEntry(
     return;
   }
 
-  validateFrontmatterVersion(entry, name, expectedVersion, issues, 'deployment');
+  try {
+    const content = entry.getData().toString('utf-8');
+    const frontmatter = parseFrontmatterData(content);
+    const expectedName = extractDeploymentAgentStem(name);
+    if (typeof frontmatter.name !== 'string' || frontmatter.name.trim().length === 0) {
+      issues.push(
+        err('ERR_ZIP_MALFORMED_ENTRY', `Deployment ZIP entry "${name}" must include frontmatter name`),
+      );
+    } else if (expectedName !== undefined && frontmatter.name !== expectedName) {
+      issues.push(
+        err(
+          'ERR_ZIP_MALFORMED_ENTRY',
+          `Deployment ZIP entry "${name}" frontmatter name must equal "${expectedName}"`,
+        ),
+      );
+    }
+
+    validateFrontmatterVersionFromData(frontmatter, name, expectedVersion, issues, 'deployment');
+  } catch {
+    issues.push(
+      err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of deployment ZIP entry: "${name}"`),
+    );
+  }
 }
 
 function validateSourceEntry(
@@ -196,15 +258,122 @@ function validateSourceEntry(
   validateFrontmatterVersion(entry, name, expectedVersion, issues, 'source');
 }
 
-const CLAUDE_AGENT_ENTRY_PATTERN = /^\.claude\/agents\/[a-z0-9]+(?:-[a-z0-9]+)*\.md$/;
-const SKILL_ENTRY_PATTERN = /^(?:\.cursor\/skills|\.agents\/skills)\/[a-z0-9]+(?:-[a-z0-9]+)*\/SKILL\.md$/;
+const ID_SEGMENT = '[a-z0-9]+(?:-[a-z0-9]+)*';
+const INSTALL_LEAF_PATTERN = INSTALL_LEAF_PATTERN_BODY;
+const LEGACY_CLAUDE_AGENT_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.claude/agents/${ID_SEGMENT}\.md$`,
+);
+const QUALIFIED_CLAUDE_AGENT_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.claude/agents/${ID_SEGMENT}/${ID_SEGMENT}/${INSTALL_LEAF_PATTERN}\.md$`,
+);
+const LEGACY_CURSOR_SKILL_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.cursor/skills/${ID_SEGMENT}/SKILL\.md$`,
+);
+const LEGACY_OPENAI_CODEX_SKILL_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.agents/skills/${ID_SEGMENT}/SKILL\.md$`,
+);
+const QUALIFIED_CURSOR_SKILL_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.cursor/skills/${ID_SEGMENT}/${ID_SEGMENT}/${INSTALL_LEAF_PATTERN}/SKILL\.md$`,
+);
+const QUALIFIED_OPENAI_CODEX_SKILL_ENTRY_PATTERN = new RegExp(
+  String.raw`^\.agents/skills/${ID_SEGMENT}/${ID_SEGMENT}/${INSTALL_LEAF_PATTERN}/SKILL\.md$`,
+);
 
-function validateSkillEntry(entry: AdmZip.IZipEntry, name: string, issues: ValidationIssue[]): void {
-  if (!SKILL_ENTRY_PATTERN.test(name)) {
+const usesQualifiedPathEncoding = (pathEncoding?: number): boolean => {
+  return pathEncoding === PATH_ENCODING_VERSION;
+};
+
+const SKILL_LEAF_SUFFIX_PATTERN = new RegExp(
+  String.raw`/${INSTALL_LEAF_PATTERN}/SKILL\.md$`,
+);
+
+function extractInstallLeafFromSkillPath(name: string): string | undefined {
+  if (!SKILL_LEAF_SUFFIX_PATTERN.test(name)) {
+    return undefined;
+  }
+  const segments = name.split('/');
+  return segments.at(-2);
+}
+
+function extractInstallLeafFromClaudePath(name: string): string | undefined {
+  const segments = name.split('/');
+  const fileName = segments.at(-1);
+  if (fileName?.endsWith('.md') !== true) {
+    return undefined;
+  }
+  return fileName.slice(0, -'.md'.length);
+}
+
+function extractNamespacePackageFromQualifiedPath(name: string): { namespace: string; packageId: string } | undefined {
+  const segments = name.split('/');
+  if (segments.length < 5) {
+    return undefined;
+  }
+
+  const namespace = segments.at(2);
+  const packageId = segments.at(3);
+  if (namespace === undefined || packageId === undefined) {
+    return undefined;
+  }
+
+  return { namespace, packageId };
+}
+
+function validateInstallLeafMatchesPathSegments(
+  pathNamespace: string,
+  pathPackageId: string,
+  installLeaf: string,
+  entryName: string,
+  issues: ValidationIssue[],
+): void {
+  const leafSegments = installLeaf.split('--');
+  if (leafSegments.length !== 3) {
+    issues.push(
+      err(
+        'ERR_ZIP_MALFORMED_ENTRY',
+        `Qualified ZIP entry "${entryName}" install leaf "${installLeaf}" must contain exactly three segments separated by "--"`,
+      ),
+    );
+    return;
+  }
+
+  const [leafNamespace, leafPackageId] = leafSegments;
+  if (leafNamespace !== pathNamespace || leafPackageId !== pathPackageId) {
+    issues.push(
+      err(
+        'ERR_ZIP_MALFORMED_ENTRY',
+        `Qualified ZIP entry "${entryName}" install leaf "${installLeaf}" must match path namespace "${pathNamespace}" and package id "${pathPackageId}"`,
+      ),
+    );
+  }
+}
+
+type QualifiedTargetEntryConfig = {
+  legacyPattern: RegExp;
+  qualifiedPattern: RegExp;
+  targetZipLabel: string;
+  entryLabel: string;
+  extractInstallLeaf: (name: string) => string | undefined;
+  requireDescription?: boolean;
+};
+
+function validateQualifiedOrLegacyTargetEntry(
+  entry: AdmZip.IZipEntry,
+  name: string,
+  issues: ValidationIssue[],
+  config: QualifiedTargetEntryConfig,
+  pathEncoding?: number,
+  expectedVersion?: string,
+): void {
+  const qualified = usesQualifiedPathEncoding(pathEncoding);
+  const legacyMatch = config.legacyPattern.test(name);
+  const qualifiedMatch = config.qualifiedPattern.test(name);
+
+  if ((qualified && !qualifiedMatch) || (!qualified && !legacyMatch)) {
     issues.push(
       err(
         'ERR_ZIP_UNEXPECTED_ENTRY',
-        `Unexpected entry in skill target ZIP: "${name}"`,
+        `Unexpected entry in ${config.targetZipLabel}: "${name}"`,
       ),
     );
     return;
@@ -213,15 +382,98 @@ function validateSkillEntry(entry: AdmZip.IZipEntry, name: string, issues: Valid
   try {
     const content = entry.getData().toString('utf-8');
     const frontmatter = parseFrontmatterData(content);
+    const expectedLeaf = qualified ? config.extractInstallLeaf(name) : undefined;
     if (typeof frontmatter.name !== 'string' || frontmatter.name.trim().length === 0) {
-      issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Skill ZIP entry "${name}" must include frontmatter name`));
+      issues.push(
+        err(
+          'ERR_ZIP_MALFORMED_ENTRY',
+          `${config.entryLabel} ZIP entry "${name}" must include frontmatter name`,
+        ),
+      );
+    } else if (expectedLeaf !== undefined && frontmatter.name !== expectedLeaf) {
+      issues.push(
+        err(
+          'ERR_ZIP_MALFORMED_ENTRY',
+          `${config.entryLabel} ZIP entry "${name}" frontmatter name must equal install leaf "${expectedLeaf}"`,
+        ),
+      );
     }
-    if (typeof frontmatter.description !== 'string' || frontmatter.description.trim().length === 0) {
-      issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Skill ZIP entry "${name}" must include frontmatter description`));
+
+    if (expectedLeaf !== undefined) {
+      const pathSegments = extractNamespacePackageFromQualifiedPath(name);
+      if (pathSegments !== undefined) {
+        validateInstallLeafMatchesPathSegments(
+          pathSegments.namespace,
+          pathSegments.packageId,
+          expectedLeaf,
+          name,
+          issues,
+        );
+      }
+    }
+
+    if (
+      config.requireDescription === true &&
+      (typeof frontmatter.description !== 'string' || frontmatter.description.trim().length === 0)
+    ) {
+      issues.push(
+        err(
+          'ERR_ZIP_MALFORMED_ENTRY',
+          `${config.entryLabel} ZIP entry "${name}" must include frontmatter description`,
+        ),
+      );
+    }
+
+    if (expectedVersion !== undefined) {
+      validateFrontmatterVersionFromData(frontmatter, name, expectedVersion, issues, 'deployment');
     }
   } catch {
-    issues.push(err('ERR_ZIP_MALFORMED_ENTRY', `Cannot read content of skill ZIP entry: "${name}"`));
+    issues.push(
+      err(
+        'ERR_ZIP_MALFORMED_ENTRY',
+        `Cannot read content of ${config.entryLabel.toLowerCase()} ZIP entry: "${name}"`,
+      ),
+    );
   }
+}
+
+function validateSkillEntry(
+  entry: AdmZip.IZipEntry,
+  name: string,
+  issues: ValidationIssue[],
+  targetId: 'cursor' | 'openai-codex',
+  pathEncoding?: number,
+): void {
+  validateQualifiedOrLegacyTargetEntry(entry, name, issues, {
+    legacyPattern:
+      targetId === 'cursor'
+        ? LEGACY_CURSOR_SKILL_ENTRY_PATTERN
+        : LEGACY_OPENAI_CODEX_SKILL_ENTRY_PATTERN,
+    qualifiedPattern:
+      targetId === 'cursor'
+        ? QUALIFIED_CURSOR_SKILL_ENTRY_PATTERN
+        : QUALIFIED_OPENAI_CODEX_SKILL_ENTRY_PATTERN,
+    targetZipLabel: 'skill target ZIP',
+    entryLabel: 'Skill',
+    extractInstallLeaf: extractInstallLeafFromSkillPath,
+    requireDescription: true,
+  }, pathEncoding);
+}
+
+function validateClaudeAgentEntry(
+  entry: AdmZip.IZipEntry,
+  name: string,
+  issues: ValidationIssue[],
+  pathEncoding?: number,
+  expectedVersion?: string,
+): void {
+  validateQualifiedOrLegacyTargetEntry(entry, name, issues, {
+    legacyPattern: LEGACY_CLAUDE_AGENT_ENTRY_PATTERN,
+    qualifiedPattern: QUALIFIED_CLAUDE_AGENT_ENTRY_PATTERN,
+    targetZipLabel: 'Claude target ZIP',
+    entryLabel: 'Claude',
+    extractInstallLeaf: extractInstallLeafFromClaudePath,
+  }, pathEncoding, expectedVersion);
 }
 
 type ZipEntryVisitor = (
@@ -267,41 +519,40 @@ export function scanTargetArtifactZip(
   zipPath: string,
   targetId: InstallTargetId,
   expectedVersion: string,
+  pathEncoding?: number,
 ): ValidationIssue[] {
   if (targetId === 'github-copilot') {
-    return scanSnapshotZip(zipPath, { type: 'deployment', expectedVersion });
+    return scanSnapshotZip(zipPath, { type: 'deployment', expectedVersion, pathEncoding });
   }
 
   return scanZipEntries(zipPath, (entry, name, issues) => {
     if (targetId === 'claude-code') {
-      validatePatternedFrontmatterEntry(
-        entry,
-        name,
-        expectedVersion,
-        issues,
-        CLAUDE_AGENT_ENTRY_PATTERN,
-        `Unexpected entry in Claude target ZIP: "${name}"`,
-      );
+      validateClaudeAgentEntry(entry, name, issues, pathEncoding, expectedVersion);
       return;
     }
 
-    validateSkillEntry(entry, name, issues);
+    validateSkillEntry(entry, name, issues, targetId, pathEncoding);
   });
 }
 
 export function scanSnapshotZip(
   zipPath: string,
-  opts: { type: 'deployment' | 'source'; expectedVersion: string },
+  opts: { type: 'deployment' | 'source'; expectedVersion: string; pathEncoding?: number },
 ): ValidationIssue[] {
   return scanZipEntries(zipPath, (entry, name, issues) => {
     if (opts.type === 'deployment') {
+      const qualified = usesQualifiedPathEncoding(opts.pathEncoding);
       validatePatternedFrontmatterEntry(
         entry,
         name,
         opts.expectedVersion,
         issues,
-        DEPLOYMENT_ZIP_ENTRY_PATTERN,
-        `Unexpected entry in deployment ZIP: "${name}" — only agents/<id>.agent.md is allowed`,
+        qualified
+          ? QUALIFIED_DEPLOYMENT_ZIP_ENTRY_PATTERN
+          : LEGACY_DEPLOYMENT_ZIP_ENTRY_PATTERN,
+        qualified
+          ? `Unexpected entry in deployment ZIP: "${name}" — only agents/<install-leaf>.agent.md is allowed`
+          : `Unexpected entry in deployment ZIP: "${name}" — only agents/<id>.agent.md is allowed`,
       );
       return;
     }

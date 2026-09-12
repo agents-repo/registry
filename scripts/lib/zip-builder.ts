@@ -1,8 +1,14 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import AdmZip from 'adm-zip';
-import { AGENT_FILE_EXT, AGENTS_DIR, DETAIL_FILENAME, VERSIONS_DIR } from './constants';
-import { listDeploymentAgentFiles } from './deployment-agents';
+import { DETAIL_FILENAME, VERSIONS_DIR } from './constants';
+import { listAgentInstructionFiles } from './emitters/agent-instruction';
+import {
+  createDeploymentTransformContext,
+  transformAgentMdForDeployment,
+} from './emitters/deployment-transform';
+import { copilotAgentZipEntry, packageRefFromDir } from './install-leaf';
+import type { PackageRef } from './namespace';
 import { addDeterministicZipEntry } from './deterministic-zip';
 
 const ZIP_WRITE_OPTIONS = { noSort: true } as const;
@@ -20,21 +26,30 @@ export function compareUtf16CodeUnits(left: string, right: string): number {
 export class ZipBuilder {
   private readonly packageDir: string;
   private readonly version: string;
+  private readonly ref: PackageRef;
 
-  constructor(packageDir: string, version: string) {
+  constructor(packageDir: string, version: string, ref?: PackageRef) {
     this.packageDir = packageDir;
     this.version = version;
+    this.ref = ref ?? packageRefFromDir(packageDir);
   }
 
   buildDeploymentZip(outputPath: string): void {
+    const files = listAgentInstructionFiles(this.packageDir);
+    const context = createDeploymentTransformContext(
+      this.ref.namespace,
+      this.ref.packageId,
+      files,
+    );
     const zip = new AdmZip(ZIP_WRITE_OPTIONS);
 
-    // listDeploymentAgentFiles returns ids sorted for deterministic ZIP bytes.
-    for (const file of listDeploymentAgentFiles(this.packageDir)) {
+    for (const file of files) {
+      const installLeaf = context.installLeafBySourceId.get(file.id)!;
+      const transformed = transformAgentMdForDeployment(file.content, file, context);
       addDeterministicZipEntry(
         zip,
-        `${AGENTS_DIR}/${file.id}${AGENT_FILE_EXT}`,
-        file.content,
+        copilotAgentZipEntry(installLeaf),
+        transformed,
       );
     }
 

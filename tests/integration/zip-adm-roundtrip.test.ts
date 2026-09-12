@@ -49,6 +49,7 @@ describe('adm-zip write/read roundtrip with zip-scan', (): void => {
     const deploymentIssues = scanSnapshotZip(deploymentZipPath, {
       type: 'deployment',
       expectedVersion: '1.0.0',
+      pathEncoding: 1,
     });
     const sourceIssues = scanSnapshotZip(sourceZipPath, {
       type: 'source',
@@ -81,6 +82,7 @@ describe('adm-zip write/read roundtrip with zip-scan', (): void => {
         artifact.absoluteFilePath,
         artifact.target,
         '1.0.0',
+        1,
       );
       expect(issues).toEqual([]);
     }

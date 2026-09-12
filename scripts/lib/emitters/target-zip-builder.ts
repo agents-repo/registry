@@ -6,6 +6,7 @@ import {
   INSTALL_TARGET_IDS,
 } from '../constants';
 import type { InstallTargetId, ManifestArtifactEntry, PackageMetadata } from '../types';
+import type { PackageRef } from '../namespace';
 import { Checksum } from '../checksum';
 import { ZipBuilder } from '../zip-builder';
 import { addDeterministicZipEntry } from '../deterministic-zip';
@@ -15,6 +16,17 @@ import {
   listAgentInstructionFiles,
 } from './agent-instruction';
 import { resolveDeclaredInstallTargets } from '../compatibility';
+import {
+  PATH_ENCODING_VERSION,
+  claudeAgentZipEntry,
+  codexSkillZipEntry,
+  cursorSkillZipEntry,
+  packageRefFromDir,
+} from '../install-leaf';
+import {
+  createDeploymentTransformContext,
+  transformAgentMdForDeployment,
+} from './deployment-transform';
 
 const ZIP_WRITE_OPTIONS = { noSort: true } as const;
 
@@ -30,6 +42,7 @@ export function toManifestArtifactEntry(artifact: BuiltTargetArtifact): Manifest
     target: artifact.target,
     file: artifact.file,
     sha256: artifact.sha256,
+    pathEncoding: PATH_ENCODING_VERSION,
   };
 }
 
@@ -37,16 +50,25 @@ function addZipFile(zip: AdmZip, entryName: string, content: string | Buffer): v
   addDeterministicZipEntry(zip, entryName, content);
 }
 
-function buildGithubCopilotZip(packageDir: string, outputPath: string, version: string): void {
-  const zipBuilder = new ZipBuilder(packageDir, version);
+function buildGithubCopilotZip(
+  packageDir: string,
+  outputPath: string,
+  version: string,
+  ref: PackageRef,
+): void {
+  const zipBuilder = new ZipBuilder(packageDir, version, ref);
   zipBuilder.buildDeploymentZip(outputPath);
 }
 
-function buildClaudeCodeZip(packageDir: string, outputPath: string): void {
+function buildClaudeCodeZip(packageDir: string, outputPath: string, ref: PackageRef): void {
+  const files = listAgentInstructionFiles(packageDir);
+  const context = createDeploymentTransformContext(ref.namespace, ref.packageId, files);
   const zip = new AdmZip(ZIP_WRITE_OPTIONS);
-  for (const file of listAgentInstructionFiles(packageDir)) {
-    const entryName = `.claude/agents/${file.id}.md`;
-    addZipFile(zip, entryName, agentMdToClaudeAgentMd(file.content));
+  for (const file of files) {
+    const installLeaf = context.installLeafBySourceId.get(file.id)!;
+    const transformed = transformAgentMdForDeployment(file.content, file, context);
+    const entryName = claudeAgentZipEntry(ref.namespace, ref.packageId, installLeaf);
+    addZipFile(zip, entryName, agentMdToClaudeAgentMd(transformed));
   }
   zip.writeZip(outputPath);
 }
@@ -56,11 +78,19 @@ function buildSkillLayoutZip(
   outputPath: string,
   version: string,
   skillsRoot: string,
+  ref: PackageRef,
 ): void {
+  const files = listAgentInstructionFiles(packageDir);
+  const context = createDeploymentTransformContext(ref.namespace, ref.packageId, files);
   const zip = new AdmZip(ZIP_WRITE_OPTIONS);
-  for (const file of listAgentInstructionFiles(packageDir)) {
-    const entryName = `${skillsRoot}/${file.id}/SKILL.md`;
-    addZipFile(zip, entryName, agentMdToSkillMd(file.content, version));
+  for (const file of files) {
+    const installLeaf = context.installLeafBySourceId.get(file.id)!;
+    const transformed = transformAgentMdForDeployment(file.content, file, context);
+    const entryName =
+      skillsRoot === '.cursor/skills'
+        ? cursorSkillZipEntry(ref.namespace, ref.packageId, installLeaf)
+        : codexSkillZipEntry(ref.namespace, ref.packageId, installLeaf);
+    addZipFile(zip, entryName, agentMdToSkillMd(transformed, version));
   }
   zip.writeZip(outputPath);
 }
@@ -70,19 +100,20 @@ function buildTargetZip(
   packageDir: string,
   outputPath: string,
   version: string,
+  ref: PackageRef,
 ): void {
   switch (targetId) {
     case 'github-copilot':
-      buildGithubCopilotZip(packageDir, outputPath, version);
+      buildGithubCopilotZip(packageDir, outputPath, version, ref);
       return;
     case 'claude-code':
-      buildClaudeCodeZip(packageDir, outputPath);
+      buildClaudeCodeZip(packageDir, outputPath, ref);
       return;
     case 'cursor':
-      buildSkillLayoutZip(packageDir, outputPath, version, '.cursor/skills');
+      buildSkillLayoutZip(packageDir, outputPath, version, '.cursor/skills', ref);
       return;
     case 'openai-codex':
-      buildSkillLayoutZip(packageDir, outputPath, version, '.agents/skills');
+      buildSkillLayoutZip(packageDir, outputPath, version, '.agents/skills', ref);
       return;
     default:
       throw new PackageError(
@@ -97,7 +128,9 @@ export function buildTargetArtifacts(
   versionDir: string,
   version: string,
   metadata: PackageMetadata,
+  ref?: PackageRef,
 ): BuiltTargetArtifact[] {
+  const packageRef = ref ?? packageRefFromDir(packageDir);
   const declaredTargets = resolveDeclaredInstallTargets(metadata);
   const built: BuiltTargetArtifact[] = [];
 
@@ -111,7 +144,7 @@ export function buildTargetArtifacts(
 
     const fileName = buildTargetArtifactFileName(version, target.id);
     const absoluteFilePath = path.join(versionDir, fileName);
-    buildTargetZip(target.id, packageDir, absoluteFilePath, version);
+    buildTargetZip(target.id, packageDir, absoluteFilePath, version, packageRef);
     built.push({
       target: target.id,
       file: fileName,

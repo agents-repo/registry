@@ -220,9 +220,10 @@ describe('scanSnapshotZip', (): void => {
   });
 
   it('flags deployment frontmatter version mismatches', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--hello-agent';
     const content = [
       '---',
-      'name: hello-agent',
+      `name: ${installLeaf}`,
       'version: 0.9.0',
       'description: hello',
       'license: MIT',
@@ -230,9 +231,59 @@ describe('scanSnapshotZip', (): void => {
     ].join('\n');
     mockEntries = [
       toZipEntry({
-        entryName: 'agents/hello-agent.agent.md',
+        entryName: `agents/${installLeaf}.agent.md`,
         attr: 0,
         getData: () => Buffer.from(content, 'utf-8'),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'deployment',
+      expectedVersion: '1.0.0',
+      pathEncoding: 1,
+    });
+
+    expect(
+      issues.some((issue) => issue.code === 'ERR_FRONTMATTER_VERSION_MISMATCH'),
+    ).toBe(true);
+  });
+
+  it('flags qualified deployment frontmatter name mismatches', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `agents/${installLeaf}.agent.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(
+            `---\nname: wrong-name\nversion: 1.0.0\ndescription: hello\n---\n`,
+            'utf-8',
+          ),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'deployment',
+      expectedVersion: '1.0.0',
+      pathEncoding: 1,
+    });
+
+    expect(
+      issues.some(
+        (issue) =>
+          issue.code === 'ERR_ZIP_MALFORMED_ENTRY' &&
+          issue.message.includes('frontmatter name must equal'),
+      ),
+    ).toBe(true);
+  });
+
+  it('flags legacy deployment frontmatter name mismatches', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'agents/planner.agent.md',
+        attr: 0,
+        getData: () =>
+          Buffer.from('---\nname: wrong-name\nversion: 1.0.0\n---\n', 'utf-8'),
       }),
     ];
 
@@ -242,24 +293,67 @@ describe('scanSnapshotZip', (): void => {
     });
 
     expect(
-      issues.some((issue) => issue.code === 'ERR_FRONTMATTER_VERSION_MISMATCH'),
+      issues.some(
+        (issue) =>
+          issue.code === 'ERR_ZIP_MALFORMED_ENTRY' &&
+          issue.message.includes('frontmatter name must equal "planner"'),
+      ),
     ).toBe(true);
+  });
+
+  it('accepts qualified deployment entries with matching frontmatter name', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `agents/${installLeaf}.agent.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(
+            `---\nname: ${installLeaf}\nversion: 1.0.0\ndescription: hello\n---\n`,
+            'utf-8',
+          ),
+      }),
+    ];
+
+    const issues = scanSnapshotZip('mock.zip', {
+      type: 'deployment',
+      expectedVersion: '1.0.0',
+      pathEncoding: 1,
+    });
+
+    expect(issues).toHaveLength(0);
   });
 });
 
 describe('scanTargetArtifactZip', (): void => {
   it('accepts Claude Code agent entries with matching frontmatter version', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
     mockEntries = [
       toZipEntry({
-        entryName: '.claude/agents/hello-agent.md',
+        entryName: `.claude/agents/agents-repo/hello-agent/${installLeaf}.md`,
         attr: 0,
-        getData: () => Buffer.from('---\nname: hello-agent\nversion: 1.0.0\n---\n', 'utf-8'),
+        getData: () => Buffer.from(`---\nname: ${installLeaf}\nversion: 1.0.0\n---\n`, 'utf-8'),
       }),
     ];
 
-    const issues = scanTargetArtifactZip('mock.zip', 'claude-code', '1.0.0');
+    const issues = scanTargetArtifactZip('mock.zip', 'claude-code', '1.0.0', 1);
 
     expect(issues).toHaveLength(0);
+  });
+
+  it('flags unexpected Claude entries without duplicate version diagnostics', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: 'agents/hello-agent.agent.md',
+        attr: 0,
+        getData: () => Buffer.from('---\nname: hello-agent\nversion: 9.9.9\n---\n', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'claude-code', '1.0.0', 1);
+
+    expect(issues).toHaveLength(1);
+    expect(issues[0]?.code).toBe('ERR_ZIP_UNEXPECTED_ENTRY');
   });
 
   it('flags unexpected entries in Cursor skill ZIPs', (): void => {
@@ -277,16 +371,108 @@ describe('scanTargetArtifactZip', (): void => {
   });
 
   it('accepts OpenAI Codex skill entries with required frontmatter', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
     mockEntries = [
       toZipEntry({
-        entryName: '.agents/skills/hello-agent/SKILL.md',
+        entryName: `.agents/skills/agents-repo/hello-agent/${installLeaf}/SKILL.md`,
         attr: 0,
-        getData: () => Buffer.from('---\nname: hello-agent\ndescription: hello\n---\n', 'utf-8'),
+        getData: () =>
+          Buffer.from(`---\nname: ${installLeaf}\ndescription: hello\n---\n`, 'utf-8'),
       }),
     ];
 
-    const issues = scanTargetArtifactZip('mock.zip', 'openai-codex', '1.0.0');
+    const issues = scanTargetArtifactZip('mock.zip', 'openai-codex', '1.0.0', 1);
 
     expect(issues).toHaveLength(0);
+  });
+
+  it('accepts legacy flat Cursor skill entries without pathEncoding', (): void => {
+    mockEntries = [
+      toZipEntry({
+        entryName: '.cursor/skills/hello-agent/SKILL.md',
+        attr: 0,
+        getData: () =>
+          Buffer.from('---\nname: hello-agent\ndescription: hello\n---\n', 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'cursor', '1.0.0');
+
+    expect(issues).toHaveLength(0);
+  });
+
+  it('rejects OpenAI Codex skill paths in Cursor ZIPs', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `.agents/skills/agents-repo/hello-agent/${installLeaf}/SKILL.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(`---\nname: ${installLeaf}\ndescription: hello\n---\n`, 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'cursor', '1.0.0', 1);
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
+  });
+
+  it('rejects Cursor skill paths in OpenAI Codex ZIPs', (): void => {
+    const installLeaf = 'agents-repo--hello-agent--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `.cursor/skills/agents-repo/hello-agent/${installLeaf}/SKILL.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(`---\nname: ${installLeaf}\ndescription: hello\n---\n`, 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'openai-codex', '1.0.0', 1);
+
+    expect(issues.some((issue) => issue.code === 'ERR_ZIP_UNEXPECTED_ENTRY')).toBe(true);
+  });
+
+  it('rejects qualified Cursor skill entries when install leaf namespace/package do not match path', (): void => {
+    const installLeaf = 'acme--other--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `.cursor/skills/agents-repo/hello-agent/${installLeaf}/SKILL.md`,
+        attr: 0,
+        getData: () =>
+          Buffer.from(`---\nname: ${installLeaf}\ndescription: hello\n---\n`, 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'cursor', '1.0.0', 1);
+
+    expect(
+      issues.some(
+        (issue) =>
+          issue.code === 'ERR_ZIP_MALFORMED_ENTRY' &&
+          issue.message.includes('must match path namespace'),
+      ),
+    ).toBe(true);
+  });
+
+  it('rejects qualified Claude entries when install leaf namespace/package do not match path', (): void => {
+    const installLeaf = 'acme--other--planner';
+    mockEntries = [
+      toZipEntry({
+        entryName: `.claude/agents/agents-repo/hello-agent/${installLeaf}.md`,
+        attr: 0,
+        getData: () => Buffer.from(`---\nname: ${installLeaf}\nversion: 1.0.0\n---\n`, 'utf-8'),
+      }),
+    ];
+
+    const issues = scanTargetArtifactZip('mock.zip', 'claude-code', '1.0.0', 1);
+
+    expect(
+      issues.some(
+        (issue) =>
+          issue.code === 'ERR_ZIP_MALFORMED_ENTRY' &&
+          issue.message.includes('must match path namespace'),
+      ),
+    ).toBe(true);
   });
 });
