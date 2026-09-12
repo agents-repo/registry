@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-11T05:14:48.676Z",
+  "updatedAt": "2026-09-11T02:55:39.360Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -61,7 +61,7 @@
       "category": "assistant",
       "estimateOverallCost": {
         "estimatedCost": 1,
-        "band": "minimal"
+        "band": "low"
       },
       "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/agents-repo/hello-agent/README.md",
       "installTargets": [
