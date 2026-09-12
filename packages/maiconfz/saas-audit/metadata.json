@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "saas-audit",
+  "description": "Founder-coach SaaS product and GTM audit from websites, app listings, uploads, or pitch text. Chat-only; structured business report. Not a roast.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/saas-audit",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "saas",
+    "startup",
+    "business",
+    "gtm",
+    "competitive-analysis",
+    "pricing",
+    "positioning",
+    "audit",
+    "chat",
+    "website",
+    "app"
+  ],
+  "createdAt": "2026-09-12T04:10:55.763Z",
+  "updatedAt": "2026-09-12T04:10:55.763Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/saas-audit/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "saas-audit-chat"
+        }
+      }
+    ]
+  }
+}

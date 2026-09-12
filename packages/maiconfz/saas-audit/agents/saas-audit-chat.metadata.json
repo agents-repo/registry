@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "saas-audit-chat",
+  "description": "Founder-coach SaaS product and GTM audit from public URLs, uploads, or pitch text. Emits saas-audit-report when evidence exists. Not a roast.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include a SaaS URL, app listing, attachments, uploads, pitch text, or competitor names."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "saas-audit-report",
+      "type": "string",
+      "description": "Structured SaaS audit report; empty when evidence is too thin."
+    }
+  ]
+}

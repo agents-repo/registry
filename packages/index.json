@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-12T01:22:01.102Z",
+  "updatedAt": "2026-09-12T04:11:40.235Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -586,6 +586,55 @@
       "chatWeb": true
     },
     {
+      "id": "maiconfz/saas-audit",
+      "namespace": "maiconfz",
+      "package": "saas-audit",
+      "path": "packages/maiconfz/saas-audit",
+      "name": "saas-audit",
+      "description": "Founder-coach SaaS product and GTM audit from websites, app listings, uploads, or pitch text. Chat-only; structured business report. Not a roast.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "saas",
+        "startup",
+        "business",
+        "gtm",
+        "competitive-analysis",
+        "pricing",
+        "positioning",
+        "audit",
+        "chat",
+        "website",
+        "app"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/saas-audit/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
       "id": "maiconfz/xgh",
       "namespace": "maiconfz",
       "package": "xgh",
@@ -645,6 +694,7 @@
     "refactor-or-trash": "maiconfz/refactor-or-trash",
     "review-fix-ship": "maiconfz/review-fix-ship",
     "roast-my-project": "maiconfz/roast-my-project",
+    "saas-audit": "maiconfz/saas-audit",
     "xgh": "maiconfz/xgh"
   }
 }

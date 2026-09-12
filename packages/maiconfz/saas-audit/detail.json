@@ -1,0 +1,122 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/saas-audit",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "saas-audit",
+    "description": "Founder-coach SaaS product and GTM audit from websites, app listings, uploads, or pitch text. Chat-only; structured business report. Not a roast.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/saas-audit",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "saas",
+      "startup",
+      "business",
+      "gtm",
+      "competitive-analysis",
+      "pricing",
+      "positioning",
+      "audit",
+      "chat",
+      "website",
+      "app"
+    ],
+    "createdAt": "2026-09-12T04:10:55.763Z",
+    "updatedAt": "2026-09-12T04:10:55.763Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 6,
+      "band": "moderate"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/saas-audit/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported",
+          "defaultInstruction": {
+            "kind": "agent",
+            "id": "saas-audit-chat"
+          }
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "saas-audit-chat",
+      "name": "saas-audit-chat",
+      "description": "Founder-coach SaaS product and GTM audit from public URLs, uploads, or pitch text. Emits saas-audit-report when evidence exists. Not a roast.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/saas-audit/versions/1.0.0/agents/saas-audit-chat.agent.md"
+    }
+  ],
+  "flows": [],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-09-12T04:11:40.235Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# saas-audit\n\nFounder-coach **SaaS product and GTM audit** from a website, app listing,\nupload, or pitch. Chat-only: one agent emits a structured business report\nwith strengths, gaps, competitive comparison, pricing and positioning notes,\nand prioritized recommendations.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nInstalled agents reply in the **language the user used** (English if mixed\nor unclear).\n\n## What this package is\n\n- A **serious** product and go-to-market audit for SaaS founders\n- Evidence from **public URLs**, **uploads**, and **pitch text**\n- Optional **AI discoverability hints** from static page signals (`robots.txt`,\n  `llms.txt`, schema) when a website is fetched\n\n## What this package is not\n\n- **Not** [`maiconfz/roast-my-project`](https://github.com/agents-repo/registry/tree/main/packages/maiconfz/roast-my-project)\n  — no comedy roast or mean critique\n- **Not** an AI citation monitor (Monitoraeo, TurboAudit, etc.) — no live\n  multi-engine citation probes\n- **Not** a code review or security audit — brief technical notes only when\n  you provide a public repo URL\n- **Not** an IDE workflow — chat-only; no host-tree inspection\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@latest install maiconfz/saas-audit\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/saas-audit\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after\ninstall.\n\n## Usage\n\nUse **`saas-audit-chat`** in chat-web (default) or after install in your\nIDE chat.\n\nProvide any of:\n\n- Product or pricing **HTTPS URL**\n- **App store listing** URL\n- **Pitch text** (problem, ICP, offer, pricing sketch)\n- **Uploads** (deck, screenshots)\n- **Competitor names or URLs** (optional; improves comparison tables)\n\nThe agent emits **`saas-audit-report`** when evidence is sufficient. Thin\nmessages (e.g. \"audit my SaaS\" with no URL or pitch) trigger an interview\ninstead.\n\n### Evidence limits\n\n- At most **15** HTTPS fetches per turn; uploads do not count\n- Same-origin follow: up to **3** extra pages (Pricing, About,\n  `/robots.txt`, `/llms.txt`, etc.)\n- Competitor suggestions without URLs are labeled **`assumed — verify`**\n- Reports are **not** financial or legal advice\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `saas-audit-chat` | Chat-web SaaS product and GTM audit |\n\nNo flows or specialist agents — this package is chat-only.\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` with `{ \"id\": \"chat-web\", \"status\": \"supported\" }`.\n\nChat-web opens `saas-audit-chat` by default via `defaultInstruction`.\n\nAfter `package:build`, the instruction manifest for a released version\nlives at:\n\n```text\npackages/maiconfz/saas-audit/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp\nconsumers join the registry origin with those paths per\n[`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):\n\n- **Origin:** `https://registry.agents-repo.org`\n\nIllustrative absolute fetch URLs for version `1.0.0`:\n\n```text\nhttps://registry.agents-repo.org/pkg/maiconfz/saas-audit/1.0.0/instructions.json\nhttps://registry.agents-repo.org/pkg/maiconfz/saas-audit/1.0.0/agents/saas-audit-chat.agent.md\n```\n\n## Validate and build\n\nFrom the registry repository root:\n\n```bash\nPKG=maiconfz/saas-audit\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/saas-audit/1.0.0/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "saas-audit-chat"
+  }
+}
