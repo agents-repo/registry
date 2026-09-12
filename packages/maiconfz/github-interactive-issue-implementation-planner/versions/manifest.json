@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.1.0",
+  "schemaVersion": "1.2.0",
   "name": "github-interactive-issue-implementation-planner",
   "latest": "1.1.1",
   "versions": [
@@ -67,25 +67,29 @@
         {
           "target": "github-copilot",
           "file": "1.1.1-github-copilot.zip",
-          "sha256": "d6ecd1d419e9a9d06ddba5c7c4892b76654e5706b867829f0937182801c146d7"
+          "sha256": "db2a0428ad5ae5fce4fbe174e31f2368366c3155bcaeba6d2000c70de4e9fec8",
+          "pathEncoding": 1
         },
         {
           "target": "claude-code",
           "file": "1.1.1-claude-code.zip",
-          "sha256": "84f88f9d7d4e68ce876139b624fbdc0791f3ddb93141cae02afdf05e4eccb8cc"
+          "sha256": "3a741de392653646f39f913992c051d83387fce0439285b02f4df9524d591e5f",
+          "pathEncoding": 1
         },
         {
           "target": "cursor",
           "file": "1.1.1-cursor.zip",
-          "sha256": "72d59b0a914c2393fd28c980ca8d2a5e21ec2423eacb316da72043a1a90d9928"
+          "sha256": "357a1aa5129f13de9d2216291a272ee4bb761b6165d3ee4b183d1f3efba71657",
+          "pathEncoding": 1
         },
         {
           "target": "openai-codex",
           "file": "1.1.1-openai-codex.zip",
-          "sha256": "106dd1f8d6dd8997ac2243a46cb4c161e1a3fd9993c45201e42116b72f6bd93c"
+          "sha256": "fce90f1f6a126fb39627d8f88716439538888262f55affc926e6cae718d22198",
+          "pathEncoding": 1
         }
       ],
-      "createdAt": "2026-08-02T03:25:17.788Z"
+      "createdAt": "2026-09-12T01:21:59.349Z"
     }
   ]
 }
