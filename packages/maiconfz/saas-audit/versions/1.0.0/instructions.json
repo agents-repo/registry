@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/saas-audit",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "saas-audit-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "saas-audit-chat",
+      "path": "/pkg/maiconfz/saas-audit/1.0.0/agents/saas-audit-chat.agent.md"
+    }
+  ]
+}

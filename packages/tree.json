@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-09-12T01:22:01.103Z",
+  "updatedAt": "2026-09-12T04:11:40.239Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -21,6 +21,7 @@
         "refactor-or-trash",
         "review-fix-ship",
         "roast-my-project",
+        "saas-audit",
         "xgh"
       ]
     }
