@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "consulting-reputation-chat",
+  "description": "IT consulting company reputation audit from public sources and pasted reviews. Emits consulting-reputation-report. Not legal advice.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include reputation concerns, URLs, pasted reviews, or improvement goals."
+    },
+    {
+      "name": "company-name",
+      "type": "string",
+      "description": "Name of the IT consulting company being audited."
+    },
+    {
+      "name": "company-website",
+      "type": "string",
+      "description": "Public HTTPS URL (homepage). Used for first-party claims."
+    },
+    {
+      "name": "careers-page-url",
+      "type": "string",
+      "description": "Direct HTTPS URL to careers, culture, or jobs page."
+    },
+    {
+      "name": "country-or-region",
+      "type": "string",
+      "description": "Primary operating market. Drives GPTW, Teamlyzer, and forum routing."
+    },
+    {
+      "name": "company-size",
+      "type": "string",
+      "description": "Approximate headcount band (e.g. 50-200, 1000+)."
+    },
+    {
+      "name": "review-source-urls",
+      "type": "string",
+      "description": "Newline- or comma-separated HTTPS URLs to analyze."
+    },
+    {
+      "name": "review-excerpts",
+      "type": "string",
+      "description": "Pasted public review text, press mentions, or forum threads."
+    },
+    {
+      "name": "competitor-names",
+      "type": "string",
+      "description": "Peer IT consultancies for competitive reputation context."
+    },
+    {
+      "name": "focus-areas",
+      "type": "string",
+      "description": "What leadership wants to improve (employer brand, bench perception, retention)."
+    },
+    {
+      "name": "gptw-claim",
+      "type": "string",
+      "description": "User-stated GPTW certification or ranking claim to verify."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Answers from prior interview or clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "consulting-reputation-report",
+      "type": "string",
+      "description": "Structured reputation audit report; empty when evidence is too thin."
+    }
+  ]
+}

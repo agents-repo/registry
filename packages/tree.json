@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-09-12T04:11:40.239Z",
+  "updatedAt": "2026-09-14T01:15:48.370Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -12,6 +12,8 @@
       "packages": [
         "ai-first-project-readiness",
         "chorume",
+        "consulting-employer-check",
+        "consulting-reputation-audit",
         "context-token-reduction",
         "dev-emocionado",
         "feature-exploration-planner",

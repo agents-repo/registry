@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/consulting-employer-check",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "employer-check-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "employer-check-chat",
+      "path": "/pkg/maiconfz/consulting-employer-check/1.0.0/agents/employer-check-chat.agent.md"
+    }
+  ]
+}

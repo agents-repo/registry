@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "consulting-reputation-audit",
+  "description": "IT consulting company reputation audit from website, reviews, forums, and GPTW directories. Chat-only; balanced attributed report.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/consulting-reputation-audit",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "consulting",
+    "reputation",
+    "employer-brand",
+    "reviews",
+    "glassdoor",
+    "teamlyzer",
+    "great-place-to-work",
+    "it",
+    "audit",
+    "chat"
+  ],
+  "createdAt": "2026-09-14T01:14:50.197Z",
+  "updatedAt": "2026-09-14T01:14:50.197Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/consulting-reputation-audit/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "consulting-reputation-chat"
+        }
+      }
+    ]
+  }
+}

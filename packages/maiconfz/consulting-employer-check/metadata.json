@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "consulting-employer-check",
+  "description": "IT worker employer evaluation for consulting firms from public sources and pasted reviews. Chat-only; structured attributed report.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/consulting-employer-check",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "consulting",
+    "employer",
+    "career",
+    "job-search",
+    "reviews",
+    "it",
+    "audit",
+    "chat"
+  ],
+  "createdAt": "2026-09-14T01:14:47.281Z",
+  "updatedAt": "2026-09-14T01:14:47.281Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/consulting-employer-check/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "employer-check-chat"
+        }
+      }
+    ]
+  }
+}

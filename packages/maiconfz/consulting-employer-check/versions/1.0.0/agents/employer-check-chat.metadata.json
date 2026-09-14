@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "employer-check-chat",
+  "description": "IT worker employer evaluation for consulting firms from public sources and pasted reviews. Emits employer-check-report. Not legal advice.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include company name, URLs, pasted reviews, role context, or questions."
+    },
+    {
+      "name": "company-name",
+      "type": "string",
+      "description": "Legal or trade name of the consulting employer to evaluate."
+    },
+    {
+      "name": "company-website",
+      "type": "string",
+      "description": "Public HTTPS URL (homepage, careers, or about)."
+    },
+    {
+      "name": "country-or-region",
+      "type": "string",
+      "description": "Country or market (e.g. Brazil, Portugal, US). Drives geo-adaptive sources."
+    },
+    {
+      "name": "role-or-seniority",
+      "type": "string",
+      "description": "Target role (e.g. junior developer, tech lead). Tailors report and interview questions."
+    },
+    {
+      "name": "office-or-location",
+      "type": "string",
+      "description": "City, office, or remote/hybrid preference for multi-office consultancies."
+    },
+    {
+      "name": "review-source-urls",
+      "type": "string",
+      "description": "Newline- or comma-separated HTTPS URLs: Glassdoor, Teamlyzer, Reddit, Indeed."
+    },
+    {
+      "name": "review-excerpts",
+      "type": "string",
+      "description": "Pasted review text or forum quotes the user wants included."
+    },
+    {
+      "name": "competitor-names",
+      "type": "string",
+      "description": "Other consultancies to compare against (names only)."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Answers from prior interview or clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "employer-check-report",
+      "type": "string",
+      "description": "Structured employer check report; empty when evidence is too thin."
+    }
+  ]
+}

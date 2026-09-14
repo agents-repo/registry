@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-12T04:11:40.235Z",
+  "updatedAt": "2026-09-14T01:15:48.369Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -156,6 +156,100 @@
         "band": "mixed"
       },
       "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/chorume/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
+      "id": "maiconfz/consulting-employer-check",
+      "namespace": "maiconfz",
+      "package": "consulting-employer-check",
+      "path": "packages/maiconfz/consulting-employer-check",
+      "name": "consulting-employer-check",
+      "description": "IT worker employer evaluation for consulting firms from public sources and pasted reviews. Chat-only; structured attributed report.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "consulting",
+        "employer",
+        "career",
+        "job-search",
+        "reviews",
+        "it",
+        "audit",
+        "chat"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/consulting-employer-check/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
+      "id": "maiconfz/consulting-reputation-audit",
+      "namespace": "maiconfz",
+      "package": "consulting-reputation-audit",
+      "path": "packages/maiconfz/consulting-reputation-audit",
+      "name": "consulting-reputation-audit",
+      "description": "IT consulting company reputation audit from website, reviews, forums, and GPTW directories. Chat-only; balanced attributed report.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "consulting",
+        "reputation",
+        "employer-brand",
+        "reviews",
+        "glassdoor",
+        "teamlyzer",
+        "great-place-to-work",
+        "it",
+        "audit",
+        "chat"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/consulting-reputation-audit/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
@@ -685,6 +779,8 @@
     "hello-agent": "agents-repo/hello-agent",
     "ai-first-project-readiness": "maiconfz/ai-first-project-readiness",
     "chorume": "maiconfz/chorume",
+    "consulting-employer-check": "maiconfz/consulting-employer-check",
+    "consulting-reputation-audit": "maiconfz/consulting-reputation-audit",
     "context-token-reduction": "maiconfz/context-token-reduction",
     "dev-emocionado": "maiconfz/dev-emocionado",
     "feature-exploration-planner": "maiconfz/feature-exploration-planner",

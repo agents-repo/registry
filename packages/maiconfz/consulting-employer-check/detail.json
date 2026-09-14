@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/consulting-employer-check",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "consulting-employer-check",
+    "description": "IT worker employer evaluation for consulting firms from public sources and pasted reviews. Chat-only; structured attributed report.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/consulting-employer-check",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "consulting",
+      "employer",
+      "career",
+      "job-search",
+      "reviews",
+      "it",
+      "audit",
+      "chat"
+    ],
+    "createdAt": "2026-09-14T01:14:47.281Z",
+    "updatedAt": "2026-09-14T01:14:47.281Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 6,
+      "band": "moderate"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/consulting-employer-check/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported",
+          "defaultInstruction": {
+            "kind": "agent",
+            "id": "employer-check-chat"
+          }
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "employer-check-chat",
+      "name": "employer-check-chat",
+      "description": "IT worker employer evaluation for consulting firms from public sources and pasted reviews. Emits employer-check-report. Not legal advice.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/consulting-employer-check/versions/1.0.0/agents/employer-check-chat.agent.md"
+    }
+  ],
+  "flows": [],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-09-14T01:15:48.111Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# consulting-employer-check\n\n**IT worker employer evaluation** for consulting firms from public sources,\npasted reviews, and company websites. Chat-only: one agent emits a\nstructured, balanced, attributed report with pros, cons, GPTW signals, and\ninterview questions.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nInstalled agents reply in the **language the user used** (English if mixed\nor unclear).\n\n## What this package is\n\n- An employer check for IT professionals evaluating consulting employers\n- Evidence from **public HTTPS URLs**, **uploads**, and **pasted reviews**\n- **Great Place to Work** directory lookup (best-effort, geo-adaptive)\n- **Liability-safe language** — attributed third-party themes, not direct\n  accusations\n\n## What this package is not\n\n- **Not** legal, employment, HR, or investment advice\n- **Not** a guarantee of review accuracy — sources may be biased or outdated\n- **Not** an IDE workflow — chat-only; no host-tree inspection\n\n## Install\n\n```bash\nnpx agents-repo@latest install maiconfz/consulting-employer-check\n```\n\n## Usage\n\nUse **`employer-check-chat`** in chat-web (default) or after install in your\nIDE chat.\n\nProvide any of:\n\n- **Company name** and **country/region**\n- **Company website** or careers page HTTPS URL\n- **Target role** or seniority\n- **Review URLs** (Glassdoor, Teamlyzer, Reddit) or **pasted excerpts**\n- **Competitor names** (optional)\n\nThe agent emits **`employer-check-report`** when evidence is sufficient.\nThin messages trigger an interview instead.\n\n### Structured inputs\n\n| Input | Purpose |\n| --- | --- |\n| `company-name` | Employer to evaluate (required with website) |\n| `company-website` | Public HTTPS URL |\n| `country-or-region` | Geo-adaptive sources (GPTW, Teamlyzer) |\n| `role-or-seniority` | Tailors report sections |\n| `review-source-urls` | Review site URLs |\n| `review-excerpts` | Pasted review text |\n\n### Evidence limits\n\n- At most **15** HTTPS fetches per turn; uploads do not count\n- Up to **2** GPTW directory fetches per turn\n- Review sites may block automated fetch — paste excerpts when needed\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `employer-check-chat` | Chat-web IT consulting employer evaluation |\n\n## Validate and build\n\n```bash\nPKG=maiconfz/consulting-employer-check\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/consulting-employer-check/1.0.0/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "employer-check-chat"
+  }
+}
