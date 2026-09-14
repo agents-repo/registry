@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/consulting-reputation-audit",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "consulting-reputation-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "consulting-reputation-chat",
+      "path": "/pkg/maiconfz/consulting-reputation-audit/1.0.0/agents/consulting-reputation-chat.agent.md"
+    }
+  ]
+}
