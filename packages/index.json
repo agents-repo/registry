@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-15T04:57:24.199Z",
+  "updatedAt": "2026-09-15T05:09:11.238Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -92,7 +92,7 @@
       "name": "ai-first-project-readiness",
       "description": "Audit AI-first and harness readiness: context efficiency, pre-action guidance, post-action feedback loops, and machine-readable specs. Planning after consent.",
       "owner": "maiconfz",
-      "latest": "1.2.0",
+      "latest": "1.2.1",
       "tags": [
         "ai-ready",
         "harness-engineering",

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "ai-readiness-analyst",
+  "description": "Audit AI-first and harness readiness in the host tree: context efficiency, pre-action guidance, post-action feedback loops, and machine-readable specs. Report only.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "readiness-report",
+      "type": "string",
+      "description": "Markdown readiness report with weighted scorecard, findings, and remediation templates."
+    }
+  ]
+}
