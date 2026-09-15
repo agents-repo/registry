@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-15T05:16:54.614Z",
+  "updatedAt": "2026-09-15T05:23:08.742Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -96,12 +96,15 @@
       "tags": [
         "ai-ready",
         "harness-engineering",
-        "agents-md",
-        "cursorrules",
+        "readiness",
         "context-engineering",
-        "dx",
+        "architecture",
+        "documentation",
+        "agents",
+        "skills",
         "planning",
         "analysis",
+        "audit",
         "chat"
       ],
       "status": "active",
