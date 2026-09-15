@@ -3,7 +3,7 @@ name: ai-first-project-planning
 description: >-
   Analyze harness readiness, ask consent, then draft a phased or full-shot
   improvement plan.
-version: 1.2.1
+version: 1.2.0
 license: MIT
 agents:
   - ai-readiness-analyst

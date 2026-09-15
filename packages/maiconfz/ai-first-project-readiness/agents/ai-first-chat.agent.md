@@ -3,7 +3,7 @@ name: ai-first-chat
 description: >-
   Analyze harness and AI-first readiness from URLs, uploads, or chat. Emits a
   scored report when evidence exists. Does not plan.
-version: 1.2.1
+version: 1.2.0
 license: MIT
 inputs:
   - name: user-message

@@ -4,7 +4,7 @@ description: >-
   Audit AI-first and harness readiness in the host tree: context efficiency,
   pre-action guidance, post-action feedback loops, and machine-readable specs.
   Report only.
-version: 1.2.1
+version: 1.2.0
 license: MIT
 tools:
   - filesystem

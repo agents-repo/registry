@@ -3,7 +3,7 @@ name: improvement-planner
 description: >-
   Ask-first, plan-only harness-readiness improvements from a scored readiness
   report. Does not implement.
-version: 1.2.1
+version: 1.2.0
 license: MIT
 tools:
   - filesystem

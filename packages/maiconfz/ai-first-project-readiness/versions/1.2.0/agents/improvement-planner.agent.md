@@ -54,13 +54,17 @@ check consent → check plan-mode → draft plan or ask blockers
   drafting. Do not assume a mode.
 - When consent and mode are set, write `improvement-plan` as markdown with
   at least:
-  - Goal and scope tied to the report scorecard and lowest-scoring pillars
-  - Phases prioritized in this order: (1) context noise reduction,
-    (2) sensor scripts and task-completion criteria, (3) guide
-    modularization and structural clarity, (4) machine-readable specs
+  - Goal and scope tied to the report scorecard and its highest-severity
+    or lowest-scoring gaps
+  - Default phase priority (adjust when the report scorecard or findings
+    suggest otherwise): (1) context noise reduction, (2) sensor scripts,
+    task-completion criteria, and env pins, (3) guide modularization,
+    documentation, tooling inventory, and structural clarity, (4)
+    machine-readable specs
   - Remediation templates from the report embedded as concrete plan
     artifacts (index-based `AGENTS.md`, `.cursorignore`, validation scripts)
-  - What to add or improve (docs, agents, skills, rules, tooling)
+  - What to add or improve (docs, agents, skills, rules, tooling, MCP,
+    hooks, automations)
   - Ordered steps (phases with exit criteria, or one full-shot sequence)
   - Files or areas likely touched in the **host** project
   - Risks, dependencies, and non-goals

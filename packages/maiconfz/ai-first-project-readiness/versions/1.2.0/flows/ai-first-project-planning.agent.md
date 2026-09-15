@@ -32,8 +32,8 @@ outputs:
 
 # Overview
 
-Workspace entry for this package. Analyze the **host project** for harness
-and AI-first readiness, present the scored report, **ask before planning**,
+Workspace entry for this package. Analyze the **host project** for AI-first
+and harness readiness, present the scored report, **ask before planning**,
 then draft a phased or full-shot improvement plan. Planning only. Does not
 include `ai-first-chat`.
 

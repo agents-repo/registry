@@ -18,8 +18,8 @@
     "chat"
   ],
   "createdAt": "2026-08-18T22:25:42.634Z",
-  "updatedAt": "2026-09-15T05:08:00.000Z",
-  "version": "1.2.1",
+  "updatedAt": "2026-09-15T05:16:00.000Z",
+  "version": "1.2.0",
   "status": "active",
   "category": "automation",
   "estimateOverallCost": {

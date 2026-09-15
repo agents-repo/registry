@@ -40,19 +40,25 @@ from the overall score, and remaining weights are renormalized.
 
 ## What the auditor checks
 
-**Context Efficiency** — flags monolithic always-on instruction files
-(`.cursorrules`, bloated `AGENTS.md`), missing `.cursorignore`, and
+The four pillars below **extend** the original readiness dimensions — they
+do not replace them. Each pillar includes its prior checklist items.
+
+**Context Efficiency (30%)** — anti-bloat in always-on instruction files
+(`.cursorrules`, bloated `AGENTS.md`), index-based routing, missing
+`.cursorignore`, agent/skill/instruction inventory across targets, and
 cross-target duplication. Recommends `maiconfz/context-token-reduction` for
 deep token-footprint analysis.
 
-**Sensors and Automated Feedback** — looks for deterministic validation
-scripts (`npm run typecheck`, `make test`, etc.) and documented
+**Sensors and Automated Feedback (30%)** — typecheck, lint, test, and
+build validators; CI with env pins; deterministic scripts; documented
 task-completion criteria.
 
-**Guides and Structural Clarity** — checks modular architecture, specs,
-ADRs, session onboarding, and ask-first rules.
+**Guides and Structural Clarity (25%)** — architecture navigability,
+documentation (README, CONTRIBUTING, specs, API, runbooks), tooling
+inventory (MCP, hooks, skills, automations), session onboarding, ask-first
+rules, secrets surface, and greenfield/brownfield or monorepo posture.
 
-**Machine-Readable Specs** — checks for `llms.txt`, JSON schemas, OpenAPI,
+**Machine-Readable Specs (15%)** — `llms.txt`, JSON schemas, OpenAPI,
 strict types, and eval or golden-task harnesses.
 
 ## Remediation outputs

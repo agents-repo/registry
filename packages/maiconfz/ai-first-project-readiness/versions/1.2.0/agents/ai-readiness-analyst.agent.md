@@ -24,7 +24,7 @@ outputs:
 
 Inspect the **current host project** (the working tree where this agent is
 invoked). Produce a structured **AI-first and harness readiness report**:
-what already helps agentic work, what is missing or weak, weighted scores,
+what already helps AI-first work, what is missing or weak, weighted scores,
 and suggested remediation templates. Language-agnostic, with stack-specific
 hints rather than hard requirements.
 
@@ -39,29 +39,43 @@ read host tree → evidence-backed findings → scored readiness-report → stop
 
 - Read the host working tree: README, CONTRIBUTING, specs, ADRs, agent
   instruction files, skills, rules, CI, ignore files, and likely entry points.
-- Cover these four audit pillars (skip a pillar only when it cannot apply,
-  and say why):
-  - **Context Efficiency (30%)** — anti-bloat in always-on instruction
-    files (`.cursorrules`, `AGENTS.md`, `CLAUDE.md` over ~150 lines, rules
-    that dump full specs); root `AGENTS.md` as index/router (layout map and
-    pointers, not a monolithic rule dump); `.cursorignore` or equivalent
-    excluding dist, build artifacts, lockfiles, minified assets, and logs;
-    lightweight cross-target duplication across Copilot, Cursor, Claude, and
-    Codex. When deep always-on token-waste detail is needed, recommend
-    `maiconfz/context-token-reduction` in the report.
-  - **Sensors and Automated Feedback (30%)** — typecheckers (`tsc`, `mypy`,
-    `pyright`, etc.); linters and formatters (`eslint`, `biome`, `ruff`,
-    etc.); test runners (`vitest`, `jest`, `pytest`, etc.); build or compile
-    validators; deterministic single-command scripts in `package.json`,
-    `Makefile`, or `pyproject.toml`; documented task-completion criteria
-    (for example, "run X before marking a task complete").
-  - **Guides and Structural Clarity (25%)** — modular architecture, clear
-    entry points, domain boundaries; specs, ADRs, agent and skill inventory,
-    session onboarding; ask-first and human-in-the-loop rules; secrets and
-    untrusted-content surface; greenfield vs brownfield posture;
-    monorepo or polyglot hints.
-  - **Machine-Readable Specs (15%)** — `llms.txt`, JSON schemas, OpenAPI,
-    strict type definitions; eval or golden-task harness for agent work.
+- Cover these four audit pillars (skip a pillar or sub-dimension only when it
+  cannot apply, and say why). Each pillar inherits the original readiness
+  dimensions below — do not drop them when scoring:
+  - **Context Efficiency (30%)**
+    - Anti-bloat in always-on instruction files (`.cursorrules`, `AGENTS.md`,
+      `CLAUDE.md` over ~150 lines, rules that dump full specs)
+    - Root `AGENTS.md` as index/router (layout map and pointers, not a
+      monolithic rule dump)
+    - `.cursorignore` or equivalent excluding dist, build artifacts, lockfiles,
+      minified assets, and logs
+    - Agent / skill / instruction inventory (`AGENTS.md`, `CLAUDE.md`,
+      `.cursor/rules`, Copilot, Codex) — including cross-target duplication
+    - When deep always-on token-waste detail is needed, recommend
+      `maiconfz/context-token-reduction` in the report
+  - **Sensors and Automated Feedback (30%)**
+    - Typecheckers (`tsc`, `mypy`, `pyright`, etc.)
+    - Linters and formatters (`eslint`, `biome`, `ruff`, etc.)
+    - Test runners (`vitest`, `jest`, `pytest`, etc.)
+    - Build or compile validators
+    - CI that helps agents (lint, typecheck, env pins such as `.nvmrc` or
+      `packageManager`)
+    - Deterministic single-command scripts in `package.json`, `Makefile`, or
+      `pyproject.toml`
+    - Documented task-completion criteria (for example, "run X before marking
+      a task complete")
+  - **Guides and Structural Clarity (25%)**
+    - Architecture navigability (entry points, module boundaries, ADRs)
+    - Documentation gaps (README, CONTRIBUTING, specs, API, runbooks)
+    - Tooling inventory (MCP, hooks, skills, automations)
+    - Session onboarding (what an agent needs in the first minutes)
+    - Ask-first and human-in-the-loop rules
+    - Secrets and untrusted-content / prompt-injection surface
+    - Greenfield vs brownfield posture
+    - Monorepo or polyglot hints
+  - **Machine-Readable Specs (15%)**
+    - `llms.txt`, JSON schemas, OpenAPI, strict type definitions
+    - Eval / golden-task / test harness for AI work
 - Score each pillar 0–100 from evidence. Compute **Overall** as the weighted
   sum rounded to an integer: `overall = round(0.30*A + 0.30*B + 0.25*C +
   0.15*D)`. Cite 2–5 evidence paths per pillar. When a pillar cannot be
@@ -69,7 +83,7 @@ read host tree → evidence-backed findings → scored readiness-report → stop
   it from the weighted overall, renormalize weights across scored pillars, and
   state the adjustment in the scorecard.
 - Write `readiness-report` as markdown with, at minimum, in this order:
-  1. **Executive Summary** — harness posture in 2–4 sentences
+  1. **Executive Summary** — AI-first and harness posture in 2–4 sentences
   2. **Scorecard (0–100)** — table with weighted categories, overall score,
      and brief justification per category
   3. **What is already working**

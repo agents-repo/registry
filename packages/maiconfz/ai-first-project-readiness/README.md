@@ -157,11 +157,11 @@ join the registry-proxy origin with those paths per
 
 - **Origin:** `https://registry-proxy.maiconfz.workers.dev`
 
-Illustrative absolute fetch URLs for version `1.2.1`:
+Illustrative absolute fetch URLs for version `1.2.0`:
 
 ```text
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.2.1/instructions.json
-https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.2.1/agents/ai-first-chat.agent.md
+https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.2.0/instructions.json
+https://registry-proxy.maiconfz.workers.dev/pkg/maiconfz/ai-first-project-readiness/1.2.0/agents/ai-first-chat.agent.md
 ```
 
 The excluded flow is not listed in `instructions.json`, so chat-web does
@@ -175,7 +175,7 @@ From the registry repository root:
 PKG=maiconfz/ai-first-project-readiness
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.2.1
+npm run package:validate-artifacts -- --package "$PKG" --version 1.2.0
 ```
 
 Do not author `detail.json` or any files under `versions/`.
