@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-14T01:15:48.369Z",
+  "updatedAt": "2026-09-15T05:23:08.742Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -90,18 +90,21 @@
       "package": "ai-first-project-readiness",
       "path": "packages/maiconfz/ai-first-project-readiness",
       "name": "ai-first-project-readiness",
-      "description": "Analyze a project's AI-first readiness (architecture, docs, agents, skills, tooling) and, after user consent, draft a phased or full-shot improvement plan. Chat-web can analyze public URLs and uploads. Planning only; does not implement.",
+      "description": "Audit AI-first and harness readiness: context efficiency, pre-action guidance, post-action feedback loops, and machine-readable specs. Planning after consent.",
       "owner": "maiconfz",
-      "latest": "1.1.1",
+      "latest": "1.2.0",
       "tags": [
-        "ai",
+        "ai-ready",
+        "harness-engineering",
         "readiness",
+        "context-engineering",
         "architecture",
         "documentation",
         "agents",
         "skills",
         "planning",
         "analysis",
+        "audit",
         "chat"
       ],
       "status": "active",
