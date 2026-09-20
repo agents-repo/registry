@@ -54,7 +54,7 @@
     "@typescript-eslint/eslint-plugin": "^8.63.0",
     "@typescript-eslint/parser": "^8.63.0",
     "@vitest/coverage-v8": "^5.0.0",
-    "adm-zip": "^0.6.0",
+    "adm-zip": "^0.6.1",
     "agents-repo": "1.22.1",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "eslint": "^10.7.0",
