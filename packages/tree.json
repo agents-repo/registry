@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-09-15T05:23:08.742Z",
+  "updatedAt": "2026-09-24T20:31:42.042Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -24,6 +24,7 @@
         "review-fix-ship",
         "roast-my-project",
         "saas-audit",
+        "skill-security-audit",
         "xgh"
       ]
     }

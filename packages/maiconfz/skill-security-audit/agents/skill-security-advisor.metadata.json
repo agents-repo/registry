@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "skill-security-advisor",
+  "description": "After planning-consent, draft a prioritized remediation plan from a security-report. Plan-only; does not edit host files.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "security-report",
+      "type": "string",
+      "description": "Markdown security report from skill-security-analyst."
+    },
+    {
+      "name": "planning-consent",
+      "type": "boolean",
+      "description": "True only when the user consented to remediation planning."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "remediation-plan",
+      "type": "string",
+      "description": "Markdown remediation plan; empty when consent is missing."
+    },
+    {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Markdown list of blocking questions; empty when none."
+    }
+  ]
+}

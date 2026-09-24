@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "skill-security-analyst",
+  "description": "Walk host skill roots; analyze SKILL.md and skill-dir files; emit an evidence-backed security-report using this package's native rubric.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "security-report",
+      "type": "string",
+      "description": "Markdown security report with evidence-backed findings from the native rubric."
+    }
+  ]
+}

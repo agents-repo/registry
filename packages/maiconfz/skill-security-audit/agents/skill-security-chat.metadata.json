@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "skill-security-chat",
+  "description": "Chat-web security audit of agent skills from HTTPS URLs, uploads, paste, and name resolution. Emits security-report when evidence exists. Does not plan remediation.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include URLs, attachments, pasted skill text, skill names, or registry package ids."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "security-report",
+      "type": "string",
+      "description": "Structured security report; empty when there is no usable evidence."
+    }
+  ]
+}

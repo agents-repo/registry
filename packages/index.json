@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-15T05:23:08.742Z",
+  "updatedAt": "2026-09-24T20:31:42.041Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -732,6 +732,50 @@
       "chatWeb": true
     },
     {
+      "id": "maiconfz/skill-security-audit",
+      "namespace": "maiconfz",
+      "package": "skill-security-audit",
+      "path": "packages/maiconfz/skill-security-audit",
+      "name": "skill-security-audit",
+      "description": "Read-only security audit of agent skills from any source; IDE host-tree scan and chat-web evidence intake. Native rubric; optional local CLI appendix in IDE flow only.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "security",
+        "skills",
+        "audit",
+        "planning",
+        "chat",
+        "agents"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 7,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/skill-security-audit/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
       "id": "maiconfz/xgh",
       "namespace": "maiconfz",
       "package": "xgh",
@@ -794,6 +838,7 @@
     "review-fix-ship": "maiconfz/review-fix-ship",
     "roast-my-project": "maiconfz/roast-my-project",
     "saas-audit": "maiconfz/saas-audit",
+    "skill-security-audit": "maiconfz/skill-security-audit",
     "xgh": "maiconfz/xgh"
   }
 }

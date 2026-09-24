@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "skill-security-audit",
+  "description": "Read-only security audit of agent skills from any source; IDE host-tree scan and chat-web evidence intake. Native rubric; optional local CLI appendix in IDE flow only.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/skill-security-audit",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "security",
+    "skills",
+    "audit",
+    "planning",
+    "chat",
+    "agents"
+  ],
+  "createdAt": "2026-09-24T20:31:05.723Z",
+  "updatedAt": "2026-09-24T20:31:05.723Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 7,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/skill-security-audit/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "skill-security-chat"
+        }
+      }
+    ]
+  }
+}
