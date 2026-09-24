@@ -79,7 +79,7 @@ jobs:
           git diff --exit-code -- "${drift_paths[@]}"
           test -z "$(git status --porcelain -- "${drift_paths[@]}")"
 
-      - name: Skip registry package verify
+      - name: Skip agents verify
         if: needs.changes.outputs.agents != 'true'
         run: echo "Skipping agents:verify; PR paths do not match agents definition files (agents.json, agents-lock.json, extracted agent paths, or pr-baseline.yml). npm lockfiles alone do not trigger this step."
 
