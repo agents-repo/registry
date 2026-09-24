@@ -41,7 +41,9 @@ npm run package:validate-artifacts -- \
 | Readiness audit | `ai-readiness-analyst` |
 
 Package skills live under `.agents/skills/` (see `package-*` skills). Do not
-hand-edit extracted mirrors; update `agents.json` and run `npm run agents:ci`.
+hand-edit extracted mirrors; update `agents.json` and run `npm run agents:ci`
+before committing lock or extract changes (`npm run agents:verify` matches PR
+baseline when agents paths change).
 
 ## Package PR handoff
 

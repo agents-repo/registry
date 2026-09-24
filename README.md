@@ -145,7 +145,8 @@ After `npm ci`, use the npm scripts (CLI pinned in `devDependencies`):
 npm exec agents-repo -- init --targets github-copilot claude-code cursor openai-codex
 npm run agents:install    # bulk sync from agents.json
 npm run agents:update     # refresh within semver ranges
-npm run agents:ci         # lock-pinned registry install (CI parity)
+npm run agents:verify     # PR baseline parity when agents paths change
+npm run agents:ci         # full reinstall before changing locks or extracts
 ```
 
 Commit `agents.json`, `agents-lock.json`, and extracted paths (`.github/agents/`,

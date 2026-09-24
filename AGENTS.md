@@ -94,7 +94,9 @@ For review tasks, run:
 5. `npm run package:scan-zips`
 
 Local handoff keeps this full set. PR baseline CI path-filters Chrome/`slides:check`,
-`agents:ci`, and `package:scan-zips`. npm lockfiles do **not** trigger `agents:ci`.
+`agents:verify`, and `package:scan-zips`. npm lockfiles do **not** trigger `agents:verify`.
+Run full `npm run agents:ci` locally before changing registry locks or
+extracted package files.
 See the organization
 [PR baseline extras (path filters)](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pr-baseline-extras-path-filters).
 

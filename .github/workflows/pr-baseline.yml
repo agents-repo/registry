@@ -64,11 +64,10 @@ jobs:
         if: needs.changes.outputs.slides != 'true'
         run: echo "Skipping slides:check; PR paths do not match the slides group (docs/slides/**, scripts/slides.mjs, npm lockfiles, or .github/workflows/pr-baseline.yml)."
 
-      - name: Verify registry package installs from lock
+      - name: Verify agents lock and committed extracts
         if: needs.changes.outputs.agents == 'true'
         run: |
-          rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
-          npm run agents:ci
+          npm run agents:verify
           drift_paths=(
             agents.json
             agents-lock.json
@@ -80,9 +79,9 @@ jobs:
           git diff --exit-code -- "${drift_paths[@]}"
           test -z "$(git status --porcelain -- "${drift_paths[@]}")"
 
-      - name: Skip registry package checksum
+      - name: Skip agents verify
         if: needs.changes.outputs.agents != 'true'
-        run: echo "Skipping agents:ci checksum; PR paths do not match agents definition files (agents.json, agents-lock.json, extracted agent paths, or pr-baseline.yml). npm lockfiles alone do not trigger this step."
+        run: echo "Skipping agents:verify; PR paths do not match agents definition files (agents.json, agents-lock.json, extracted agent paths, or pr-baseline.yml). npm lockfiles alone do not trigger this step."
 
       - name: Run unit tests
         run: npm run test:run
