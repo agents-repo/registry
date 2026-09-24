@@ -83,8 +83,7 @@ If relevant, describe impact on:
 
   ```bash
   npm run sync:ide-instructions -- --check
-  rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
-  npm run agents:ci
+  npm run agents:verify
   DRIFT_PATHS="agents.json agents-lock.json .github/agents \
     .cursor/skills .claude/agents .agents/skills"
   git diff --exit-code -- $DRIFT_PATHS

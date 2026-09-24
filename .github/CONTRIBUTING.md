@@ -445,7 +445,7 @@ Use the npm scripts for bulk install, update, and CI (CLI version is pinned in
 ```bash
 npm run agents:install   # bulk sync from agents.json
 npm run agents:update    # refresh within semver ranges
-npm run agents:ci        # checksum extra in pr-baseline when agents paths change
+npm run agents:verify    # checksum extra in pr-baseline when agents paths change
 ```
 
 Commit `agents.json`, `agents-lock.json`, and extracted paths (`.github/agents/`,
@@ -459,14 +459,15 @@ Dogfooded packages:
 - `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
 
 Local pre-commit checks project guideline mirrors (`sync:ide-instructions
---check`). PR baseline CI runs `npm run agents:ci` only when agents definition
-files change (not npm lockfiles); see the organization
+--check`). PR baseline CI runs `npm run agents:verify` only when agents
+definition files change (not npm lockfiles); see the organization
 [PR baseline extras (path filters)](https://github.com/agents-repo/.github/blob/main/CONTRIBUTING.md#pr-baseline-extras-path-filters).
-That extra reinstalls registry packages from the committed lock and fails on
-extract or lock drift (not semver-max `install`). Chrome/`slides:check` and
-`package:scan-zips` are also path-filtered extras. Local validation still runs
-the full ZIP scan. `pr-package-validation.yml` is unchanged. Release validate
-keeps ZIP scan as the skip safety net.
+That extra validates lock/config parity and on-disk extracts without
+re-downloading version ZIPs, and fails on extract or lock drift. Run full
+`npm run agents:ci` locally before changing locks or extracts.
+Chrome/`slides:check` and `package:scan-zips` are also path-filtered extras.
+Local validation still runs the full ZIP scan. `pr-package-validation.yml` is
+unchanged. Release validate keeps ZIP scan as the skip safety net.
 
 Changes under `.github/workflows/` MUST pass `npm run lint:workflows`
 (included in `npm run lint:all`). See the organization
@@ -541,8 +542,7 @@ Before requesting review:
 
    ```bash
    npm run sync:ide-instructions -- --check
-   rm -rf .github/agents .cursor/skills .claude/agents .agents/skills
-   npm run agents:ci
+   npm run agents:verify
    DRIFT_PATHS="agents.json agents-lock.json .github/agents \
      .cursor/skills .claude/agents .agents/skills"
    git diff --exit-code -- $DRIFT_PATHS
