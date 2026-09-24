@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "audit-agent-skills",
+  "description": "Native host skill security audit, optional CLI appendix merge, consent, then remediation plan. Read-only; does not implement fixes.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "chatWeb": "excluded",
+  "agents": [
+    "skill-security-analyst",
+    "skill-security-advisor"
+  ],
+  "inputs": [
+    {
+      "name": "planning-consent",
+      "type": "boolean",
+      "description": "Optional prior consent to run remediation planning."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "security-report",
+      "type": "string",
+      "description": "Markdown security report from skill-security-analyst."
+    },
+    {
+      "name": "remediation-plan",
+      "type": "string",
+      "description": "Markdown plan; empty if the user declined planning."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Remaining blockers or follow-ups at handoff; copy from advisor blocking-questions when present."
+    }
+  ]
+}

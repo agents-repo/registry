@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/skill-security-audit",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "skill-security-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "skill-security-chat",
+      "path": "/pkg/maiconfz/skill-security-audit/1.0.0/agents/skill-security-chat.agent.md"
+    }
+  ]
+}
