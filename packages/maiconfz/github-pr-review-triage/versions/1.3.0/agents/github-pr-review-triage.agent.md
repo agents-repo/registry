@@ -239,11 +239,40 @@ gh api graphql -f query='
   }'
 ```
 
-Paginate thread `comments` when `comments.pageInfo.hasNextPage` is `true`
-(pass `after` on the thread’s comments connection). Accumulate all
-`databaseId` values into `thread_comment_ids` for orphan dedupe.
+The list query above returns at most the first 100 comments per thread. When
+`comments.pageInfo.hasNextPage` is `true` for an unresolved thread, paginate
+that thread’s comments in a **separate** query (each thread has its own
+`comments` cursor; you cannot continue those cursors from the multi-thread
+list response). Accumulate every `databaseId` into `thread_comment_ids` for
+orphan dedupe.
 
-Later pages — pass `-f after="$CURSOR"` where `$CURSOR` is
+#### Per-thread comment pagination
+
+First page — omit `-f after`. Later pages — `-f after="$CURSOR"` from
+`comments.pageInfo.endCursor`:
+
+```bash
+gh api graphql -f query='
+  query($threadId: ID!, $after: String) {
+    node(id: $threadId) {
+      ... on PullRequestReviewThread {
+        comments(first: 100, after: $after) {
+          pageInfo { hasNextPage endCursor }
+          nodes { databaseId }
+        }
+      }
+    }
+  }' -f threadId="PRRT_..." \
+  --jq '{
+    pageInfo: .data.node.comments.pageInfo,
+    ids: [.data.node.comments.nodes[].databaseId]
+  }'
+```
+
+Repeat per unresolved thread that still has `hasNextPage`, merging `ids` into
+`thread_comment_ids`.
+
+Later pages (thread list) — pass `-f after="$CURSOR"` where `$CURSOR` is
 `pageInfo.endCursor` from the prior response. Keep `pageInfo` in the jq
 output so pagination can continue after filtering unresolved nodes.
 
