@@ -361,10 +361,10 @@ a comment posted after `submittedAt` with body containing
 - Skip bodies that are acknowledgments (`Re: Copilot review (` or
   `Re: PR comment (`).
 - **Conversation idempotency:** skip when a later comment after `created_at`
-  contains `Re: PR comment (` and this comment’s `id` (`databaseId`).
+  contains `Re: PR comment (` and this comment’s REST `id`.
 
-Capture per row: `kind: conversation_comment`, `comment_id` (`databaseId`),
-`author`, `body` (truncated), `created_at`.
+Capture per row: `kind: conversation_comment`, `comment_id` (REST `id` from the
+issue-comments payload), `author`, `body` (truncated), `created_at`.
 
 ### Orphan inline (REST merge)
 
@@ -538,8 +538,8 @@ Example text:
 
 `Re: PR comment (${comment_id}): Fixed in {sha}: {summary}.`
 
-Use the issue comment `databaseId` from Phase 1. **Never** call
-`resolveReviewThread` for conversation comments.
+Use the issue comment REST `id` from Phase 1 (same value as `comment_id`).
+**Never** call `resolveReviewThread` for conversation comments.
 
 ### Orphan inline
 
@@ -549,11 +549,12 @@ Use the issue comment `databaseId` from Phase 1. **Never** call
    only when `PRRT_...` is unknown):
 
 ```bash
-gh api -X POST repos/{owner}/{repo}/pulls/{n}/comments/{comment_id}/replies \
-  --input "$REPLY_FILE"
+# $REPLY_FILE holds plain reply text; the endpoint expects JSON {"body":"..."}.
+jq -n --rawfile body "$REPLY_FILE" '{body: $body}' \
+  | gh api -X POST \
+    repos/{owner}/{repo}/pulls/{n}/comments/{comment_id}/replies \
+    --input -
 ```
-
-(`$REPLY_FILE` as JSON `{"body":"..."}` or use project-documented body format.)
 
 Do not call `resolveReviewThread` without a `PRRT_...` id. Note in handoff
 when an orphan could not be resolved.
