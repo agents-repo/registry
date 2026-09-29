@@ -1,9 +1,7 @@
 ---
-description: Agents Registry project guidelines (mirrors copilot-instructions.md)
+description: Agents Registry project guidelines
 alwaysApply: true
 ---
-
-<!-- Generated: .github/copilot-instructions.md. Run npm run sync:ide-instructions -->
 
 # Agents Registry — Project Guidelines
 

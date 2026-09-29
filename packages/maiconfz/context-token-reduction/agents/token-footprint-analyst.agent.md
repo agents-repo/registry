@@ -42,8 +42,8 @@ read host tree → evidence-backed findings → footprint-report → stop
   files into the report.
 - Cover these checklist dimensions (skip a dimension only when it cannot
   apply, and say why):
-  - **Always-on instructions** — `AGENTS.md`, `CLAUDE.md`,
-    `.github/copilot-instructions.md`, Codex/`AGENTS.md` mirrors,
+  - **Always-on instructions** — canonical `.cursor/rules/` (per host repo),
+    generated `AGENTS.md`, `CLAUDE.md`, `.github/copilot-instructions.md`,
     nested copies of the same body
   - **Rules apply-mode** — `.cursor/rules`, `.github/instructions`,
     Copilot instruction globs, `alwaysApply` / broad `applyTo` / `**/*`

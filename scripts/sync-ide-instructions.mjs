@@ -7,40 +7,44 @@ import { fileURLToPath } from 'node:url';
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const CONFIG = {
-  SOURCE: '.github/copilot-instructions.md',
-  CURSOR_TARGET: '.cursor/rules/agents-registry.mdc',
+  CURSOR_SOURCE: '.cursor/rules/agents-registry.mdc',
+  COPILOT_TARGET: '.github/copilot-instructions.md',
   CLAUDE_TARGET: 'CLAUDE.md',
   CODEX_TARGET: 'AGENTS.md',
-  DESCRIPTION: 'Agents Registry project guidelines (mirrors copilot-instructions.md)',
-  GENERATED_COMMENT:
-    '<!-- Generated: .github/copilot-instructions.md. Run npm run sync:ide-instructions -->',
-  LEGACY_GENERATED_COMMENT:
-    '<!-- Generated from .github/copilot-instructions.md — do not edit; run npm run sync:cursor-rules -->',
+  INSTRUCTIONS_DIR: '.github/instructions',
+  DESCRIPTION: 'Agents Registry project guidelines',
   TITLE_TRANSFORMS: [
     ['# Copilot Agents Registry — Project Guidelines', '# Agents Registry — Project Guidelines'],
     ['## Copilot Runtime Environment', '## Runtime Environment'],
     ['Copilot tasks in this repository', 'Agent tasks in this repository'],
   ],
+  LEGACY_MIRROR_COMMENTS: [
+    '<!-- Generated: .github/copilot-instructions.md. Run npm run sync:ide-instructions -->',
+    '<!-- Generated from .github/copilot-instructions.md — do not edit; run npm run sync:cursor-rules -->',
+  ],
 };
 
-const MIRROR_TARGETS = [
+const SOURCE_DIR = path.posix.dirname(CONFIG.CURSOR_SOURCE);
+
+function generatedComment(sourceRelativePath) {
+  return `<!-- Generated: ${sourceRelativePath}. Run npm run sync:ide-instructions -->`;
+}
+
+const REPO_WIDE_TARGETS = [
   {
-    id: 'cursor',
-    relativePath: () => CONFIG.CURSOR_TARGET,
-    transform: transformCursorMirror,
-    staleCheck: listStaleMdcFiles,
+    id: 'github-copilot',
+    relativePath: () => CONFIG.COPILOT_TARGET,
+    transform: transformCopilotMirror,
   },
   {
     id: 'claude-code',
     relativePath: () => CONFIG.CLAUDE_TARGET,
     transform: transformPlainMirror,
-    staleCheck: null,
   },
   {
     id: 'openai-codex',
     relativePath: () => CONFIG.CODEX_TARGET,
     transform: transformPlainMirror,
-    staleCheck: null,
   },
 ];
 
@@ -50,11 +54,74 @@ function printHelp() {
   npm run sync:ide-instructions -- --check
   npm run sync:ide-instructions -- --help
 
-Sync ${CONFIG.SOURCE} -> ${CONFIG.CURSOR_TARGET}, ${CONFIG.CLAUDE_TARGET}, ${CONFIG.CODEX_TARGET}
+Canonical: ${CONFIG.CURSOR_SOURCE}
+Generates: ${CONFIG.COPILOT_TARGET}, ${CONFIG.CLAUDE_TARGET}, ${CONFIG.CODEX_TARGET}, and path-scoped ${CONFIG.INSTRUCTIONS_DIR}/*.instructions.md
 `);
 }
 
-const SOURCE_DIR = path.posix.dirname(CONFIG.SOURCE);
+function normalizeEol(text) {
+  return text.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+}
+
+function parseSimpleYaml(block) {
+  const result = {};
+  for (const line of block.split('\n')) {
+    // eslint-disable-next-line sonarjs/super-linear-regex -- simple YAML key lines only
+    const match = /^(\w+):\s*(.*)$/.exec(line);
+    if (!match) {
+      continue;
+    }
+    let value = match[2].trim();
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+    result[match[1]] = value;
+  }
+  return result;
+}
+
+function parseMdc(content) {
+  const normalized = normalizeEol(content);
+  if (!normalized.startsWith('---\n')) {
+    return { frontmatter: {}, body: normalized };
+  }
+  const end = normalized.indexOf('\n---\n', 4);
+  if (end === -1) {
+    return { frontmatter: {}, body: normalized };
+  }
+  const yamlBlock = normalized.slice(4, end);
+  const body = normalized.slice(end + 5);
+  return { frontmatter: parseSimpleYaml(yamlBlock), body };
+}
+
+function stripGeneratedComments(body) {
+  const lines = normalizeEol(body).split('\n');
+  const kept = lines.filter((line) => {
+    const trimmed = line.trim();
+    if (CONFIG.LEGACY_MIRROR_COMMENTS.includes(trimmed)) {
+      return false;
+    }
+    if (trimmed.startsWith('<!-- Generated:') && trimmed.includes('sync:ide-instructions')) {
+      return false;
+    }
+    return true;
+  });
+  return kept.join('\n').trim();
+}
+
+function readCanonicalSource() {
+  const sourcePath = path.join(REPO_ROOT, CONFIG.CURSOR_SOURCE);
+  if (!fs.existsSync(sourcePath)) {
+    console.error(`Error: missing canonical source: ${CONFIG.CURSOR_SOURCE}`);
+    process.exit(1);
+  }
+  const raw = normalizeEol(fs.readFileSync(sourcePath, 'utf-8'));
+  const { body } = parseMdc(raw);
+  return stripGeneratedComments(body);
+}
 
 function rewriteMarkdownTarget(url, targetDir) {
   const titlePattern = /^(\S+)(\s+"(?:[^"\\]|\\.)*")$/;
@@ -119,7 +186,6 @@ function formatRewrittenMarkdownLink(text, url, match, rewrittenUrl) {
 }
 
 function rewriteRelativeLinks(body, targetDir) {
-  // Copilot instructions use simple inline markdown links only.
   let result = '';
   let index = 0;
   while (index < body.length) {
@@ -167,68 +233,124 @@ function applyTitleTransforms(body) {
 function transformPlainMirror(source, targetRelativePath) {
   const targetDir = path.posix.dirname(targetRelativePath) || '.';
   const body = rewriteRelativeLinks(applyTitleTransforms(source), targetDir);
+  const comment = generatedComment(CONFIG.CURSOR_SOURCE);
 
-  return [CONFIG.GENERATED_COMMENT, '', body.trimEnd(), ''].join('\n');
+  return [comment, '', body.trimEnd(), ''].join('\n');
 }
 
-function transformCursorMirror(source) {
-  const targetDir = path.posix.dirname(CONFIG.CURSOR_TARGET);
+function transformCopilotMirror(source) {
+  const targetDir = path.posix.dirname(CONFIG.COPILOT_TARGET) || '.';
   const body = rewriteRelativeLinks(applyTitleTransforms(source), targetDir);
+  const comment = generatedComment(CONFIG.CURSOR_SOURCE);
+
+  return [comment, '', body.trimEnd(), ''].join('\n');
+}
+
+function validateInstructionsBasename(basename) {
+  if (!basename || basename.includes('/') || basename.includes('..')) {
+    throw new Error(`Invalid copilotInstructionsFile: ${basename}`);
+  }
+  if (!basename.endsWith('.instructions.md')) {
+    throw new Error(`copilotInstructionsFile must end with .instructions.md: ${basename}`);
+  }
+}
+
+function quoteApplyTo(glob) {
+  if (!glob) {
+    throw new Error('Path rule requires globs or copilotApplyTo');
+  }
+  if (glob.startsWith('"') || glob.startsWith("'")) {
+    return glob;
+  }
+  return `"${glob}"`;
+}
+
+function loadPathRules() {
+  const rulesDir = path.join(REPO_ROOT, path.posix.dirname(CONFIG.CURSOR_SOURCE));
+  const canonicalName = path.basename(CONFIG.CURSOR_SOURCE);
+  if (!fs.existsSync(rulesDir)) {
+    return [];
+  }
+
+  const rules = [];
+  for (const entry of fs.readdirSync(rulesDir)) {
+    if (!entry.endsWith('.mdc') || entry === canonicalName) {
+      continue;
+    }
+    const relativeMdc = path.posix.join(path.posix.dirname(CONFIG.CURSOR_SOURCE), entry);
+    const absolutePath = path.join(REPO_ROOT, relativeMdc);
+    const { frontmatter, body } = parseMdc(normalizeEol(fs.readFileSync(absolutePath, 'utf-8')));
+    if (!frontmatter.copilotInstructionsFile) {
+      continue;
+    }
+    validateInstructionsBasename(frontmatter.copilotInstructionsFile);
+    const applyTo =
+      frontmatter.copilotApplyTo ?? quoteApplyTo(frontmatter.globs);
+    const description = frontmatter.description ?? '';
+    rules.push({
+      mdcRelativePath: relativeMdc,
+      instructionsBasename: frontmatter.copilotInstructionsFile,
+      applyTo,
+      description,
+      body: stripGeneratedComments(body),
+    });
+  }
+  return rules;
+}
+
+function transformPathInstruction(rule) {
+  const targetRelative = path.posix.join(CONFIG.INSTRUCTIONS_DIR, rule.instructionsBasename);
+  const targetDir = path.posix.dirname(targetRelative);
+  const body = rewriteRelativeLinks(applyTitleTransforms(rule.body), targetDir);
+  const comment = generatedComment(rule.mdcRelativePath);
 
   return [
     '---',
-    `description: ${CONFIG.DESCRIPTION}`,
-    'alwaysApply: true',
+    `applyTo: ${rule.applyTo}`,
+    `description: "${rule.description.replaceAll('"', '\\"')}"`,
     '---',
     '',
-    CONFIG.GENERATED_COMMENT,
+    comment,
     '',
     body.trimEnd(),
     '',
   ].join('\n');
 }
 
-function normalizeEol(text) {
-  return text.replaceAll('\r\n', '\n').replaceAll('\r', '\n');
-}
-
-function isGeneratedMirrorFile(filePath) {
+function isGeneratedOutputFile(filePath) {
   try {
     const content = fs.readFileSync(filePath, 'utf-8');
-    return (
-      content.includes(CONFIG.GENERATED_COMMENT) ||
-      content.includes(CONFIG.LEGACY_GENERATED_COMMENT)
-    );
+    if (CONFIG.LEGACY_MIRROR_COMMENTS.some((marker) => content.includes(marker))) {
+      return true;
+    }
+    return content.includes('sync:ide-instructions') && content.includes('<!-- Generated:');
   } catch {
     return false;
   }
 }
 
-function listStaleMdcFiles(rulesDir, keepFileName) {
-  if (!fs.existsSync(rulesDir)) {
+function listStaleInstructionFiles(instructionsDir, keepBasenames) {
+  if (!fs.existsSync(instructionsDir)) {
     return [];
   }
-
   const stale = [];
-  for (const entry of fs.readdirSync(rulesDir)) {
-    if (!entry.endsWith('.mdc') || entry === keepFileName) {
+  for (const entry of fs.readdirSync(instructionsDir)) {
+    if (!entry.endsWith('.instructions.md') || keepBasenames.has(entry)) {
       continue;
     }
-
-    const filePath = path.join(rulesDir, entry);
-    if (!isGeneratedMirrorFile(filePath)) {
+    const filePath = path.join(instructionsDir, entry);
+    if (!isGeneratedOutputFile(filePath)) {
       continue;
     }
-
     stale.push(filePath);
   }
   return stale;
 }
 
-function collectIssues(source) {
+function collectIssues(source, pathRules) {
   const issues = [];
 
-  for (const target of MIRROR_TARGETS) {
+  for (const target of REPO_WIDE_TARGETS) {
     const relativePath = target.relativePath();
     const absolutePath = path.join(REPO_ROOT, relativePath);
     const expected = normalizeEol(target.transform(source, relativePath));
@@ -242,28 +364,45 @@ function collectIssues(source) {
     if (actual !== expected) {
       issues.push({ kind: 'modified', path: relativePath });
     }
+  }
 
-    if (target.staleCheck) {
-      const rulesDir = path.dirname(absolutePath);
-      const keepFileName = path.basename(absolutePath);
-      for (const stalePath of target.staleCheck(rulesDir, keepFileName)) {
-        issues.push({ kind: 'stale', path: path.relative(REPO_ROOT, stalePath) });
-      }
+  const keepBasenames = new Set();
+  for (const rule of pathRules) {
+    keepBasenames.add(rule.instructionsBasename);
+    const relativePath = path.posix.join(CONFIG.INSTRUCTIONS_DIR, rule.instructionsBasename);
+    const absolutePath = path.join(REPO_ROOT, relativePath);
+    const expected = normalizeEol(transformPathInstruction(rule));
+
+    if (!fs.existsSync(absolutePath)) {
+      issues.push({ kind: 'missing', path: relativePath });
+      continue;
     }
+
+    const actual = normalizeEol(fs.readFileSync(absolutePath, 'utf-8'));
+    if (actual !== expected) {
+      issues.push({ kind: 'modified', path: relativePath });
+    }
+  }
+
+  const instructionsDir = path.join(REPO_ROOT, CONFIG.INSTRUCTIONS_DIR);
+  for (const stalePath of listStaleInstructionFiles(instructionsDir, keepBasenames)) {
+    issues.push({ kind: 'stale', path: path.relative(REPO_ROOT, stalePath) });
   }
 
   return issues;
 }
 
 function checkMirrors() {
-  const sourcePath = path.join(REPO_ROOT, CONFIG.SOURCE);
-  if (!fs.existsSync(sourcePath)) {
-    console.error(`Error: missing source file: ${CONFIG.SOURCE}`);
+  const source = readCanonicalSource();
+  let pathRules = [];
+  try {
+    pathRules = loadPathRules();
+  } catch (error) {
+    console.error(error.message);
     process.exit(1);
   }
 
-  const source = normalizeEol(fs.readFileSync(sourcePath, 'utf-8'));
-  const issues = collectIssues(source);
+  const issues = collectIssues(source, pathRules);
 
   if (issues.length > 0) {
     console.error('IDE instruction mirror drift detected');
@@ -277,15 +416,10 @@ function checkMirrors() {
 }
 
 function writeMirrors() {
-  const sourcePath = path.join(REPO_ROOT, CONFIG.SOURCE);
-  if (!fs.existsSync(sourcePath)) {
-    console.error(`Error: missing source file: ${CONFIG.SOURCE}`);
-    process.exit(1);
-  }
+  const source = readCanonicalSource();
+  const pathRules = loadPathRules();
 
-  const source = normalizeEol(fs.readFileSync(sourcePath, 'utf-8'));
-
-  for (const target of MIRROR_TARGETS) {
+  for (const target of REPO_WIDE_TARGETS) {
     const relativePath = target.relativePath();
     const absolutePath = path.join(REPO_ROOT, relativePath);
     const content = target.transform(source, relativePath);
@@ -293,15 +427,24 @@ function writeMirrors() {
     fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
     fs.writeFileSync(absolutePath, content, 'utf-8');
     console.log(`Synced ${relativePath}`);
+  }
 
-    if (target.staleCheck) {
-      const rulesDir = path.dirname(absolutePath);
-      const keepFileName = path.basename(absolutePath);
-      for (const stalePath of target.staleCheck(rulesDir, keepFileName)) {
-        fs.rmSync(stalePath, { force: true });
-        console.log(`  removed stale ${path.relative(REPO_ROOT, stalePath)}`);
-      }
-    }
+  const keepBasenames = new Set();
+  for (const rule of pathRules) {
+    keepBasenames.add(rule.instructionsBasename);
+    const relativePath = path.posix.join(CONFIG.INSTRUCTIONS_DIR, rule.instructionsBasename);
+    const absolutePath = path.join(REPO_ROOT, relativePath);
+    const content = transformPathInstruction(rule);
+
+    fs.mkdirSync(path.dirname(absolutePath), { recursive: true });
+    fs.writeFileSync(absolutePath, content, 'utf-8');
+    console.log(`Synced ${relativePath}`);
+  }
+
+  const instructionsDir = path.join(REPO_ROOT, CONFIG.INSTRUCTIONS_DIR);
+  for (const stalePath of listStaleInstructionFiles(instructionsDir, keepBasenames)) {
+    fs.rmSync(stalePath, { force: true });
+    console.log(`  removed stale ${path.relative(REPO_ROOT, stalePath)}`);
   }
 }
 

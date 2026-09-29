@@ -412,18 +412,18 @@ in package submission CI.
 
 | Install target | Path | Source |
 | --- | --- | --- |
-| GitHub Copilot | `.github/copilot-instructions.md` | **Canonical** — edit here |
-| Cursor | `.cursor/rules/agents-registry.mdc` | Mirrored from copilot-instructions |
-| Claude Code | `CLAUDE.md` | Mirrored from copilot-instructions |
-| OpenAI Codex | `AGENTS.md` | Mirrored from copilot-instructions |
+| Cursor | `.cursor/rules/agents-registry.mdc` | **Canonical** — edit here |
+| GitHub Copilot | `.github/copilot-instructions.md` | Generated |
+| Claude Code | `CLAUDE.md` | Generated |
+| OpenAI Codex | `AGENTS.md` | Generated |
 
-Regenerate mirrors after editing `copilot-instructions.md`:
+Regenerate mirrors after editing `.cursor/rules/agents-registry.mdc`:
 
 ```bash
 npm run sync:ide-instructions
 ```
 
-Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
+Do not edit `.github/copilot-instructions.md`, `CLAUDE.md`, or `AGENTS.md` directly.
 
 #### Registry workflow packages
 
