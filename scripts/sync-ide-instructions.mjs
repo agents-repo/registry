@@ -24,6 +24,8 @@ const CONFIG = {
   ],
 };
 
+const YAML_ESCAPED_DOUBLE_QUOTE = String.raw`\"`;
+
 const SOURCE_DIR = path.posix.dirname(CONFIG.CURSOR_SOURCE);
 
 function generatedComment(sourceRelativePath) {
@@ -66,19 +68,22 @@ function normalizeEol(text) {
 function parseSimpleYaml(block) {
   const result = {};
   for (const line of block.split('\n')) {
-    // eslint-disable-next-line sonarjs/super-linear-regex -- simple YAML key lines only
-    const match = /^(\w+):\s*(.*)$/.exec(line);
-    if (!match) {
+    const colonIndex = line.indexOf(':');
+    if (colonIndex <= 0) {
       continue;
     }
-    let value = match[2].trim();
+    const key = line.slice(0, colonIndex).trim();
+    if (!/^\w+$/.test(key)) {
+      continue;
+    }
+    let value = line.slice(colonIndex + 1).trim();
     if (
       (value.startsWith('"') && value.endsWith('"')) ||
       (value.startsWith("'") && value.endsWith("'"))
     ) {
       value = value.slice(1, -1);
     }
-    result[match[1]] = value;
+    result[key] = value;
   }
   return result;
 }
@@ -307,7 +312,7 @@ function transformPathInstruction(rule) {
   return [
     '---',
     `applyTo: ${rule.applyTo}`,
-    `description: "${rule.description.replaceAll('"', '\\"')}"`,
+    `description: "${rule.description.replaceAll('"', YAML_ESCAPED_DOUBLE_QUOTE)}"`,
     '---',
     '',
     comment,
