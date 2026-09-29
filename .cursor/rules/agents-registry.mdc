@@ -13,6 +13,17 @@ This is a spec-first, data-first open-source registry for agents and
 multi-agent flows across supported install targets. All structural rules are
 normative and encoded in `specs/`. Runtime logic is out of scope.
 
+## Organization workspace and registry skills
+
+- **Package authoring** (`agents-repo/agents-repo-package-creation`): this repo’s
+  minimal `agents.json` and extracts.
+- **Planning/review** (`maiconfz/*`): org hub in
+  **[agents-repo/.github](https://github.com/agents-repo/.github)** — use
+  [agents-repo.code-workspace](https://github.com/agents-repo/.github/blob/main/agents-repo.code-workspace).
+
+**Issues** for registry work: **this** repository. See
+[org-workspace-and-agents.md](https://github.com/agents-repo/.github/blob/main/docs/org-workspace-and-agents.md).
+
 ## Specs Index
 
 All normative rules live in `specs/`. Defer to these before inventing rules.
