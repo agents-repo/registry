@@ -20,7 +20,11 @@ npm run test:run
 npm run typecheck
 npm run package:scan-zips
 npm run sync:ide-instructions -- --check
+npm run dup:check
 ```
+
+Local `dup:check` (jscpd) is not CI; see the
+[org AI static-analysis guide](https://github.com/agents-repo/.github/blob/main/docs/ai-static-analysis-patterns.md).
 
 Package tasks (replace `<namespace>/<package-id>` and `<version>`):
 
