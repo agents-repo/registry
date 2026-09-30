@@ -1,3 +1,5 @@
+<!-- Generated: .cursor/rules/agents-registry.mdc. Run npm run sync:ide-instructions -->
+
 # Agents Registry — Project Guidelines
 
 ## Project Purpose

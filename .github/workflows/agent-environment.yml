@@ -1,4 +1,4 @@
-name: Copilot Environment Preflight
+name: Agent environment preflight
 
 on:
   workflow_dispatch:

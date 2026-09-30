@@ -120,18 +120,19 @@ instructions on clone without manual install steps.
 
 | Install target | Path | Source |
 | --- | --- | --- |
-| GitHub Copilot | `.github/copilot-instructions.md` | **Canonical** — edit here |
-| Cursor | `.cursor/rules/agents-registry.mdc` | Mirrored from copilot-instructions |
-| Claude Code | `CLAUDE.md` | Mirrored from copilot-instructions |
-| OpenAI Codex | `AGENTS.md` | Mirrored from copilot-instructions |
+| Cursor | `.cursor/rules/agents-registry.mdc` | **Canonical** — edit here |
+| GitHub Copilot | `.github/copilot-instructions.md` | Generated |
+| Claude Code | `CLAUDE.md` | Generated |
+| OpenAI Codex | `AGENTS.md` | Generated |
 
-Regenerate mirrors after editing `copilot-instructions.md`:
+Regenerate mirrors after editing `.cursor/rules/agents-registry.mdc`:
 
 ```bash
 npm run sync:ide-instructions
 ```
 
-Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
+Do not edit generated `.github/copilot-instructions.md`, `CLAUDE.md`, or
+`AGENTS.md` directly.
 
 AI contributors: see [docs/ai-onboarding.md](docs/ai-onboarding.md) for
 first-5-minutes commands, skill routing, and validation expectations.
@@ -362,7 +363,7 @@ That smoke flow creates a temporary package workspace under
   version snapshots.
 - Package script changes also run the dedicated smoke workflow, which calls
   `npm run package:create:smoke -- --package agents-repo/smoke-package`.
-- GitHub Copilot preflight can be invoked via `.github/workflows/copilot-environment.yml`.
+- GitHub Copilot preflight can be invoked via `.github/workflows/agent-environment.yml`.
 
 Package artifacts are designed for reuse in external projects, and downstream
 repositories with different linting rules need to adapt imported agent files

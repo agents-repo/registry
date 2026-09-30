@@ -71,8 +71,8 @@ triage → fix → validate → commit → push → handoff
   order, then run them. Do this even when `dry-run` is true. Skip
   validation only when this pass produced no local edits.
 
-  1. Agent / contributor docs — `CONTRIBUTING.md`,
-     `.github/copilot-instructions.md`, `.cursor/rules/`, and
+  1. Agent / contributor docs — `CONTRIBUTING.md`, canonical `.cursor/rules/`,
+     generated `.github/copilot-instructions.md` when present, and
      repo-specific agent guidelines.
   2. Git hooks — `.husky/pre-commit` or `.git/hooks/pre-commit`.
   3. Package scripts — when `package.json` exists, prefer `npm run`
