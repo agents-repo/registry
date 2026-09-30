@@ -65,9 +65,9 @@ MUST NOT call `gh` to reload the issue.
   real issue number or URL.
 - MUST NOT implement code, commit, push, or open pull requests.
 - MUST NOT call `gh` on behalf of downstream planner or refiner agents.
-- When project docs exist (`CONTRIBUTING.md`, agent instruction files such as
-  `.github/copilot-instructions.md`, `.cursor/rules/`, `AGENTS.md`, or the host
-  IDE's equivalent), they override generic guidance in this agent.
+- When project docs exist (`CONTRIBUTING.md`, canonical `.cursor/rules/` per host
+  repo, generated mirrors such as `.github/copilot-instructions.md`, `AGENTS.md`,
+  or `CLAUDE.md` when present), they override generic guidance in this agent.
 - Prefer asking the user over assuming repository, issue identity, or scope.
 
 ## Interaction Contract

@@ -412,51 +412,35 @@ in package submission CI.
 
 | Install target | Path | Source |
 | --- | --- | --- |
-| GitHub Copilot | `.github/copilot-instructions.md` | **Canonical** — edit here |
-| Cursor | `.cursor/rules/agents-registry.mdc` | Mirrored from copilot-instructions |
-| Claude Code | `CLAUDE.md` | Mirrored from copilot-instructions |
-| OpenAI Codex | `AGENTS.md` | Mirrored from copilot-instructions |
+| Cursor | `.cursor/rules/agents-registry.mdc` | **Canonical** — edit here |
+| GitHub Copilot | `.github/copilot-instructions.md` | Generated |
+| Claude Code | `CLAUDE.md` | Generated |
+| OpenAI Codex | `AGENTS.md` | Generated |
 
-Regenerate mirrors after editing `copilot-instructions.md`:
+Regenerate mirrors after editing `.cursor/rules/agents-registry.mdc`:
 
 ```bash
 npm run sync:ide-instructions
 ```
 
-Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
+Do not edit `.github/copilot-instructions.md`, `CLAUDE.md`, or `AGENTS.md` directly.
 
-#### Registry workflow packages (CLI)
+#### Registry workflow packages
 
-Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli).
-`agents.json` points at `https://registry.agents-repo.org` (organization
-catalog proxy).
+**This repository** keeps a minimal `agents.json` with
+`agents-repo/agents-repo-package-creation` only (package authoring flows).
 
-Bootstrap only when `agents.json` is missing (one-time; use a published CLI
-release or `npm exec agents-repo -- init` after `npm ci`):
-
-```bash
-npm exec agents-repo -- init --targets github-copilot claude-code cursor openai-codex
-```
-
-Use the npm scripts for bulk install, update, and CI (CLI version is pinned in
-`package.json` / `package-lock.json`, distinct from registry packages in
-`agents-lock.json`):
+Shared `maiconfz/*` planning/review packages install in
+[agents-repo/.github](https://github.com/agents-repo/.github) — see
+[org-workspace-and-agents.md](https://github.com/agents-repo/.github/blob/main/docs/org-workspace-and-agents.md).
 
 ```bash
-npm run agents:install   # bulk sync from agents.json
-npm run agents:update    # refresh within semver ranges
-npm run agents:verify    # checksum extra in pr-baseline when agents paths change
+npm run agents:install   # sync package-creation extracts
+npm run agents:verify    # PR baseline when agents paths change
+npm run agents:ci        # before changing locks or extracts locally
 ```
 
-Commit `agents.json`, `agents-lock.json`, and extracted paths (`.github/agents/`,
-`.cursor/skills/`, `.claude/agents/`, `.agents/skills/`). Do not hand-edit
-extracted package files.
-
-Dogfooded packages:
-
-- `agents-repo/agents-repo-package-creation` — all four IDE targets
-- `maiconfz/github-pr-review-triage` — all four IDE targets
-- `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
+Do not hand-edit extracted package files.
 
 Local pre-commit checks project guideline mirrors (`sync:ide-instructions
 --check`). PR baseline CI runs `npm run agents:verify` only when agents

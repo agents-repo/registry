@@ -122,8 +122,8 @@ preflight → fetch → triage → fix → validate/commit/push → reply/(resol
   empty string). On later pages, pass `-f after` with `pageInfo.endCursor`.
 - Do not merge pull requests, push to the default branch, or mark a PR ready
   unless project policy explicitly allows agents to do so.
-- When project docs exist (`CONTRIBUTING.md`, agent instruction files,
-  `copilot-instructions.md`, `.cursor/rules/`), they override generic
+- When project docs exist (`CONTRIBUTING.md`, canonical `.cursor/rules/`,
+  generated `copilot-instructions.md` when present), they override generic
   guidance in this agent except ship-mode permission granted by invoking this
   agent (commit and push on the PR head branch only).
 - Validate automated review findings (for example Bugbot) before marking
@@ -435,7 +435,8 @@ handoff or commit.
 
 Inspect the repository root in this order:
 
-1. **Agent / contributor docs** — `CONTRIBUTING.md`, `.github/copilot-instructions.md`,
+1. **Agent / contributor docs** — `CONTRIBUTING.md`, canonical `.cursor/rules/`,
+   generated `.github/copilot-instructions.md` when present,
    `.cursor/rules/`, and repo-specific agent guidelines.
 2. **Git hooks** — `.husky/pre-commit` or `.git/hooks/pre-commit` for commands
    the project expects before commit.
