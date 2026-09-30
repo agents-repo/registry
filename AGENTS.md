@@ -76,6 +76,13 @@ needed).
 The package submission issue template is out of scope unless the changed rule
 directly modifies package submission requirements.
 
+## Shared scripts and static analysis
+
+Before editing `scripts/sync-ide-instructions.mjs` or other copies shared across
+platform repos, read the
+[org AI static-analysis guide](https://github.com/agents-repo/.github/blob/main/docs/ai-static-analysis-patterns.md)
+and run `npm run dup:check` locally when duplication risk is high (not CI yet).
+
 ## Lint
 
 Run `npm run lint:md` before committing. If local git hooks are installed, the
