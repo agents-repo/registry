@@ -131,7 +131,8 @@ Regenerate mirrors after editing `.cursor/rules/agents-registry.mdc`:
 npm run sync:ide-instructions
 ```
 
-Do not edit `.cursor/rules/`, `CLAUDE.md`, or `AGENTS.md` directly.
+Do not edit generated `.github/copilot-instructions.md`, `CLAUDE.md`, or
+`AGENTS.md` directly.
 
 AI contributors: see [docs/ai-onboarding.md](docs/ai-onboarding.md) for
 first-5-minutes commands, skill routing, and validation expectations.

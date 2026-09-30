@@ -289,8 +289,7 @@ function loadPathRules() {
       continue;
     }
     validateInstructionsBasename(frontmatter.copilotInstructionsFile);
-    const applyTo =
-      frontmatter.copilotApplyTo ?? quoteApplyTo(frontmatter.globs);
+    const applyTo = quoteApplyTo(frontmatter.copilotApplyTo ?? frontmatter.globs);
     const description = frontmatter.description ?? '';
     rules.push({
       mdcRelativePath: relativeMdc,
