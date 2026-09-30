@@ -10,7 +10,16 @@
     "**/build/**",
     "**/.cache/**",
     "**/coverage/**",
-    "**/package-lock.json"
+    "**/package-lock.json",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".github/copilot-instructions.md",
+    ".github/instructions/**",
+    "**/.cursor/skills/**",
+    "**/.github/agents/**",
+    "**/.claude/agents/**",
+    "**/.agents/skills/**",
+    "packages/**/versions/**"
   ],
   "reporters": ["console"],
   "format": ["javascript", "typescript", "json", "markdown", "bash", "yaml"]

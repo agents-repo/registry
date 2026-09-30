@@ -23,9 +23,7 @@ npm run sync:ide-instructions -- --check
 npm run dup:check
 ```
 
-Local `dup:check` (jscpd) is local-only and is not enforced in CI until
-[agents-repo/.github#126](https://github.com/agents-repo/.github/issues/126).
-See the
+`dup:check` (jscpd) is enforced in PR baseline CI. See the
 [org AI static-analysis guide](https://github.com/agents-repo/.github/blob/main/docs/ai-static-analysis-patterns.md).
 
 Package tasks (replace `<namespace>/<package-id>` and `<version>`):
