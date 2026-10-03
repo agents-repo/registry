@@ -455,10 +455,10 @@ green.
 
 ```bash
 gh api "repos/{owner}/{repo}/commits/{head_sha}/check-runs?per_page=100" \
-  --jq '.check_runs[] | {databaseId, name, conclusion, html_url, completed_at}'
+  --jq '.check_runs[] | {id, name, conclusion, html_url, completed_at}'
 ```
 
-Match by `name` to the failing `gh pr checks` row; capture `databaseId` as
+Match by `name` to the failing `gh pr checks` row; capture REST `id` as
 `check_run_id`.
 
 **Deep fetch (failed rows only)** — cap output at `ci-log-max-lines` (default
@@ -484,7 +484,7 @@ review idempotency, skip any `check_failure` whose `check_run_id` appears in
 a comment posted after the run `completedAt` (or `completedAt` from checks
 JSON) with body containing `Re: CI check (` and that id.
 
-Capture per row: `kind: check_failure`, `check_run_id` (databaseId),
+Capture per row: `kind: check_failure`, `check_run_id` (REST `id`),
 `check_name`, `conclusion`, `link`, `is_required` (when known), `annotations`
 (summary), `log_excerpt` (truncated).
 
@@ -676,7 +676,7 @@ Example text:
 
 `Re: CI check (${check_run_id}): Fixed in {headRefOid}: {summary}.`
 
-Use the check run `databaseId` from Phase 1. Include the head SHA in the body
+Use the check run REST `id` from Phase 1. Include the head SHA in the body
 so a new push with a new run can be acked separately. **Never** call
 `resolveReviewThread` for check failures.
 
