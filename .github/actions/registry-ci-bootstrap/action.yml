@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+name: Registry CI bootstrap
+description: Setup pinned Node/npm with dependencies, and optionally validate runtime.
+
+inputs:
+  validate-runtime:
+    description: Run npm run env:check after install.
+    required: false
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Node and pinned npm
+      uses: ./.github/actions/setup-node-pinned-npm
+
+    - name: Validate runtime
+      if: inputs.validate-runtime == 'true'
+      shell: bash
+      run: npm run env:check
