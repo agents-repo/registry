@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "upgrade-validation-fixer",
+  "description": "Run host validation after upgrades, fix breakages with minimal diffs, then commit and push the feature branch unless dry-run is true.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "tools": ["filesystem", "github"],
+  "inputs": [
+    {
+      "name": "validation-plan",
+      "type": "string",
+      "description": "Markdown validation tiers from test-surface-analyst."
+    },
+    {
+      "name": "execution-log",
+      "type": "string",
+      "description": "Markdown log from upgrade-executor."
+    },
+    {
+      "name": "dry-run",
+      "type": "boolean",
+      "description": "When true, validate and fix only — no commit or push. Defaults to false."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional notes from the caller."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "validation-handoff-summary",
+      "type": "string",
+      "description": "Branch, commit SHA when pushed, validation results, and what shipped or why ship was skipped."
+    }
+  ]
+}

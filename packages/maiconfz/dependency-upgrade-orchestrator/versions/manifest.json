@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "dependency-upgrade-orchestrator",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "7ce9c9919055f8c6088ebfb9a4436afa9655d1d6ce501ab7416ed936d550eec2",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "0d3815f6fbbeb1810de0ffabd018fcdc87867791fad92530d56ea4bfaacd257b",
+          "pathEncoding": 1
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "b9c847771188514222eff83fb38543f2c2bc131c7a48a8ef2514b0dc895ba09e",
+          "pathEncoding": 1
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "aecaee2498bf556b47123934fb25e8a3b08e08cfd74f0c67eaff031980168530",
+          "pathEncoding": 1
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "9f1fb6ec9af8a664d22bcd56f0548c3773b313d503fa416dc31ac4876c698645",
+          "pathEncoding": 1
+        }
+      ],
+      "createdAt": "2026-10-07T02:06:14.088Z"
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/dependency-upgrade-orchestrator",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "dependency-upgrade-orchestrator",
+    "description": "Polyglot dependency scan, ask-first upgrade plan, optional GitHub/GitLab dedup and migration research, then upgrade, test, and fix on a feature branch.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/dependency-upgrade-orchestrator",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "dependencies",
+      "upgrade",
+      "security",
+      "npm",
+      "maven",
+      "gradle",
+      "pip",
+      "polyglot",
+      "automation",
+      "github",
+      "gitlab"
+    ],
+    "createdAt": "2026-10-07T02:04:42.626Z",
+    "updatedAt": "2026-10-07T02:04:42.626Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 7,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/dependency-upgrade-orchestrator/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "remote-upgrade-tracker",
+      "name": "remote-upgrade-tracker",
+      "description": "Check GitHub or GitLab for open dependency bump issues, pull requests, and branches to avoid duplicate work. Read-only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/agents/remote-upgrade-tracker.agent.md"
+    },
+    {
+      "id": "test-surface-analyst",
+      "name": "test-surface-analyst",
+      "description": "Map host CI and local validation commands for verifying dependency upgrades. Read-only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/agents/test-surface-analyst.agent.md"
+    },
+    {
+      "id": "upgrade-candidate-analyst",
+      "name": "upgrade-candidate-analyst",
+      "description": "Read-only outdated dependency inventory per detected ecosystem using canonical CLI commands. Respects scope filters.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/agents/upgrade-candidate-analyst.agent.md"
+    },
+    {
+      "id": "upgrade-executor",
+      "name": "upgrade-executor",
+      "description": "Apply approved dependency upgrade batches in the host repository per the upgrade plan. Mutating.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/agents/upgrade-executor.agent.md"
+    },
+    {
+      "id": "upgrade-migration-researcher",
+      "name": "upgrade-migration-researcher",
+      "description": "Research official migration guides and breaking-change notes for major dependency upgrades when web research is allowed. Read-only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/agents/upgrade-migration-researcher.agent.md"
+    },
+    {
+      "id": "upgrade-planner",
+      "name": "upgrade-planner",
+      "description": "Produce ordered markdown upgrade plan with batches, risk, rollback, and validation gates. Planning only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/agents/upgrade-planner.agent.md"
+    },
+    {
+      "id": "upgrade-validation-fixer",
+      "name": "upgrade-validation-fixer",
+      "description": "Run host validation after upgrades, fix breakages with minimal diffs, then commit and push the feature branch unless dry-run is true.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/agents/upgrade-validation-fixer.agent.md"
+    },
+    {
+      "id": "workspace-ecosystem-scanner",
+      "name": "workspace-ecosystem-scanner",
+      "description": "Detect dependency managers and monorepo roots from manifests and lockfiles in the host git workspace. Read-only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 3,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/agents/workspace-ecosystem-scanner.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "dependency-upgrade-orchestration",
+      "name": "dependency-upgrade-orchestration",
+      "description": "Scan polyglot dependencies, plan upgrades ask-first, optionally dedupe remote work and research migrations, then upgrade, validate, fix, and ship on a feature branch.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/flows/dependency-upgrade-orchestration.agent.md",
+      "agents": [
+        "workspace-ecosystem-scanner",
+        "remote-upgrade-tracker",
+        "upgrade-candidate-analyst",
+        "upgrade-migration-researcher",
+        "test-surface-analyst",
+        "upgrade-planner",
+        "upgrade-executor",
+        "upgrade-validation-fixer"
+      ]
+    },
+    {
+      "id": "dependency-upgrade-planning",
+      "name": "dependency-upgrade-planning",
+      "description": "Planning-only dependency upgrade workflow: scan, optional remote dedup and migration research, inventory, and upgrade plan without executing changes.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/dependency-upgrade-orchestrator/versions/1.0.0/flows/dependency-upgrade-planning.agent.md",
+      "agents": [
+        "workspace-ecosystem-scanner",
+        "remote-upgrade-tracker",
+        "upgrade-candidate-analyst",
+        "upgrade-migration-researcher",
+        "test-surface-analyst",
+        "upgrade-planner"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-10-07T02:06:14.088Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "readmeMarkdown": "# dependency-upgrade-orchestrator\n\nPolyglot **dependency scan → plan → upgrade → test → fix** for the host git\nrepository. Ask-first planning, optional GitHub/GitLab dedup and migration\nresearch, then controlled ship-mode on a feature branch.\n\nThis package complements **Renovate** and **Dependabot** (scheduled bump PRs);\nit does not replace them. Use it when you want an agent-led, cross-ecosystem\npass with local validation and fix loops.\n\n## Install\n\nFrom the [agents-repo CLI](https://github.com/agents-repo/cli):\n\n```bash\nnpx agents-repo@latest init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@latest install maiconfz/dependency-upgrade-orchestrator\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after install.\n\n## Usage\n\n| Flow | When |\n| --- | --- |\n| `dependency-upgrade-planning` | Audit and plan only (no file changes) |\n| `dependency-upgrade-orchestration` | Full workflow after you approve the plan |\n\nSuggested workflow:\n\n1. Run **`dependency-upgrade-planning`** (optional `enable-github: true`).\n2. Refine the plan with **`maiconfz/plan-refiner`** on large upgrades.\n3. Run **`dependency-upgrade-orchestration`** with `approved-plan`, `dry-run: true`.\n4. Re-run with `dry-run: false` to commit and push on your feature branch.\n5. Optionally **`maiconfz/review-fix-ship`** then **`maiconfz/github-pr-review-triage`**.\n\nWork from a **feature branch** in the project you are upgrading (not `main`).\n\n### Flow inputs (orchestration)\n\n| Input | Notes |\n| --- | --- |\n| `scope` | `patch-minor` (default), `major-allowed`, `all`, `security-only` (best-effort in v1) |\n| `ecosystems` | Optional filter, e.g. `npm,gradle` |\n| `allow-web-research` | Major-bump migration guides |\n| `enable-github` / `enable-gitlab` | Remote dedup for open bump work |\n| `dry-run` | `true` = no commit/push in validate/fix phase |\n| `approved-plan` | Resume from a prior plan markdown |\n| `custom-instructions` | Pins, skips, monorepo roots |\n\n## Prerequisites\n\n| Tool | Purpose |\n| --- | --- |\n| Host package managers | npm, pnpm, yarn, pip, poetry, uv, gradle, mvn, cargo, go, composer, bundle, dotnet — as detected |\n| `gh` | Optional GitHub remote dedup |\n| `glab` or `GITLAB_TOKEN` | Optional GitLab dedup |\n| `cargo outdated` | Optional Cargo inventory |\n| Maven Versions plugin / Gradle dependencyUpdates | Optional JVM inventory |\n\nValidation commands come from the **host** repo: `CONTRIBUTING`, CI, and\n`package.json` scripts.\n\n## Ecosystem matrix (v1)\n\n| Ecosystem | Detection | Outdated | Upgrade |\n| --- | --- | --- | --- |\n| npm / yarn / pnpm / bun | `package.json` + lockfile | `npm outdated`, etc. | PM-specific update |\n| pip / pip-tools | `requirements*.txt` | `pip list --outdated` | pins + compile |\n| Poetry | `pyproject.toml` | `poetry show --outdated` | `poetry update` |\n| uv | `uv.lock` | uv list/lock commands | uv lock/sync |\n| Gradle | `build.gradle*`, catalog | dependencyUpdates / diff | catalog bump |\n| Maven | `pom.xml` | `versions:display-dependency-updates` | controlled versions goals |\n| Cargo | `Cargo.toml` | `cargo outdated` | `cargo update` |\n| Go | `go.mod` | `go list -m -u all` | `go get` |\n| Composer | `composer.json` | `composer outdated` | `composer update` |\n| Bundler | `Gemfile` | `bundle outdated` | `bundle update` |\n| .NET | csproj / central props | `dotnet list package --outdated` | package bump |\n\nMissing CLIs are called out in the plan as manual steps.\n\n## Non-goals (v1)\n\n- Replacing Renovate/Dependabot automation\n- OSV/Snyk-accurate `security-only` scope (deferred)\n- Upgrading OS runtimes unless you request it in `custom-instructions`\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `dependency-upgrade-orchestration` | Primary flow |\n| `dependency-upgrade-planning` | Planning-only flow |\n| `workspace-ecosystem-scanner` | Detect managers and roots |\n| `upgrade-candidate-analyst` | Outdated inventory |\n| `test-surface-analyst` | Host validation map |\n| `upgrade-planner` | Ordered upgrade plan |\n| `upgrade-executor` | Apply approved batches |\n| `upgrade-validation-fixer` | Test, fix, commit, push |\n| `remote-upgrade-tracker` | GitHub/GitLab dedup |\n| `upgrade-migration-researcher` | Migration research |\n\n## Validate and build (registry maintainers)\n\nFrom the registry repository root:\n\n```bash\nPKG=maiconfz/dependency-upgrade-orchestrator\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n"
+}

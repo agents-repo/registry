@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "upgrade-executor",
+  "description": "Apply approved dependency upgrade batches in the host repository per the upgrade plan. Mutating.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "upgrade-plan",
+      "type": "string",
+      "description": "Approved markdown plan with numbered batches."
+    },
+    {
+      "name": "workspace-scan",
+      "type": "string",
+      "description": "JSON from workspace-ecosystem-scanner."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional execution constraints."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "execution-log",
+      "type": "string",
+      "description": "Markdown log of batches run, commands used, and files changed."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-10-03T03:54:02.422Z",
+  "updatedAt": "2026-10-07T02:06:14.092Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -15,6 +15,7 @@
         "consulting-employer-check",
         "consulting-reputation-audit",
         "context-token-reduction",
+        "dependency-upgrade-orchestrator",
         "dev-emocionado",
         "feature-exploration-planner",
         "github-interactive-issue-implementation-planner",
