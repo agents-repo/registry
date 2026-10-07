@@ -30,7 +30,7 @@ import { PackageError } from './lib/errors';
 // Entry point
 // ---------------------------------------------------------------------------
 
-function reportBuildFailure(error: unknown): void {
+function reportBuildFailure(error: unknown): never {
   if (error instanceof PackageError) {
     console.error(`[${error.code}] ${error.message}`);
   } else {
