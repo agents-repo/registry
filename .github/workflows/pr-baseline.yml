@@ -33,6 +33,9 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: Bootstrap registry CI
         uses: ./.github/actions/registry-ci-bootstrap
 

@@ -24,10 +24,13 @@ jobs:
       issues: write
       pull-requests: write
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
       - name: Bootstrap registry CI
         uses: ./.github/actions/registry-ci-bootstrap
-        with:
-          fetch-depth: '0'
 
       - name: Check for unreleased package changes
         id: catalog-check

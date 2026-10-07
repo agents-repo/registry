@@ -1,12 +1,8 @@
 # yaml-language-server: $schema=https://json.schemastore.org/github-action.json
 name: Registry CI bootstrap
-description: Checkout, setup pinned Node/npm with dependencies, and optionally validate runtime.
+description: Setup pinned Node/npm with dependencies, and optionally validate runtime.
 
 inputs:
-  fetch-depth:
-    description: Checkout fetch depth (0 for full history).
-    required: false
-    default: '1'
   validate-runtime:
     description: Run npm run env:check after install.
     required: false
@@ -15,11 +11,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: ${{ inputs.fetch-depth }}
-
     - name: Setup Node and pinned npm
       uses: ./.github/actions/setup-node-pinned-npm
 

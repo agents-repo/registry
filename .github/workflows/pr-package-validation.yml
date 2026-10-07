@@ -15,10 +15,13 @@ jobs:
   package-checks:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
       - name: Bootstrap registry CI
         uses: ./.github/actions/registry-ci-bootstrap
-        with:
-          fetch-depth: '0'
 
       - name: Run all lints
         run: npm run lint:all

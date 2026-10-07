@@ -25,6 +25,9 @@ jobs:
     if: github.repository == 'agents-repo/registry'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: Bootstrap registry CI
         uses: ./.github/actions/registry-ci-bootstrap
 
@@ -52,10 +55,14 @@ jobs:
     needs:
       - validate
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
       - name: Bootstrap registry CI
         uses: ./.github/actions/registry-ci-bootstrap
         with:
-          fetch-depth: '0'
           validate-runtime: 'false'
 
       - name: Run semantic-release (dry run)
@@ -81,10 +88,14 @@ jobs:
     needs:
       - validate
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
       - name: Bootstrap registry CI
         uses: ./.github/actions/registry-ci-bootstrap
         with:
-          fetch-depth: '0'
           validate-runtime: 'false'
 
       - name: Run semantic-release
