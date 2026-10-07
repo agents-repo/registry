@@ -59,9 +59,11 @@ scan → remote? → inventory → research? → tests → plan → handoff
 
 ## Steps
 
-1. **Preflight** — Same git workspace checks as orchestration (host repo; not
-   default branch not required for read-only plan, but warn if on default
-   branch that execute will need a feature branch).
+1. **Preflight** — Confirm a git workspace in the **host** project (same
+   host-repo checks as orchestration). A non-default branch is not required for
+   this read-only planning flow; if HEAD is on the default branch, warn that
+   `dependency-upgrade-orchestration` will stop until the user checks out a
+   feature branch.
 2. **Scan** — Invoke `workspace-ecosystem-scanner` with `ecosystems` and
    `custom-instructions`. If `roots` is empty, stop with guidance.
 3. **Remote (optional)** — When `enable-github` or `enable-gitlab` is true,
