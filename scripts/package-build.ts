@@ -30,6 +30,15 @@ import { PackageError } from './lib/errors';
 // Entry point
 // ---------------------------------------------------------------------------
 
+function reportBuildFailure(error: unknown): void {
+  if (error instanceof PackageError) {
+    console.error(`[${error.code}] ${error.message}`);
+  } else {
+    console.error('Unexpected error during build:', error);
+  }
+  process.exit(1);
+}
+
 async function main(): Promise<void> {
   const packageId = parseRequiredPackageId(process.argv);
   const forceRebuild = hasFlag(process.argv, '--force-rebuild');
@@ -46,12 +55,7 @@ async function main(): Promise<void> {
       log: console.log,
     });
   } catch (error) {
-    if (error instanceof PackageError) {
-      console.error(`[${error.code}] ${error.message}`);
-    } else {
-      console.error('Unexpected error during build:', error);
-    }
-    process.exit(1);
+    reportBuildFailure(error);
   }
 
   console.log(`\nBuild complete: ${packageId}@${buildResult.version}`);
@@ -66,10 +70,5 @@ async function main(): Promise<void> {
 try {
   await main();
 } catch (error) {
-  if (error instanceof PackageError) {
-    console.error(`[${error.code}] ${error.message}`);
-  } else {
-    console.error('Unexpected error during build:', error);
-  }
-  process.exit(1);
+  reportBuildFailure(error);
 }

@@ -25,14 +25,8 @@ jobs:
     if: github.repository == 'agents-repo/registry'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Node and pinned npm
-        uses: ./.github/actions/setup-node-pinned-npm
-
-      - name: Validate runtime
-        run: npm run env:check
+      - name: Bootstrap registry CI
+        uses: ./.github/actions/registry-ci-bootstrap
 
       - name: Run markdown lint
         run: npm run lint:md
@@ -58,13 +52,11 @@ jobs:
     needs:
       - validate
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Bootstrap registry CI
+        uses: ./.github/actions/registry-ci-bootstrap
         with:
-          fetch-depth: 0
-
-      - name: Setup Node and pinned npm
-        uses: ./.github/actions/setup-node-pinned-npm
+          fetch-depth: '0'
+          validate-runtime: 'false'
 
       - name: Run semantic-release (dry run)
         env:
@@ -89,13 +81,11 @@ jobs:
     needs:
       - validate
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+      - name: Bootstrap registry CI
+        uses: ./.github/actions/registry-ci-bootstrap
         with:
-          fetch-depth: 0
-
-      - name: Setup Node and pinned npm
-        uses: ./.github/actions/setup-node-pinned-npm
+          fetch-depth: '0'
+          validate-runtime: 'false'
 
       - name: Run semantic-release
         env:
