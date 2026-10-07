@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "upgrade-migration-researcher",
+  "description": "Research official migration guides and breaking-change notes for major dependency upgrades when web research is allowed. Read-only.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "inputs": [
+    {
+      "name": "upgrade-inventory",
+      "type": "string",
+      "description": "Markdown inventory highlighting major or risky upgrades."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional focus packages or frameworks."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "migration-notes",
+      "type": "string",
+      "description": "Markdown summary with cited URLs and pre-upgrade checklist items."
+    }
+  ]
+}

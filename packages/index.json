@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-10-03T03:54:02.418Z",
+  "updatedAt": "2026-10-07T03:39:42.773Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -319,6 +319,54 @@
         }
       ],
       "chatWeb": true
+    },
+    {
+      "id": "maiconfz/dependency-upgrade-orchestrator",
+      "namespace": "maiconfz",
+      "package": "dependency-upgrade-orchestrator",
+      "path": "packages/maiconfz/dependency-upgrade-orchestrator",
+      "name": "dependency-upgrade-orchestrator",
+      "description": "Polyglot dependency scan, ask-first upgrade plan, optional GitHub/GitLab dedup and migration research, then upgrade, test, and fix on a feature branch.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "dependencies",
+        "upgrade",
+        "security",
+        "npm",
+        "maven",
+        "gradle",
+        "pip",
+        "polyglot",
+        "automation",
+        "github",
+        "gitlab"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 7,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/dependency-upgrade-orchestrator/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
     },
     {
       "id": "maiconfz/dev-emocionado",
@@ -832,6 +880,7 @@
     "consulting-employer-check": "maiconfz/consulting-employer-check",
     "consulting-reputation-audit": "maiconfz/consulting-reputation-audit",
     "context-token-reduction": "maiconfz/context-token-reduction",
+    "dependency-upgrade-orchestrator": "maiconfz/dependency-upgrade-orchestrator",
     "dev-emocionado": "maiconfz/dev-emocionado",
     "feature-exploration-planner": "maiconfz/feature-exploration-planner",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",

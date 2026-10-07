@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "dependency-upgrade-orchestrator",
+  "description": "Polyglot dependency scan, ask-first upgrade plan, optional GitHub/GitLab dedup and migration research, then upgrade, test, and fix on a feature branch.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/dependency-upgrade-orchestrator",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "dependencies",
+    "upgrade",
+    "security",
+    "npm",
+    "maven",
+    "gradle",
+    "pip",
+    "polyglot",
+    "automation",
+    "github",
+    "gitlab"
+  ],
+  "createdAt": "2026-10-07T02:04:42.626Z",
+  "updatedAt": "2026-10-07T02:04:42.626Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 7,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/dependency-upgrade-orchestrator/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      {
+        "id": "github-copilot",
+        "status": "supported"
+      },
+      {
+        "id": "claude-code",
+        "status": "supported"
+      },
+      {
+        "id": "cursor",
+        "status": "supported"
+      },
+      {
+        "id": "openai-codex",
+        "status": "supported"
+      }
+    ]
+  }
+}

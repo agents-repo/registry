@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "upgrade-candidate-analyst",
+  "description": "Read-only outdated dependency inventory per detected ecosystem using canonical CLI commands. Respects scope filters.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "workspace-scan",
+      "type": "string",
+      "description": "JSON from workspace-ecosystem-scanner."
+    },
+    {
+      "name": "scope",
+      "type": "string",
+      "description": "all, security-only, patch-minor, or major-allowed. Defaults to patch-minor when omitted."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional pins, skips, or package denylist."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "upgrade-inventory",
+      "type": "string",
+      "description": "Markdown inventory table plus notes on missing tooling or manual follow-ups."
+    }
+  ]
+}
