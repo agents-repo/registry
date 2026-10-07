@@ -62,14 +62,21 @@ scan → remote? → inventory → research? → tests → plan → handoff
 1. **Preflight** — Same git workspace checks as orchestration (host repo; not
    default branch not required for read-only plan, but warn if on default
    branch that execute will need a feature branch).
-2. **Scan** — `workspace-ecosystem-scanner`.
-3. **Remote (optional)** — `remote-upgrade-tracker` when flags set; else
-   skipped report.
-4. **Inventory** — `upgrade-candidate-analyst`.
-5. **Research (optional)** — `upgrade-migration-researcher` when
-   `allow-web-research` is true.
-6. **Validation map** — `test-surface-analyst`.
-7. **Plan** — `upgrade-planner`; present `upgrade-plan`. Tell user to run
+2. **Scan** — Invoke `workspace-ecosystem-scanner` with `ecosystems` and
+   `custom-instructions`. If `roots` is empty, stop with guidance.
+3. **Remote (optional)** — When `enable-github` or `enable-gitlab` is true,
+   invoke `remote-upgrade-tracker` with scan context and flags; else set
+   `remote-collision-report` to `Remote tracking skipped (flags off).`
+4. **Inventory** — Invoke `upgrade-candidate-analyst` with `workspace-scan`,
+   `scope`, and `custom-instructions`. Capture `upgrade-inventory`.
+5. **Research (optional)** — When `allow-web-research` is true, invoke
+   `upgrade-migration-researcher` with inventory and scan; else set
+   migration notes empty for the planner.
+6. **Validation map** — Invoke `test-surface-analyst` with `workspace-scan`
+   and `upgrade-inventory`.
+7. **Plan** — Invoke `upgrade-planner` with scan, inventory, validation plan,
+   `remote-collision-report`, migration notes, optional `approved-plan`, and
+   `scope`. Present `upgrade-plan`. Tell user to run
    `dependency-upgrade-orchestration` with `approved-plan`, `dry-run: true`
    first, then ship with `dry-run: false` after review. Suggest
    `maiconfz/plan-refiner` for large plans.

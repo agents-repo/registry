@@ -42,8 +42,9 @@ validate → fix → re-validate → commit → push → handoff
 
 ## Responsibilities
 
-- **Ship-mode:** when `dry-run` is false, commit and push are mandatory if
-  this pass produced local edits (including executor changes).
+- **Ship-mode:** when `dry-run` is false and required validation passes,
+  commit and push are mandatory if this pass produced local edits (including
+  executor changes).
 - **Preflight:** git workspace; not detached; not default branch (`main`,
   `master`, or `origin/HEAD` target). Do not create a branch.
 - Run **minimal** tier from `validation-plan` after upgrades; escalate to
@@ -61,8 +62,9 @@ validate → fix → re-validate → commit → push → handoff
 - MUST NOT push default branch, merge PRs, mark PR ready, force-push, or skip
   hooks.
 - MUST NOT commit secrets.
-- MUST NOT commit while required validation still fails unless user explicitly
-  overrides in `custom-instructions` (discourage in summary).
+- MUST NOT commit or push while required validation still fails. `custom-instructions`
+  do not authorize shipping on failed validation (same model as
+  `maiconfz/review-fix-ship` `findings-fixer`).
 
 ## Interaction Contract
 
