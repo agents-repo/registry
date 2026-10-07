@@ -19,7 +19,7 @@
     "**/.github/agents/**",
     "**/.claude/agents/**",
     "**/.agents/skills/**",
-    "packages/**/versions/**"
+    "packages/**"
   ],
   "reporters": ["console"],
   "format": ["javascript", "typescript", "json", "markdown", "bash", "yaml"]
