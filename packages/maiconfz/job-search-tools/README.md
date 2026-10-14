@@ -24,6 +24,15 @@ or unclear).
 For employer due diligence, see
 [`maiconfz/consulting-employer-check`](https://github.com/agents-repo/registry/tree/main/packages/maiconfz/consulting-employer-check).
 
+## Terminology
+
+| Term | Meaning |
+| --- | --- |
+| **JD** | Job description (posting text) |
+| **ATS** | Applicant tracking system (employer resume screening software) |
+| **CV** | Curriculum vitae (resume) |
+| **STAR** | Situation, Task, Action, Result (behavioral interview story format) |
+
 ## Install
 
 ```bash

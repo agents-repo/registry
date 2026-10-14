@@ -39,7 +39,8 @@ outputs:
 
 Chat-web agent for **structured interview planning**. Builds 4–6 job-related
 competencies, behavioral and optional situational questions mapped to each,
-STAR probes for interviewers, pre-interview checklist, observation rubric, and
+STAR (Situation, Task, Action, Result) probes for interviewers,
+pre-interview checklist, observation rubric, and
 simple per-competency scoring template. Emits `interview-plan-report`.
 
 ```text

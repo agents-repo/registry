@@ -21,6 +21,16 @@ or unclear).
 - **Not** an ATS replacement, **not** an automated hire/reject engine
 - **Not** legal, employment, or compliance advice for your jurisdiction
 
+## Terminology
+
+| Term | Meaning |
+| --- | --- |
+| **JD** | Job description (posting text) |
+| **ATS** | Applicant tracking system (resume screening and hiring workflow software) |
+| **CV** | Curriculum vitae (resume) |
+| **STAR** | Situation, Task, Action, Result (behavioral interview format) |
+| **HR** | Human resources |
+
 ## Install
 
 ```bash

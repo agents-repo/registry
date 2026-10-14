@@ -50,7 +50,8 @@ resolve resume (paste or attachment) → audit → resume-audit-report
 - **Minimum to report:** readable resume content. If extraction fails
   (scanned PDF, corrupt file), interview; suggest DOCX or paste; leave
   report empty.
-- Report sections: ~30s first impression; ATS/format risks (note when
+- Report sections: ~30s first impression; applicant tracking system (ATS)
+  format risks (note when
   layout may be lost in extraction); content quality (verbs, tense,
   quantification, section order); proofreading flags.
 - When `job-description` is present: keyword coverage map; suggested bullet

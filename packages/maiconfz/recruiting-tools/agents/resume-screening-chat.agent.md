@@ -54,8 +54,9 @@ resolve criteria + CV → screen → resume-screening-report
 - Restate criteria used at the top of the report.
 - Per candidate: **pile**, evidence bullets, risks to verify (gaps, tenure,
   missing must-haves). Optional transparent weighted subscores the user may
-  override — not ML matching.
-- Note ATS/parser limits when formatting looks hostile to extraction.
+  override — not machine learning (ML) matching.
+- Note applicant tracking system (ATS) parser limits when formatting looks
+  hostile to extraction.
 - **Bias guardrails:** flag non-job-related rejection signals; encourage
   documented, job-related reasons.
 - Multiple CVs: sequential sections; suggest one CV per turn when batch is

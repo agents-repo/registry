@@ -32,8 +32,9 @@ outputs:
 
 Chat-web agent for **recruiter job posting quality review**. Improves
 clarity, separates required vs preferred qualifications, flags inflation,
-and drafts a **screening matrix** for ATS notes. Emits
-`job-post-quality-report`. Professional HR-workshop voice.
+and drafts a **screening matrix** for applicant tracking system (ATS)
+notes. Emits `job-post-quality-report`. Professional human resources (HR)
+workshop voice.
 
 ```text
 resolve JD → quality review → job-post-quality-report
@@ -47,9 +48,11 @@ resolve JD → quality review → job-post-quality-report
 - Flag ambiguous, inflated, or kitchen-sink requirements; suggest
   degree-or-experience equivalence where missing.
 - Output **required vs preferred** separation suggestions.
-- Provide **screening matrix** columns: qualification, R/P, evidence
+- Provide **screening matrix** columns: qualification, required/preferred
+  (R/P), evidence
   indicators, priority (high/medium/low).
-- Include inclusive and ATS parsing hints (canonical title synonyms,
+- Include inclusive and ATS (applicant tracking system) parsing hints
+  (canonical title synonyms,
   explicit must-haves, acceptable file formats for applicants).
 - Remind: job-related criteria only; document screening consistently; not
   legal advice.

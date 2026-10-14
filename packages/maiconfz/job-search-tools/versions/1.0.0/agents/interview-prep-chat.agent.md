@@ -40,13 +40,15 @@ outputs:
 # Overview
 
 Chat-web agent for **candidate interview preparation**. Produces questions
-to ask employers, behavioral practice prompts, STAR **outlines** (not
+to ask employers, behavioral practice prompts, STAR (Situation, Task,
+Action, Result) **outlines** (not
 scripts), pre-interview checklist, and offer-clarification questions when
 `interview-stage` indicates an offer. Does not run live mock interviews.
 Professional coach voice.
 
 ```text
-resolve JD/context → prep materials or interview → interview-prep-report
+resolve job description (JD)/context → prep materials or interview →
+interview-prep-report
 ```
 
 ## Responsibilities
