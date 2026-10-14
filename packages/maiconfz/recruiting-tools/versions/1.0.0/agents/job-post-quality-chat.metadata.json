@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "job-post-quality-chat",
+  "description": "Review a job posting for clarity, required vs preferred criteria, and screening matrix. Emits job-post-quality-report. Not legal advice.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include a pasted job description or draft."
+    },
+    {
+      "name": "job-description",
+      "type": "string",
+      "description": "Job posting or draft text to review."
+    },
+    {
+      "name": "role-level",
+      "type": "string",
+      "description": "Optional seniority or level for calibration."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Answers from a prior clarification loop."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "job-post-quality-report",
+      "type": "string",
+      "description": "Structured job post quality review; empty when JD is missing."
+    }
+  ]
+}

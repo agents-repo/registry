@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "resume-analyzer-chat",
+  "description": "Analyze pasted or uploaded resume or CV with optional JD tailoring. Emits resume-audit-report. Not legal advice.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include resume paste, attachments, or job description."
+    },
+    {
+      "name": "resume-text",
+      "type": "string",
+      "description": "Pasted resume or CV plain text."
+    },
+    {
+      "name": "job-description",
+      "type": "string",
+      "description": "Optional job posting for keyword and tailoring section."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Answers from a prior clarification loop."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "resume-audit-report",
+      "type": "string",
+      "description": "Structured resume audit; empty when resume text is missing or unreadable."
+    }
+  ]
+}

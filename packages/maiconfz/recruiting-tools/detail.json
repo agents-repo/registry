@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/recruiting-tools",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "recruiting-tools",
+    "description": "Professional recruiting chat tools: job post quality, resume screening, and structured interview planning. Chat-only; not legal or HR advice.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/recruiting-tools",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "recruiting",
+      "hr",
+      "hiring",
+      "interview",
+      "chat"
+    ],
+    "createdAt": "2026-10-14T22:47:00.000Z",
+    "updatedAt": "2026-10-14T22:47:00.000Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 6,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/recruiting-tools/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported",
+          "defaultInstruction": {
+            "kind": "agent",
+            "id": "job-post-quality-chat"
+          }
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "interview-planning-chat",
+      "name": "interview-planning-chat",
+      "description": "Structured interview guide with competencies, behavioral questions, and STAR probes. Emits interview-plan-report. Not a hire decision.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/recruiting-tools/versions/1.0.0/agents/interview-planning-chat.agent.md"
+    },
+    {
+      "id": "job-post-quality-chat",
+      "name": "job-post-quality-chat",
+      "description": "Review a job posting for clarity, required vs preferred criteria, and screening matrix. Emits job-post-quality-report. Not legal advice.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/recruiting-tools/versions/1.0.0/agents/job-post-quality-chat.agent.md"
+    },
+    {
+      "id": "resume-screening-chat",
+      "name": "resume-screening-chat",
+      "description": "Screen pasted or uploaded CVs against a job description or screening matrix. Emits resume-screening-report. Assistive only; not a hire decision.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/recruiting-tools/versions/1.0.0/agents/resume-screening-chat.agent.md"
+    }
+  ],
+  "flows": [],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-10-14T23:08:34.176Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# recruiting-tools\n\nProfessional **recruiting** chat tools: improve job postings, screen\nresumes against criteria, and plan structured interviews. Chat-only;\nassistive reports — not hiring decisions or legal advice.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nInstalled agents reply in the **language the user used** (English if mixed\nor unclear).\n\n## What this package is\n\n- Job post quality review and screening matrix draft\n- CV screening from **paste** or **PDF/DOC/DOCX** upload\n- Structured interview guide (competencies, questions, probes, checklist)\n\n## What this package is not\n\n- **Not** [`maiconfz/roast-my-project`](https://github.com/agents-repo/registry/tree/main/packages/maiconfz/roast-my-project)\n  or other satire packages\n- **Not** an ATS replacement, **not** an automated hire/reject engine\n- **Not** legal, employment, or compliance advice for your jurisdiction\n\n## Terminology\n\n| Term | Meaning |\n| --- | --- |\n| **JD** | Job description (posting text) |\n| **ATS** | Applicant tracking system (resume screening and hiring workflow software) |\n| **CV** | Curriculum vitae (resume) |\n| **STAR** | Situation, Task, Action, Result (behavioral interview format) |\n| **HR** | Human resources |\n\n## Install\n\n```bash\nnpx agents-repo@latest install maiconfz/recruiting-tools\n```\n\n## Chat agents\n\n| Agent | Purpose |\n| --- | --- |\n| `job-post-quality-chat` | Review and improve a job posting (default) |\n| `resume-screening-chat` | Screen CVs against JD or matrix |\n| `interview-planning-chat` | Interviewer guide from JD or matrix |\n\n## Workflow\n\n1. Run `job-post-quality-chat` on your posting; copy the screening matrix.\n2. Use `resume-screening-chat` with the matrix and each CV.\n3. Use `interview-planning-chat` with the same JD or matrix.\n\nProcess only candidate data you are authorized to use. Document job-related\nscreening reasons consistently.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/recruiting-tools/1.0.0/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "job-post-quality-chat"
+  }
+}

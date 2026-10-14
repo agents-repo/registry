@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/job-search-tools",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "job-post-audit-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "interview-prep-chat",
+      "path": "/pkg/maiconfz/job-search-tools/1.0.0/agents/interview-prep-chat.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "job-post-audit-chat",
+      "path": "/pkg/maiconfz/job-search-tools/1.0.0/agents/job-post-audit-chat.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "resume-analyzer-chat",
+      "path": "/pkg/maiconfz/job-search-tools/1.0.0/agents/resume-analyzer-chat.agent.md"
+    }
+  ]
+}

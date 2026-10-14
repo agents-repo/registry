@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "job-search-tools",
+  "description": "Professional job-search chat tools: job post audit, resume analysis, and interview prep. Chat-only; career-center style reports. Not legal advice.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/job-search-tools",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "job-search",
+    "resume",
+    "interview",
+    "career",
+    "chat"
+  ],
+  "createdAt": "2026-10-14T22:46:48.674Z",
+  "updatedAt": "2026-10-14T22:46:48.674Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 6,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/job-search-tools/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "job-post-audit-chat"
+        }
+      }
+    ]
+  }
+}
