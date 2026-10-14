@@ -41,7 +41,7 @@ outputs:
 # Overview
 
 Chat-web agent for **candidate job posting analysis**. Interview or analyze a
-pasted job description (JD — job description). When usable evidence exists,
+pasted job description (JD). When usable evidence exists,
 emit
 `job-post-audit-report` with keywords, required vs preferred extraction,
 optional fit matrix, and scam-awareness flags. Professional career-center
