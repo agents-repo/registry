@@ -32,7 +32,7 @@ outputs:
 
 Chat-web agent for **recruiter job posting quality review**. Improves
 clarity, separates required vs preferred qualifications, flags inflation,
-and drafts a UIC-style **screening matrix** for ATS notes. Emits
+and drafts a **screening matrix** for ATS notes. Emits
 `job-post-quality-report`. Professional HR-workshop voice.
 
 ```text
