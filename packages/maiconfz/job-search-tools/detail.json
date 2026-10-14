@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/job-search-tools",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "job-search-tools",
+    "description": "Professional job-search chat tools: job post audit, resume analysis, and interview prep. Chat-only; career-center style reports. Not legal advice.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/job-search-tools",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "job-search",
+      "resume",
+      "interview",
+      "career",
+      "chat"
+    ],
+    "createdAt": "2026-10-14T22:46:48.674Z",
+    "updatedAt": "2026-10-14T22:46:48.674Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 6,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/job-search-tools/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported",
+          "defaultInstruction": {
+            "kind": "agent",
+            "id": "job-post-audit-chat"
+          }
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "interview-prep-chat",
+      "name": "interview-prep-chat",
+      "description": "Interview questions to ask, STAR story outlines, and offer clarification prep from JD and resume. Emits interview-prep-report. Not legal advice.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/job-search-tools/versions/1.0.0/agents/interview-prep-chat.agent.md"
+    },
+    {
+      "id": "job-post-audit-chat",
+      "name": "job-post-audit-chat",
+      "description": "Audit a pasted job description for fit, keywords, scam signals, and next steps. Emits job-post-audit-report. Not legal advice.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/job-search-tools/versions/1.0.0/agents/job-post-audit-chat.agent.md"
+    },
+    {
+      "id": "resume-analyzer-chat",
+      "name": "resume-analyzer-chat",
+      "description": "Analyze pasted or uploaded resume or CV with optional JD tailoring. Emits resume-audit-report. Not legal advice.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/job-search-tools/versions/1.0.0/agents/resume-analyzer-chat.agent.md"
+    }
+  ],
+  "flows": [],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-10-14T23:19:47.439Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# job-search-tools\n\nProfessional **job search** chat tools for candidates: audit job postings,\nanalyze resumes, and prepare for interviews. Chat-only; structured reports\nin a career-center voice.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nInstalled agents reply in the **language the user used** (English if mixed\nor unclear).\n\n## What this package is\n\n- Job posting audit (keywords, fit, scam-awareness)\n- Resume/CV analysis from **paste** or **PDF/DOC/DOCX** upload\n- Interview prep: questions to ask, STAR outlines, offer clarification prompts\n\n## What this package is not\n\n- **Not** [`maiconfz/roast-my-project`](https://github.com/agents-repo/registry/tree/main/packages/maiconfz/roast-my-project)\n  or other satire packages\n- **Not** an ATS, not a hiring decision, **not** legal or employment advice\n- **Not** live mock interviews or deep salary negotiation coaching\n\nFor employer due diligence, see\n[`maiconfz/consulting-employer-check`](https://github.com/agents-repo/registry/tree/main/packages/maiconfz/consulting-employer-check).\n\n## Terminology\n\n| Term | Meaning |\n| --- | --- |\n| **JD** | Job description (posting text) |\n| **ATS** | Applicant tracking system (employer resume screening software) |\n| **CV** | Curriculum vitae (resume) |\n| **STAR** | Situation, Task, Action, Result (behavioral interview story format) |\n\n## Install\n\n```bash\nnpx agents-repo@latest install maiconfz/job-search-tools\n```\n\n## Chat agents\n\n| Agent | Purpose |\n| --- | --- |\n| `job-post-audit-chat` | Analyze a pasted job description (default) |\n| `resume-analyzer-chat` | Resume critique; optional JD for tailoring |\n| `interview-prep-chat` | Questions to ask, STAR prep, offer checks |\n\n## Usage tips\n\n- Paste the job description into `job-post-audit-chat`, then use outputs in\n  `resume-analyzer-chat` and `interview-prep-chat`.\n- For resumes, prefer **DOCX** or text-based **PDF** when uploading.\n- Redact others' personal data you are not authorized to share.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/job-search-tools/1.0.0/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "job-post-audit-chat"
+  }
+}

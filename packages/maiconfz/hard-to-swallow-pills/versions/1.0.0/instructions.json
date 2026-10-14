@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/hard-to-swallow-pills",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "hard-to-swallow-pills-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "hard-to-swallow-pills-chat",
+      "path": "/pkg/maiconfz/hard-to-swallow-pills/1.0.0/agents/hard-to-swallow-pills-chat.agent.md"
+    }
+  ]
+}

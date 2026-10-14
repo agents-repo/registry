@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "github-pr-review-triage",
-  "description": "GitHub PR review triage via gh: fetch unresolved threads, Copilot summaries, bot conversation comments, and orphan inline comments; fix, commit, reply, and resolve or acknowledge. Use for Copilot or Bugbot PR feedback.",
+  "description": "GitHub PR review and CI triage via gh: fetch unresolved threads, Copilot summaries, bot conversation comments, orphan inline comments, and failing PR checks; fix, commit, reply, and resolve or acknowledge. Use for Copilot, Bugbot, or CI failures on an open PR.",
   "license": "MIT",
   "status": "active",
   "category": "automation",
@@ -25,18 +25,38 @@
       "name": "dry-run",
       "type": "boolean",
       "description": "When true, fetch, triage, fix, and validate only — no commit, push, reply, resolve, or acknowledge. Defaults to false (full automation)."
+    },
+    {
+      "name": "include-ci",
+      "type": "boolean",
+      "description": "When true (default), fetch PR checks for the head SHA and triage failing checks. When false, review feedback only."
+    },
+    {
+      "name": "ci-required-only",
+      "type": "boolean",
+      "description": "When true, only consider checks GitHub marks as required (`gh pr checks --required`). Defaults to false."
+    },
+    {
+      "name": "ci-log-max-lines",
+      "type": "number",
+      "description": "Maximum lines of failed log output to retain per check_failure row. Defaults to 200."
+    },
+    {
+      "name": "ci-wait-seconds",
+      "type": "number",
+      "description": "After push, optional bounded seconds to poll `gh pr checks` for the new head before handoff. Zero (default) means no polling — report pending and exit."
     }
   ],
   "outputs": [
     {
       "name": "triage-table",
       "type": "string",
-      "description": "Markdown table with kind (thread, review_summary, conversation_comment, or orphan_inline), path, line, author, outcome, and rationale."
+      "description": "Markdown table with kind (thread, review_summary, conversation_comment, orphan_inline, or check_failure), path, line, author, outcome, and rationale."
     },
     {
       "name": "handoff-summary",
       "type": "string",
-      "description": "Summary with PR URL, commit SHA, threads resolved count, summaries acknowledged count, conversation acknowledged count, and notes."
+      "description": "Summary with PR URL, commit SHA, threads resolved count, summaries acknowledged count, conversation acknowledged count, checks acknowledged count, post-push CI status, and notes."
     }
   ]
 }

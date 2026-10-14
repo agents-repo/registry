@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-09-28T00:45:32.685Z",
+  "updatedAt": "2026-10-14T23:19:47.440Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -321,6 +321,54 @@
       "chatWeb": true
     },
     {
+      "id": "maiconfz/dependency-upgrade-orchestrator",
+      "namespace": "maiconfz",
+      "package": "dependency-upgrade-orchestrator",
+      "path": "packages/maiconfz/dependency-upgrade-orchestrator",
+      "name": "dependency-upgrade-orchestrator",
+      "description": "Polyglot dependency scan, ask-first upgrade plan, optional GitHub/GitLab dedup and migration research, then upgrade, test, and fix on a feature branch.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "dependencies",
+        "upgrade",
+        "security",
+        "npm",
+        "maven",
+        "gradle",
+        "pip",
+        "polyglot",
+        "automation",
+        "github",
+        "gitlab"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 7,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/dependency-upgrade-orchestrator/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    },
+    {
       "id": "maiconfz/dev-emocionado",
       "namespace": "maiconfz",
       "package": "dev-emocionado",
@@ -461,9 +509,9 @@
       "package": "github-pr-review-triage",
       "path": "packages/maiconfz/github-pr-review-triage",
       "name": "github-pr-review-triage",
-      "description": "GitHub-specific agent: triages PR review threads, Copilot summaries, bot conversation comments, and orphan inline comments via gh CLI — fetch, fix, commit, push, reply, resolve or acknowledge automatically when gh is authenticated",
+      "description": "GitHub-specific agent: triages PR review threads, Copilot summaries, bot conversation comments, orphan inline comments, and failing PR checks via gh CLI — fetch, fix, commit, push, reply, resolve or acknowledge automatically when gh is authenticated",
       "owner": "maiconfz",
-      "latest": "1.3.0",
+      "latest": "1.4.0",
       "tags": [
         "pr",
         "review",
@@ -472,7 +520,9 @@
         "triage",
         "workflow",
         "copilot",
-        "bugbot"
+        "bugbot",
+        "ci",
+        "checks"
       ],
       "status": "active",
       "category": "automation",
@@ -499,6 +549,92 @@
           "status": "supported"
         }
       ]
+    },
+    {
+      "id": "maiconfz/hard-to-swallow-pills",
+      "namespace": "maiconfz",
+      "package": "hard-to-swallow-pills",
+      "path": "packages/maiconfz/hard-to-swallow-pills",
+      "name": "hard-to-swallow-pills",
+      "description": "Universal chat in numbered hard to swallow pills—blunt, uncertainty-labeled, kind underneath. Not therapy or professional advice. Replies match the user's language.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "truth",
+        "coaching",
+        "chat",
+        "meme",
+        "humor"
+      ],
+      "status": "active",
+      "category": "humor",
+      "estimateOverallCost": {
+        "estimatedCost": 2,
+        "band": "minimal"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/hard-to-swallow-pills/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
+      "id": "maiconfz/job-search-tools",
+      "namespace": "maiconfz",
+      "package": "job-search-tools",
+      "path": "packages/maiconfz/job-search-tools",
+      "name": "job-search-tools",
+      "description": "Professional job-search chat tools: job post audit, resume analysis, and interview prep. Chat-only; career-center style reports. Not legal advice.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "job-search",
+        "resume",
+        "interview",
+        "career",
+        "chat"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/job-search-tools/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
     },
     {
       "id": "maiconfz/plan-refiner",
@@ -542,6 +678,49 @@
           "status": "supported"
         }
       ]
+    },
+    {
+      "id": "maiconfz/recruiting-tools",
+      "namespace": "maiconfz",
+      "package": "recruiting-tools",
+      "path": "packages/maiconfz/recruiting-tools",
+      "name": "recruiting-tools",
+      "description": "Professional recruiting chat tools: job post quality, resume screening, and structured interview planning. Chat-only; not legal or HR advice.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "recruiting",
+        "hr",
+        "hiring",
+        "interview",
+        "chat"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/recruiting-tools/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
     },
     {
       "id": "maiconfz/refactor-or-trash",
@@ -830,11 +1009,15 @@
     "consulting-employer-check": "maiconfz/consulting-employer-check",
     "consulting-reputation-audit": "maiconfz/consulting-reputation-audit",
     "context-token-reduction": "maiconfz/context-token-reduction",
+    "dependency-upgrade-orchestrator": "maiconfz/dependency-upgrade-orchestrator",
     "dev-emocionado": "maiconfz/dev-emocionado",
     "feature-exploration-planner": "maiconfz/feature-exploration-planner",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
+    "hard-to-swallow-pills": "maiconfz/hard-to-swallow-pills",
+    "job-search-tools": "maiconfz/job-search-tools",
     "plan-refiner": "maiconfz/plan-refiner",
+    "recruiting-tools": "maiconfz/recruiting-tools",
     "refactor-or-trash": "maiconfz/refactor-or-trash",
     "review-fix-ship": "maiconfz/review-fix-ship",
     "roast-my-project": "maiconfz/roast-my-project",

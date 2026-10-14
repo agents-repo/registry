@@ -1,0 +1,26 @@
+{
+  "minLines": 10,
+  "minTokens": 50,
+  "maxLines": 500,
+  "maxSize": "100kb",
+  "gitignore": true,
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.cache/**",
+    "**/coverage/**",
+    "**/package-lock.json",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".github/copilot-instructions.md",
+    ".github/instructions/**",
+    "**/.cursor/skills/**",
+    "**/.github/agents/**",
+    "**/.claude/agents/**",
+    "**/.agents/skills/**",
+    "packages/**"
+  ],
+  "reporters": ["console"],
+  "format": ["javascript", "typescript", "json", "markdown", "bash", "yaml"]
+}

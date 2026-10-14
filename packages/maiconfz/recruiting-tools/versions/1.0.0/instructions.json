@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/recruiting-tools",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "job-post-quality-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "interview-planning-chat",
+      "path": "/pkg/maiconfz/recruiting-tools/1.0.0/agents/interview-planning-chat.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "job-post-quality-chat",
+      "path": "/pkg/maiconfz/recruiting-tools/1.0.0/agents/job-post-quality-chat.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "resume-screening-chat",
+      "path": "/pkg/maiconfz/recruiting-tools/1.0.0/agents/resume-screening-chat.agent.md"
+    }
+  ]
+}

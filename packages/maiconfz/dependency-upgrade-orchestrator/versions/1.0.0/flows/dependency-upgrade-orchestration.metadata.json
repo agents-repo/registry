@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "dependency-upgrade-orchestration",
+  "description": "Scan polyglot dependencies, plan upgrades ask-first, optionally dedupe remote work and research migrations, then upgrade, validate, fix, and ship on a feature branch.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "agents": [
+    "workspace-ecosystem-scanner",
+    "remote-upgrade-tracker",
+    "upgrade-candidate-analyst",
+    "upgrade-migration-researcher",
+    "test-surface-analyst",
+    "upgrade-planner",
+    "upgrade-executor",
+    "upgrade-validation-fixer"
+  ],
+  "inputs": [
+    {
+      "name": "scope",
+      "type": "string",
+      "description": "all, security-only, patch-minor, or major-allowed. Defaults to patch-minor when omitted."
+    },
+    {
+      "name": "ecosystems",
+      "type": "string",
+      "description": "Optional comma list to limit ecosystem scan."
+    },
+    {
+      "name": "allow-web-research",
+      "type": "boolean",
+      "description": "When true, run upgrade-migration-researcher for major bumps."
+    },
+    {
+      "name": "enable-github",
+      "type": "boolean",
+      "description": "When true, run remote-upgrade-tracker GitHub leg when gh works."
+    },
+    {
+      "name": "enable-gitlab",
+      "type": "boolean",
+      "description": "When true, run remote-upgrade-tracker GitLab leg when available."
+    },
+    {
+      "name": "dry-run",
+      "type": "boolean",
+      "description": "When true in execute phase, validate and fix without commit or push. Recommended true for first execute pass."
+    },
+    {
+      "name": "approved-plan",
+      "type": "string",
+      "description": "Optional prior upgrade-plan markdown to resume; re-confirm approval if inventory drifted."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Pins, skips, monorepo roots, or execution notes."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "upgrade-inventory",
+      "type": "string",
+      "description": "Markdown outdated inventory from upgrade-candidate-analyst."
+    },
+    {
+      "name": "upgrade-plan",
+      "type": "string",
+      "description": "Markdown plan from upgrade-planner."
+    },
+    {
+      "name": "remote-collision-report",
+      "type": "string",
+      "description": "Remote dedup report or explicit skipped note."
+    },
+    {
+      "name": "validation-handoff-summary",
+      "type": "string",
+      "description": "Final handoff from upgrade-validation-fixer when execute ran."
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "workspace-ecosystem-scanner",
+  "description": "Detect dependency managers and monorepo roots from manifests and lockfiles in the host git workspace. Read-only.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 3,
+    "band": "low"
+  },
+  "tools": ["filesystem"],
+  "inputs": [
+    {
+      "name": "ecosystems",
+      "type": "string",
+      "description": "Optional comma-separated ecosystem filter; when omitted, detect all supported managers present in the tree."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional monorepo roots, paths to skip, or focus directories."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "workspace-scan",
+      "type": "string",
+      "description": "JSON text with roots, ecosystems, and manifestPaths per root for downstream analysts."
+    }
+  ]
+}

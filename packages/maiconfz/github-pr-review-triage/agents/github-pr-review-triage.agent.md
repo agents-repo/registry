@@ -1,10 +1,11 @@
 ---
 name: github-pr-review-triage
 description: >-
-  GitHub PR review triage via gh: fetch unresolved threads, Copilot summaries,
-  bot conversation comments, and orphan inline comments; fix, commit, reply,
-  and resolve or acknowledge. Use for Copilot or Bugbot PR feedback.
-version: 1.3.0
+  GitHub PR review and CI triage via gh: fetch unresolved threads, Copilot
+  summaries, bot conversation comments, orphan inline comments, and failing PR
+  checks; fix, commit, reply, and resolve or acknowledge. Use for Copilot,
+  Bugbot, or CI failures on an open PR.
+version: 1.4.0
 license: MIT
 tools:
   - github
@@ -20,26 +21,49 @@ inputs:
     description: >-
       When true, fetch, triage, fix, and validate only — no commit, push,
       reply, resolve, or acknowledge. Defaults to false (full automation).
+  - name: include-ci
+    type: boolean
+    description: >-
+      When true (default), fetch PR checks for the head SHA and triage failing
+      checks. When false, review feedback only.
+  - name: ci-required-only
+    type: boolean
+    description: >-
+      When true, only consider checks GitHub marks as required (`gh pr checks
+      --required`). Defaults to false.
+  - name: ci-log-max-lines
+    type: number
+    description: >-
+      Maximum lines of failed log output to retain per check_failure row.
+      Defaults to 200.
+  - name: ci-wait-seconds
+    type: number
+    description: >-
+      After push, optional bounded seconds to poll `gh pr checks` for the new
+      head before handoff. Zero (default) means no polling — report pending and
+      exit.
 outputs:
   - name: triage-table
     type: string
     description: >-
       Markdown table with kind (thread, review_summary, conversation_comment,
-      or orphan_inline), path, line, author, outcome, and rationale.
+      orphan_inline, or check_failure), path, line, author, outcome, and
+      rationale.
   - name: handoff-summary
     type: string
     description: >-
       Summary with PR URL, commit SHA, threads resolved count, summaries
-      acknowledged count, conversation acknowledged count, and notes.
+      acknowledged count, conversation acknowledged count, checks
+      acknowledged count, post-push CI status, and notes.
 ---
 
 # Overview
 
 Six-phase, project-agnostic workflow for addressing pull request review feedback
-using the GitHub CLI (`gh`). Works in any repository where `gh` is
-authenticated and the PR head branch is checked out locally.
+and failing CI checks using the GitHub CLI (`gh`). Works in any repository
+where `gh` is authenticated and the PR head branch is checked out locally.
 
-Handles four feedback kinds:
+Handles five feedback kinds:
 
 - **Review threads** — unresolved inline comments on the Files changed tab
   (resolvable via GraphQL).
@@ -51,13 +75,18 @@ Handles four feedback kinds:
 - **Orphan inline** — inline pull review comments from REST not already on an
   unresolved `thread` row after dedupe; prefer promotion to `thread` when
   `PRRT_...` is obtainable.
+- **Check failure** — failing (or in-scope cancelled/timed_out) PR checks for
+  the head SHA from `gh pr checks`, with log excerpts and annotations for
+  triage (acknowledged on the PR conversation; not resolvable).
 
 **Phase 1 mandatory fetch:** Before Phase 2, MUST complete in order — (1) head
 SHA, (2) paginated unresolved threads (with full per-thread comment IDs for
 dedupe), (3) paginated Copilot zero-inline summaries, (4) conversation
 comments from the same paginated issue-comment fetch used for idempotency,
-(5) REST inline pull comments and orphan merge. Do not skip (4) or (5) because
-(2) returned rows.
+(5) REST inline pull comments and orphan merge, (6) when `include-ci` is true
+(default), PR checks for the head SHA and deep fetch for failed rows. Do not
+skip (4) or (5) because (2) returned rows. Do not skip (6) because review
+fetch returned no rows.
 
 ```text
 preflight → fetch → triage → fix → validate/commit/push → reply/(resolve|acknowledge)
@@ -72,7 +101,10 @@ preflight → fetch → triage → fix → validate/commit/push → reply/(resol
   GraphQL (paginate threads and per-thread comments); fetch head-scoped Copilot
   review summaries with zero inline comments (not already acknowledged); extract
   bot conversation comments from paginated issue comments; MUST run REST inline
-  `pulls/{n}/comments` and merge orphans (promote to `thread` when possible).
+  `pulls/{n}/comments` and merge orphans (promote to `thread` when possible);
+  when `include-ci` is true, list PR checks bound to head SHA, deep-fetch logs
+  and annotations for failed rows, and apply check ack idempotency from issue
+  comments.
 - **Phase 2 — Triage:** Produce a triage table before editing files. Classify
   each item as `needs_fix`, `fixed_remote`, `wont_fix`, `by_design`,
   `duplicate`, or `acknowledged` (summaries and conversation comments when no
@@ -85,9 +117,13 @@ preflight → fetch → triage → fix → validate/commit/push → reply/(resol
 - **Phase 5 — Reply and close:** When ship-mode is enabled, reply on and resolve
   each thread, acknowledge each review summary and conversation comment on the
   PR conversation, and reply on orphan inline items (GraphQL thread path or REST
-  fallback). Handoff is incomplete until unresolved thread count is `0`, every
-  in-scope summary is acknowledged, every in-scope conversation comment is
-  acknowledged, and every `orphan_inline` row is closed out.
+  fallback); acknowledge each in-scope `check_failure` on the PR conversation.
+  Handoff is incomplete until unresolved thread count is `0`, every in-scope
+  summary is acknowledged, every in-scope conversation comment is acknowledged,
+  every `orphan_inline` row is closed out, every in-scope failed **required**
+  check on the latest head is green or explicitly acked, and no required checks
+  for the latest head remain `pending` (unless `ci-wait-seconds` polling is
+  still in progress).
 - **Multi-PR / multi-repo:** Repeat the full cycle per repository before
   batch-resolving threads or acknowledging summaries elsewhere.
 
@@ -106,8 +142,11 @@ preflight → fetch → triage → fix → validate/commit/push → reply/(resol
   (or the thread is `fixed_remote` / reply-only with no push needed).
 - Do not acknowledge review summaries or conversation comments until push
   succeeds (or the item is reply-only with no code change).
-- Never call `resolveReviewThread` on `review_summary` or `conversation_comment`
-  items.
+- Never call `resolveReviewThread` on `review_summary`, `conversation_comment`,
+  or `check_failure` items.
+- For `check_failure` triage, always derive root cause from **live** checks,
+  logs, and annotations for the current `headRefOid`; do not treat prior PR
+  timeline comments as evidence of current failure.
 - Match Copilot **review objects** via `copilot-pull-request-reviewer[bot]`, not
   the literal login `Copilot` (inline comments use `Copilot`).
 - Do not re-acknowledge summaries or conversation comments already replied to
@@ -140,13 +179,14 @@ preflight → fetch → triage → fix → validate/commit/push → reply/(resol
 
 ## Interaction Contract
 
-**Input:** Repository (`owner/name`), pull request number, and optional
-`dry-run` flag (defaults to `false` for full automation).
+**Input:** Repository (`owner/name`), pull request number, optional `dry-run`
+(default `false`), optional `include-ci` (default `true`), `ci-required-only`,
+`ci-log-max-lines`, and `ci-wait-seconds`.
 
 **Output:** Triage table (with `kind` per row), list of changes (if any),
 commit SHA when pushed, per-item reply text, resolved-thread count,
-summaries-acknowledged count, conversation-acknowledged count, and a handoff
-summary.
+summaries-acknowledged count, conversation-acknowledged count,
+checks-acknowledged count, post-push CI status, and a handoff summary.
 
 ## Prerequisites
 
@@ -389,6 +429,65 @@ gh api --paginate repos/{owner}/{repo}/pulls/{n}/comments
 Summary and conversation idempotency both use the single issue-comment
 pagination above; do not run a second fetch only for summaries.
 
+### CI check failures (`include-ci`)
+
+When `include-ci` is omitted or `true`, after review fetches complete:
+
+**List checks** for the PR (bound to head SHA from Step 0):
+
+```bash
+# When ci-required-only is true, add --required
+gh pr checks {n} --repo {owner}/{repo} \
+  --json name,state,bucket,link,workflow,completedAt,description
+```
+
+Confirm listed checks apply to the head commit (re-resolve `headRefOid` if the
+PR advanced during fetch). Treat `gh pr checks` exit code **8** as pending
+checks present.
+
+**Emit `check_failure` rows** for each row with `bucket == fail`. MAY also
+triage `cancel` or `timed_out` when actionable. One row per check name GitHub
+exposes on the PR (matrix jobs appear as separate names). Skip rows already
+green.
+
+**Resolve check run id** — parse workflow run id from `link` when it matches
+`/actions/runs/(\d+)/`. When missing, list check runs for the head SHA:
+
+```bash
+gh api "repos/{owner}/{repo}/commits/{head_sha}/check-runs?per_page=100" \
+  --jq '.check_runs[] | {id, name, conclusion, html_url, completed_at}'
+```
+
+Match by `name` to the failing `gh pr checks` row; capture REST `id` as
+`check_run_id`.
+
+**Deep fetch (failed rows only)** — cap output at `ci-log-max-lines` (default
+200) per row:
+
+```bash
+gh run view {run_id} --repo {owner}/{repo} --log-failed
+```
+
+When the link implies a matrix job, scope with `gh run view {run_id} --job
+{job_id} --log-failed` when `job_id` is obtainable from `gh run view -v`.
+
+When logs lack file/line signal, fetch annotations:
+
+```bash
+gh api "repos/{owner}/{repo}/check-runs/{check_run_id}/annotations?per_page=100"
+```
+
+Prefer `CheckRun` `summary` / `text` from the check-runs payload when present.
+
+**Check ack idempotency** — from the same paginated issue comments used for
+review idempotency, skip any `check_failure` whose `check_run_id` appears in
+a comment posted after the run `completedAt` (or `completedAt` from checks
+JSON) with body containing `Re: CI check (` and that id.
+
+Capture per row: `kind: check_failure`, `check_run_id` (REST `id`),
+`check_name`, `conclusion`, `link`, `is_required` (when known), `annotations`
+(summary), `log_excerpt` (truncated).
+
 ## Phase 2 — Triage
 
 Write a triage table **before** editing files:
@@ -399,6 +498,7 @@ Write a triage table **before** editing files:
 | `review_summary` | — | — | `copilot-pull-request-reviewer[bot]` | `acknowledged` | clean review |
 | `conversation_comment` | — | — | `cursor[bot]` | `needs_fix` | ... |
 | `orphan_inline` | `src/bar.ts` | 10 | `Copilot` | `needs_fix` | ... |
+| `check_failure` | — | — | `github-actions` | `needs_fix` | pr-baseline log excerpt |
 
 | Outcome | Applies to | Action |
 | --- | --- | --- |
@@ -406,11 +506,14 @@ Write a triage table **before** editing files:
 | `fixed_remote` | all kinds | Already on branch; resolve or acknowledge citing SHA |
 | `wont_fix` | all kinds | Reply with rationale; no code change |
 | `by_design` | all kinds | Reply citing policy or docs |
-| `duplicate` | all kinds | Reply linking to resolving thread, summary, or comment |
+| `duplicate` | all kinds | Reply linking to resolving thread, summary, comment, or check |
 | `acknowledged` | `review_summary`, `conversation_comment` | Reply noting clean or addressed; no code change |
+| `infra` | `check_failure` | External/runner/service; ack with rationale; no code change |
+| `flaky` | `check_failure` | Document flake; at most one no-code rerun when evidence supports it |
 
-One Phase 5 reply per `review_summary` and per `conversation_comment` row;
-split multiple findings into rationale bullets, not separate replies.
+One Phase 5 reply per `review_summary`, per `conversation_comment`, and per
+`check_failure` row; split multiple findings into rationale bullets, not
+separate replies.
 
 ## Phase 3 — Fix
 
@@ -446,6 +549,10 @@ Inspect the repository root in this order:
 4. **Other build entry points** — `Makefile`, `justfile`, `mise.toml`, or CI
    workflow files (`.github/workflows/`) for canonical validation commands.
 
+When triaging `check_failure` rows, map the failing **check name** or workflow
+job id to commands in `.github/workflows/` (for example a job named `lint` or a
+check `pr-baseline` → `npm run lint:all` when documented locally).
+
 When `package.json` declares `packageManager` for npm, run `corepack enable`,
 `npm ci`, and `npm run env:check` before other npm scripts if hooks are
 unavailable.
@@ -462,6 +569,20 @@ passed. MUST commit and push before Phase 5 when Phase 3 produced local edits.
   (unless the item is reply-only with no code change).
 - When push fails (permissions, branch protection), report the failure and do
   not resolve threads citing a non-existent SHA.
+
+### Post-push CI status
+
+When ship-mode ran a push and `include-ci` is true:
+
+1. Re-resolve `headRefOid` after push.
+2. Re-run `gh pr checks` for the PR. When `ci-wait-seconds` is greater than
+   zero, poll at ~15–30 second intervals until elapsed or checks leave
+   `pending`.
+3. When any **required** check for the new head is still `pending` and wait
+   time elapsed, handoff is **incomplete** — list pending checks and instruct
+   re-invocation when CI finishes.
+4. When required checks failed on the new head, return to Phase 2 for new
+   `check_failure` rows on the new runs (new `check_run_id` values).
 
 ## Phase 5 — Reply and close
 
@@ -542,6 +663,23 @@ Example text:
 Use the issue comment REST `id` from Phase 1 (same value as `comment_id`).
 **Never** call `resolveReviewThread` for conversation comments.
 
+### Check failures
+
+Acknowledge on the PR conversation (no resolve API). Write the acknowledgment
+to a file, then:
+
+```bash
+gh pr comment {n} --repo {owner}/{repo} --body-file "$REPLY_FILE"
+```
+
+Example text:
+
+`Re: CI check (${check_run_id}): Fixed in {headRefOid}: {summary}.`
+
+Use the check run REST `id` from Phase 1. Include the head SHA in the body
+so a new push with a new run can be acked separately. **Never** call
+`resolveReviewThread` for check failures.
+
 ### Orphan inline
 
 1. If the row was promoted to `thread` during fetch, use the **Review threads**
@@ -562,9 +700,10 @@ when an orphan could not be resolved.
 
 ### Reply templates
 
-Threads, summaries, and conversation comments share outcome wording.
-Summaries use `Re: Copilot review (${databaseId}):`; conversation comments use
-`Re: PR comment (${comment_id}):`.
+Threads, summaries, conversation comments, and check failures share outcome
+wording. Summaries use `Re: Copilot review (${databaseId}):`; conversation
+comments use `Re: PR comment (${comment_id}):`; check failures use
+`Re: CI check (${check_run_id}):`.
 
 - Fixed: `Fixed in {sha}: {summary}.`
 - Won't fix: `Intentional: {rationale}.`
@@ -574,14 +713,16 @@ Summaries use `Re: Copilot review (${databaseId}):`; conversation comments use
   or outcome-specific text.
 
 Verify unresolved thread count is `0`, every in-scope review summary is
-acknowledged, every in-scope conversation comment is acknowledged, and every
-`orphan_inline` row is replied (and resolved when promoted to `thread`) before
-handoff.
+acknowledged, every in-scope conversation comment is acknowledged, every
+in-scope `check_failure` row is acknowledged or superseded by green required
+checks on the latest head, every `orphan_inline` row is replied (and resolved
+when promoted to `thread`), and required checks for the latest head are not
+`pending` before handoff.
 
 ## Multi-repo orchestration
 
-Per repository: `fix → validate → commit → push → threads, summaries, and
-conversation items`.
+Per repository: `fix → validate → commit → push → threads, summaries,
+conversation items, and check acks`.
 
 - Use `cd` to each repo root or `gh --repo owner/name` consistently.
 - Verify local branch matches PR head before fixing.
@@ -602,6 +743,12 @@ conversation items`.
 - Conversation comments cannot be marked resolved in the GitHub UI; ack-only.
 - True `orphan_inline` rows without `PRRT_...` may remain unresolved on the
   Files changed tab after REST reply.
+- Large matrix workflows may produce many `check_failure` rows; log excerpts are
+  capped by `ci-log-max-lines`.
+- `gh run view --log-failed` may be slow or incomplete for very large runs;
+  prefer annotations when present.
+- Unbounded `gh pr checks --watch` is not used; use `ci-wait-seconds` for
+  bounded polling or re-invoke after CI completes.
 
 ## Checklist
 
@@ -613,17 +760,19 @@ conversation items`.
 - [ ] Fetch head-scoped Copilot summaries (zero inline, not already acknowledged)
 - [ ] Fetch bot conversation comments (same issue-comment pagination; not skipped)
 - [ ] Fetch REST inline and merge orphans (promote to thread when possible)
+- [ ] Fetch PR checks and failed-run logs when include-ci (default)
 - [ ] Triage table written (Kind column)
 - [ ] Fixes applied
 - [ ] Validation passed when fixes were applied (project-appropriate)
 - [ ] Committed and pushed (mandatory when ship-mode and local edits exist)
-- [ ] Threads replied and resolved; summaries and conversation comments acknowledged
+- [ ] Threads resolved; summaries, conversation, and checks acknowledged
 - [ ] Orphan inline rows closed out (mandatory when ship-mode)
-- [ ] Handoff summary (PR, SHA, thread/summary/conversation counts)
+- [ ] Post-push CI re-check when include-ci and ship-mode pushed
+- [ ] Handoff summary (PR, SHA, thread/summary/conversation/check counts, CI status)
 ```
 
 ## Handoff summary
 
-| PR | Repo | Commit | Threads resolved | Summaries acknowledged | Conversation acknowledged | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| #n | owner/repo | `abc1234` | 8/8 | 1/1 | 2/2 | all in-scope feedback addressed |
+| PR | Repo | Commit | Threads resolved | Summaries ack | Conversation ack | Checks ack | CI (head) | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| #n | owner/repo | `abc1234` | 8/8 | 1/1 | 2/2 | 3/3 | green | all in-scope feedback addressed |

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "interview-planning-chat",
+  "description": "Structured interview guide with competencies, behavioral questions, and STAR probes. Emits interview-plan-report. Not a hire decision.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include JD, screening matrix, or interview format."
+    },
+    {
+      "name": "job-description",
+      "type": "string",
+      "description": "Job posting to derive competencies and questions."
+    },
+    {
+      "name": "screening-matrix",
+      "type": "string",
+      "description": "Optional matrix from job-post-quality-chat."
+    },
+    {
+      "name": "role-level",
+      "type": "string",
+      "description": "Optional seniority for question calibration."
+    },
+    {
+      "name": "interview-format",
+      "type": "string",
+      "description": "Phone, video, panel, or onsite context."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Answers from a prior clarification loop."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "interview-plan-report",
+      "type": "string",
+      "description": "Structured interviewer guide; empty when JD or matrix is missing."
+    }
+  ]
+}

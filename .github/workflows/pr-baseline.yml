@@ -36,14 +36,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node and pinned npm
-        uses: ./.github/actions/setup-node-pinned-npm
-
-      - name: Validate runtime
-        run: npm run env:check
+      - name: Bootstrap registry CI
+        uses: ./.github/actions/registry-ci-bootstrap
 
       - name: Run all lints
         run: npm run lint:all
+
+      - name: Duplication check (jscpd)
+        run: npm run dup:check
 
       - name: Check IDE instruction mirrors
         run: npm run sync:ide-instructions -- --check

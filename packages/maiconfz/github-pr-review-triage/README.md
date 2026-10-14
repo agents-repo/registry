@@ -1,21 +1,23 @@
 # github-pr-review-triage
 
 GitHub-specific agent: triages PR review threads, Copilot summaries, bot
-conversation comments, and orphan inline comments via `gh` — fetch, fix,
-commit, push, reply, resolve or acknowledge.
+conversation comments, orphan inline comments, and failing PR checks via `gh` —
+fetch, fix, commit, push, reply, resolve or acknowledge.
 
 ## Objective
 
-Triages pull request review feedback on any GitHub repository. Uses the GitHub
-CLI (`gh`) to fetch unresolved review threads, Copilot review summaries (zero
-inline comments), bot conversation comments on the PR timeline, and orphan
-inline review comments from REST, classify outcomes, apply fixes, validate,
-then **automatically** commit, push, reply, resolve threads, and acknowledge
-non-thread feedback when `gh` is authenticated (default). Pass `dry-run: true`
-for review-only mode without shipping.
+Triages pull request review feedback and CI failures on any GitHub repository.
+Uses the GitHub CLI (`gh`) to fetch unresolved review threads, Copilot review
+summaries (zero inline comments), bot conversation comments on the PR timeline,
+orphan inline review comments from REST, and failing checks for the PR head SHA,
+classify outcomes, apply fixes, validate, then **automatically** commit, push,
+reply, resolve threads, and acknowledge non-thread feedback when `gh` is
+authenticated (default). Pass `dry-run: true` for review-only mode without
+shipping.
 
-Phase 1 always runs all four fetches before triage — conversation and orphan
-inline items are not skipped when unresolved threads exist.
+Phase 1 always runs all review fetches before triage — conversation and orphan
+inline items are not skipped when unresolved threads exist. When `include-ci` is
+true (default), PR checks and failed-run logs are fetched before triage.
 
 ## Workflow
 
@@ -74,7 +76,9 @@ Invoke the **`github-pr-review-triage`** agent when you need to:
 - Address Copilot overview or summary reviews with no inline comments
 - Address Bugbot or Cursor bot **conversation** comments (timeline, not in a
   review thread)
-- Batch-triage unresolved review threads before CI fixes
+- Investigate and fix **failing PR checks** (GitHub Actions and other check
+  runs on the head commit)
+- Batch-triage unresolved review threads and CI on the same pass
 - Close review threads after fixes land on the branch
 
 When `gh` is authenticated, the agent commits, pushes, and resolves threads
@@ -88,6 +92,7 @@ by default. No extra permission input is required.
 | `review_summary` | Copilot review with body, zero inline comments |
 | `conversation_comment` | Bot PR timeline comment (`issues/.../comments`) |
 | `orphan_inline` | Inline REST comment not already on a `thread` row |
+| `check_failure` | Failing PR check (`gh pr checks`, logs, annotations) |
 
 ### Inputs
 
@@ -96,6 +101,17 @@ by default. No extra permission input is required.
 | `repository` | no | GitHub repository as `owner/name` (auto-discovered from current branch when omitted) |
 | `pull-request` | no | Pull request number (auto-discovered from current branch when omitted) |
 | `dry-run` | no | When `true`, fetch/triage/fix/validate only — no commit, push, or thread resolution. Defaults to `false` |
+| `include-ci` | no | When `true` (default), fetch and triage failing PR checks for the head SHA. Set `false` for review-only |
+| `ci-required-only` | no | When `true`, only `--required` checks from `gh pr checks`. Defaults to `false` |
+| `ci-log-max-lines` | no | Cap failed log lines per check row. Defaults to `200` |
+| `ci-wait-seconds` | no | Bounded poll after push before handoff. Defaults to `0` (no wait) |
+
+### Migration from 1.3.x
+
+| 1.3.x | 1.4.0 |
+| --- | --- |
+| Review feedback only | Adds `check_failure` and CI inputs (`include-ci` default `true`) |
+| — | Post-push re-fetch of `gh pr checks` when ship-mode pushes |
 
 ### Migration from 1.1.x
 
@@ -107,10 +123,10 @@ by default. No extra permission input is required.
 ### Outputs
 
 - `triage-table` — markdown table of items, outcomes, and rationale
-- `handoff-summary` — PR URL, commit SHA, resolved/acknowledged counts, notes
+- `handoff-summary` — PR URL, commit SHA, ack counts, CI status, notes
 
-Summary and conversation acknowledgments appear on the PR conversation timeline
-(not under the review card).
+Summary, conversation, and check acknowledgments appear on the PR conversation
+timeline (not under the review card).
 
 ## Package contents
 
@@ -125,5 +141,5 @@ From the registry repository root (package authors / registry contributors):
 npm run package:validate -- --package maiconfz/github-pr-review-triage
 npm run package:build -- --package maiconfz/github-pr-review-triage
 npm run package:validate-artifacts -- \
-  --package maiconfz/github-pr-review-triage --version 1.3.0
+  --package maiconfz/github-pr-review-triage --version 1.4.0
 ```

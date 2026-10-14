@@ -28,11 +28,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup Node and pinned npm
-        uses: ./.github/actions/setup-node-pinned-npm
-
-      - name: Validate runtime
-        run: npm run env:check
+      - name: Bootstrap registry CI
+        uses: ./.github/actions/registry-ci-bootstrap
 
       - name: Run markdown lint
         run: npm run lint:md
@@ -63,8 +60,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node and pinned npm
-        uses: ./.github/actions/setup-node-pinned-npm
+      - name: Bootstrap registry CI
+        uses: ./.github/actions/registry-ci-bootstrap
+        with:
+          validate-runtime: 'false'
 
       - name: Run semantic-release (dry run)
         env:
@@ -94,8 +93,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node and pinned npm
-        uses: ./.github/actions/setup-node-pinned-npm
+      - name: Bootstrap registry CI
+        uses: ./.github/actions/registry-ci-bootstrap
+        with:
+          validate-runtime: 'false'
 
       - name: Run semantic-release
         env:

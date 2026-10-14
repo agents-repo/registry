@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "dependency-upgrade-planning",
+  "description": "Planning-only dependency upgrade workflow: scan, optional remote dedup and migration research, inventory, and upgrade plan without executing changes.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "agents": [
+    "workspace-ecosystem-scanner",
+    "remote-upgrade-tracker",
+    "upgrade-candidate-analyst",
+    "upgrade-migration-researcher",
+    "test-surface-analyst",
+    "upgrade-planner"
+  ],
+  "inputs": [
+    {
+      "name": "scope",
+      "type": "string",
+      "description": "all, security-only, patch-minor, or major-allowed. Defaults to patch-minor when omitted."
+    },
+    {
+      "name": "ecosystems",
+      "type": "string",
+      "description": "Optional comma list to limit ecosystem scan."
+    },
+    {
+      "name": "allow-web-research",
+      "type": "boolean",
+      "description": "When true, run upgrade-migration-researcher."
+    },
+    {
+      "name": "enable-github",
+      "type": "boolean",
+      "description": "When true, run remote-upgrade-tracker GitHub leg."
+    },
+    {
+      "name": "enable-gitlab",
+      "type": "boolean",
+      "description": "When true, run remote-upgrade-tracker GitLab leg."
+    },
+    {
+      "name": "approved-plan",
+      "type": "string",
+      "description": "Optional plan to validate instead of drafting anew."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Pins, skips, or monorepo roots."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "upgrade-inventory",
+      "type": "string",
+      "description": "Markdown outdated inventory."
+    },
+    {
+      "name": "upgrade-plan",
+      "type": "string",
+      "description": "Markdown upgrade plan for user approval."
+    },
+    {
+      "name": "remote-collision-report",
+      "type": "string",
+      "description": "Remote dedup report or skipped note."
+    }
+  ]
+}

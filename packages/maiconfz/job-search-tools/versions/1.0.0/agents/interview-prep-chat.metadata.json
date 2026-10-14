@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "interview-prep-chat",
+  "description": "Interview questions to ask, STAR story outlines, and offer clarification prep from JD and resume. Emits interview-prep-report. Not legal advice.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include JD, resume, interview stage, or company name."
+    },
+    {
+      "name": "job-description",
+      "type": "string",
+      "description": "Job posting to tailor questions and STAR themes."
+    },
+    {
+      "name": "resume-text",
+      "type": "string",
+      "description": "Optional resume paste or summary for STAR mapping."
+    },
+    {
+      "name": "company-name",
+      "type": "string",
+      "description": "Employer name for tailored questions."
+    },
+    {
+      "name": "interview-stage",
+      "type": "string",
+      "description": "Stage such as screening, onsite, technical, or offer."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Answers from a prior clarification loop."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "interview-prep-report",
+      "type": "string",
+      "description": "Structured interview prep; empty when role context is too thin."
+    }
+  ]
+}

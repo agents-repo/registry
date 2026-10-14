@@ -351,23 +351,32 @@ function listStaleInstructionFiles(instructionsDir, keepBasenames) {
   return stale;
 }
 
+function recordExpectedMirrorContent(issues, relativePath, absolutePath, expected) {
+  const normalizedExpected = normalizeEol(expected);
+
+  if (!fs.existsSync(absolutePath)) {
+    issues.push({ kind: 'missing', path: relativePath });
+    return;
+  }
+
+  const actual = normalizeEol(fs.readFileSync(absolutePath, 'utf-8'));
+  if (actual !== normalizedExpected) {
+    issues.push({ kind: 'modified', path: relativePath });
+  }
+}
+
 function collectIssues(source, pathRules) {
   const issues = [];
 
   for (const target of REPO_WIDE_TARGETS) {
     const relativePath = target.relativePath();
     const absolutePath = path.join(REPO_ROOT, relativePath);
-    const expected = normalizeEol(target.transform(source, relativePath));
-
-    if (!fs.existsSync(absolutePath)) {
-      issues.push({ kind: 'missing', path: relativePath });
-      continue;
-    }
-
-    const actual = normalizeEol(fs.readFileSync(absolutePath, 'utf-8'));
-    if (actual !== expected) {
-      issues.push({ kind: 'modified', path: relativePath });
-    }
+    recordExpectedMirrorContent(
+      issues,
+      relativePath,
+      absolutePath,
+      target.transform(source, relativePath),
+    );
   }
 
   const keepBasenames = new Set();
@@ -375,17 +384,7 @@ function collectIssues(source, pathRules) {
     keepBasenames.add(rule.instructionsBasename);
     const relativePath = path.posix.join(CONFIG.INSTRUCTIONS_DIR, rule.instructionsBasename);
     const absolutePath = path.join(REPO_ROOT, relativePath);
-    const expected = normalizeEol(transformPathInstruction(rule));
-
-    if (!fs.existsSync(absolutePath)) {
-      issues.push({ kind: 'missing', path: relativePath });
-      continue;
-    }
-
-    const actual = normalizeEol(fs.readFileSync(absolutePath, 'utf-8'));
-    if (actual !== expected) {
-      issues.push({ kind: 'modified', path: relativePath });
-    }
+    recordExpectedMirrorContent(issues, relativePath, absolutePath, transformPathInstruction(rule));
   }
 
   const instructionsDir = path.join(REPO_ROOT, CONFIG.INSTRUCTIONS_DIR);

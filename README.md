@@ -137,6 +137,17 @@ Do not edit generated `.github/copilot-instructions.md`, `CLAUDE.md`, or
 AI contributors: see [docs/ai-onboarding.md](docs/ai-onboarding.md) for
 first-5-minutes commands, skill routing, and validation expectations.
 
+### SonarQube Cloud and duplication checks
+
+For recurring ESLint/Sonar patterns and local duplication scans, see the
+[org AI static-analysis guide](https://github.com/agents-repo/.github/blob/main/docs/ai-static-analysis-patterns.md).
+`npm run dup:check` (jscpd) runs in PR baseline CI (clone baseline gate) on registry
+tooling (`scripts/`, `tests/`, `specs/`, `.github/`); the catalog tree `packages/**`
+is excluded because package quality is enforced by the `package:*` scripts. Refresh
+`.jscpd-baseline.json` with `npm run dup:check:baseline` after intentional deduplication.
+Review-task commands (`lint:sonar`, `dup:check`, and related checks) are in
+[docs/ai-onboarding.md](docs/ai-onboarding.md).
+
 ### Registry workflow packages (CLI)
 
 Install and refresh catalog packages with the [agents-repo CLI](https://github.com/agents-repo/cli).

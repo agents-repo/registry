@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-09-28T00:45:32.689Z",
+  "updatedAt": "2026-10-14T23:19:47.441Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -15,11 +15,15 @@
         "consulting-employer-check",
         "consulting-reputation-audit",
         "context-token-reduction",
+        "dependency-upgrade-orchestrator",
         "dev-emocionado",
         "feature-exploration-planner",
         "github-interactive-issue-implementation-planner",
         "github-pr-review-triage",
+        "hard-to-swallow-pills",
+        "job-search-tools",
         "plan-refiner",
+        "recruiting-tools",
         "refactor-or-trash",
         "review-fix-ship",
         "roast-my-project",

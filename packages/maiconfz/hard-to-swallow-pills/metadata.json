@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "hard-to-swallow-pills",
+  "description": "Universal chat in numbered hard to swallow pills—blunt, uncertainty-labeled, kind underneath. Not therapy or professional advice. Replies match the user's language.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/hard-to-swallow-pills",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "truth",
+    "coaching",
+    "chat",
+    "meme",
+    "humor"
+  ],
+  "createdAt": "2026-10-14T22:15:00.000Z",
+  "updatedAt": "2026-10-14T22:15:00.000Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "humor",
+  "estimateOverallCost": {
+    "estimatedCost": 2,
+    "band": "minimal"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/hard-to-swallow-pills/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "hard-to-swallow-pills-chat"
+        }
+      }
+    ]
+  }
+}

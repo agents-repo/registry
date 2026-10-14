@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "remote-upgrade-tracker",
+  "description": "Check GitHub or GitLab for open dependency bump issues, pull requests, and branches to avoid duplicate work. Read-only.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "tools": ["github"],
+  "inputs": [
+    {
+      "name": "enable-github",
+      "type": "boolean",
+      "description": "When true, search GitHub via gh when authenticated."
+    },
+    {
+      "name": "enable-gitlab",
+      "type": "boolean",
+      "description": "When true, search GitLab via glab or API when available."
+    },
+    {
+      "name": "custom-instructions",
+      "type": "string",
+      "description": "Optional owner/repo override or extra search keywords."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "remote-collision-report",
+      "type": "string",
+      "description": "Markdown table of in-flight work with links and skip, supersede, or coordinate recommendations."
+    }
+  ]
+}
