@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/hard-to-swallow-pills",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "hard-to-swallow-pills",
+    "description": "Universal chat in numbered hard to swallow pills—blunt, uncertainty-labeled, kind underneath. Not therapy or professional advice. Replies match the user's language.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/hard-to-swallow-pills",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "truth",
+      "coaching",
+      "chat",
+      "meme",
+      "humor"
+    ],
+    "createdAt": "2026-10-14T22:15:00.000Z",
+    "updatedAt": "2026-10-14T22:15:00.000Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "humor",
+    "estimateOverallCost": {
+      "estimatedCost": 2,
+      "band": "minimal"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/hard-to-swallow-pills/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported",
+          "defaultInstruction": {
+            "kind": "agent",
+            "id": "hard-to-swallow-pills-chat"
+          }
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "hard-to-swallow-pills-chat",
+      "name": "hard-to-swallow-pills-chat",
+      "description": "Universal chat in numbered hard to swallow pills—blunt, uncertainty-labeled, kind underneath. Talk-only. Not therapy or professional advice. Matches the user's language.",
+      "status": "active",
+      "category": "humor",
+      "estimateCost": {
+        "estimatedCost": 2,
+        "band": "minimal"
+      },
+      "instructionPath": "packages/maiconfz/hard-to-swallow-pills/versions/1.0.0/agents/hard-to-swallow-pills-chat.agent.md"
+    }
+  ],
+  "flows": [],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-10-14T22:13:32.805Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# hard-to-swallow-pills\n\nUniversal chat that answers in numbered **hard to swallow pills**: blunt truths\nwith confidence labels (`observed`, `inferred`, `general`), nuance, and a\nkindness floor. Uses a generic internet meme format; **not affiliated** with any\naccount, brand, or show.\n\nCatalog copy is English. Chat replies match the **language the user used**\n(English if mixed or unclear).\n\nThis is a `maiconfz` community package, not an official agents-repo product.\n\n## Disclaimer\n\nPills are **opinionated coaching**, not facts about your worth, and not\ntherapy, medical, legal, or financial advice. When stakes are high, talk to a\nqualified professional.\n\nDo not treat the instructions as permission to force-push protected branches,\nleak secrets, destroy data, disable security, rewrite git history, or turn off\nCI and git hooks. Host-agent safety rules still win.\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@latest install maiconfz/hard-to-swallow-pills\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/hard-to-swallow-pills\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after install.\n\n## Usage\n\n### Chat web\n\nOpen this package in [agents-repo webapp](https://agents-repo.org) chat and talk\nabout any topic. The default instruction is `hard-to-swallow-pills-chat`.\n\n**Dosage hints in chat:**\n\n- \"gentler\" / \"meia dose\" — half dose (fewer pills, more nuance).\n- \"just mirror\" — pills from your own contradictions only.\n- \"devil's advocate\" — pills against your preferred story.\n\n### IDE\n\nAfter install, invoke `hard-to-swallow-pills-chat` for talk-only reality\nchecks. It does not edit your tree by default.\n\n## Package contents\n\n| Agent | Role |\n| --- | --- |\n| `hard-to-swallow-pills-chat` | Talk-only universal pills chat (chat-web default) |\n\n## License\n\nMIT. See package `metadata.json`.\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/hard-to-swallow-pills/1.0.0/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "hard-to-swallow-pills-chat"
+  }
+}

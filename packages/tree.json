@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-10-07T03:39:42.774Z",
+  "updatedAt": "2026-10-14T22:13:32.810Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -20,6 +20,7 @@
         "feature-exploration-planner",
         "github-interactive-issue-implementation-planner",
         "github-pr-review-triage",
+        "hard-to-swallow-pills",
         "plan-refiner",
         "refactor-or-trash",
         "review-fix-ship",
