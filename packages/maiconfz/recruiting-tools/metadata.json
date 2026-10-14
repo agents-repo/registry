@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "recruiting-tools",
+  "description": "Professional recruiting chat tools: job post quality, resume screening, and structured interview planning. Chat-only; not legal or HR advice.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/recruiting-tools",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "recruiting",
+    "hr",
+    "hiring",
+    "interview",
+    "chat"
+  ],
+  "createdAt": "2026-10-14T22:47:00.000Z",
+  "updatedAt": "2026-10-14T22:47:00.000Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 6,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/recruiting-tools/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "job-post-quality-chat"
+        }
+      }
+    ]
+  }
+}

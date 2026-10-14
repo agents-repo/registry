@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "resume-screening-chat",
+  "description": "Screen pasted or uploaded CVs against a job description or screening matrix. Emits resume-screening-report. Assistive only; not a hire decision.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include JD, screening matrix, resume paste, or attachments."
+    },
+    {
+      "name": "job-description",
+      "type": "string",
+      "description": "Job posting defining screening criteria."
+    },
+    {
+      "name": "screening-matrix",
+      "type": "string",
+      "description": "Pasted screening matrix from job-post-quality-chat or internal rubric."
+    },
+    {
+      "name": "resume-text",
+      "type": "string",
+      "description": "One candidate resume paste (repeat per candidate in chat)."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Answers from a prior clarification loop."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "resume-screening-report",
+      "type": "string",
+      "description": "Structured screening notes; empty when criteria or CV are missing."
+    }
+  ]
+}

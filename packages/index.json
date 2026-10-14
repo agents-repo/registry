@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-10-14T22:13:32.806Z",
+  "updatedAt": "2026-10-14T22:48:43.778Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -594,6 +594,49 @@
       "chatWeb": true
     },
     {
+      "id": "maiconfz/job-search-tools",
+      "namespace": "maiconfz",
+      "package": "job-search-tools",
+      "path": "packages/maiconfz/job-search-tools",
+      "name": "job-search-tools",
+      "description": "Professional job-search chat tools: job post audit, resume analysis, and interview prep. Chat-only; career-center style reports. Not legal advice.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "job-search",
+        "resume",
+        "interview",
+        "career",
+        "chat"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/job-search-tools/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
       "id": "maiconfz/plan-refiner",
       "namespace": "maiconfz",
       "package": "plan-refiner",
@@ -635,6 +678,49 @@
           "status": "supported"
         }
       ]
+    },
+    {
+      "id": "maiconfz/recruiting-tools",
+      "namespace": "maiconfz",
+      "package": "recruiting-tools",
+      "path": "packages/maiconfz/recruiting-tools",
+      "name": "recruiting-tools",
+      "description": "Professional recruiting chat tools: job post quality, resume screening, and structured interview planning. Chat-only; not legal or HR advice.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "recruiting",
+        "hr",
+        "hiring",
+        "interview",
+        "chat"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/recruiting-tools/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
     },
     {
       "id": "maiconfz/refactor-or-trash",
@@ -929,7 +1015,9 @@
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
     "hard-to-swallow-pills": "maiconfz/hard-to-swallow-pills",
+    "job-search-tools": "maiconfz/job-search-tools",
     "plan-refiner": "maiconfz/plan-refiner",
+    "recruiting-tools": "maiconfz/recruiting-tools",
     "refactor-or-trash": "maiconfz/refactor-or-trash",
     "review-fix-ship": "maiconfz/review-fix-ship",
     "roast-my-project": "maiconfz/roast-my-project",
