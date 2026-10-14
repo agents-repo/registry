@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-10-07T03:39:42.773Z",
+  "updatedAt": "2026-10-14T22:13:32.806Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -551,6 +551,49 @@
       ]
     },
     {
+      "id": "maiconfz/hard-to-swallow-pills",
+      "namespace": "maiconfz",
+      "package": "hard-to-swallow-pills",
+      "path": "packages/maiconfz/hard-to-swallow-pills",
+      "name": "hard-to-swallow-pills",
+      "description": "Universal chat in numbered hard to swallow pills—blunt, uncertainty-labeled, kind underneath. Not therapy or professional advice. Replies match the user's language.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "truth",
+        "coaching",
+        "chat",
+        "meme",
+        "humor"
+      ],
+      "status": "active",
+      "category": "humor",
+      "estimateOverallCost": {
+        "estimatedCost": 2,
+        "band": "minimal"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/hard-to-swallow-pills/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
       "id": "maiconfz/plan-refiner",
       "namespace": "maiconfz",
       "package": "plan-refiner",
@@ -885,6 +928,7 @@
     "feature-exploration-planner": "maiconfz/feature-exploration-planner",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
+    "hard-to-swallow-pills": "maiconfz/hard-to-swallow-pills",
     "plan-refiner": "maiconfz/plan-refiner",
     "refactor-or-trash": "maiconfz/refactor-or-trash",
     "review-fix-ship": "maiconfz/review-fix-ship",
