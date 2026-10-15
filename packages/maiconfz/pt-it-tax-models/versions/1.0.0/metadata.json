@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "pt-it-tax-models",
-  "description": "Chat-web only: IT career tools to compare TCO, Recibos Verdes, and Unipessoal in Portugal. Illustrative estimates. Not tax or legal advice.",
+  "description": "Chat-web only: IT career tools to compare TCO, Recibos Verdes, and Unipessoal in Portugal. Optional transparência fiscal and household annexes. Illustrative estimates. Not tax or legal advice.",
   "owner": "maiconfz",
   "license": "MIT",
   "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/pt-it-tax-models",

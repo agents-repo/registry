@@ -3,7 +3,7 @@ name: recibos-verdes-deep-dive-chat
 description: >-
   Chat-web only. IT career deep-dive on Recibos Verdes regime simplificado in
   Portugal. Cash-flow timeline and compliance. Not tax or legal advice.
-version: 1.1.0
+version: 1.0.0
 license: MIT
 tools:
   - WebSearch

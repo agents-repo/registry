@@ -4,7 +4,7 @@ description: >-
   Chat-web only. IT career comparison from employment toward Recibos Verdes or
   Unipessoal. IRC PME default; optional transparência fiscal and household
   annexes. Not tax or legal advice.
-version: 1.1.0
+version: 1.0.0
 license: MIT
 tools:
   - WebSearch

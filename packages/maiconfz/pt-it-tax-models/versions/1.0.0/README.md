@@ -76,6 +76,56 @@ cannot refresh a newer year (reports must label stale rates).
 Official withholding tables (TCO): [Portal AT](https://info.portaldasfinancas.gov.pt/pt/apoio_contribuinte/tabela_ret_doclib/Pages/default.aspx).
 IRC/IRS tax sheet: [SFP Taxas 2026 PDF](https://info.portaldasfinancas.gov.pt/pt/apoio_contribuinte/Folhetos_informativos/Documents/SFP-Taxas-2026.pdf).
 
+## Unipessoal: IRC PME vs transparência fiscal
+
+Comparison agents model **Unipessoal Lda.** with **IRC PME** in the main
+three-column table by default. An optional annex covers **transparência fiscal**
+(CIRC art. 6.º) when the user opts in or asks to compare regimes.
+
+### Eligibility (IT — sociedade de profissionais)
+
+| Check | Typical solo IT consultant | Usually fails TF |
+| --- | --- | --- |
+| Activity on art. 151.º list | **1332** Programadores informáticos, **1313** Analistas de sistemas, **1320** Consultores | N/A |
+| Who delivers the work | **Sócio personally exercises** the professional activity **through** the Lda | Sócio is **gerente only**; employees or subcontractors deliver the IT work |
+| Legal basis | CIRC art. 6.º sociedade de profissionais (subalíneas 1) / 2)) | AT [PIV 27002](https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/informacoes_vinculativas/rendimento/circ/Documents/PIV_27002.pdf), [PIV 27379](https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/informacoes_vinculativas/rendimento/circ/Documents/PIV_27379.pdf) |
+
+Further reading:
+
+- [CIRC art. 6](https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/CIRC_2R/Pages/irc6.aspx)
+- [OCC Guia TF](https://www.occ.pt/sites/default/files/public/2024-10/Guia_Pratico_TFa.pdf)
+- [Art. 151.º table](https://diariodarepublica.pt/dr/legislacao-consolidada/portaria/2001-177307831)
+
+### Tax mechanics (illustrative)
+
+| Path | Entity | Sócio cash extraction |
+| --- | --- | --- |
+| **IRC PME** (default column) | Taxable profit → **IRC** at regional PME bands (table above) | **Gerente salary** (Cat. A, SS 34,75%) + optional **dividends** (28% illustrative withholding) |
+| **Transparência fiscal** (annex) | **No IRC** on imputed matéria coletável | Profit **imputed** to sócio → **IRS art. 20.º** (declare **Anexo D**, not Anexo B); gerente salary still Cat. A; Cat. B slice shown as **range** (englobamento vs taxa liberatória — contabilista decides) |
+
+Illustrative profit before tax (both paths):
+
+```text
+billing − costs − gerente_gross − SS_gerente_entity − spouse_gross − SS_spouse_entity
+```
+
+TF may change household cash vs IRC+dividends depending on profit level, salary
+split, and annual IRS choices — agents label all figures **cenário estimado**.
+
+## Household levers (unipessoal)
+
+Optional annexes in comparison agents (`tco-to-unipessoal-chat`,
+`unipessoal-to-tco-chat`) — not full optimization, only illustrative deltas.
+
+| Spouse / partner role | What agents model | Notes |
+| --- | --- | --- |
+| **Employee** (payroll) | Extra **34,75%** employer SS + **11%** employee SS on spouse gross; **second meal card**; **household net** = sócio + spouse vs sócio-only; spouse salary **deductible** in IRC path | Real duties, **RMMG**, AT/SS sham-payroll risk; individualized benefits often Cat. A — [PIV 25701](https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/informacoes_vinculativas/rendimento/circ/Documents/PIV_25701.pdf) |
+| **Co-sócio** (quota holder) | Quota % split; TF imputation **pro rata** only if **each** sócio exercises art. 151 IT through the Lda | [Conjugal quotas](https://www.sociedadescomerciais.pt/sociedade-comercial-entre-conjuges/) possible; substance required |
+| **Informal collaborator** | Compliance note only — not RV “cônjuge colaborador” (SS art. 166); reclassification risk | Use formal employment or professional advice |
+
+Recibos Verdes **entidade contratante** rules are separate; see
+`recibos-verdes-deep-dive-chat`.
+
 ## Liability
 
 Package and agents are provided **as is** under the MIT license. Authors and

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "unipessoal-to-tco-chat",
-  "description": "Chat-web only. IT career comparison from Unipessoal or billing toward employment (TCO). Three-column illustrative report. Not tax or legal advice.",
+  "description": "Chat-web only. IT career comparison from Unipessoal or billing toward employment (TCO). IRC PME default; optional transparência fiscal and household annexes. Not tax or legal advice.",
   "license": "MIT",
   "status": "active",
   "category": "automation",
@@ -73,6 +73,36 @@
       "name": "unipessoal-monthly-costs",
       "type": "string",
       "description": "Corporate fixed costs (contabilista, insurance, etc.)."
+    },
+    {
+      "name": "unipessoal-tax-regime",
+      "type": "string",
+      "description": "irc-pme (default), transparencia-fiscal, or compare-both for Unipessoal annex."
+    },
+    {
+      "name": "socio-exercises-it-through-company",
+      "type": "boolean",
+      "description": "Sócio personally delivers art. 151 IT work through the Lda (TF gate)."
+    },
+    {
+      "name": "spouse-role",
+      "type": "string",
+      "description": "none, employee, co-socio, or informal-collaborator for household annex."
+    },
+    {
+      "name": "spouse-employee-gross-monthly",
+      "type": "number",
+      "description": "Spouse gross monthly salary when spouse-role is employee."
+    },
+    {
+      "name": "spouse-socio-quota-percent",
+      "type": "number",
+      "description": "Spouse quota percent when spouse-role is co-socio; default 50."
+    },
+    {
+      "name": "spouse-exercises-it-through-company",
+      "type": "boolean",
+      "description": "Spouse co-sócio exercises art. 151 IT through the Lda (TF split gate)."
     },
     {
       "name": "user-clarifications",

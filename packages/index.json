@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-10-15T19:35:37.543Z",
+  "updatedAt": "2026-10-15T19:59:11.833Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -687,7 +687,7 @@
       "name": "pt-it-tax-models",
       "description": "Chat-web only: IT career tools to compare TCO, Recibos Verdes, and Unipessoal in Portugal. Optional transparência fiscal and household annexes. Illustrative estimates. Not tax or legal advice.",
       "owner": "maiconfz",
-      "latest": "1.1.0",
+      "latest": "1.0.0",
       "tags": [
         "portugal",
         "it-career",

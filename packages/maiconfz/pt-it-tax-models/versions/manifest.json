@@ -1,75 +1,41 @@
 {
   "schemaVersion": "1.2.0",
   "name": "pt-it-tax-models",
-  "latest": "1.1.0",
+  "latest": "1.0.0",
   "versions": [
     {
       "version": "1.0.0",
       "srcArtifact": "1.0.0-src.zip",
-      "srcSha256": "e70a8d8b1a8c696cd97104521219b02a309fec0456b04407ccfd15854ba6fafc",
+      "srcSha256": "47675927e42f4edd64ca98fa4298b16799d2ee77a10cd144c01b6bd61a472a50",
       "artifacts": [
         {
           "target": "github-copilot",
           "file": "1.0.0-github-copilot.zip",
-          "sha256": "07bf9dfe289f57fc4be89fe2f7c0cbc47bed71d9d071b0dc170f02c16b409b1a",
+          "sha256": "9abfeef350fe5eebe7a089dbbe0d4e36472d4b4c291bc6ab74689388edc40722",
           "pathEncoding": 1
         },
         {
           "target": "claude-code",
           "file": "1.0.0-claude-code.zip",
-          "sha256": "bf3a7f41d71d4f8b5c740d84f1199ba51a9a97ff6b10598fb74f974871f1199f",
+          "sha256": "4b8c4743e5516f8c8fe5b39cc112f013deb7f7ff7d96a252008358eeb6a16dc3",
           "pathEncoding": 1
         },
         {
           "target": "cursor",
           "file": "1.0.0-cursor.zip",
-          "sha256": "0fa3c887b963ad77af53f800037717c32f33237c6b8bb63f43174cebdff99ca9",
+          "sha256": "d919cd21fe1e7d39d94a9da632af4fe3d4f624e274ada87a26ed7234363791ba",
           "pathEncoding": 1
         },
         {
           "target": "openai-codex",
           "file": "1.0.0-openai-codex.zip",
-          "sha256": "aad019712084bd85e033d68c36afa85d20e569a7a5fe6de6622216d12380715d",
+          "sha256": "e1b9bad1e439eaf3fbe81c59add6342423cc55ed1244fda036e0d2cb2500ce20",
           "pathEncoding": 1
         }
       ],
-      "createdAt": "2026-10-15T19:19:26.215Z",
+      "createdAt": "2026-10-15T19:59:11.832Z",
       "instructionsArtifact": "instructions.json",
       "instructionsSha256": "2fcbe229af15b815869c530e4e5d39fd95fa6d529a74c62d83883a0a170b3b66"
-    },
-    {
-      "version": "1.1.0",
-      "srcArtifact": "1.1.0-src.zip",
-      "srcSha256": "0649fc3a8aaf074f1a2bc2cc784030620f3d8f2d3950b7d616443a79c32f5865",
-      "artifacts": [
-        {
-          "target": "github-copilot",
-          "file": "1.1.0-github-copilot.zip",
-          "sha256": "dfd2af00a5f01048ad7ece972b6586e2b7c35d11caf74af5b5cd8c17a063cc09",
-          "pathEncoding": 1
-        },
-        {
-          "target": "claude-code",
-          "file": "1.1.0-claude-code.zip",
-          "sha256": "f8c47c53649f362e2d44b015d005bc3a92ec10c80076f0955ca0cf936294403d",
-          "pathEncoding": 1
-        },
-        {
-          "target": "cursor",
-          "file": "1.1.0-cursor.zip",
-          "sha256": "3eaee3dbd0bc41a7489ecd3fa446bad60231bcd5a75ed591012610604383e357",
-          "pathEncoding": 1
-        },
-        {
-          "target": "openai-codex",
-          "file": "1.1.0-openai-codex.zip",
-          "sha256": "13627b6860fa6960410cbf004d614f03f2b545b81514e2acf241048be15bd039",
-          "pathEncoding": 1
-        }
-      ],
-      "createdAt": "2026-10-15T19:35:37.542Z",
-      "instructionsArtifact": "instructions.json",
-      "instructionsSha256": "197828642e19804d4df96ac1b31a2894a9b8cc205717e71ec66a62a77a3a1f1d"
     }
   ]
 }
