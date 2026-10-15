@@ -94,7 +94,8 @@ intake → resolve tax-year/region → interview if gaps → scenario math → r
 - Reply in the language the user used. If mixed or unclear, use English.
 - **Direction:** back-solve **TCO gross** needed to match net from current
   unipessoal/RV; highlight lost **ajudas de custo**, corporate deductions, and
-  dividend route; show **employer cost** (34,75% on salary + salary base). When
+  dividend route; show **employer cost** (23,75% employer SS on salary + salary
+  base). When
   household annex applies, compare **household net** the user would lose vs TCO.
 - Apply the same **tax-year**, **tax-region**, WebSearch (max **3**/turn),
   README **2026** snapshot fallback, and stale-rate labeling rules as

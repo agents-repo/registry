@@ -119,7 +119,7 @@ Optional annexes in comparison agents (`tco-to-unipessoal-chat`,
 
 | Spouse / partner role | What agents model | Notes |
 | --- | --- | --- |
-| **Employee** (payroll) | Extra **34,75%** employer SS + **11%** employee SS on spouse gross; **second meal card**; **household net** = sócio + spouse vs sócio-only; spouse salary **deductible** in IRC path | Real duties, **RMMG**, AT/SS sham-payroll risk; individualized benefits often Cat. A — [PIV 25701](https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/informacoes_vinculativas/rendimento/circ/Documents/PIV_25701.pdf) |
+| **Employee** (payroll) | Extra **23,75%** employer SS + **11%** employee SS on spouse gross; **second meal card**; **household net** = sócio + spouse vs sócio-only; spouse salary **deductible** in IRC path | Real duties, **RMMG**, AT/SS sham-payroll risk; individualized benefits often Cat. A — [PIV 25701](https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/informacoes_vinculativas/rendimento/circ/Documents/PIV_25701.pdf) |
 | **Co-sócio** (quota holder) | Quota % split; TF imputation **pro rata** only if **each** sócio exercises art. 151 IT through the Lda | [Conjugal quotas](https://www.sociedadescomerciais.pt/sociedade-comercial-entre-conjuges/) possible; substance required |
 | **Informal collaborator** | Compliance note only — not RV “cônjuge colaborador” (SS art. 166); reclassification risk | Use formal employment or professional advice |
 
