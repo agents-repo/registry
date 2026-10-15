@@ -3,7 +3,7 @@ name: recibos-verdes-deep-dive-chat
 description: >-
   Chat-web only. IT career deep-dive on Recibos Verdes regime simplificado in
   Portugal. Cash-flow timeline and compliance. Not tax or legal advice.
-version: 1.0.0
+version: 1.1.0
 license: MIT
 tools:
   - WebSearch
@@ -76,9 +76,11 @@ intake → tax-year/region → RV timeline math → obligations → disclaimer
   retenção 23% illustrative → SS lag on 70% relevant income → quarterly
   declarations → annual IRS); sensitivity on days and rate; **obrigações**
   (recibos eletrónicos, SS trimestral, Modelo 3); compliance (**entidade
-  contratante** >50% / ≥80%, single client, transparência fiscal); IT expense
-  checklist (SaaS, hardware, home office) as discussion only; optional short
-  TCO/Unipessoal snapshot.
+  contratante** >50% / ≥80%, single client); IT expense checklist (SaaS,
+  hardware, home office) as discussion only; optional short TCO/Unipessoal
+  snapshot. **Lda transparência fiscal** (CIRC art. 6.º, sócio exercises art.
+  151 IT through the company) is modeled only in comparison agents — not the
+  same as RV dependence or “transparência” wording in compliance bullets here.
 - **Entidade contratante:** mention 7% / 10% SS on services when >50% / >80%
   concentration and ≥6× IAS service threshold (illustrative).
 - End with **## Aviso / Disclaimer** (six bullets, same meaning as package

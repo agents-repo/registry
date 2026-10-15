@@ -2,8 +2,9 @@
 name: tco-to-unipessoal-chat
 description: >-
   Chat-web only. IT career comparison from employment toward Recibos Verdes or
-  Unipessoal. Three-column illustrative report. Not tax or legal advice.
-version: 1.0.0
+  Unipessoal. IRC PME default; optional transparência fiscal and household
+  annexes. Not tax or legal advice.
+version: 1.1.0
 license: MIT
 tools:
   - WebSearch
@@ -41,6 +42,24 @@ inputs:
   - name: unipessoal-monthly-costs
     type: string
     description: Itemized or default corporate costs for unipessoal scenario.
+  - name: unipessoal-tax-regime
+    type: string
+    description: irc-pme (default), transparencia-fiscal, or compare-both for Unipessoal annex.
+  - name: socio-exercises-it-through-company
+    type: boolean
+    description: Sócio personally delivers art. 151 IT work through the Lda (TF gate).
+  - name: spouse-role
+    type: string
+    description: none, employee, co-socio, or informal-collaborator for household annex.
+  - name: spouse-employee-gross-monthly
+    type: number
+    description: Spouse gross monthly salary when spouse-role is employee.
+  - name: spouse-socio-quota-percent
+    type: number
+    description: Spouse quota percent when spouse-role is co-socio; default 50.
+  - name: spouse-exercises-it-through-company
+    type: boolean
+    description: Spouse co-sócio exercises art. 151 IT through the Lda (TF split gate).
   - name: user-clarifications
     type: string
     description: Answers from a prior clarification loop.
@@ -60,7 +79,8 @@ or evaluating an offer** and wants an **illustrative** comparison of staying in
 **TCO** vs **Recibos Verdes** vs **Empresa Unipessoal Lda.** Not for IDE
 workspace workflows. Emits
 `pt-it-tax-comparison-report` with executive summary, three-column table,
-unipessoal breakdown, optimization checklist, and mandatory disclaimer. Does
+unipessoal breakdown (IRC PME default; optional **transparência fiscal** and
+**household** annexes), optimization checklist, and mandatory disclaimer. Does
 not inspect a host working tree.
 
 ```text
@@ -82,7 +102,9 @@ intake → resolve tax-year/region → interview if gaps → scenario math → r
 - **Minimum for report:** (`target-net-monthly` OR `gross-salary-monthly` OR
   (`daily-rate` + billable days)) AND enough household hint for TCO withholding
   (or state simplified IRS assumption). Otherwise interview; leave report empty.
-- **Three columns always:** TCO | Recibos Verdes | Unipessoal Lda.
+- **Three columns always:** TCO | Recibos Verdes | Unipessoal Lda. The
+  **Unipessoal column cell** uses **IRC PME** unless the user explicitly asks TF
+  to replace the headline number.
 - **TCO column:** gross base + 14 months (subsídios) + meal card €10,20/day
   (illustrative); SS 11% employee + 23,75% employer; IRS retenção from
   **regional** tables (not RV tables).
@@ -90,10 +112,44 @@ intake → resolve tax-year/region → interview if gaps → scenario math → r
   (⅓ of 70% of quarterly service revenue); simplified IRS 0,75 coefficient;
   retenção na fonte **23% illustrative** on invoices unless user specifies
   activity rate (11,5 / 16,5 / 20 / 23).
-- **Unipessoal:** billing minus corporate costs; gerente salary + SS 34,75%;
-  meal card; illustrative ajudas de custo (km €0,40, diárias within limits);
-  IRC PME by region (Continente 15%/19% on MC bands per README snapshot);
-  dividends 28% illustrative extraction — label all as **cenário estimado**.
+- **Unipessoal (base — IRC PME):** billing minus corporate costs; gerente salary
+  and SS 34,75%; meal card; illustrative ajudas de custo (km €0,40, diárias within
+  limits); profit before tax per README formula (include spouse payroll costs
+  when `spouse-role` is `employee`); IRC PME by region; dividends 28%
+  illustrative extraction — label **cenário estimado**.
+- **`unipessoal-tax-regime`:** default `irc-pme`. When `transparencia-fiscal` or
+  `compare-both`, add subsection **Unipessoal — transparência fiscal (annex)**:
+  - **Gate:** if `socio-exercises-it-through-company` is false or unknown, ask
+    once; if false, state **TF not eligible — regime geral IRC** and show no TF
+    numbers (point to README PIV 27002).
+  - If eligible: impute `profit_before_tax` to sócio(s); **no IRC** on imputed
+    layer; sócio **IRS art. 20.º** Cat. B slice as **illustrative range**
+    (englobamento vs taxa liberatória — contabilista decides); gerente (and
+    spouse employee) salary remains Cat. A + SS.
+  - `compare-both`: keep IRC PME in the main table; TF only in the annex.
+- **`spouse-role`:** default `none`. On mentions of spouse/partner in the
+  company, ask once for role and amounts.
+  - **`employee`:** annex **Household — spouse payroll**: employer SS 23,75% +
+    employee 11% on `spouse-employee-gross-monthly`; second meal card
+    illustrative; spouse salary deductible in IRC path; show **household net**
+    (sócio + spouse) vs sócio-only baseline and **Δ net** / **Δ total SS**.
+    Respect **RMMG** in assumptions.
+  - **`co-socio`:** annex **Household — co-sócio**: quota
+    `spouse-socio-quota-percent` (default 50); TF split only if
+    `spouse-exercises-it-through-company` true for TF annex; else qualitative
+    warning that TF may fail if co-sócio does not exercise art. 151 IT through
+    the Lda. Do not double-count payroll unless user insists on employee + sócio
+    (then prefer employee math, note quota in prose).
+  - **`informal-collaborator`:** compliance paragraph only (not RV cônjuge
+    colaborador; reclassification risk) — no payroll math.
+- **Interview triggers:** “transparência fiscal”, “wife/husband in the company”,
+  “sócia/o meu cônjuge” → collect new fields once; TF rules from package README
+  (WebSearch only if tax-year ≠ snapshot).
+- Report sections: (1) executive summary, (2) side-by-side table, (3) unipessoal
+  breakdown — **Base (IRC PME)** | optional **TF annex** | optional **Household
+  annex**, (4) compliance (TF substance, payroll genuineness, informal
+  collaborator, disguised employment / single client), (5) optimization
+  checklist, (6) **Aviso / Disclaimer**.
 - Show **intermediate calculation lines** and **Assumptions** block in report.
 - When report exists, `reply` MUST contain the full
   `pt-it-tax-comparison-report` body.

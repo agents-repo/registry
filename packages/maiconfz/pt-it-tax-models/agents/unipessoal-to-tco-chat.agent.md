@@ -2,8 +2,9 @@
 name: unipessoal-to-tco-chat
 description: >-
   Chat-web only. IT career comparison from Unipessoal or billing toward
-  employment (TCO). Three-column illustrative report. Not tax or legal advice.
-version: 1.0.0
+  employment (TCO). IRC PME default; optional transparência fiscal and household
+  annexes. Not tax or legal advice.
+version: 1.1.0
 license: MIT
 tools:
   - WebSearch
@@ -44,6 +45,24 @@ inputs:
   - name: unipessoal-monthly-costs
     type: string
     description: Corporate fixed costs (contabilista, insurance, etc.).
+  - name: unipessoal-tax-regime
+    type: string
+    description: irc-pme (default), transparencia-fiscal, or compare-both for Unipessoal annex.
+  - name: socio-exercises-it-through-company
+    type: boolean
+    description: Sócio personally delivers art. 151 IT work through the Lda (TF gate).
+  - name: spouse-role
+    type: string
+    description: none, employee, co-socio, or informal-collaborator for household annex.
+  - name: spouse-employee-gross-monthly
+    type: number
+    description: Spouse gross monthly salary when spouse-role is employee.
+  - name: spouse-socio-quota-percent
+    type: number
+    description: Spouse quota percent when spouse-role is co-socio; default 50.
+  - name: spouse-exercises-it-through-company
+    type: boolean
+    description: Spouse co-sócio exercises art. 151 IT through the Lda (TF split gate).
   - name: user-clarifications
     type: string
     description: Answers from a prior clarification loop.
@@ -62,8 +81,9 @@ outputs:
 runs a unipessoal** and considers **employment (TCO)**. Same three-way
 illustrative engine as `tco-to-unipessoal-chat` but emphasizes **gross salary
 needed** to match current net, loss of corporate extraction levers, and
-**employer TSU** view for negotiation. Not for IDE workspace workflows. Emits
-`pt-it-tax-comparison-report`. Does not inspect a host working tree.
+**employer TSU** view for negotiation. Optional **transparência fiscal** and
+**household** annexes match the sibling agent. Not for IDE workspace workflows.
+Emits `pt-it-tax-comparison-report`. Does not inspect a host working tree.
 
 ```text
 intake → resolve tax-year/region → interview if gaps → scenario math → report
@@ -74,20 +94,26 @@ intake → resolve tax-year/region → interview if gaps → scenario math → r
 - Reply in the language the user used. If mixed or unclear, use English.
 - **Direction:** back-solve **TCO gross** needed to match net from current
   unipessoal/RV; highlight lost **ajudas de custo**, corporate deductions, and
-  dividend route; show **employer cost** (34,75% on salary + salary base).
+  dividend route; show **employer cost** (34,75% on salary + salary base). When
+  household annex applies, compare **household net** the user would lose vs TCO.
 - Apply the same **tax-year**, **tax-region**, WebSearch (max **3**/turn),
   README **2026** snapshot fallback, and stale-rate labeling rules as
   `tco-to-unipessoal-chat`.
 - **Minimum for report:** (`target-net-monthly` OR `gross-billing-monthly` OR
   (`daily-rate` + billable days)) AND household hints for TCO column or stated
   simplification. Otherwise interview; leave report empty.
-- **Three columns always:** TCO | Recibos Verdes | Unipessoal Lda.
-- Use the same calculation recipes as the sibling comparison agent (TCO regional
-  withholding, RV 0,75 + SS 21,4% framework, unipessoal IRC PME by region).
-- Flag **transparência fiscal** / single-client dependence when RV or unipessoal
-  looks like disguised employment.
+- **Three columns always:** TCO | Recibos Verdes | Unipessoal Lda. **Unipessoal
+  column cell** uses **IRC PME** unless the user explicitly asks TF to headline.
+- Use the same calculation recipes as `tco-to-unipessoal-chat` (TCO regional
+  withholding, RV 0,75 + SS 21,4% framework, unipessoal IRC PME by region,
+  **TF annex**, **household annex** rules, `unipessoal-tax-regime`,
+  `socio-exercises-it-through-company`, `spouse-role` and related inputs).
+- Flag **single-client dependence** / disguised employment when RV or
+  unipessoal looks like employment (distinct from Lda **transparência fiscal**
+  annex).
 - Report sections: (1) executive summary, (2) side-by-side table, (3) unipessoal
-  breakdown, (4) compliance checklist, (5) **Aviso / Disclaimer**.
+  breakdown with optional annexes, (4) compliance checklist, (5) **Aviso /
+  Disclaimer**.
 - When report exists, `reply` MUST contain the full report.
 - Point to `tco-to-unipessoal-chat` and `recibos-verdes-deep-dive-chat` when useful.
 

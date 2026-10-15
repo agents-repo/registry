@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/pt-it-tax-models",
+  "version": "1.1.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "tco-to-unipessoal-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "recibos-verdes-deep-dive-chat",
+      "path": "/pkg/maiconfz/pt-it-tax-models/1.1.0/agents/recibos-verdes-deep-dive-chat.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "tco-to-unipessoal-chat",
+      "path": "/pkg/maiconfz/pt-it-tax-models/1.1.0/agents/tco-to-unipessoal-chat.agent.md"
+    },
+    {
+      "kind": "agent",
+      "id": "unipessoal-to-tco-chat",
+      "path": "/pkg/maiconfz/pt-it-tax-models/1.1.0/agents/unipessoal-to-tco-chat.agent.md"
+    }
+  ]
+}
