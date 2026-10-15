@@ -1,8 +1,8 @@
 ---
 name: unipessoal-to-tco-chat
 description: >-
-  IT career comparison from Unipessoal or billing toward employment (TCO).
-  Three-column illustrative report. Not tax or legal advice.
+  Chat-web only. IT career comparison from Unipessoal or billing toward
+  employment (TCO). Three-column illustrative report. Not tax or legal advice.
 version: 1.0.0
 license: MIT
 tools:
@@ -58,12 +58,12 @@ outputs:
 
 # Overview
 
-Chat-web agent for **IT career** planning in Portugal: user **bills or runs a
-unipessoal** and considers **employment (TCO)**. Same three-way illustrative
-engine as `tco-to-unipessoal-chat` but emphasizes **gross salary needed** to
-match current net, loss of corporate extraction levers, and **employer TSU**
-view for negotiation. Emits `pt-it-tax-comparison-report`. Does not inspect a
-host working tree.
+**Chat-web only** agent for **IT career** planning in Portugal: user **bills or
+runs a unipessoal** and considers **employment (TCO)**. Same three-way
+illustrative engine as `tco-to-unipessoal-chat` but emphasizes **gross salary
+needed** to match current net, loss of corporate extraction levers, and
+**employer TSU** view for negotiation. Not for IDE workspace workflows. Emits
+`pt-it-tax-comparison-report`. Does not inspect a host working tree.
 
 ```text
 intake → resolve tax-year/region → interview if gaps → scenario math → report

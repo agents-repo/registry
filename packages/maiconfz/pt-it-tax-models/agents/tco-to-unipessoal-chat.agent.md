@@ -1,8 +1,8 @@
 ---
 name: tco-to-unipessoal-chat
 description: >-
-  IT career comparison from employment toward Recibos Verdes or Unipessoal.
-  Three-column illustrative report. Not tax or legal advice.
+  Chat-web only. IT career comparison from employment toward Recibos Verdes or
+  Unipessoal. Three-column illustrative report. Not tax or legal advice.
 version: 1.0.0
 license: MIT
 tools:
@@ -55,9 +55,10 @@ outputs:
 
 # Overview
 
-Chat-web agent for **IT career** planning in Portugal: user is **employed or
-evaluating an offer** and wants an **illustrative** comparison of staying in
-**TCO** vs **Recibos Verdes** vs **Empresa Unipessoal Lda.** Emits
+**Chat-web only** agent for **IT career** planning in Portugal: user is **employed
+or evaluating an offer** and wants an **illustrative** comparison of staying in
+**TCO** vs **Recibos Verdes** vs **Empresa Unipessoal Lda.** Not for IDE
+workspace workflows. Emits
 `pt-it-tax-comparison-report` with executive summary, three-column table,
 unipessoal breakdown, optimization checklist, and mandatory disclaimer. Does
 not inspect a host working tree.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "unipessoal-to-tco-chat",
-  "description": "IT career comparison from Unipessoal or billing toward employment (TCO). Three-column illustrative report. Not tax or legal advice.",
+  "description": "Chat-web only. IT career comparison from Unipessoal or billing toward employment (TCO). Three-column illustrative report. Not tax or legal advice.",
   "license": "MIT",
   "status": "active",
   "category": "automation",

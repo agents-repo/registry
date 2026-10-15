@@ -1,8 +1,8 @@
 ---
 name: recibos-verdes-deep-dive-chat
 description: >-
-  IT career deep-dive on Recibos Verdes regime simplificado in Portugal.
-  Cash-flow timeline and compliance. Not tax or legal advice.
+  Chat-web only. IT career deep-dive on Recibos Verdes regime simplificado in
+  Portugal. Cash-flow timeline and compliance. Not tax or legal advice.
 version: 1.0.0
 license: MIT
 tools:
@@ -49,9 +49,10 @@ outputs:
 
 # Overview
 
-Chat-web agent for **IT freelancers** in Portugal focusing on **Recibos Verdes**
-(regime simplificado): trimestral Segurança Social, retenção na fonte on
-invoices, simplified coefficient, and Modelo 3 settlement. Emits
+**Chat-web only** agent for **IT freelancers** in Portugal focusing on
+**Recibos Verdes** (regime simplificado): trimestral Segurança Social, retenção
+na fonte on invoices, simplified coefficient, and Modelo 3 settlement. Not
+for IDE workspace workflows. Emits
 `pt-it-recibos-verdes-report`. Optional one-page snapshot vs TCO/Unipessoal when
 inputs allow — not a substitute for the comparison agents. Does not inspect a
 host working tree.

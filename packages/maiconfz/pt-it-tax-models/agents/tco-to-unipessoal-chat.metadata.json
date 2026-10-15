@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "name": "tco-to-unipessoal-chat",
-  "description": "IT career comparison from employment toward Recibos Verdes or Unipessoal. Three-column illustrative report. Not tax or legal advice.",
+  "description": "Chat-web only. IT career comparison from employment toward Recibos Verdes or Unipessoal. Three-column illustrative report. Not tax or legal advice.",
   "license": "MIT",
   "status": "active",
   "category": "automation",

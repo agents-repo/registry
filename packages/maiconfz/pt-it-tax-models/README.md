@@ -9,6 +9,17 @@ only** — **not** tax, legal, or accounting advice. Confirm every decision with
 a **contabilista certificado** before changing contract type, invoicing, or
 incorporating.
 
+## Consumption (chat-web only)
+
+This package is **for registry chat-web only** — use it in the
+[agents-repo webapp](https://agents-repo.org) chat experience (or any consumer
+that loads `/pkg/.../instructions.json`). Agents are conversational report
+generators; they do **not** inspect your IDE workspace or run local tooling.
+
+Registry metadata declares **`chat-web`** as the supported consumption channel.
+IDE install ZIPs may exist for catalog plumbing, but this package is **not**
+designed or documented as a Cursor/Copilot coding workflow.
+
 ## What this package is
 
 - Side-by-side **illustrative** cash-flow and tax-load comparisons for IT roles
@@ -22,12 +33,6 @@ incorporating.
 - Not a substitute for a contabilista, advogado fiscal, or AT/SS filing
 - Not guaranteed net pay, effective rates, or deductibility of specific expenses
 - Not full IVA credit modeling or contabilidade organizada
-
-## Install
-
-```bash
-npx agents-repo@latest install maiconfz/pt-it-tax-models
-```
 
 ## Chat agents
 
