@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-10-14T23:19:47.441Z",
+  "updatedAt": "2026-10-15T19:15:01.829Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -23,6 +23,7 @@
         "hard-to-swallow-pills",
         "job-search-tools",
         "plan-refiner",
+        "pt-it-tax-models",
         "recruiting-tools",
         "refactor-or-trash",
         "review-fix-ship",

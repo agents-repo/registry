@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "tco-to-unipessoal-chat",
+  "description": "IT career comparison from employment toward Recibos Verdes or Unipessoal. Three-column illustrative report. Not tax or legal advice.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "chatWeb": "included",
+  "tools": [
+    "WebSearch"
+  ],
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat with salary, offer, or target net; may include region."
+    },
+    {
+      "name": "tax-year",
+      "type": "number",
+      "description": "Fiscal year for rates; default current calendar year Europe/Lisbon."
+    },
+    {
+      "name": "tax-region",
+      "type": "string",
+      "description": "continente, acores, or madeira; fiscal residence for TCO/IRC/IVA."
+    },
+    {
+      "name": "marital-status",
+      "type": "string",
+      "description": "IRS household for TCO withholding (solteiro, casado, etc.)."
+    },
+    {
+      "name": "dependents",
+      "type": "number",
+      "description": "Number of dependents for IRS retenção na fonte."
+    },
+    {
+      "name": "target-net-monthly",
+      "type": "number",
+      "description": "Desired net monthly cash (12x equivalent) in euros."
+    },
+    {
+      "name": "gross-salary-monthly",
+      "type": "number",
+      "description": "Current or offered gross base monthly salary (TCO)."
+    },
+    {
+      "name": "daily-rate",
+      "type": "number",
+      "description": "Target daily billing rate for freelance or unipessoal scenario."
+    },
+    {
+      "name": "billable-days-per-year",
+      "type": "number",
+      "description": "Billable days per year; default 220 when omitted."
+    },
+    {
+      "name": "travel-km-per-month",
+      "type": "number",
+      "description": "Business km per month for illustrative ajudas de custo."
+    },
+    {
+      "name": "unipessoal-monthly-costs",
+      "type": "string",
+      "description": "Itemized or default corporate costs for unipessoal scenario."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Answers from a prior clarification loop."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "pt-it-tax-comparison-report",
+      "type": "string",
+      "description": "Structured comparison report; empty until minimum inputs exist."
+    }
+  ]
+}

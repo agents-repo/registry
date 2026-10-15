@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-10-14T23:19:47.440Z",
+  "updatedAt": "2026-10-15T19:15:01.829Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -680,6 +680,55 @@
       ]
     },
     {
+      "id": "maiconfz/pt-it-tax-models",
+      "namespace": "maiconfz",
+      "package": "pt-it-tax-models",
+      "path": "packages/maiconfz/pt-it-tax-models",
+      "name": "pt-it-tax-models",
+      "description": "IT career chat tools to compare TCO, Recibos Verdes, and Unipessoal in Portugal. Region-aware illustrative estimates. Not tax or legal advice.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "portugal",
+        "it-career",
+        "software-engineer",
+        "tax-planning",
+        "employment",
+        "freelance",
+        "unipessoal",
+        "recibos-verdes",
+        "acores",
+        "madeira",
+        "chat"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 10,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/pt-it-tax-models/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
       "id": "maiconfz/recruiting-tools",
       "namespace": "maiconfz",
       "package": "recruiting-tools",
@@ -1017,6 +1066,7 @@
     "hard-to-swallow-pills": "maiconfz/hard-to-swallow-pills",
     "job-search-tools": "maiconfz/job-search-tools",
     "plan-refiner": "maiconfz/plan-refiner",
+    "pt-it-tax-models": "maiconfz/pt-it-tax-models",
     "recruiting-tools": "maiconfz/recruiting-tools",
     "refactor-or-trash": "maiconfz/refactor-or-trash",
     "review-fix-ship": "maiconfz/review-fix-ship",

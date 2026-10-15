@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/pt-it-tax-models",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "pt-it-tax-models",
+    "description": "IT career chat tools to compare TCO, Recibos Verdes, and Unipessoal in Portugal. Region-aware illustrative estimates. Not tax or legal advice.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/pt-it-tax-models",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "portugal",
+      "it-career",
+      "software-engineer",
+      "tax-planning",
+      "employment",
+      "freelance",
+      "unipessoal",
+      "recibos-verdes",
+      "acores",
+      "madeira",
+      "chat"
+    ],
+    "createdAt": "2026-10-15T19:13:38.001Z",
+    "updatedAt": "2026-10-15T19:13:38.001Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 10,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/pt-it-tax-models/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported",
+          "defaultInstruction": {
+            "kind": "agent",
+            "id": "tco-to-unipessoal-chat"
+          }
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "recibos-verdes-deep-dive-chat",
+      "name": "recibos-verdes-deep-dive-chat",
+      "description": "IT career deep-dive on Recibos Verdes regime simplificado in Portugal. Cash-flow timeline and compliance. Not tax or legal advice.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/pt-it-tax-models/versions/1.0.0/agents/recibos-verdes-deep-dive-chat.agent.md"
+    },
+    {
+      "id": "tco-to-unipessoal-chat",
+      "name": "tco-to-unipessoal-chat",
+      "description": "IT career comparison from employment toward Recibos Verdes or Unipessoal. Three-column illustrative report. Not tax or legal advice.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/pt-it-tax-models/versions/1.0.0/agents/tco-to-unipessoal-chat.agent.md"
+    },
+    {
+      "id": "unipessoal-to-tco-chat",
+      "name": "unipessoal-to-tco-chat",
+      "description": "IT career comparison from Unipessoal or billing toward employment (TCO). Three-column illustrative report. Not tax or legal advice.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/pt-it-tax-models/versions/1.0.0/agents/unipessoal-to-tco-chat.agent.md"
+    }
+  ],
+  "flows": [],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-10-15T19:15:01.827Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# pt-it-tax-models\n\n**IT career** chat tools for software and tech professionals in Portugal:\nillustrative comparisons of **trabalho dependente (TCO)**, **Recibos Verdes**\n(regime simplificado), and **Empresa Unipessoal Lda.** (sócio-gerente).\n\nThis is a `maiconfz` community package. Outputs are **educational scenarios\nonly** — **not** tax, legal, or accounting advice. Confirm every decision with\na **contabilista certificado** before changing contract type, invoicing, or\nincorporating.\n\n## What this package is\n\n- Side-by-side **illustrative** cash-flow and tax-load comparisons for IT roles\n- Region input: **Continente**, **Açores (RAA)**, or **Madeira (RAM)** where\n  relevant (TCO withholding, IRC PME bands, IVA normal rate)\n- **Tax year:** agents default to the **current calendar year** (Europe/Lisbon)\n  and may WebSearch when laws differ from the packaged rate snapshot below\n\n## What this package is not\n\n- Not a substitute for a contabilista, advogado fiscal, or AT/SS filing\n- Not guaranteed net pay, effective rates, or deductibility of specific expenses\n- Not full IVA credit modeling or contabilidade organizada\n\n## Install\n\n```bash\nnpx agents-repo@latest install maiconfz/pt-it-tax-models\n```\n\n## Chat agents\n\n| Agent | Use when |\n| --- | --- |\n| `tco-to-unipessoal-chat` | Employed or evaluating an offer → freelancing or unipessoal |\n| `unipessoal-to-tco-chat` | Billing or unipessoal → considering employment |\n| `recibos-verdes-deep-dive-chat` | Focus on Recibos Verdes cash flow, SS trimestral, and compliance |\n\nInstalled agents reply in the **language the user used** (English if mixed or\nunclear).\n\n## Tax region quick reference\n\n| Topic | Continente | Açores | Madeira |\n| --- | --- | --- | --- |\n| IVA taxa normal (services) | 23% | 16% | 22% |\n| IRC PME (illustrative, first €50k / excess) | 15% / 19% | 10,5% / 13,3% | 10,5% / 13,3% |\n| IRS retenção TCO | AT Continente despacho | AT RAA despacho | AT RAM despacho |\n| IRS retenção Recibos Verdes | National activity rates (not regional tables) | Same | Same |\n\n## Rate reference — verified for 2026 (`packaged-rate-snapshot-year`)\n\nAgents use these values when `tax-year` matches **2026** or when WebSearch\ncannot refresh a newer year (reports must label stale rates).\n\n| Topic | 2026 snapshot | Source |\n| --- | --- | --- |\n| RMMG | €920/month (from 2026-01-01) | [DGERT](https://www.dgert.gov.pt/retribuicao-minima-mensal-garantida-para-2026) |\n| IAS | €537,13 | Segurança Social 2026 |\n| SS TCO / gerente | 11% worker + 23,75% entity on remuneration | MOE gerência (34,75% global) |\n| SS RV (services) | 21,4% on monthly base = ⅓ of quarterly relevant income; relevant = 70% of service revenue | [SS guia prático](https://www.seg-social.pt/ptss/pssd/documento/cmc1xyfxz00dekl2ynxz676sw) |\n| IRS RV retenção | 23% default for many IT services; also 11,5% / 16,5% / 20% by activity | [AT / guides](https://info.portaldasfinancas.gov.pt/pt/apoio_contribuinte/tabela_ret_doclib/Pages/default.aspx) |\n| Regime simplificado | Coefficient 0,75 on eligible professional services | CIRS |\n| Subsídio refeição (cartão) | €10,20/day exempt | OE 2025+ |\n| Km (viatura própria) | €0,40/km reference | DL 1/2025 / OCC |\n| Diárias nacionais | €65,89 / €72,65 (gerente) | CIRS conditions apply |\n| Dividendos (default scenario) | 28% liberatory withholding | AT guia capitais |\n| Entidade contratante | >50% revenue → 7% or 10% SS on services; ≥80% economic dependence | [SS 2034](https://www.seg-social.pt/ptss/pssd/documento/cmc1ygvnw00f4kl2yl22z68po) |\n\nOfficial withholding tables (TCO): [Portal AT](https://info.portaldasfinancas.gov.pt/pt/apoio_contribuinte/tabela_ret_doclib/Pages/default.aspx).\nIRC/IRS tax sheet: [SFP Taxas 2026 PDF](https://info.portaldasfinancas.gov.pt/pt/apoio_contribuinte/Folhetos_informativos/Documents/SFP-Taxas-2026.pdf).\n\n## Liability\n\nPackage and agents are provided **as is** under the MIT license. Authors and\ndistributors disclaim warranties of accuracy. Users accept sole responsibility\nfor financial and tax decisions. Find a certified accountant via\n[OCC](https://www.occ.pt) (no endorsement of specific firms).\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/pt-it-tax-models/1.0.0/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "tco-to-unipessoal-chat"
+  }
+}

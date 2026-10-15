@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "pt-it-tax-models",
+  "description": "IT career chat tools to compare TCO, Recibos Verdes, and Unipessoal in Portugal. Region-aware illustrative estimates. Not tax or legal advice.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/pt-it-tax-models",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "portugal",
+    "it-career",
+    "software-engineer",
+    "tax-planning",
+    "employment",
+    "freelance",
+    "unipessoal",
+    "recibos-verdes",
+    "acores",
+    "madeira",
+    "chat"
+  ],
+  "createdAt": "2026-10-15T19:13:38.001Z",
+  "updatedAt": "2026-10-15T19:13:38.001Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 10,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/pt-it-tax-models/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "tco-to-unipessoal-chat"
+        }
+      }
+    ]
+  }
+}
