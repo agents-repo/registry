@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "issue-creation-and-explorer",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "960b8611e2c2903ab29594aa21b0ae384b0692cfac79151e4fbab1bba8d9c448",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "7f4224fe398972fc912fcd34e36a57f52dbfc960ad11c02f7ca15f24d80412f4",
+          "pathEncoding": 1
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "25a59513b04debe8d20f07cb7915ba57eaf01d693e9f323234e337b390028b6c",
+          "pathEncoding": 1
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "e2b453e937b4d9eb84f3f849ce037df1dcea3ed117bb1684e2ce87a782a701a9",
+          "pathEncoding": 1
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "eddaa270ec3706975d644885e4f14f5c45633f0726000cd9a322c684c9f09468",
+          "pathEncoding": 1
+        }
+      ],
+      "createdAt": "2026-10-31T04:58:07.283Z"
+    }
+  ]
+}

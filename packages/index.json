@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-10-15T20:11:29.131Z",
+  "updatedAt": "2026-10-31T04:58:07.285Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -594,6 +594,48 @@
       "chatWeb": true
     },
     {
+      "id": "maiconfz/issue-creation-and-explorer",
+      "namespace": "maiconfz",
+      "package": "issue-creation-and-explorer",
+      "path": "packages/maiconfz/issue-creation-and-explorer",
+      "name": "issue-creation-and-explorer",
+      "description": "Search existing GitHub issues, draft a form-shaped issue from a short repo read, and create it with gh after explicit confirmation.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "github",
+        "issue",
+        "gh",
+        "planning",
+        "workflow"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 5,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/issue-creation-and-explorer/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    },
+    {
       "id": "maiconfz/job-search-tools",
       "namespace": "maiconfz",
       "package": "job-search-tools",
@@ -1064,6 +1106,7 @@
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
     "hard-to-swallow-pills": "maiconfz/hard-to-swallow-pills",
+    "issue-creation-and-explorer": "maiconfz/issue-creation-and-explorer",
     "job-search-tools": "maiconfz/job-search-tools",
     "plan-refiner": "maiconfz/plan-refiner",
     "pt-it-tax-models": "maiconfz/pt-it-tax-models",

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "issue-filer",
+  "description": "Create the confirmed GitHub issue with gh after an explicit yes. Does not draft or search.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 2,
+    "band": "minimal"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "github"
+  ],
+  "inputs": [
+    {
+      "name": "issue-draft",
+      "type": "string",
+      "description": "Repository, title, labels, markdown body, and related links to file."
+    },
+    {
+      "name": "file-confirmed",
+      "type": "boolean",
+      "description": "True only after the user explicitly agrees to file the shown draft."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "issue-url",
+      "type": "string",
+      "description": "Created issue URL and number. Empty until filing succeeds."
+    }
+  ]
+}

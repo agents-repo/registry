@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "related-issue-explorer",
+  "description": "Search open and closed GitHub issues for overlap and read the target issue template plus a short repo slice. Read-only.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "github",
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "idea",
+      "type": "string",
+      "description": "Prompt text for a future implementation idea, or a pasted feature-brief."
+    },
+    {
+      "name": "intake-summary",
+      "type": "string",
+      "description": "Framed idea, resolved owner/name, issue kind, and matching form file when one exists."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "overlap-report",
+      "type": "string",
+      "description": "Related open and closed issues with links, plus whether drafting must stop."
+    },
+    {
+      "name": "template-excerpt",
+      "type": "string",
+      "description": "Chosen form path, title prefix, labels, and required field labels."
+    }
+  ]
+}

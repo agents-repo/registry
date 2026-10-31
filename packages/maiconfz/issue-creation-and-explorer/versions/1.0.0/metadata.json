@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "issue-creation-and-explorer",
+  "description": "Search existing GitHub issues, draft a form-shaped issue from a short repo read, and create it with gh after explicit confirmation.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/issue-creation-and-explorer",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "github",
+    "issue",
+    "gh",
+    "planning",
+    "workflow"
+  ],
+  "createdAt": "2026-10-31T04:54:36.942Z",
+  "updatedAt": "2026-10-31T05:05:00.000Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 5,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/issue-creation-and-explorer/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      {
+        "id": "github-copilot",
+        "status": "supported"
+      },
+      {
+        "id": "claude-code",
+        "status": "supported"
+      },
+      {
+        "id": "cursor",
+        "status": "supported"
+      },
+      {
+        "id": "openai-codex",
+        "status": "supported"
+      }
+    ]
+  }
+}

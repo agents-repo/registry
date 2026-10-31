@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-10-15T20:11:29.132Z",
+  "updatedAt": "2026-10-31T04:58:07.286Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -21,6 +21,7 @@
         "github-interactive-issue-implementation-planner",
         "github-pr-review-triage",
         "hard-to-swallow-pills",
+        "issue-creation-and-explorer",
         "job-search-tools",
         "plan-refiner",
         "pt-it-tax-models",
