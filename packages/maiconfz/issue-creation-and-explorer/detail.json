@@ -1,0 +1,154 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/issue-creation-and-explorer",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "issue-creation-and-explorer",
+    "description": "Search existing GitHub issues, draft a form-shaped issue from a short repo read, and create it with gh after explicit confirmation.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/issue-creation-and-explorer",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "github",
+      "issue",
+      "gh",
+      "planning",
+      "workflow"
+    ],
+    "createdAt": "2026-10-31T04:54:36.942Z",
+    "updatedAt": "2026-10-31T05:05:00.000Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 5,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/issue-creation-and-explorer/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "idea-intake",
+      "name": "idea-intake",
+      "description": "Frame an implementation idea, resolve the target repository, and choose the issue kind. Ask when the repo or kind is ambiguous. Does not search or file.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 3,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/issue-creation-and-explorer/versions/1.0.0/agents/idea-intake.agent.md"
+    },
+    {
+      "id": "issue-drafter",
+      "name": "issue-drafter",
+      "description": "Draft a GitHub issue title, labels, and body that mirror the target repo issue form. Does not call gh issue create.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/issue-creation-and-explorer/versions/1.0.0/agents/issue-drafter.agent.md"
+    },
+    {
+      "id": "issue-filer",
+      "name": "issue-filer",
+      "description": "Create the confirmed GitHub issue with gh after an explicit yes. Does not draft or search.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 2,
+        "band": "minimal"
+      },
+      "instructionPath": "packages/maiconfz/issue-creation-and-explorer/versions/1.0.0/agents/issue-filer.agent.md"
+    },
+    {
+      "id": "related-issue-explorer",
+      "name": "related-issue-explorer",
+      "description": "Search open and closed GitHub issues for overlap and read the target issue template plus a short repo slice. Read-only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/issue-creation-and-explorer/versions/1.0.0/agents/related-issue-explorer.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "issue-explore-and-create",
+      "name": "issue-explore-and-create",
+      "description": "Search related GitHub issues, draft a repo-shaped issue, and file it with gh after explicit confirmation. Does not plan implementation.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/issue-creation-and-explorer/versions/1.0.0/flows/issue-explore-and-create.agent.md",
+      "agents": [
+        "idea-intake",
+        "related-issue-explorer",
+        "issue-drafter",
+        "issue-filer"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-10-31T04:58:07.283Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "readmeMarkdown": "# issue-creation-and-explorer\n\nSearch existing GitHub issues, draft a form-shaped issue from a short\nrepo read, and create it with `gh` after explicit confirmation.\n\nThis is a `maiconfz` community package, not an official agents-repo\nproduct. Installed agents reply in the **language the user used**\n(English if mixed or unclear).\n\n## Objective\n\nTurn a future-implementation idea into a filed GitHub issue. The flow\nchecks open and closed issues for overlap, mirrors the target\nrepository's issue form, and runs `gh issue create` only after an\nexplicit yes.\n\nThis package sits between:\n\n- `maiconfz/feature-exploration-planner` (feature-brief, no `gh`)\n- `maiconfz/github-interactive-issue-implementation-planner` (an issue\n  already exists)\n\nIt does not do landscape research and it does not write an\nimplementation plan.\n\n## Workflow\n\n```mermaid\nflowchart LR\n  intake[idea-intake]\n  explore[related-issue-explorer]\n  draft[issue-drafter]\n  confirm[user-confirm]\n  file[issue-filer]\n  intake --> explore --> draft --> confirm --> file\n```\n\n`user-confirm` is a gate, not an agent. Search and draft stay plan-safe.\nFiling runs only after an explicit yes.\n\n## Prerequisites\n\n- [GitHub CLI](https://cli.github.com/) authenticated for the target\n  repository (`gh auth status`)\n- A local checkout when the idea should be grounded in that repo\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets cursor\nnpx agents-repo@latest install maiconfz/issue-creation-and-explorer\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/issue-creation-and-explorer\n```\n\n- Choose `--targets` for your IDE: `github-copilot`, `cursor`,\n  `claude-code`, or `openai-codex` (pass one or more).\n- After install, commit `agents.json`, `agents-lock.json`, and the\n  extracted install paths when they change.\n- Extract paths follow the install target (see\n  [install-targets](https://github.com/agents-repo/registry/blob/main/specs/install-targets.md));\n  invoke the flow or agents by name below.\n\nThis README is catalog documentation on `main`; installed content comes\nfrom the versioned deployment ZIPs pinned in your `agents-lock.json`.\n\n## Usage\n\nInvoke **`issue-explore-and-create`** with a future-implementation idea.\nOptional: invoke a single agent when you need one step only.\n\n### Inputs\n\n| Input | Required | Description |\n| --- | --- | --- |\n| `idea` | yes | Prompt text or a pasted feature-brief |\n| `repository` | no | `owner/name` when the checkout is ambiguous |\n| `issue-kind` | no | `feature`, `chore`, `docs`, `bug`, or `spec` |\n| `user-clarifications` | no | Answers from clarification loops |\n\n### Outputs\n\n- `overlap-report` — related issues and whether drafting must stop\n- `issue-draft` — repository, title, labels, and body\n- `issue-url` — empty until filing succeeds\n- `open-questions` — remaining questions, blocking items first\n\n### After filing\n\nThe flow returns the issue URL and a suggested branch name\n`<prefix>/<number>-<slug>`. It does not open that branch or a pull\nrequest. Implementation planning is a later session with\n`maiconfz/github-interactive-issue-implementation-planner`.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `issue-explore-and-create` (flow) | Primary entry: search, draft, confirm, file |\n| `idea-intake` | Resolve repository and issue kind |\n| `related-issue-explorer` | Read-only issue search and form read |\n| `issue-drafter` | Form-shaped title, labels, and body |\n| `issue-filer` | `gh issue create` after an explicit yes |\n\n## Maintainers\n\nFrom the registry repository root (package authors / registry\ncontributors):\n\n```bash\nPKG=maiconfz/issue-creation-and-explorer\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.\n"
+}

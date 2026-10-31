@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "idea-intake",
+  "description": "Frame an implementation idea, resolve the target repository, and choose the issue kind. Ask when the repo or kind is ambiguous. Does not search or file.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 3,
+    "band": "low"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "github",
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "idea",
+      "type": "string",
+      "description": "Prompt text for a future implementation idea, or a pasted feature-brief."
+    },
+    {
+      "name": "repository",
+      "type": "string",
+      "description": "Optional target repository as owner/name when the checkout is ambiguous."
+    },
+    {
+      "name": "issue-kind",
+      "type": "string",
+      "description": "Optional kind: feature, chore, docs, bug, or spec."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "intake-summary",
+      "type": "string",
+      "description": "Framed idea, resolved owner/name, issue kind, and matching form file when one exists."
+    },
+    {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Markdown list of blocking questions; empty when repo and kind are resolved."
+    }
+  ]
+}
