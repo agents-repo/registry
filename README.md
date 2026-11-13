@@ -169,7 +169,7 @@ Dogfooded packages:
 
 - `agents-repo/agents-repo-package-creation` — all four IDE targets
 - `maiconfz/github-pr-review-triage` — all four IDE targets
-- `maiconfz/github-interactive-issue-implementation-planner` — all four IDE targets
+- `maiconfz/github-issue-implementation-planner` — all four IDE targets
 
 See `.github/CONTRIBUTING.md` for the full edit workflow.
 

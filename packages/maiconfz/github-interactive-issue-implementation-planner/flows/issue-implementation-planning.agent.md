@@ -4,7 +4,7 @@ description: >-
   Orchestrates GitHub issue intake, ask-first implementation planning, and plan
   refinement. Use with an issue number or URL. Planning only unless the user
   explicitly requests implementation.
-version: 1.1.1
+version: 1.2.0
 license: MIT
 agents:
   - github-issue-intake
@@ -30,6 +30,8 @@ outputs:
 ---
 
 # Overview
+
+> **Deprecated.** Use `maiconfz/github-issue-implementation-planner`.
 
 End-to-end **planning-only** workflow for a GitHub issue: load remote issue
 context, draft an implementation plan with an ask-first policy, then refine the

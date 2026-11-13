@@ -17,7 +17,7 @@ explicit yes.
 This package sits between:
 
 - `maiconfz/feature-exploration-planner` (feature-brief, no `gh`)
-- `maiconfz/github-interactive-issue-implementation-planner` (an issue
+- `maiconfz/github-issue-implementation-planner` (an issue
   already exists)
 
 It does not do landscape research and it does not write an
@@ -98,7 +98,7 @@ Optional: invoke a single agent when you need one step only.
 The flow returns the issue URL and a suggested branch name
 `<prefix>/<number>-<slug>`. It does not open that branch or a pull
 request. Implementation planning is a later session with
-`maiconfz/github-interactive-issue-implementation-planner`.
+`maiconfz/github-issue-implementation-planner`.
 
 ## Package contents
 
@@ -119,7 +119,7 @@ contributors):
 PKG=maiconfz/issue-creation-and-explorer
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.0.0
+npm run package:validate-artifacts -- --package "$PKG" --version 1.0.1
 ```
 
 Do not author `detail.json` or any files under `versions/`.

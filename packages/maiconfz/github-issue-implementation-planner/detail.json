@@ -1,0 +1,211 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/github-issue-implementation-planner",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "github-issue-implementation-planner",
+    "description": "GitHub issue planning via gh: interactive or automatic mode, multi-issue intake, and PR grouping and sequencing decisions. Planning only.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/github-issue-implementation-planner",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "github",
+      "issue",
+      "gh",
+      "planning",
+      "implementation",
+      "workflow",
+      "interactive",
+      "automation"
+    ],
+    "createdAt": "2026-11-13T08:00:00.000Z",
+    "updatedAt": "2026-11-13T08:00:00.000Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 8,
+      "band": "mixed"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/github-issue-implementation-planner/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "automatic-implementation-plan-refiner",
+      "name": "automatic-implementation-plan-refiner",
+      "description": "Assumption-first refine of one work unit plan against briefs and host repo. One pass with assumption-log. Does not re-intake.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/github-issue-implementation-planner/versions/1.0.0/agents/automatic-implementation-plan-refiner.agent.md"
+    },
+    {
+      "id": "automatic-issue-implementation-planner",
+      "name": "automatic-issue-implementation-planner",
+      "description": "Assumption-first implementation plan for one work unit from briefs and host repo. Labels gaps in assumption-log. Does not call gh.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/github-issue-implementation-planner/versions/1.0.0/agents/automatic-issue-implementation-planner.agent.md"
+    },
+    {
+      "id": "github-issue-intake",
+      "name": "github-issue-intake",
+      "description": "Resolve one or many GitHub issue numbers or URLs, fetch context via gh, and emit issue briefs. Use when starting issue-driven planning. Ask when ambiguous.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/github-issue-implementation-planner/versions/1.0.0/agents/github-issue-intake.agent.md"
+    },
+    {
+      "id": "interactive-implementation-plan-refiner",
+      "name": "interactive-implementation-plan-refiner",
+      "description": "Ask-first refine of one work unit plan against briefs and work-batch. Does not re-intake or implement code.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/github-issue-implementation-planner/versions/1.0.0/agents/interactive-implementation-plan-refiner.agent.md"
+    },
+    {
+      "id": "interactive-issue-implementation-planner",
+      "name": "interactive-issue-implementation-planner",
+      "description": "Draft an ask-first implementation plan for one work unit from issue briefs and local repo context. Does not call gh or implement code.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 7,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/github-issue-implementation-planner/versions/1.0.0/agents/interactive-issue-implementation-planner.agent.md"
+    },
+    {
+      "id": "work-batch-planner",
+      "name": "work-batch-planner",
+      "description": "Decide PR grouping, execution topology, and issue order from briefs and host docs. Returns work units for planners. Interactive asks; automatic assumes.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/github-issue-implementation-planner/versions/1.0.0/agents/work-batch-planner.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "automatic-issue-implementation-planning",
+      "name": "automatic-issue-implementation-planning",
+      "description": "Assumption-first GitHub issue planning for one or many issues with batch defaults and one-shot per-unit refine. Planning only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/github-issue-implementation-planner/versions/1.0.0/flows/automatic-issue-implementation-planning.agent.md",
+      "agents": [
+        "github-issue-intake",
+        "work-batch-planner",
+        "automatic-issue-implementation-planner",
+        "automatic-implementation-plan-refiner"
+      ]
+    },
+    {
+      "id": "interactive-issue-implementation-planning",
+      "name": "interactive-issue-implementation-planning",
+      "description": "Ask-first GitHub issue planning for one or many issues with batch and per-unit refine loops. Planning only.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/github-issue-implementation-planner/versions/1.0.0/flows/interactive-issue-implementation-planning.agent.md",
+      "agents": [
+        "github-issue-intake",
+        "work-batch-planner",
+        "interactive-issue-implementation-planner",
+        "interactive-implementation-plan-refiner"
+      ]
+    },
+    {
+      "id": "issue-implementation-planning",
+      "name": "issue-implementation-planning",
+      "description": "Route GitHub issue planning to interactive or automatic mode. Use with one or many issue references. Planning only unless execution is explicitly requested.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/github-issue-implementation-planner/versions/1.0.0/flows/issue-implementation-planning.agent.md"
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-11-13T08:13:15.852Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "readmeMarkdown": "# github-issue-implementation-planner\n\nGitHub issue planning via `gh`: choose interactive (ask-first) or automatic\n(assumption-first) mode, plan one or many issues, and decide PR grouping,\nmerge order, and parallel vs sequential delivery. Planning only.\n\nThis is a `maiconfz` community package, not an official agents-repo product.\nInstalled agents reply in the **language the user used** (English if mixed or\nunclear).\n\n## Objective\n\nTurn GitHub issue number(s) or URL(s) into a structured implementation plan\nwith explicit batch decisions (one PR per issue vs grouped PRs, sequential vs\nparallel). **Planning only** — no code changes unless you explicitly request\nimplementation after the plan is ready.\n\nSuccessor to `maiconfz/github-interactive-issue-implementation-planner`\n(deprecated).\n\n## Workflow\n\n```mermaid\nflowchart TD\n  router[issue-implementation-planning]\n  interactive[interactive-issue-implementation-planning]\n  automatic[automatic-issue-implementation-planning]\n  router --> interactive\n  router --> automatic\n```\n\nInvoke **`interactive-issue-implementation-planning`** or\n**`automatic-issue-implementation-planning`** directly to skip the mode\nquestion. Use **`issue-implementation-planning`** when you want the router to\nask.\n\n## Prerequisites\n\n- [GitHub CLI](https://cli.github.com/) authenticated for target repositories\n  (`gh auth status`)\n- Local checkout of the repository where you intend to implement\n- Node.js with `npx` (see the [agents-repo CLI](https://github.com/agents-repo/cli))\n\n## Install\n\n```bash\nnpx agents-repo@latest install maiconfz/github-issue-implementation-planner\n```\n\nAfter install, commit `agents.json`, `agents-lock.json`, and extracted paths\nwhen they change.\n\n## Usage\n\n### Inputs\n\n| Input | Required | Description |\n| --- | --- | --- |\n| `issue-references` | yes | One issue number or URL, or many separated by commas, spaces, or newlines |\n| `repository` | no | `owner/name` for bare issue numbers when not inferable |\n| `planning-mode` | no | `interactive` or `automatic`; router asks if missing |\n| `pr-grouping` | no | `per-issue` (one PR per issue), `related` (same-repo issues that share a change boundary), or `single` (one PR per repository) |\n| `execution-topology` | no | `sequential` or `parallel` override |\n| `user-clarifications` | no | Answers accumulated across clarification loops |\n\nLegacy callers may pass `issue-reference` instead of `issue-references` for a\nsingle issue.\n\n### Outputs\n\n- `refined-implementation-plan` — final markdown plan after refinement\n- `open-questions` — remaining questions (blocking items first when present)\n- `assumption-log` — labeled assumptions from automatic mode; empty in interactive\n\n### After planning\n\nImplementation, draft PR steps, and maintainer review follow the **target\nrepository** CONTRIBUTING and agent rules — not this package.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `issue-implementation-planning` (flow) | Primary entry: choose mode, delegate |\n| `interactive-issue-implementation-planning` (flow) | Ask-first batch and unit planning |\n| `automatic-issue-implementation-planning` (flow) | Assumption-first batch and unit planning |\n| `github-issue-intake` | Fetch one or many issues via `gh` |\n| `work-batch-planner` | PR grouping, topology, order |\n| `interactive-issue-implementation-planner` | First plan draft per work unit |\n| `interactive-implementation-plan-refiner` | Plan QA per work unit |\n| `automatic-issue-implementation-planner` | Assumption-first plan per work unit |\n| `automatic-implementation-plan-refiner` | Assumption-first refine per work unit |\n\n## Maintainers\n\nFrom the registry repository root:\n\n```bash\nPKG=maiconfz/github-issue-implementation-planner\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n"
+}

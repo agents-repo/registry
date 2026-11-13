@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "work-batch-planner",
+  "description": "Decide PR grouping, execution topology, and issue order from briefs and host docs. Returns work units for planners. Interactive asks; automatic assumes.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "issue-briefs",
+      "type": "array",
+      "description": "Canonical issue briefs from github-issue-intake."
+    },
+    {
+      "name": "planning-mode",
+      "type": "string",
+      "description": "interactive or automatic; controls defaults and questions."
+    },
+    {
+      "name": "pr-grouping",
+      "type": "string",
+      "description": "Optional override per-issue, related, or single."
+    },
+    {
+      "name": "execution-topology",
+      "type": "string",
+      "description": "Optional override sequential or parallel."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "work-batch",
+      "type": "object",
+      "description": "Object with prGrouping, executionTopology, ordered workUnits, mergeOrder, and rationale."
+    },
+    {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Markdown list when interactive mode needs user input; empty otherwise."
+    },
+    {
+      "name": "assumption-log",
+      "type": "string",
+      "description": "Labeled defaults and skipped alternatives in automatic mode."
+    }
+  ]
+}

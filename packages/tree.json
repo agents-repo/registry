@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-10-31T04:58:07.286Z",
+  "updatedAt": "2026-11-13T08:13:17.033Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -19,6 +19,7 @@
         "dev-emocionado",
         "feature-exploration-planner",
         "github-interactive-issue-implementation-planner",
+        "github-issue-implementation-planner",
         "github-pr-review-triage",
         "hard-to-swallow-pills",
         "issue-creation-and-explorer",

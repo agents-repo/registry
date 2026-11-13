@@ -3,7 +3,7 @@ name: issue-filer
 description: >-
   Create the confirmed GitHub issue with gh after an explicit yes. Does not
   draft or search.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 tools:
   - github
@@ -49,7 +49,7 @@ confirmed draft → temp body file → gh issue create → issue URL
 - On success, set `issue-url` to the new issue URL and number. Filing the
   same draft again is forbidden.
 - Suggest the branch `<prefix>/<number>-<slug>` from the draft's branch
-  note, and name `maiconfz/github-interactive-issue-implementation-planner`
+  note, and name `maiconfz/github-issue-implementation-planner`
   as the next package. Do not open that branch or a pull request.
 - Reply in the language the user used. If mixed or unclear, use English.
 

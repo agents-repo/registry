@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "automatic-plan-refiner",
+  "description": "Assumption-first quality pass on an existing plan: full repo check, fills gaps with documented assumptions. One-shot refined plan. Does not implement.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "draft-plan",
+      "type": "string",
+      "description": "Draft plan as markdown text or a workspace path to a markdown file."
+    },
+    {
+      "name": "goal",
+      "type": "string",
+      "description": "Optional stated goal or acceptance text to check the plan against."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "refined-plan",
+      "type": "string",
+      "description": "Complete revised markdown plan, or empty when the draft is unusable."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Empty unless the draft is unusable or the workspace is unreadable."
+    },
+    {
+      "name": "assumption-log",
+      "type": "string",
+      "description": "Labeled assumptions used to fill gaps; also inlined in refined-plan."
+    }
+  ]
+}

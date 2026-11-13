@@ -4,7 +4,7 @@ description: >-
   Ask-first framing of app feature ideas against the host repository. Emits
   intake-summary and blocking questions only. Does not research or define the
   full feature brief.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 tools:
   - filesystem

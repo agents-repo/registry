@@ -4,7 +4,7 @@ description: >-
   Early brainstorming for app feature ideas from conversation, public URLs,
   uploads, or pasted sources. Emits idea-brief when evidence exists. Does not
   produce a full feature-brief or inspect a host tree.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 inputs:
   - name: user-message

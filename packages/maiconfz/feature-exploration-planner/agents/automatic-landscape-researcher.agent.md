@@ -3,7 +3,7 @@ name: automatic-landscape-researcher
 description: >-
   Assumption-first landscape research: proactive search for patterns and
   competitors, cite sources, label gaps in assumption-log. One-shot.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 inputs:
   - name: intake-summary

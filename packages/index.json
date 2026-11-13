@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-10-31T04:58:07.285Z",
+  "updatedAt": "2026-11-13T08:13:17.032Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -422,7 +422,7 @@
       "name": "feature-exploration-planner",
       "description": "Explore app feature ideas with ask-first intake, optional landscape research, options analysis, and a structured feature brief. Chat-web for early brainstorming. Planning only.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "planning",
         "feature",
@@ -467,7 +467,7 @@
       "name": "github-interactive-issue-implementation-planner",
       "description": "Interactive GitHub issue planning: load issue via gh, draft and refine an implementation plan with ask-first clarifications.",
       "owner": "maiconfz",
-      "latest": "1.1.1",
+      "latest": "1.2.0",
       "tags": [
         "github",
         "issue",
@@ -477,13 +477,58 @@
         "workflow",
         "interactive"
       ],
-      "status": "active",
+      "status": "deprecated",
       "category": "automation",
       "estimateOverallCost": {
         "estimatedCost": 7,
         "band": "high"
       },
       "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/github-interactive-issue-implementation-planner/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    },
+    {
+      "id": "maiconfz/github-issue-implementation-planner",
+      "namespace": "maiconfz",
+      "package": "github-issue-implementation-planner",
+      "path": "packages/maiconfz/github-issue-implementation-planner",
+      "name": "github-issue-implementation-planner",
+      "description": "GitHub issue planning via gh: interactive or automatic mode, multi-issue intake, and PR grouping and sequencing decisions. Planning only.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "github",
+        "issue",
+        "gh",
+        "planning",
+        "implementation",
+        "workflow",
+        "interactive",
+        "automation"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 8,
+        "band": "mixed"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/github-issue-implementation-planner/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
@@ -601,7 +646,7 @@
       "name": "issue-creation-and-explorer",
       "description": "Search existing GitHub issues, draft a form-shaped issue from a short repo read, and create it with gh after explicit confirmation.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "github",
         "issue",
@@ -686,7 +731,7 @@
       "name": "plan-refiner",
       "description": "Refine an existing feature or implementation plan against the current repository: find gaps and inconsistencies. Interactive ask-first or automatic assumption-first. Planning only; does not implement.",
       "owner": "maiconfz",
-      "latest": "1.0.0",
+      "latest": "1.0.1",
       "tags": [
         "planning",
         "refinement",
@@ -1104,6 +1149,7 @@
     "dev-emocionado": "maiconfz/dev-emocionado",
     "feature-exploration-planner": "maiconfz/feature-exploration-planner",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
+    "github-issue-implementation-planner": "maiconfz/github-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
     "hard-to-swallow-pills": "maiconfz/hard-to-swallow-pills",
     "issue-creation-and-explorer": "maiconfz/issue-creation-and-explorer",

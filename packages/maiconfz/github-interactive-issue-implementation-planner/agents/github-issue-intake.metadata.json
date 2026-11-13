@@ -3,7 +3,7 @@
   "name": "github-issue-intake",
   "description": "Resolve a GitHub issue number or URL, fetch issue and comment context via gh, and emit a canonical issue brief. Use when starting issue-driven implementation planning. Ask when the repository or issue reference is ambiguous.",
   "license": "MIT",
-  "status": "active",
+  "status": "deprecated",
   "category": "automation",
   "estimateCost": {
     "estimatedCost": 3,

@@ -3,7 +3,7 @@ name: plan-refinement
 description: >-
   Route an existing plan to interactive (ask-first) or automatic
   (assumption-first) refinement with a full repository pass. Planning only.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 agents:
   - interactive-plan-refiner
@@ -88,7 +88,7 @@ a different agent.
 - **Path in `draft-plan` does not exist or is not markdown:** Ask for a
   valid path or pasted plan.
 - **User supplies an issue URL or number instead of a plan:** Stop.
-  Point at `maiconfz/github-interactive-issue-implementation-planner`.
+  Point at `maiconfz/github-issue-implementation-planner`.
   Do not invoke that package from this flow.
 - **Automatic returns `open-questions` because the workspace is
   unreadable:** Do not loop. Surface the questions and stop.

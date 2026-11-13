@@ -3,7 +3,7 @@
   "name": "issue-implementation-planning",
   "description": "Orchestrates GitHub issue intake, ask-first implementation planning, and plan refinement. Use with an issue number or URL. Planning only unless the user explicitly requests implementation.",
   "license": "MIT",
-  "status": "active",
+  "status": "deprecated",
   "category": "automation",
   "estimateCost": {
     "estimatedCost": 7,

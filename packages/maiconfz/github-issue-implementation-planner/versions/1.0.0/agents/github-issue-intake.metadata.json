@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "github-issue-intake",
+  "description": "Resolve one or many GitHub issue numbers or URLs, fetch context via gh, and emit issue briefs. Use when starting issue-driven planning. Ask when ambiguous.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "tools": [
+    "github"
+  ],
+  "inputs": [
+    {
+      "name": "issue-references",
+      "type": "string",
+      "description": "One or more issue numbers or full GitHub issue URLs."
+    },
+    {
+      "name": "repository",
+      "type": "string",
+      "description": "owner/name for bare issue numbers. References that name a different repository are intake errors."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "issue-briefs",
+      "type": "array",
+      "description": "Canonical issue context objects for downstream planning agents."
+    },
+    {
+      "name": "intake-errors",
+      "type": "string",
+      "description": "Markdown list of references that failed intake; empty when none."
+    }
+  ]
+}

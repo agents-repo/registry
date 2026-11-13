@@ -4,7 +4,7 @@ description: >-
   Resolve a GitHub issue number or URL, fetch issue and comment context via gh,
   and emit a canonical issue brief. Use when starting issue-driven implementation
   planning. Ask when the repository or issue reference is ambiguous.
-version: 1.1.1
+version: 1.2.0
 license: MIT
 tools:
   - github
@@ -25,6 +25,8 @@ outputs:
 ---
 
 # Overview
+
+> **Deprecated.** Use `maiconfz/github-issue-implementation-planner`.
 
 Remote intake for GitHub issues. Parses an issue number or URL, resolves the
 target repository, verifies the resource is an **issue** (not a pull request),
