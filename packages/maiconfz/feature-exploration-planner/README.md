@@ -162,7 +162,7 @@ From the registry repository root (package authors / registry contributors):
 PKG=maiconfz/feature-exploration-planner
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.0.0
+npm run package:validate-artifacts -- --package "$PKG" --version 1.0.1
 ```
 
 Do not author `detail.json` or any files under `versions/`.

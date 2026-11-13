@@ -10,13 +10,13 @@ tools:
 inputs:
   - name: work-unit
     type: object
-    description: One entry from work-batch work units.
+    description: Object with id, repository (owner/name), issueNumbers, and branchScope.
   - name: issue-briefs
     type: array
-    description: Briefs for issues in this work unit.
+    description: Briefs whose repository and issueNumber belong to this work unit.
   - name: work-batch
     type: object
-    description: Full batch context from work-batch-planner.
+    description: Object with prGrouping, executionTopology, ordered workUnits, mergeOrder, and rationale.
   - name: prior-plans
     type: string
     description: Markdown from completed units when topology is sequential.
@@ -40,7 +40,11 @@ Ask-first: use `blocking-questions` when requirements are unclear.
 
 ## Responsibilities
 
-- Read briefs as the sole source of remote issue truth.
+- Read briefs as the sole source of remote issue truth. Use only briefs for
+  this unit.
+- If the work unit `repository` is not the current checkout, leave
+  `implementation-plan` empty and say so in `blocking-questions`. Do not plan
+  against a different repository's tree.
 - Inspect local project context for the work unit's repository.
 - Write `implementation-plan` with goal, acceptance criteria, exemplars,
   approach, files, risks, validation (host repo commands), pre-ready draft PR

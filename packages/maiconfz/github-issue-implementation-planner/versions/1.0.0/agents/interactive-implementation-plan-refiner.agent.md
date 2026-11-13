@@ -10,13 +10,13 @@ tools:
 inputs:
   - name: work-unit
     type: object
-    description: One entry from work-batch work units.
+    description: Object with id, repository (owner/name), issueNumbers, and branchScope.
   - name: issue-briefs
     type: array
-    description: Briefs for issues in this work unit.
+    description: Briefs whose repository and issueNumber belong to this work unit.
   - name: work-batch
     type: object
-    description: Full batch context from work-batch-planner.
+    description: Object with prGrouping, executionTopology, ordered workUnits, mergeOrder, and rationale.
   - name: implementation-plan
     type: string
     description: Draft markdown plan from interactive-issue-implementation-planner.
@@ -50,8 +50,8 @@ remaining gaps.
 ## Constraints
 
 - MUST NOT expand scope beyond the briefs and work unit.
-- Limited repo discovery; request planner revision via the flow when deep
-  research is needed.
+- Limited repo discovery. When the draft needs repository research this agent
+  must not do, add an `open-questions` line that starts with `planner-revision:`.
 - Host agent instructions override generic guidance.
 
 ## Interaction Contract

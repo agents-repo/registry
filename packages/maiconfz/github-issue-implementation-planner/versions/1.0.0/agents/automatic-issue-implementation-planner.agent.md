@@ -10,13 +10,13 @@ tools:
 inputs:
   - name: work-unit
     type: object
-    description: One entry from work-batch work units.
+    description: Object with id, repository (owner/name), issueNumbers, and branchScope.
   - name: issue-briefs
     type: array
-    description: Briefs for issues in this work unit.
+    description: Briefs whose repository and issueNumber belong to this work unit.
   - name: work-batch
     type: object
-    description: Full batch context from work-batch-planner.
+    description: Object with prGrouping, executionTopology, ordered workUnits, mergeOrder, and rationale.
   - name: prior-plans
     type: string
     description: Markdown from completed units when topology is sequential.
@@ -41,6 +41,9 @@ batch topology is sequential). Fill gaps with labeled assumptions.
 ## Responsibilities
 
 - Skip closed issues in the unit; note that in `assumption-log`.
+- If the work unit `repository` is not the current checkout, leave
+  `implementation-plan` empty and record that in `assumption-log`. Do not plan
+  against a different repository's tree.
 - Produce complete `implementation-plan` with standard sections plus
   **Assumptions** mirrored in `assumption-log`.
 - Use `prior-plans` under sequential topology.

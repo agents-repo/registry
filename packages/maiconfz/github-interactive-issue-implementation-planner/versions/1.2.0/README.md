@@ -108,5 +108,5 @@ From the registry repository root (package authors / registry contributors):
 PKG=maiconfz/github-interactive-issue-implementation-planner
 npm run package:validate -- --package "$PKG"
 npm run package:build -- --package "$PKG"
-npm run package:validate-artifacts -- --package "$PKG" --version 1.1.1
+npm run package:validate-artifacts -- --package "$PKG" --version 1.2.0
 ```

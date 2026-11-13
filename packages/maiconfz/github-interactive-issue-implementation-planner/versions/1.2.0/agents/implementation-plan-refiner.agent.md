@@ -27,6 +27,8 @@ outputs:
 
 # Overview
 
+> **Deprecated.** Use `maiconfz/github-issue-implementation-planner`.
+
 Quality pass on an implementation plan. Compares the draft plan to the **issue
 brief** and acceptance criteria, fixes gaps and inconsistencies in the plan
 document, and surfaces remaining questions. Does not expand scope beyond the

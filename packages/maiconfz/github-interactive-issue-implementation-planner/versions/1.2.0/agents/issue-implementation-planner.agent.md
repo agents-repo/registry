@@ -24,6 +24,8 @@ outputs:
 
 # Overview
 
+> **Deprecated.** Use `maiconfz/github-issue-implementation-planner`.
+
 Produces the first implementation plan for a GitHub issue using the **issue
 brief** and the **local repository** (docs, specs, rules, and relevant code
 areas). The plan is planning-only: no code changes. When requirements are

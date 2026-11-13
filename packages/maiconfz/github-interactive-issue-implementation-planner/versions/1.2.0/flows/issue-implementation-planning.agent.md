@@ -31,6 +31,8 @@ outputs:
 
 # Overview
 
+> **Deprecated.** Use `maiconfz/github-issue-implementation-planner`.
+
 End-to-end **planning-only** workflow for a GitHub issue: load remote issue
 context, draft an implementation plan with an ask-first policy, then refine the
 plan for gaps and inconsistencies. Primary entry point for this package.

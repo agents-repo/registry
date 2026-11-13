@@ -58,6 +58,11 @@ intake → batch → [unit: plan → refine] → assemble → handoff
    Merge `assumption-log` into the running log. Do not loop on batch questions.
 
 3. **Units** — For each work unit in order:
+   - Pass only `issue-briefs` whose `repository` and `issueNumber` are on that
+     unit (`id`, `repository`, `issueNumbers`, `branchScope`).
+   - If that `repository` is not the current checkout, record the unit in
+     `open-questions`. Sequential: stop. Parallel: continue other units. Do not
+     read this tree as a stand-in.
    - Invoke `automatic-issue-implementation-planner` with `prior-plans` when
      sequential.
    - If `implementation-plan` is empty, stop the sequence (sequential) or record

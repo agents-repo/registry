@@ -26,6 +26,8 @@ outputs:
 
 # Overview
 
+> **Deprecated.** Use `maiconfz/github-issue-implementation-planner`.
+
 Remote intake for GitHub issues. Parses an issue number or URL, resolves the
 target repository, verifies the resource is an **issue** (not a pull request),
 fetches issue and discussion context with the GitHub CLI (`gh`), and returns a

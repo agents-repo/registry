@@ -59,15 +59,25 @@ intake → batch → [unit: plan ↔ refine] → assemble → handoff
    `user-clarifications`, and repeat batch (max three Q&A cycles).
 
 3. **Units** — For each work unit in order:
+   - Pass only `issue-briefs` whose `repository` and `issueNumber` are on that
+     unit (`id`, `repository`, `issueNumbers`, `branchScope`).
+   - If that `repository` is not the current checkout, do not read this tree
+     as a stand-in. Sequential: stop and hand off. Parallel: record the unit
+     in `open-questions` and continue.
    - Invoke `interactive-issue-implementation-planner` with `prior-plans` when
      topology is sequential.
    - While `blocking-questions` is non-empty, ask the user, update
-     `user-clarifications`, and repeat planner (max three cycles per unit).
-   - Sequential topology: if blockers remain after three cycles, stop the whole
-     flow and hand off partial output.
-   - Parallel topology: park that unit's questions and continue other units.
-   - Invoke `interactive-implementation-plan-refiner`. Loop on blocking
-     `open-questions` like the planner (max three cycles).
+     `user-clarifications`, and repeat the planner (max three cycles per unit).
+   - If blockers remain, do not refine. Sequential: stop the flow. Parallel:
+     park the unit in `open-questions` and continue.
+   - Otherwise invoke `interactive-implementation-plan-refiner` with that
+     unit's `implementation-plan`. While blocking items remain in
+     `open-questions`, ask the user, update `user-clarifications`, and repeat
+     the refiner (max three cycles). A line starting with `planner-revision:`
+     means re-invoke the unit planner with those clarifications, then the
+     refiner, and count that pair as one cycle.
+   - If blocking refine questions remain: sequential stops the flow; parallel
+     parks that unit and continues.
 
 4. **Assemble** — Build `refined-implementation-plan` with a batch header from
    `work-batch` and one section per refined unit.

@@ -38,7 +38,7 @@
     {
       "version": "1.0.1",
       "srcArtifact": "1.0.1-src.zip",
-      "srcSha256": "4f2a7666ab40e7b055c6fbd001436d0f2701d93292302c49d8cee0afaf8f632e",
+      "srcSha256": "87fafe57f1faadca8e3d71c90dfdfa30e925b4b904b6fdc11f548645e78000fd",
       "artifacts": [
         {
           "target": "github-copilot",
@@ -65,7 +65,7 @@
           "pathEncoding": 1
         }
       ],
-      "createdAt": "2026-11-13T08:02:04.813Z"
+      "createdAt": "2026-11-13T08:13:17.031Z"
     }
   ]
 }

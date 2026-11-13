@@ -59,7 +59,7 @@ when they change.
 | `issue-references` | yes | One issue number or URL, or many separated by commas, spaces, or newlines |
 | `repository` | no | `owner/name` for bare issue numbers when not inferable |
 | `planning-mode` | no | `interactive` or `automatic`; router asks if missing |
-| `pr-grouping` | no | `per-issue`, `related`, or `single` override |
+| `pr-grouping` | no | `per-issue` (one PR per issue), `related` (same-repo issues that share a change boundary), or `single` (one PR per repository) |
 | `execution-topology` | no | `sequential` or `parallel` override |
 | `user-clarifications` | no | Answers accumulated across clarification loops |
 

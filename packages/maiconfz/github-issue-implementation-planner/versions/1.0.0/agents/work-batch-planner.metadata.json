@@ -43,7 +43,7 @@
     {
       "name": "work-batch",
       "type": "object",
-      "description": "Grouping, topology, ordered work units, merge order, and rationale."
+      "description": "Object with prGrouping, executionTopology, ordered workUnits, mergeOrder, and rationale."
     },
     {
       "name": "blocking-questions",

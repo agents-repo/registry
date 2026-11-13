@@ -6,8 +6,8 @@
   "status": "active",
   "category": "automation",
   "estimateCost": {
-    "estimatedCost": 4,
-    "band": "low"
+    "estimatedCost": 8,
+    "band": "high"
   },
   "inputs": [
     {

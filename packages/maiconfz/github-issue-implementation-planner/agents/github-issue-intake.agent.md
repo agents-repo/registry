@@ -13,7 +13,7 @@ inputs:
     description: One or more issue numbers or full GitHub issue URLs.
   - name: repository
     type: string
-    description: Optional target repository as owner/name when not inferable.
+    description: owner/name for bare issue numbers. References that name a different repository are intake errors.
   - name: user-clarifications
     type: string
     description: Optional user answers from prior clarification loops.
@@ -44,6 +44,9 @@ downstream agents MUST NOT call `gh` to reload issues.
 - Resolve `owner/name` per reference when `repository` is omitted: parse from
   URL, else `gh repo view` from the current directory, else normalize
   `git remote get-url origin`. If still ambiguous, ask structured questions.
+- When `repository` is set, bare issue numbers use that `owner/name`. If a
+  reference embeds a different `owner/name`, record it in `intake-errors` and
+  do not fetch it under the forced repository.
 - Verify each target is an issue (not a PR). If any reference is a PR, record
   it in `intake-errors` and do not silently skip.
 - Fetch issue fields: title, body, state, labels, author, assignees, milestone,

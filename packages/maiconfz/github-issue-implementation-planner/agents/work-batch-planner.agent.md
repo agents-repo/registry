@@ -26,7 +26,7 @@ inputs:
 outputs:
   - name: work-batch
     type: object
-    description: Grouping, topology, ordered work units, merge order, and rationale.
+    description: Object with prGrouping, executionTopology, ordered workUnits, mergeOrder, and rationale.
   - name: blocking-questions
     type: string
     description: Markdown list when interactive mode needs user input; empty otherwise.
@@ -53,6 +53,10 @@ object with ordered work units, each mapping to one draft PR scope.
 - Order work units: blocker links first, foundations before consumers, depended-on
   repo before consumers (for example API before webapp), then issue number for
   ties.
+- Emit `work-batch` with `prGrouping` (`per-issue`, `related`, or `single`),
+  `executionTopology` (`sequential` or `parallel`), ordered `workUnits`,
+  `mergeOrder` (unit `id` values), and `rationale`. Each work unit has `id`,
+  `repository` (`owner/name`), `issueNumbers`, and `branchScope`.
 - Enforce: one PR cannot span repositories; `single` means one PR per repo;
   `related` clusters only same-repo issues with a shared change boundary;
   sequential in-repo means stacked branches; sequential cross-repo means merge
