@@ -3,7 +3,7 @@ name: issue-explore-and-create
 description: >-
   Search related GitHub issues, draft a repo-shaped issue, and file it
   with gh after explicit confirmation. Does not plan implementation.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 agents:
   - idea-intake
@@ -70,7 +70,7 @@ intake → explore → draft → confirm → file
 6. **File** — Invoke `issue-filer` with the accepted `issue-draft` and
    `file-confirmed` true. Copy `issue-url`. Then hand off the URL, the
    suggested branch `<prefix>/<number>-<slug>`, and
-   `maiconfz/github-interactive-issue-implementation-planner`.
+   `maiconfz/github-issue-implementation-planner`.
 
 ## Error Handling
 

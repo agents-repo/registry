@@ -16,7 +16,7 @@ assumptions. Bounded rediscovery (project rules, cited files, related
 modules and tests). Not a first-pass planner.
 
 If you have a GitHub issue number and no plan yet, use
-`maiconfz/github-interactive-issue-implementation-planner` instead. This
+`maiconfz/github-issue-implementation-planner` instead. This
 package does not call `gh` and does not invoke that package.
 
 ## Workflow

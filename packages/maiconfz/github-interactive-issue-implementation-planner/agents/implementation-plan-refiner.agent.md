@@ -4,7 +4,7 @@ description: >-
   Refine an implementation plan against the issue brief for gaps and
   inconsistencies. Use after the first plan draft. Prefer questions over
   assumptions. Does not re-intake the issue or implement code.
-version: 1.1.1
+version: 1.2.0
 license: MIT
 inputs:
   - name: issue-brief

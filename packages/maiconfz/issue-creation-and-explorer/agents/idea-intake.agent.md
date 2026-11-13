@@ -4,7 +4,7 @@ description: >-
   Frame an implementation idea, resolve the target repository, and choose
   the issue kind. Ask when the repo or kind is ambiguous. Does not search
   or file.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 tools:
   - github

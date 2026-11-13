@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "feature-exploration-chat",
+  "description": "Early brainstorming for app feature ideas from conversation, public URLs, uploads, or pasted sources. Emits idea-brief when evidence exists. Does not produce a full feature-brief or inspect a host tree.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include a feature idea, project URL, attachments, uploads, or pasted sources."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "idea-brief",
+      "type": "string",
+      "description": "Lighter structured idea brief; empty when there is no usable evidence or the message is too thin to structure."
+    }
+  ]
+}

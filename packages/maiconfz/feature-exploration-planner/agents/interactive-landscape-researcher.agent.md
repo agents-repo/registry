@@ -4,7 +4,7 @@ description: >-
   Ask-first landscape research for app features: propose queries, get approval,
   cite sources. Assumption-log always empty. Invoked once by the flow (not
   looped); includes one inline query-approval step.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 inputs:
   - name: intake-summary

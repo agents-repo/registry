@@ -3,7 +3,7 @@ name: feature-exploration-planning
 description: >-
   Orchestrate ask-first feature intake, routed landscape research, options
   analysis, and feature-brief synthesis. Planning only; does not implement.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 agents:
   - feature-intake
@@ -61,7 +61,7 @@ intake → research-mode → landscape → options → define → handoff
 1. **Idea** — If `feature-idea` is missing or empty, ask for prompt text or
    a valid idea-file path and stop. If the user supplies a GitHub issue URL or
    number, stop and point at
-   `maiconfz/github-interactive-issue-implementation-planner`. If the idea is
+   `maiconfz/github-issue-implementation-planner`. If the idea is
    a registry package submission, stop and point at
    `agents-repo/agents-repo-package-creation`.
 
@@ -95,7 +95,7 @@ intake → research-mode → landscape → options → define → handoff
    leftover intake blockers and non-blocking follow-ups from later agents into
    `open-questions` (blocking first). Suggest next steps (document only):
    - Copy `feature-brief` into a **new GitHub issue**, then run
-     `maiconfz/github-interactive-issue-implementation-planner` with that
+     `maiconfz/github-issue-implementation-planner` with that
      issue number
    - If the user later drafts an **implementation plan**, run
      `maiconfz/plan-refiner` on that plan
@@ -110,7 +110,7 @@ execution with another agent.
 - **Empty or unusable `feature-idea`:** Ask for prompt text or a valid
   idea-file path; stop.
 - **GitHub issue URL or number supplied:** Stop. Point at
-  `maiconfz/github-interactive-issue-implementation-planner`; do not invoke
+  `maiconfz/github-issue-implementation-planner`; do not invoke
   that package from this flow.
 - **Registry package idea:** Stop. Point at
   `agents-repo/agents-repo-package-creation` / `package-requirements-analyst`.

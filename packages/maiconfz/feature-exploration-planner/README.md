@@ -13,7 +13,7 @@ or unclear).
 Turn a fuzzy app feature idea into a structured **feature-brief** you can
 paste into a GitHub issue or feed downstream planning. Sits **upstream** of:
 
-- `maiconfz/github-interactive-issue-implementation-planner` (issue exists)
+- `maiconfz/github-issue-implementation-planner` (issue exists)
 - `maiconfz/plan-refiner` (implementation plan exists)
 
 Primary output is **text in the conversation** — no markdown file required.
@@ -104,7 +104,7 @@ Two entry paths:
 This package stops at the flow outputs above. Suggested next steps:
 
 1. Copy `feature-brief` into a **new GitHub issue**
-2. Run `maiconfz/github-interactive-issue-implementation-planner` with that
+2. Run `maiconfz/github-issue-implementation-planner` with that
    issue number
 3. Or draft an implementation plan and run `maiconfz/plan-refiner`
 

@@ -4,7 +4,7 @@ description: >-
   Draft an ask-first implementation plan from an issue brief and local repository
   context. Use after issue intake. Prefer clarifying questions over assumptions.
   Does not implement code or re-fetch the issue via gh.
-version: 1.1.1
+version: 1.2.0
 license: MIT
 inputs:
   - name: issue-brief

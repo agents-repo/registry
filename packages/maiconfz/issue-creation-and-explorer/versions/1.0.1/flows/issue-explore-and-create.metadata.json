@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "issue-explore-and-create",
+  "description": "Search related GitHub issues, draft a repo-shaped issue, and file it with gh after explicit confirmation. Does not plan implementation.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "agents": [
+    "idea-intake",
+    "related-issue-explorer",
+    "issue-drafter",
+    "issue-filer"
+  ],
+  "inputs": [
+    {
+      "name": "idea",
+      "type": "string",
+      "description": "Prompt text for a future implementation idea, or a pasted feature-brief."
+    },
+    {
+      "name": "repository",
+      "type": "string",
+      "description": "Optional target repository as owner/name when the checkout is ambiguous."
+    },
+    {
+      "name": "issue-kind",
+      "type": "string",
+      "description": "Optional kind: feature, chore, docs, bug, or spec."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "overlap-report",
+      "type": "string",
+      "description": "Related open and closed issues with links, plus whether drafting must stop."
+    },
+    {
+      "name": "issue-draft",
+      "type": "string",
+      "description": "Repository, title, labels, markdown body, and related links. Empty when drafting is blocked."
+    },
+    {
+      "name": "issue-url",
+      "type": "string",
+      "description": "Created issue URL and number. Empty until filing succeeds."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Remaining questions at handoff. Blocking items first."
+    }
+  ]
+}

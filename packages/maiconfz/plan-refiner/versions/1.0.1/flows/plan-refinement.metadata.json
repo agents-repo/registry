@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "plan-refinement",
+  "description": "Route an existing plan to interactive (ask-first) or automatic (assumption-first) refinement with a full repository pass. Planning only.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "agents": [
+    "interactive-plan-refiner",
+    "automatic-plan-refiner"
+  ],
+  "inputs": [
+    {
+      "name": "draft-plan",
+      "type": "string",
+      "description": "Draft plan as markdown text or a workspace path to a markdown file."
+    },
+    {
+      "name": "refine-mode",
+      "type": "string",
+      "description": "interactive or automatic; ask which to use when missing."
+    },
+    {
+      "name": "goal",
+      "type": "string",
+      "description": "Optional stated goal or acceptance text to check the plan against."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "refined-plan",
+      "type": "string",
+      "description": "Revised markdown plan after the selected refiner finishes."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Remaining questions at handoff; blocking items first when present."
+    },
+    {
+      "name": "assumption-log",
+      "type": "string",
+      "description": "Assumptions from automatic mode; empty after interactive refine."
+    }
+  ]
+}

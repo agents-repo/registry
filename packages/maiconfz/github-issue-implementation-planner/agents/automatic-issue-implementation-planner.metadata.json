@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "automatic-issue-implementation-planner",
+  "description": "Assumption-first implementation plan for one work unit from briefs and host repo. Labels gaps in assumption-log. Does not call gh.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "work-unit",
+      "type": "object",
+      "description": "One entry from work-batch work units."
+    },
+    {
+      "name": "issue-briefs",
+      "type": "array",
+      "description": "Briefs for issues in this work unit."
+    },
+    {
+      "name": "work-batch",
+      "type": "object",
+      "description": "Full batch context from work-batch-planner."
+    },
+    {
+      "name": "prior-plans",
+      "type": "string",
+      "description": "Markdown from completed units when topology is sequential."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "implementation-plan",
+      "type": "string",
+      "description": "Markdown implementation plan for the work unit with Assumptions section."
+    },
+    {
+      "name": "assumption-log",
+      "type": "string",
+      "description": "Labeled assumptions used when filling gaps."
+    }
+  ]
+}

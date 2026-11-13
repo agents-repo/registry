@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "github-issue-implementation-planner",
+  "description": "GitHub issue planning via gh: interactive or automatic mode, multi-issue intake, and PR grouping and sequencing decisions. Planning only.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/github-issue-implementation-planner",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "github",
+    "issue",
+    "gh",
+    "planning",
+    "implementation",
+    "workflow",
+    "interactive",
+    "automation"
+  ],
+  "createdAt": "2026-11-13T08:00:00.000Z",
+  "updatedAt": "2026-11-13T08:00:00.000Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 8,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/github-issue-implementation-planner/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      {
+        "id": "github-copilot",
+        "status": "supported"
+      },
+      {
+        "id": "claude-code",
+        "status": "supported"
+      },
+      {
+        "id": "cursor",
+        "status": "supported"
+      },
+      {
+        "id": "openai-codex",
+        "status": "supported"
+      }
+    ]
+  }
+}

@@ -3,7 +3,7 @@ name: related-issue-explorer
 description: >-
   Search open and closed GitHub issues for overlap and read the target
   issue template plus a short repo slice. Read-only.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 tools:
   - github

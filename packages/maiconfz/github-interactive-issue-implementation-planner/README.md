@@ -1,5 +1,9 @@
 # github-interactive-issue-implementation-planner
 
+> **Deprecated.** Use
+> [`maiconfz/github-issue-implementation-planner`](https://github.com/agents-repo/registry/tree/main/packages/maiconfz/github-issue-implementation-planner)
+> for interactive or automatic multi-issue planning.
+
 Interactive GitHub issue planning: load issue via `gh`, draft and refine an
 implementation plan with ask-first clarifications.
 

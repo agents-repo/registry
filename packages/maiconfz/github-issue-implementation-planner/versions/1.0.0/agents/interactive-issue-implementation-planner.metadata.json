@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "interactive-issue-implementation-planner",
+  "description": "Draft an ask-first implementation plan for one work unit from issue briefs and local repo context. Does not call gh or implement code.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 7,
+    "band": "high"
+  },
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "work-unit",
+      "type": "object",
+      "description": "One entry from work-batch work units."
+    },
+    {
+      "name": "issue-briefs",
+      "type": "array",
+      "description": "Briefs for issues in this work unit."
+    },
+    {
+      "name": "work-batch",
+      "type": "object",
+      "description": "Full batch context from work-batch-planner."
+    },
+    {
+      "name": "prior-plans",
+      "type": "string",
+      "description": "Markdown from completed units when topology is sequential."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "implementation-plan",
+      "type": "string",
+      "description": "Markdown implementation plan for the work unit."
+    },
+    {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Markdown list of blocking questions; empty when none."
+    }
+  ]
+}

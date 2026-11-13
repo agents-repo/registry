@@ -3,7 +3,7 @@ name: issue-drafter
 description: >-
   Draft a GitHub issue title, labels, and body that mirror the target repo
   issue form. Does not call gh issue create.
-version: 1.0.0
+version: 1.0.1
 license: MIT
 tools:
   - filesystem

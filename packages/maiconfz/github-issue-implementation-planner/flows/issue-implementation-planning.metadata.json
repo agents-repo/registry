@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "issue-implementation-planning",
+  "description": "Route GitHub issue planning to interactive or automatic mode. Use with one or many issue references. Planning only unless execution is explicitly requested.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "inputs": [
+    {
+      "name": "issue-references",
+      "type": "string",
+      "description": "One or more issue numbers or full GitHub issue URLs."
+    },
+    {
+      "name": "repository",
+      "type": "string",
+      "description": "Optional target repository as owner/name when not inferable."
+    },
+    {
+      "name": "planning-mode",
+      "type": "string",
+      "description": "interactive or automatic; ask which to use when missing."
+    },
+    {
+      "name": "pr-grouping",
+      "type": "string",
+      "description": "Optional override per-issue, related, or single."
+    },
+    {
+      "name": "execution-topology",
+      "type": "string",
+      "description": "Optional override sequential or parallel."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "refined-implementation-plan",
+      "type": "string",
+      "description": "Final markdown implementation plan after refinement."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Markdown list of remaining questions after planning."
+    },
+    {
+      "name": "assumption-log",
+      "type": "string",
+      "description": "Labeled assumptions from automatic mode; empty after interactive."
+    }
+  ]
+}
