@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/project-ai-guide",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "project-ai-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "project-ai-chat",
+      "path": "/pkg/maiconfz/project-ai-guide/1.0.0/agents/project-ai-chat.agent.md"
+    }
+  ]
+}

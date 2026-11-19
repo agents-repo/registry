@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-11-13T08:13:17.033Z",
+  "updatedAt": "2026-11-19T03:30:49.704Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -25,6 +25,7 @@
         "issue-creation-and-explorer",
         "job-search-tools",
         "plan-refiner",
+        "project-ai-guide",
         "pt-it-tax-models",
         "recruiting-tools",
         "refactor-or-trash",

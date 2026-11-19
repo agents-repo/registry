@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "guide-project-ai",
+  "description": "Build a host-project AI catalog, then match an optional task to the right entry. Read-only.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "agents": [
+    "ai-surface-catalog",
+    "capability-matcher"
+  ],
+  "inputs": [
+    {
+      "name": "task",
+      "type": "string",
+      "description": "Optional task to match against the catalog."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "surface-catalog",
+      "type": "string",
+      "description": "Markdown catalog from ai-surface-catalog."
+    },
+    {
+      "name": "task-matches",
+      "type": "string",
+      "description": "Markdown matches from capability-matcher; empty when task is missing."
+    },
+    {
+      "name": "open-questions",
+      "type": "string",
+      "description": "Remaining blockers or follow-ups at handoff."
+    }
+  ]
+}

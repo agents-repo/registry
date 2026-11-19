@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "capability-matcher",
+  "description": "Match a teammate's task to installed skills, agents, flows, and other AI surfaces. Explain why. Do not invoke them.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "surface-catalog",
+      "type": "string",
+      "description": "Markdown catalog from ai-surface-catalog."
+    },
+    {
+      "name": "task",
+      "type": "string",
+      "description": "User task to match against installed AI surfaces."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "task-matches",
+      "type": "string",
+      "description": "Markdown ranked matches with rationale and invocation hints."
+    }
+  ]
+}
