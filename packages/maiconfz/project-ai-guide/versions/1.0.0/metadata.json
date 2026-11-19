@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "project-ai-guide",
+  "description": "Explain every AI surface in a project (skills, agents, rules, instructions, hooks, MCP, and subagents), match a task to the right one, or read a public repo URL in chat and suggest ideas to adapt. Read-only.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/project-ai-guide",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "onboarding",
+    "skills",
+    "agents",
+    "catalog",
+    "guide",
+    "rules",
+    "mcp",
+    "hooks",
+    "chat",
+    "analysis"
+  ],
+  "createdAt": "2026-11-19T03:29:35.129Z",
+  "updatedAt": "2026-11-19T03:29:35.129Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 6,
+    "band": "mixed"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/project-ai-guide/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "project-ai-chat"
+        }
+      }
+    ]
+  }
+}

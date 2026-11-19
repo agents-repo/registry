@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "project-ai-chat",
+  "description": "From a public GitHub URL, upload, or paste, explain that project's skills and agents and suggest ideas the reader can adapt. Does not inspect a host tree.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include a project URL, attached or uploaded files, or pasted sources."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "guide-report",
+      "type": "string",
+      "description": "Structured catalog and adaptation ideas; empty when there is no usable evidence."
+    }
+  ]
+}
