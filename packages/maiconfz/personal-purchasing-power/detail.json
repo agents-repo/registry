@@ -1,0 +1,118 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/personal-purchasing-power",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "personal-purchasing-power",
+    "description": "Chat-web household price basket: Laspeyres purchasing-power loss, scenario projections, and counterfactuals versus local interest, a stock index, Bitcoin, and dollar or euro cash when the currency is neither. Not investment advice.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/personal-purchasing-power",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "economics",
+      "inflation",
+      "purchasing-power",
+      "personal-cpi",
+      "investments",
+      "bitcoin",
+      "chat"
+    ],
+    "createdAt": "2026-11-20T03:00:50.202Z",
+    "updatedAt": "2026-11-20T03:00:50.202Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "education",
+    "estimateOverallCost": {
+      "estimatedCost": 8,
+      "band": "high"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/personal-purchasing-power/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported",
+          "defaultInstruction": {
+            "kind": "agent",
+            "id": "personal-purchasing-power-chat"
+          }
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "personal-purchasing-power-chat",
+      "name": "personal-purchasing-power-chat",
+      "description": "Chat-web household basket, purchasing-power loss, investment counterfactuals, and dollar or euro cash when relevant. Not investment advice.",
+      "status": "active",
+      "category": "education",
+      "estimateCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "instructionPath": "packages/maiconfz/personal-purchasing-power/versions/1.0.0/agents/personal-purchasing-power-chat.agent.md"
+    }
+  ],
+  "flows": [],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-11-20T03:03:14.686Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# personal-purchasing-power\n\nChat-web illustration of a household's own price basket: Laspeyres\npurchasing-power loss, labeled scenarios, and counterfactuals versus a local\nyield, a broad stock index, and Bitcoin. When the currency is neither the\nUS dollar nor the euro, the same stake is also shown as unremunerated dollar\ncash and euro cash.\n\nThis is a `maiconfz` community package. Outputs are **educational\nillustrations** of the reader's inputs and cited sources. They are **not**\ninvestment, financial, tax, accounting, or legal advice.\n\n## Consumption (chat-web only)\n\nThis package is **for registry chat-web**. Use it in the\n[agents-repo webapp](https://agents-repo.org) chat experience, or any\nconsumer that loads `/pkg/.../instructions.json`. The agent is a\nconversational report generator. It does **not** inspect an IDE workspace\nor run local tooling.\n\nRegistry metadata declares **`chat-web`** as a supported consumption\nchannel. IDE install ZIPs exist for catalog plumbing. This package is\n**not** designed or documented as a Cursor or Copilot coding workflow.\n\nThe agent replies in the **language the user used** (English if mixed or\nunclear).\n\n## What this package is\n\n- A fixed-basket (Laspeyres) price index from the household's own shares\n- Purchasing-power loss over a cited window, with the official consumer\n  price index as a contrast column when a series can be cited\n- The same stake illustrated against a local yield, one broad equity index,\n  and Bitcoin, in the household currency\n- Unremunerated USD and EUR cash when the currency is neither\n- A closing ranking of those illustrated endings, plus labeled repeats of\n  cited-window growth\n\n## What this package is not\n\n- Not a forecast of inflation or exchange rates\n- Not an instruction to buy, sell, hold, or move money\n- Not a price database or a tax calculator\n- Not a claim that an official consumer-price index is fraudulent\n\n## Chat agent\n\n| Agent | Use when |\n| --- | --- |\n| `personal-purchasing-power-chat` | A household basket, purchasing power, and illustrated counterfactuals |\n\n## Method\n\n`currency` is the ISO 4217 code of the basket's unit of account. Spend\nshares are renormalized to 100 percent. Prefer prices the user observed.\nUnsourced lines stay blank. If unsourced weight is above 20 percent, the\nindex is **partial** and every real-return figure says so.\n\n### Past index\n\nLaspeyres is the headline. It reprices the base basket:\n\n```text\nL = sum(p_t * q_0) / sum(p_0 * q_0)\nL = sum(w_i0 * (p_it / p_i0))\npurchasing power = 1 / (L_end / L_start)\nloss = 1 - L_start / L_end\nannualized = (L_end / L_start) ^ (1 / years) - 1\n```\n\nAnnualize only when the span is at least one day. If the user also gives\nend-period quantities, also report Paasche and Fisher `sqrt(L * P)`.\nLaspeyres stays the headline.\n\nThe official consumer-price series, when cited, is one contrast column. It\ncan differ because it uses an average basket, a housing method, quality\nadjustment, or substitution.\n\n### Real return\n\nEvery path uses the personal index, not the official CPI, and the cumulative\ntotal return:\n\n```text\nreal return = (1 + nominal total return) / (L_end / L_start) - 1\n```\n\nPaths, omitted when the series cannot be cited:\n\n- Local risk-free or savings yield, compounded\n- One broad local equity total-return index, or a price index with dividends\n  described as omitted\n- Bitcoin held from the start date to the end date, in the user's currency\n\nFigures are gross of tax unless the user supplies a rate.\n\n### Dollar and euro cash\n\nRun only when the currency is neither USD nor EUR. FX is local currency per\n1 USD, and the same convention per 1 EUR, on the start and end dates.\nForeign units of the stake are `local stake / FX`.\n\n```text\nL_foreign = (L_end / L_start) * (FX_start / FX_end)\n```\n\n`L_foreign` above 1 means the same basket became more expensive in that\ncurrency. Local cash has nominal return 0. Dollar cash and euro cash are\nunremunerated: nominal local return is `FX_end / FX_start - 1`.\n\n### Future scenarios\n\nBasket scenarios stay in the user's currency. They are the historical\nitem CAGRs on the fixed basket, user-supplied item rates when given, and a\nuniform band of 2 percentage points either side of the annualized personal\nrate. The band is an illustration, not a confidence interval.\n\nThe closing ranking may repeat each path's own cited-window annualized\nreturn, including the local-currency change of dollar or euro cash. That\nrepeat is labeled \"if that cited-window change were repeated.\" It is not an\nexchange-rate forecast.\n\n```text\nr = (1 + nominal total return) ^ (1 / years) - 1\nending = stake * (1 + r) ^ H / (start basket-unit * L_S / L_start)\n```\n\nLocal cash uses `r = 0`. One start basket-unit is the stated start cost of\nthe basket when the user gave it. When the user gave only shares, one start\nbasket-unit is the stake. If `future-years` is omitted, `H` is the\nhistorical span rounded to the nearest whole year, at least 1. A horizon\nabove 30 years is still shown and labeled as long.\n\nThe report orders paths by ending basket-units. A tie at the reported\nprecision stays a tie. When the scenarios disagree, the illustration does\nnot single out one path.\n\n## Notice\n\nPackage and agents are an educational illustration of the reader's inputs\nand cited sources.\n\n- Not investment, financial, tax, accounting, or legal advice.\n- No advisory, brokerage, or fiduciary relationship with the reader, the\n  package authors, or the registry.\n- Provided **as is** under the MIT license. Authors and distributors\n  disclaim warranties of accuracy.\n- An AI system produced the chat text and can mis-state sources, dates,\n  prices, exchange rates, and arithmetic.\n- Figures can be wrong, incomplete, stale, or inapplicable.\n- Past rankings and scenario orderings are not forecasts and not\n  instructions.\n- Decisions, and any gain or loss from a decision, are the reader's sole\n  responsibility.\n- Check every figure with independent sources before any financial action.\n\nThe report heading for these bullets stays `## Notice`.\n\n## Validation\n\nFrom the registry repository root:\n\n```bash\nnpm run package:validate -- --package maiconfz/personal-purchasing-power\nnpm run package:build -- --package maiconfz/personal-purchasing-power\nnpm run package:validate-artifacts -- \\\n  --package maiconfz/personal-purchasing-power --version 1.0.0\n```\n",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/personal-purchasing-power/1.0.0/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "personal-purchasing-power-chat"
+  }
+}

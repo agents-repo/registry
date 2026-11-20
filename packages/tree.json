@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "updatedAt": "2026-11-19T03:30:49.704Z",
+  "updatedAt": "2026-11-20T03:03:14.692Z",
   "namespaces": {
     "agents-repo": {
       "packages": [
@@ -24,6 +24,7 @@
         "hard-to-swallow-pills",
         "issue-creation-and-explorer",
         "job-search-tools",
+        "personal-purchasing-power",
         "plan-refiner",
         "project-ai-guide",
         "pt-it-tax-models",

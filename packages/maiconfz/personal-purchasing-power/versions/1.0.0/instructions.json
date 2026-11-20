@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/personal-purchasing-power",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "personal-purchasing-power-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "personal-purchasing-power-chat",
+      "path": "/pkg/maiconfz/personal-purchasing-power/1.0.0/agents/personal-purchasing-power-chat.agent.md"
+    }
+  ]
+}

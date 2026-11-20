@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "personal-purchasing-power",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "8801f71d0ae095bb09d2b18f9304553aa675342cbb786d755f5b7f36d71d3d06",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "5a62fe46b6ff6f6484480e6ef74b890f9d7c161f8dd4ffd665f83117d2311e97",
+          "pathEncoding": 1
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "e1e6e2b91db0d5dc58d6679a9a3acd864a202aefdd7566a92ab8c3a9defa21ac",
+          "pathEncoding": 1
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "804c352092761e773bd48120c51c4f8b6e1a02de643d70b9b740d4464f5f08a3",
+          "pathEncoding": 1
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "0590575dced8465100e367c491a9500b441aab1eb61d11b0c038bf0b627d01cc",
+          "pathEncoding": 1
+        }
+      ],
+      "createdAt": "2026-11-20T03:03:14.686Z",
+      "instructionsArtifact": "instructions.json",
+      "instructionsSha256": "9cde130a0728bccb0887f780640df94eaf4cf79d3e61655d4ceb70fc7e0c7c98"
+    }
+  ]
+}
