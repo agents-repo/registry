@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "personal-purchasing-power",
+  "description": "Chat-web household price basket: Laspeyres purchasing-power loss, scenario projections, and counterfactuals versus local interest, a stock index, Bitcoin, and dollar or euro cash when the currency is neither. Not investment advice.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/personal-purchasing-power",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "economics",
+    "inflation",
+    "purchasing-power",
+    "personal-cpi",
+    "investments",
+    "bitcoin",
+    "chat"
+  ],
+  "createdAt": "2026-11-20T03:00:50.202Z",
+  "updatedAt": "2026-11-20T03:00:50.202Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "education",
+  "estimateOverallCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/personal-purchasing-power/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "personal-purchasing-power-chat"
+        }
+      }
+    ]
+  }
+}

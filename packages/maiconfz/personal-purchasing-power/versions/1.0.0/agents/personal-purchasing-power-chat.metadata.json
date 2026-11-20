@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "personal-purchasing-power-chat",
+  "description": "Chat-web household basket, purchasing-power loss, investment counterfactuals, and dollar or euro cash when relevant. Not investment advice.",
+  "license": "MIT",
+  "status": "active",
+  "category": "education",
+  "estimateCost": {
+    "estimatedCost": 8,
+    "band": "high"
+  },
+  "chatWeb": "included",
+  "tools": [
+    "WebSearch"
+  ],
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat about a household basket and purchasing power."
+    },
+    {
+      "name": "country",
+      "type": "string",
+      "description": "Country where the household buys the basket."
+    },
+    {
+      "name": "currency",
+      "type": "string",
+      "description": "ISO 4217 code of the basket's unit of account."
+    },
+    {
+      "name": "period-start",
+      "type": "string",
+      "description": "Start date of the cited window."
+    },
+    {
+      "name": "period-end",
+      "type": "string",
+      "description": "End date of the cited window."
+    },
+    {
+      "name": "basket",
+      "type": "string",
+      "description": "Items, spend shares, and any prices the user states."
+    },
+    {
+      "name": "stake",
+      "type": "string",
+      "description": "Lump sum for the counterfactuals. Optional."
+    },
+    {
+      "name": "future-years",
+      "type": "number",
+      "description": "Horizon in years for labeled scenarios. Optional."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Answers from a prior clarification loop."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "personal-purchasing-power-report",
+      "type": "string",
+      "description": "Household report; empty until minimum inputs exist."
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-11-19T03:30:49.703Z",
+  "updatedAt": "2026-11-20T03:03:14.691Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -724,6 +724,51 @@
       "chatWeb": true
     },
     {
+      "id": "maiconfz/personal-purchasing-power",
+      "namespace": "maiconfz",
+      "package": "personal-purchasing-power",
+      "path": "packages/maiconfz/personal-purchasing-power",
+      "name": "personal-purchasing-power",
+      "description": "Chat-web household price basket: Laspeyres purchasing-power loss, scenario projections, and counterfactuals versus local interest, a stock index, Bitcoin, and dollar or euro cash when the currency is neither. Not investment advice.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "economics",
+        "inflation",
+        "purchasing-power",
+        "personal-cpi",
+        "investments",
+        "bitcoin",
+        "chat"
+      ],
+      "status": "active",
+      "category": "education",
+      "estimateOverallCost": {
+        "estimatedCost": 8,
+        "band": "high"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/personal-purchasing-power/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
       "id": "maiconfz/plan-refiner",
       "namespace": "maiconfz",
       "package": "plan-refiner",
@@ -1202,6 +1247,7 @@
     "hard-to-swallow-pills": "maiconfz/hard-to-swallow-pills",
     "issue-creation-and-explorer": "maiconfz/issue-creation-and-explorer",
     "job-search-tools": "maiconfz/job-search-tools",
+    "personal-purchasing-power": "maiconfz/personal-purchasing-power",
     "plan-refiner": "maiconfz/plan-refiner",
     "project-ai-guide": "maiconfz/project-ai-guide",
     "pt-it-tax-models": "maiconfz/pt-it-tax-models",
