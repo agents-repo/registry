@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "audit-caching-strategies",
+  "description": "Inventory the host project, then write a sized caching strategy report. Report only; does not implement.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "agents": [
+    "cache-inventory-analyst",
+    "cache-strategy-advisor"
+  ],
+  "inputs": [
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers accumulated across clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "inventory-report",
+      "type": "string",
+      "description": "Markdown cache inventory from cache-inventory-analyst."
+    },
+    {
+      "name": "strategy-report",
+      "type": "string",
+      "description": "Markdown caching strategy report from cache-strategy-advisor."
+    }
+  ]
+}

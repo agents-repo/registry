@@ -1,0 +1,159 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/caching-strategy-audit",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "caching-strategy-audit",
+    "description": "Analyze a software project and recommend caching sized to the stack, from HTTP and in-process libraries up to Redis or Cloudflare, to cut resource use. Report only; does not implement.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/caching-strategy-audit",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "caching",
+      "performance",
+      "http",
+      "redis",
+      "cloudflare",
+      "audit",
+      "resource-usage"
+    ],
+    "createdAt": "2026-11-23T00:00:00.000Z",
+    "updatedAt": "2026-11-23T00:00:00.000Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 6,
+      "band": "moderate"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/caching-strategy-audit/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "consumption": [
+        {
+          "id": "chat-web",
+          "status": "supported",
+          "defaultInstruction": {
+            "kind": "agent",
+            "id": "caching-strategy-chat"
+          }
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "cache-inventory-analyst",
+      "name": "cache-inventory-analyst",
+      "description": "Inventory the host project stack, existing caches, and repeated expensive work with evidence-backed findings. Does not recommend strategies.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/caching-strategy-audit/versions/1.0.0/agents/cache-inventory-analyst.agent.md"
+    },
+    {
+      "id": "cache-strategy-advisor",
+      "name": "cache-strategy-advisor",
+      "description": "Turn a cache inventory into a sized caching strategy report using a tier ladder. Report only; does not edit files or provision infrastructure.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/caching-strategy-audit/versions/1.0.0/agents/cache-strategy-advisor.agent.md"
+    },
+    {
+      "id": "caching-strategy-chat",
+      "name": "caching-strategy-chat",
+      "description": "Caching strategy report from a public project URL, upload, or pasted notes. Same tier ladder as the advisor. Does not inspect a host tree.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 5,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/caching-strategy-audit/versions/1.0.0/agents/caching-strategy-chat.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "audit-caching-strategies",
+      "name": "audit-caching-strategies",
+      "description": "Inventory the host project, then write a sized caching strategy report. Report only; does not implement.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "instructionPath": "packages/maiconfz/caching-strategy-audit/versions/1.0.0/flows/audit-caching-strategies.agent.md",
+      "agents": [
+        "cache-inventory-analyst",
+        "cache-strategy-advisor"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-11-23T05:59:11.640Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ],
+        "instructionsArtifact": "instructions.json"
+      }
+    ]
+  },
+  "readmeMarkdown": "# caching-strategy-audit\n\nAnalyze a software project and recommend caching sized to the stack,\nfrom HTTP and in-process libraries up to Redis or Cloudflare, to cut\nresource use. Chat-web can analyze public URLs and uploads. Report\nonly; does not implement.\n\nThis is a `maiconfz` community package, not an official agents-repo\nproduct. Installed agents reply in the **language the user used**\n(English if mixed or unclear).\n\nThis package is **not** a performance benchmark or load-test suite. It\ninventories what the project already does, then recommends the smallest\ncaching tier that evidence supports.\n\n## Install\n\nPrefer the official [agents-repo CLI](https://github.com/agents-repo/cli).\n\nGreenfield (no usable `agents.json` targets yet):\n\n```bash\nnpx agents-repo@latest init --targets github-copilot claude-code cursor openai-codex\nnpx agents-repo@latest install maiconfz/caching-strategy-audit\n```\n\nAlready configured (targets present in `agents.json`):\n\n```bash\nnpx agents-repo@latest install maiconfz/caching-strategy-audit\n```\n\nCommit `agents.json`, `agents-lock.json`, and extracted paths after\ninstall. All four supported IDE targets receive the package content\n(rendered per target).\n\n## Usage\n\nTwo entry paths:\n\n- **Workspace (IDE):** run `audit-caching-strategies` in the **host\n  project**. It inventories caching-related signals, then writes a\n  sized strategy report. It does not change code or provision\n  infrastructure.\n- **Chat-web:** use `caching-strategy-chat`. It interviews from what you\n  say, or analyzes **public git-forge/project URLs** (not marketing\n  pages), **uploads**, and **pasted sources** into a strategy report.\n  For a full host-tree walk, install this package in an IDE and run the\n  flow there.\n\nStandalone workspace agents:\n\n- `cache-inventory-analyst` — inspect the host tree; write an inventory\n  report. Does not recommend strategies.\n- `cache-strategy-advisor` — turn an inventory into a strategy report.\n  Requires `inventory-report`.\n\n`caching-strategy-chat` is not part of the flow. A chat-web report is\nremote-or-upload evidence, not a host-tree inventory.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `cache-inventory-analyst` | Host-tree caching inventory |\n| `cache-strategy-advisor` | Sized caching strategy report |\n| `caching-strategy-chat` | Chat-web strategy report (no host tree) |\n| `audit-caching-strategies` (flow) | Inventory then strategy report |\n\n## Chat-web consumption\n\nThis package opts into the chat-web channel via\n`compatibility.consumption` with `{ \"id\": \"chat-web\", \"status\": \"supported\" }`.\n\nChat-web opens `caching-strategy-chat` by default via `defaultInstruction`.\n\nOnly `caching-strategy-chat` sets `chatWeb: \"included\"`.\n`cache-inventory-analyst`, `cache-strategy-advisor`, and\n`audit-caching-strategies` set `chatWeb: \"excluded\"`. Exclusion affects\n`instructions.json` only. Deployment ZIPs still contain every agent and\nthe flow.\n\nAfter `package:build`, the instruction manifest for a released version\nlives at:\n\n```text\npackages/maiconfz/caching-strategy-audit/versions/<version>/instructions.json\n```\n\nRegistry artifacts use **path-only** `/pkg/...` strings. WebApp\nconsumers join the registry origin with those paths per\n[`specs/chat-consumption.md`](https://github.com/agents-repo/registry/blob/main/specs/chat-consumption.md):\n\n- **Origin:** `https://registry.agents-repo.org`\n\nIllustrative absolute fetch URLs for version `1.0.0`:\n\n```text\nhttps://registry.agents-repo.org/pkg/maiconfz/caching-strategy-audit/1.0.0/instructions.json\nhttps://registry.agents-repo.org/pkg/maiconfz/caching-strategy-audit/1.0.0/agents/caching-strategy-chat.agent.md\n```\n\nThe excluded flow is not listed in `instructions.json`, so chat-web does\nnot receive `agentInstructions` for the filesystem agents.\n\n## Validate and build\n\nFrom the registry repository root:\n\n```bash\nPKG=maiconfz/caching-strategy-audit\nnpm run package:validate -- --package \"$PKG\"\nnpm run package:build -- --package \"$PKG\"\nnpm run package:validate-artifacts -- --package \"$PKG\" --version 1.0.0\n```\n\nDo not author `detail.json` or any files under `versions/`.",
+  "chatWeb": true,
+  "instructionsPath": "/pkg/maiconfz/caching-strategy-audit/1.0.0/instructions.json",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "caching-strategy-chat"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "cache-strategy-advisor",
+  "description": "Turn a cache inventory into a sized caching strategy report using a tier ladder. Report only; does not edit files or provision infrastructure.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "inputs": [
+    {
+      "name": "inventory-report",
+      "type": "string",
+      "description": "Markdown cache inventory from cache-inventory-analyst."
+    },
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "strategy-report",
+      "type": "string",
+      "description": "Markdown caching strategy report sized to evidence."
+    }
+  ]
+}

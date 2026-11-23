@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "caching-strategy-chat",
+  "description": "Caching strategy report from a public project URL, upload, or pasted notes. Same tier ladder as the advisor. Does not inspect a host tree.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "chatWeb": "included",
+  "inputs": [
+    {
+      "name": "user-message",
+      "type": "string",
+      "description": "Free-form chat. MAY include a project URL, attached or uploaded files, or pasted sources."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "reply",
+      "type": "string",
+      "description": "User-visible markdown in the user's language."
+    },
+    {
+      "name": "strategy-report",
+      "type": "string",
+      "description": "Structured strategy report; empty when no usable evidence."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "caching-strategy-audit",
+  "description": "Analyze a software project and recommend caching sized to the stack, from HTTP and in-process libraries up to Redis or Cloudflare, to cut resource use. Report only; does not implement.",
+  "owner": "maiconfz",
+  "license": "MIT",
+  "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/caching-strategy-audit",
+  "repository": "https://github.com/agents-repo/registry",
+  "tags": [
+    "caching",
+    "performance",
+    "http",
+    "redis",
+    "cloudflare",
+    "audit",
+    "resource-usage"
+  ],
+  "createdAt": "2026-11-23T00:00:00.000Z",
+  "updatedAt": "2026-11-23T00:00:00.000Z",
+  "version": "1.0.0",
+  "status": "active",
+  "category": "automation",
+  "estimateOverallCost": {
+    "estimatedCost": 6,
+    "band": "moderate"
+  },
+  "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/caching-strategy-audit/README.md",
+  "maintainers": [
+    "maiconfz"
+  ],
+  "compatibility": {
+    "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+    "targets": [
+      { "id": "github-copilot", "status": "supported" },
+      { "id": "claude-code", "status": "supported" },
+      { "id": "cursor", "status": "supported" },
+      { "id": "openai-codex", "status": "supported" }
+    ],
+    "consumption": [
+      {
+        "id": "chat-web",
+        "status": "supported",
+        "defaultInstruction": {
+          "kind": "agent",
+          "id": "caching-strategy-chat"
+        }
+      }
+    ]
+  }
+}
