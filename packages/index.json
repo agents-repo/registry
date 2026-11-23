@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-11-20T03:03:14.691Z",
+  "updatedAt": "2026-11-23T05:59:11.642Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -114,6 +114,51 @@
         "band": "mixed"
       },
       "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/ai-first-project-readiness/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ],
+      "chatWeb": true
+    },
+    {
+      "id": "maiconfz/caching-strategy-audit",
+      "namespace": "maiconfz",
+      "package": "caching-strategy-audit",
+      "path": "packages/maiconfz/caching-strategy-audit",
+      "name": "caching-strategy-audit",
+      "description": "Analyze a software project and recommend caching sized to the stack, from HTTP and in-process libraries up to Redis or Cloudflare, to cut resource use. Report only; does not implement.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "caching",
+        "performance",
+        "http",
+        "redis",
+        "cloudflare",
+        "audit",
+        "resource-usage"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 6,
+        "band": "moderate"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/caching-strategy-audit/README.md",
       "installTargets": [
         {
           "id": "github-copilot",
@@ -1234,6 +1279,7 @@
     "agents-repo-package-creation": "agents-repo/agents-repo-package-creation",
     "hello-agent": "agents-repo/hello-agent",
     "ai-first-project-readiness": "maiconfz/ai-first-project-readiness",
+    "caching-strategy-audit": "maiconfz/caching-strategy-audit",
     "chorume": "maiconfz/chorume",
     "consulting-employer-check": "maiconfz/consulting-employer-check",
     "consulting-reputation-audit": "maiconfz/consulting-reputation-audit",

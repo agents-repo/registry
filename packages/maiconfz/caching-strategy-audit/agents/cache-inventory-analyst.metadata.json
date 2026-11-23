@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "cache-inventory-analyst",
+  "description": "Inventory the host project stack, existing caches, and repeated expensive work with evidence-backed findings. Does not recommend strategies.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 5,
+    "band": "moderate"
+  },
+  "chatWeb": "excluded",
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "user-clarifications",
+      "type": "string",
+      "description": "Optional user answers from prior clarification loops."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "inventory-report",
+      "type": "string",
+      "description": "Markdown cache inventory with evidence-backed findings."
+    }
+  ]
+}

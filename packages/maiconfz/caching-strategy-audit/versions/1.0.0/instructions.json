@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.1.0",
+  "package": "maiconfz/caching-strategy-audit",
+  "version": "1.0.0",
+  "defaultInstruction": {
+    "kind": "agent",
+    "id": "caching-strategy-chat"
+  },
+  "instructions": [
+    {
+      "kind": "agent",
+      "id": "caching-strategy-chat",
+      "path": "/pkg/maiconfz/caching-strategy-audit/1.0.0/agents/caching-strategy-chat.agent.md"
+    }
+  ]
+}
