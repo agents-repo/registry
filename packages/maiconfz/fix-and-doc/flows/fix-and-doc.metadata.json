@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "fix-and-doc",
+  "description": "Understand one reported bug, fix that instance, then record a short lesson so later changes avoid the same mistake.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "agents": [
+    "bug-fixer",
+    "pitfall-recorder"
+  ],
+  "inputs": [
+    {
+      "name": "bug-report",
+      "type": "string",
+      "description": "Unstructured bug report (sentence, failing case, review comment, stack trace, or tool finding)."
+    },
+    {
+      "name": "lesson-path",
+      "type": "string",
+      "description": "Optional relative path to the pitfalls guide. When omitted, pitfall-recorder discovers or creates the guide."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "fix-summary",
+      "type": "string",
+      "description": "Output from bug-fixer."
+    },
+    {
+      "name": "lesson-path",
+      "type": "string",
+      "description": "Path of the file that received the lesson."
+    },
+    {
+      "name": "lesson-id",
+      "type": "string",
+      "description": "Stable slug of the lesson section."
+    }
+  ]
+}

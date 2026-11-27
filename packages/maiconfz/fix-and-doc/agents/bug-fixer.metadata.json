@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "bug-fixer",
+  "description": "Understand a free-form bug report and apply a minimal fix for that instance, without writing the lesson or committing.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 4,
+    "band": "low"
+  },
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "bug-report",
+      "type": "string",
+      "description": "Unstructured bug report (sentence, failing case, review comment, stack trace, or tool finding)."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "fix-summary",
+      "type": "string",
+      "description": "What the defect was, where it was, and what changed. When the location is ambiguous, return one blocking question instead."
+    }
+  ]
+}

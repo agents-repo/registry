@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "name": "pitfall-recorder",
+  "description": "Append a short reusable lesson about the mistake to the repo's existing pitfalls guide, or create docs/known-pitfalls.md and a brief agent-instruction pointer.",
+  "license": "MIT",
+  "status": "active",
+  "category": "automation",
+  "estimateCost": {
+    "estimatedCost": 3,
+    "band": "low"
+  },
+  "tools": [
+    "filesystem"
+  ],
+  "inputs": [
+    {
+      "name": "bug-report",
+      "type": "string",
+      "description": "Original unstructured bug report from the user."
+    },
+    {
+      "name": "fix-summary",
+      "type": "string",
+      "description": "Output from bug-fixer describing defect, location, and changes."
+    },
+    {
+      "name": "lesson-path",
+      "type": "string",
+      "description": "Optional relative path to the pitfalls guide. When omitted, discover from agent instructions or create docs/known-pitfalls.md."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "lesson-path",
+      "type": "string",
+      "description": "Repo-relative path of the file that received the lesson."
+    },
+    {
+      "name": "lesson-id",
+      "type": "string",
+      "description": "Stable kebab-case slug for the mistake section."
+    }
+  ]
+}

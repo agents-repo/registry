@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.4.0",
-  "updatedAt": "2026-11-23T05:59:11.642Z",
+  "updatedAt": "2026-11-27T06:27:18.635Z",
   "packages": [
     {
       "id": "agents-repo/agents-repo-package-creation",
@@ -503,6 +503,47 @@
         }
       ],
       "chatWeb": true
+    },
+    {
+      "id": "maiconfz/fix-and-doc",
+      "namespace": "maiconfz",
+      "package": "fix-and-doc",
+      "path": "packages/maiconfz/fix-and-doc",
+      "name": "fix-and-doc",
+      "description": "Understand one reported bug, fix that instance, and record a short lesson in the repo's existing pitfalls guide so the same mistake is not repeated.",
+      "owner": "maiconfz",
+      "latest": "1.0.0",
+      "tags": [
+        "bugs",
+        "documentation",
+        "pitfalls",
+        "workflow"
+      ],
+      "status": "active",
+      "category": "automation",
+      "estimateOverallCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/fix-and-doc/README.md",
+      "installTargets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
     },
     {
       "id": "maiconfz/github-interactive-issue-implementation-planner",
@@ -1287,6 +1328,7 @@
     "dependency-upgrade-orchestrator": "maiconfz/dependency-upgrade-orchestrator",
     "dev-emocionado": "maiconfz/dev-emocionado",
     "feature-exploration-planner": "maiconfz/feature-exploration-planner",
+    "fix-and-doc": "maiconfz/fix-and-doc",
     "github-interactive-issue-implementation-planner": "maiconfz/github-interactive-issue-implementation-planner",
     "github-issue-implementation-planner": "maiconfz/github-issue-implementation-planner",
     "github-pr-review-triage": "maiconfz/github-pr-review-triage",
