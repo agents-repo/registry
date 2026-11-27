@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.2.0",
+  "name": "fix-and-doc",
+  "latest": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "srcArtifact": "1.0.0-src.zip",
+      "srcSha256": "528757959c5be2bc20b7ab3eca67199fa0d058de6db7fbd3bd25c4b1520a2a37",
+      "artifacts": [
+        {
+          "target": "github-copilot",
+          "file": "1.0.0-github-copilot.zip",
+          "sha256": "6cea5f0c696ec74bd464708d0f69f4274fc0caa8463e47abbce5f5d73e00514d",
+          "pathEncoding": 1
+        },
+        {
+          "target": "claude-code",
+          "file": "1.0.0-claude-code.zip",
+          "sha256": "0b96fad2808974a3debd127ce91176c587e060e8d07d36e538bd35ac9bb45f83",
+          "pathEncoding": 1
+        },
+        {
+          "target": "cursor",
+          "file": "1.0.0-cursor.zip",
+          "sha256": "20aaebca84565c83207bc5647ad95c94849e522a79d365d0722b92d76d135205",
+          "pathEncoding": 1
+        },
+        {
+          "target": "openai-codex",
+          "file": "1.0.0-openai-codex.zip",
+          "sha256": "10455a75ab28f138bc4cd9f6d5f2210dd5e0a6063d8ba5eec55dc53343495296",
+          "pathEncoding": 1
+        }
+      ],
+      "createdAt": "2026-11-27T06:30:18.760Z"
+    }
+  ]
+}

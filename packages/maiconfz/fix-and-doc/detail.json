@@ -1,0 +1,127 @@
+{
+  "schemaVersion": "1.0.0",
+  "package": "maiconfz/fix-and-doc",
+  "version": "1.0.0",
+  "metadata": {
+    "schemaVersion": "1.0.0",
+    "name": "fix-and-doc",
+    "description": "Understand one reported bug, fix that instance, and record a short lesson in the repo's existing pitfalls guide so the same mistake is not repeated.",
+    "owner": "maiconfz",
+    "license": "MIT",
+    "homepage": "https://github.com/agents-repo/registry/tree/main/packages/maiconfz/fix-and-doc",
+    "repository": "https://github.com/agents-repo/registry",
+    "tags": [
+      "bugs",
+      "documentation",
+      "pitfalls",
+      "workflow"
+    ],
+    "createdAt": "2026-11-27T06:26:24.538Z",
+    "updatedAt": "2026-11-27T06:26:24.538Z",
+    "version": "1.0.0",
+    "status": "active",
+    "category": "automation",
+    "estimateOverallCost": {
+      "estimatedCost": 4,
+      "band": "low"
+    },
+    "quickstart": "https://github.com/agents-repo/registry/blob/main/packages/maiconfz/fix-and-doc/README.md",
+    "maintainers": [
+      "maiconfz"
+    ],
+    "compatibility": {
+      "canonicalFormat": "agents-repo.agent-instruction@1.0.0",
+      "targets": [
+        {
+          "id": "github-copilot",
+          "status": "supported"
+        },
+        {
+          "id": "claude-code",
+          "status": "supported"
+        },
+        {
+          "id": "cursor",
+          "status": "supported"
+        },
+        {
+          "id": "openai-codex",
+          "status": "supported"
+        }
+      ]
+    }
+  },
+  "agents": [
+    {
+      "id": "bug-fixer",
+      "name": "bug-fixer",
+      "description": "Understand a free-form bug report and apply a minimal fix for that instance, without writing the lesson or committing.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/fix-and-doc/versions/1.0.0/agents/bug-fixer.agent.md"
+    },
+    {
+      "id": "pitfall-recorder",
+      "name": "pitfall-recorder",
+      "description": "Append a short reusable lesson about the mistake to the repo's existing pitfalls guide, or create docs/known-pitfalls.md and a brief agent-instruction pointer.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 3,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/fix-and-doc/versions/1.0.0/agents/pitfall-recorder.agent.md"
+    }
+  ],
+  "flows": [
+    {
+      "id": "fix-and-doc",
+      "name": "fix-and-doc",
+      "description": "Understand one reported bug, fix that instance, then record a short lesson so later changes avoid the same mistake.",
+      "status": "active",
+      "category": "automation",
+      "estimateCost": {
+        "estimatedCost": 4,
+        "band": "low"
+      },
+      "instructionPath": "packages/maiconfz/fix-and-doc/versions/1.0.0/flows/fix-and-doc.agent.md",
+      "agents": [
+        "bug-fixer",
+        "pitfall-recorder"
+      ]
+    }
+  ],
+  "versions": {
+    "latest": "1.0.0",
+    "entries": [
+      {
+        "version": "1.0.0",
+        "createdAt": "2026-11-27T06:30:18.760Z",
+        "srcArtifact": "1.0.0-src.zip",
+        "artifacts": [
+          {
+            "target": "github-copilot",
+            "file": "1.0.0-github-copilot.zip"
+          },
+          {
+            "target": "claude-code",
+            "file": "1.0.0-claude-code.zip"
+          },
+          {
+            "target": "cursor",
+            "file": "1.0.0-cursor.zip"
+          },
+          {
+            "target": "openai-codex",
+            "file": "1.0.0-openai-codex.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "readmeMarkdown": "# Fix & doc\n\nUnderstand one reported bug, fix that instance, and record a short lesson in\nthe repo's existing pitfalls guide so the same mistake is not repeated.\n\nUse this when a defect shows up again in new code — from a review comment,\na failing test, a stack trace, a static-analysis finding, or plain-language\ndescription. The flow is **source-agnostic**: it does not require a specific\ntool report format.\n\n## What it does\n\n1. **`bug-fixer`** — interprets your report, locates the code, applies a\n   minimal fix for that instance.\n2. **`pitfall-recorder`** — appends or extends a lesson about the **mistake**\n   (not the tool that found it) in an existing pitfalls guide, or creates\n   `docs/known-pitfalls.md`, and adds a short pointer in agent instructions\n   when needed.\n\nInvoke the **`fix-and-doc`** flow with a `bug-report` string. Optionally pass\n`lesson-path` to force where the lesson lives.\n\n## What it does not do\n\n- Does **not** commit or push (use `maiconfz/review-fix-ship` to ship).\n- Does **not** add tests, lint rules, or repo-wide sweeps.\n- Does **not** replace PR or diff review workflows.\n\n## Install\n\nInstall `maiconfz/fix-and-doc` with the agents-repo CLI into your project's\nagent skill paths, then load the `fix-and-doc` flow.\n\n## Example\n\nReport: \"We null-check the outer object but still read `.id` on a nested field\nthat can be undefined in `src/api/client.ts`.\"\n\nThe flow fixes that read, then records a lesson such as `nested-optional-chain`\nunder your pitfalls guide with Avoid / Prefer guidance for the next change.\n\n## Package contents\n\n| Asset | Role |\n| --- | --- |\n| `flows/fix-and-doc` | Orchestrates fix then record |\n| `agents/bug-fixer` | Minimal fix for one instance |\n| `agents/pitfall-recorder` | Lesson file and optional instruction pointer |\n\n## Maintainer validation\n\nFrom the registry repository root:\n\n```bash\nnpm run package:validate -- --package maiconfz/fix-and-doc\nnpm run package:build -- --package maiconfz/fix-and-doc\nnpm run package:validate-artifacts -- --package maiconfz/fix-and-doc --version 1.0.0\n```\n"
+}
