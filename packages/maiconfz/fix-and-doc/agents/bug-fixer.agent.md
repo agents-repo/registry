@@ -17,8 +17,11 @@ outputs:
   - name: fix-summary
     type: string
     description: >-
-      What the defect was, where it was, and what changed. When the
-      location is ambiguous, return one blocking question instead.
+      What the defect was, where it was, and what changed. Empty when
+      blocking-questions is non-empty or when no edit was needed.
+  - name: blocking-questions
+    type: string
+    description: Markdown list of blocking questions; empty when none.
 ---
 
 # Overview
@@ -40,8 +43,8 @@ read report → locate code → restate defect → minimal fix → fix-summary
 - Restate the defect in one sentence before editing.
 - Edit only files needed for this instance. Keep local style.
 - When the report has no path and multiple sites could match, ask **once**
-  with concrete candidates. Return that question as `fix-summary` and
-  make no edits.
+  with concrete candidates. Put the question in `blocking-questions` and
+  leave `fix-summary` empty; make no edits.
 - When the defect is already fixed or not reproducible from the report,
   say so in `fix-summary` and make no speculative edits.
 - Run lightweight sanity checks when the host documents them and this
@@ -58,11 +61,13 @@ read report → locate code → restate defect → minimal fix → fix-summary
   unless the host repo documents an approved pattern.
 - MUST NOT expand scope beyond the understood defect.
 - MUST NOT invent file paths or APIs when the report is ambiguous.
+- MUST NOT introduce hardcoded secrets, exploits, or PoCs.
+- MUST NOT remove or bypass security controls unless the host documents an
+  approved pattern.
 - Declared tool capabilities are limited to `filesystem`.
 
 ## Interaction Contract
 
 **Input:** `bug-report`.
 
-**Output:** `fix-summary` (defect restatement, location, changes, or one
-blocking question).
+**Output:** `fix-summary` and `blocking-questions` (empty when none).

@@ -23,7 +23,12 @@
     {
       "name": "fix-summary",
       "type": "string",
-      "description": "What the defect was, where it was, and what changed. When the location is ambiguous, return one blocking question instead."
+      "description": "What the defect was, where it was, and what changed. Empty when blocking-questions is non-empty or when no edit was needed."
+    },
+    {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Markdown list of blocking questions; empty when none."
     }
   ]
 }

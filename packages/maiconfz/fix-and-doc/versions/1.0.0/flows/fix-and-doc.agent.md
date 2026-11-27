@@ -23,6 +23,9 @@ outputs:
   - name: fix-summary
     type: string
     description: Output from bug-fixer.
+  - name: blocking-questions
+    type: string
+    description: Output from bug-fixer; empty when the fix step completed.
   - name: lesson-path
     type: string
     description: Path of the file that received the lesson.
@@ -34,8 +37,8 @@ outputs:
 # Overview
 
 Workspace entry for fix-then-document. Invoke `bug-fixer` with the
-user's report, then `pitfall-recorder` when the fixer produced a
-concrete fix summary (not a blocking question). Does not commit or
+user's report, then `pitfall-recorder` when `blocking-questions` is
+empty and the fixer produced a concrete `fix-summary`. Does not commit or
 push. Complements `maiconfz/review-fix-ship`, which reviews diffs and
 ships; this flow targets one repeatable mistake and records it for
 later work.
@@ -49,22 +52,23 @@ bug-report → bug-fixer → fix-summary → pitfall-recorder → lesson
 1. **Preflight** — Confirm a workspace with product source (not the
    registry package tree alone). If `bug-report` is empty, ask the user
    once and stop.
-2. **Fix** — Invoke `bug-fixer` with `bug-report`. If `fix-summary`
-   is a blocking question (ambiguous location, missing repro), return
-   it to the user and stop. Do not invoke `pitfall-recorder`.
+2. **Fix** — Invoke `bug-fixer` with `bug-report`. If
+   `blocking-questions` is non-empty, return `blocking-questions` and
+   any partial `fix-summary` to the user and stop. Do not invoke
+   `pitfall-recorder`.
 3. **Record** — Invoke `pitfall-recorder` with `bug-report`,
    `fix-summary`, and optional `lesson-path` from the flow input.
-4. **Handoff** — Return `fix-summary`, `lesson-path`, and `lesson-id`.
-   Note that host-repo edits remain uncommitted unless the user runs
-   another workflow.
+4. **Handoff** — Return `fix-summary`, `blocking-questions` (empty when
+   none), `lesson-path`, and `lesson-id`. Note that host-repo edits
+   remain uncommitted unless the user runs another workflow.
 
 ## Error Handling
 
-- **Ambiguous fix:** when `bug-fixer` asks a question, propagate it
+- **Ambiguous fix:** when `blocking-questions` is non-empty, propagate it
   and skip documentation. Do not guess a file path.
 - **Recorder failure:** when the lesson file cannot be written, return
-  `fix-summary`, the attempted path, and the reason. Do not commit to
-  recover.
+  `fix-summary` with the write failure reason appended, and leave
+  `lesson-path` and `lesson-id` empty. Do not commit to recover.
 - **No code change:** when `fix-summary` states nothing to fix, still
   run `pitfall-recorder` if the mistake is worth documenting; omit
   code-change claims from the lesson.
@@ -75,4 +79,4 @@ bug-report → bug-fixer → fix-summary → pitfall-recorder → lesson
 
 **Input:** `bug-report`; optional `lesson-path`.
 
-**Output:** `fix-summary`, `lesson-path`, `lesson-id`.
+**Output:** `fix-summary`, `blocking-questions`, `lesson-path`, `lesson-id`.

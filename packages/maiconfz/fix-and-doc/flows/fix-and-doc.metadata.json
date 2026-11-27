@@ -32,6 +32,11 @@
       "description": "Output from bug-fixer."
     },
     {
+      "name": "blocking-questions",
+      "type": "string",
+      "description": "Output from bug-fixer; empty when the fix step completed."
+    },
+    {
       "name": "lesson-path",
       "type": "string",
       "description": "Path of the file that received the lesson."

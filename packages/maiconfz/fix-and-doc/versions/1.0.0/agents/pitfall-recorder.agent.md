@@ -42,9 +42,17 @@ choose guide → slug lesson → append or extend → optional pointer
 
 ## Responsibilities
 
+- When `fix-summary` is empty or only states that the fixer could not proceed,
+  stop and return empty `lesson-path` and `lesson-id`. Do not invent a lesson
+  from an ambiguous or blocking report.
 - Derive a stable `lesson-id` slug from the understood mistake (kebab-case).
+- When caller-supplied `lesson-path` is set, validate it before use: path
+  MUST be repo-relative (no leading `/`), MUST NOT contain `..`, and MUST
+  live under `docs/` or match a pitfalls guide already linked from the
+  host's agent entry. When validation fails, ignore the caller value and
+  continue with discovery below.
 - Choose the lesson file in this order:
-  1. Caller-supplied `lesson-path` when set.
+  1. Caller-supplied `lesson-path` when set and valid per the rules above.
   2. A pitfalls or recurring-mistakes guide already linked from the host's
      agent entry (`AGENTS.md` or canonical `.cursor/rules/*.mdc` when
      generated). A static-analysis guide is eligible only when the
